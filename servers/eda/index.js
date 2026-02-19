@@ -428,7 +428,7 @@ function sendToTerminal(tcl, pane = 'eda') {
 const server = new Server(
   {
     name: 'hipilot-eda-mcp-server',
-    version: '0.1.0',
+    version: '0.2.0',
   },
   {
     capabilities: {

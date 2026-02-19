@@ -282,6 +282,39 @@ I have Innovus running in the right pane. Generate a timing report tcl script an
 **Symptom:** xterm renders tmux poorly (bad fonts, missing colors)
 **Fix:** Use `gnome-terminal --maximize -- tmux attach-session -t hipilot`
 
+### 7. Project-Level MCP Config Overrides User-Level
+**Symptom:** Claude Code says "MCP tools are not directly available in this session" even though `~/.claude/settings.json` has correct absolute paths
+**Cause:** Project-level `.claude/settings.json` had `mcpServers` with relative paths (`"command": "node"`, `"args": ["servers/eda/index.js"]`). Claude Code uses the project-level config when running from that directory, and `node` isn't in the PATH that Claude Code's MCP spawner uses.
+**Fix:** Remove `mcpServers` from project-level `.claude/settings.json`. Keep only `permissions` there. Let user-level `~/.claude/settings.json` handle MCP registration with absolute paths for both the node binary and server scripts.
+**Rule:** MCP server registration MUST be in user-level settings with absolute paths. Project-level settings should only contain permissions and other non-path config.
+
+### 8. Tcl Quoting Inside Double-Quoted Strings
+**Symptom:** Innovus reports `invalid character "\"` when sourcing template Tcl
+**Cause:** Templates used `[expr {$var eq \"\" ? \"(default)\" : $var}]` inside double-quoted `puts` strings. In Tcl, escaped quotes inside double-quoted strings cause parsing errors in the `expr` evaluator.
+**Fix:** Replace inline `expr` ternaries with `if/else` blocks:
+```tcl
+# BAD - causes Tcl parse error inside puts "..."
+puts "  value = [expr {$var eq \"\" ? \"(default)\" : $var}]"
+
+# GOOD - works correctly
+if { $var eq "" } {
+    puts "  value = (default)"
+} else {
+    puts "  value = $var"
+}
+```
+**Note:** This bug was discovered by Claude Code itself during a live EDA server test. Claude Code noticed the error in Innovus output, fixed the template, and re-ran successfully. This demonstrates the value of testing against real EDA tools.
+
+### 9. Claude Code Response Text Leaks Into Input Buffer
+**Symptom:** After Claude Code responds, fragments of its response appear as a new prompt in the input buffer
+**Cause:** tmux `send-keys` timing - if the next prompt is sent while Claude Code is still rendering output, the text lands in the input buffer mixed with output
+**Fix:** Wait until Claude Code is fully idle (check for the `bypass permissions on` prompt line) before sending the next prompt. Use `tmux capture-pane` to verify the prompt is ready.
+
+### 10. pkill via SSH Kills the SSH Session Itself
+**Symptom:** `sshpass ssh server 'pkill -f claude'` returns exit code 255 and the SSH session drops
+**Cause:** `pkill -f claude` matches the SSH process itself because the command line contains "claude" (from the project path or command arguments)
+**Fix:** Either use specific PIDs (`kill <pid>`) or use more specific patterns that don't match the SSH session. Also use `|| true` to prevent non-zero exit codes from propagating.
+
 ## Complete Test Script Template
 
 ```bash
