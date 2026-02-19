@@ -1,0 +1,17 @@
+{
+  "name": "@hipilot/eda-mcp-server",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "EDA MCP Server - Tcl generation and report comprehension",
+  "main": "index.js",
+  "bin": {
+    "hipilot-eda-mcp": "./index.js"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "nunjucks": "^3.2.4"
+  }
+}

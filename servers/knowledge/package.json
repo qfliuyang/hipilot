@@ -1,0 +1,16 @@
+{
+  "name": "@hipilot/knowledge-mcp-server",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Knowledge MCP Server - Document indexing and skill management",
+  "main": "index.js",
+  "bin": {
+    "hipilot-knowledge-mcp": "./index.js"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  }
+}

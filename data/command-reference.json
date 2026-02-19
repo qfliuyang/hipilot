@@ -1,0 +1,631 @@
+{
+  "version": "0.1.0",
+  "commands": [
+    {
+      "name": "report_timing",
+      "tool": "icc2",
+      "category": "timing",
+      "synopsis": "Report timing paths for setup or hold analysis",
+      "syntax": "report_timing [-path_type full|full_clock|full_clock_expanded] [-delay_type max|min] [-max_paths <n>] [-nworst <n>] [-slack_lesser_than <float>] [-from <list>] [-to <list>] [-through <list>] [-nosplit] [-input_pins] [-nets] [-capacitance] [-transition_time] [-crosstalk_delta] [-machine_readable] [-format list|csv]",
+      "key_options": [
+        { "option": "-delay_type max|min", "description": "Report setup (max) or hold (min) paths; default is max" },
+        { "option": "-max_paths <n>", "description": "Maximum number of paths to report per path group" },
+        { "option": "-nworst <n>", "description": "Maximum number of paths per endpoint; default is 1" },
+        { "option": "-slack_lesser_than <float>", "description": "Report only paths with slack less than specified value" },
+        { "option": "-from <list>", "description": "Startpoints filter: clock pins, ports, or cells" },
+        { "option": "-to <list>", "description": "Endpoints filter: flip-flop data pins or output ports" },
+        { "option": "-through <list>", "description": "Paths must pass through these pins, nets, or cells" },
+        { "option": "-path_type full_clock_expanded", "description": "Show full clock network in path detail" },
+        { "option": "-input_pins", "description": "Include input pins in path detail" },
+        { "option": "-nosplit", "description": "Do not split output across multiple lines" },
+        { "option": "-machine_readable", "description": "Output in machine-parseable format" }
+      ],
+      "examples": [
+        "report_timing -delay_type max -max_paths 50 -nworst 3 -slack_lesser_than 0",
+        "report_timing -delay_type min -max_paths 20",
+        "report_timing -from [get_ports in_*] -to [get_pins -of_objects [get_cells *reg*] -filter direction==in]",
+        "report_timing -path_type full_clock_expanded -max_paths 10 -input_pins -nets -transition_time"
+      ],
+      "related": ["report_constraint", "report_qor", "update_timing"]
+    },
+    {
+      "name": "report_constraint",
+      "tool": "icc2",
+      "category": "timing",
+      "synopsis": "Report violated timing constraints and all constraint exceptions",
+      "syntax": "report_constraint [-all_violators] [-verbose] [-nosplit] [-max_transition] [-max_capacitance] [-min_capacitance] [-max_fanout] [-drv_violation_type max_transition|max_capacitance|min_capacitance|max_fanout] [-late] [-early] [-significant_digits <n>]",
+      "key_options": [
+        { "option": "-all_violators", "description": "Report only constraints that are violated" },
+        { "option": "-verbose", "description": "Print verbose constraint details" },
+        { "option": "-max_transition", "description": "Report max transition (slew) constraint violations" },
+        { "option": "-max_capacitance", "description": "Report max capacitance constraint violations" },
+        { "option": "-max_fanout", "description": "Report max fanout constraint violations" },
+        { "option": "-late", "description": "Report late (setup) timing violations" },
+        { "option": "-early", "description": "Report early (hold) timing violations" },
+        { "option": "-significant_digits <n>", "description": "Number of decimal digits in output (default 4)" }
+      ],
+      "examples": [
+        "report_constraint -all_violators",
+        "report_constraint -all_violators -max_transition -max_capacitance",
+        "report_constraint -all_violators -late -verbose > constraints_setup.rpt",
+        "report_constraint -all_violators -early"
+      ],
+      "related": ["report_timing", "report_qor"]
+    },
+    {
+      "name": "report_qor",
+      "tool": "icc2",
+      "category": "timing",
+      "synopsis": "Report quality-of-results summary including WNS, TNS, and DRV counts",
+      "syntax": "report_qor [-summary] [-only_endpoint_groups] [-significant_digits <n>] [-nosplit]",
+      "key_options": [
+        { "option": "-summary", "description": "Print one-line summary per scenario or path group" },
+        { "option": "-only_endpoint_groups", "description": "Report only endpoint path group results" },
+        { "option": "-significant_digits <n>", "description": "Number of significant digits in timing numbers" }
+      ],
+      "examples": [
+        "report_qor",
+        "report_qor -summary",
+        "report_qor > qor_post_route.rpt"
+      ],
+      "related": ["report_timing", "report_constraint"]
+    },
+    {
+      "name": "size_cell",
+      "tool": "icc2",
+      "category": "timing",
+      "synopsis": "Change a cell to a different drive-strength variant of the same logical function",
+      "syntax": "size_cell <cell_name> <new_lib_cell>",
+      "key_options": [
+        { "option": "<cell_name>", "description": "Full hierarchical instance name of the cell to resize" },
+        { "option": "<new_lib_cell>", "description": "Target library cell (must have same function/pin names)" }
+      ],
+      "examples": [
+        "size_cell u_core/clk_buf_2 sky130_fd_sc_hd__buf_8",
+        "size_cell [get_cells u_ctrl/u_inv1] sky130_fd_sc_hd__inv_4",
+        "foreach_in_collection cell [get_cells -of_objects [get_nets -of_objects [get_pins -filter \"driving_cell.lib_cell.name == sky130_fd_sc_hd__buf_2\"]]] { size_cell $cell sky130_fd_sc_hd__buf_4 }"
+      ],
+      "related": ["insert_buffer", "fix_eco_timing", "remove_buffer"]
+    },
+    {
+      "name": "insert_buffer",
+      "tool": "icc2",
+      "category": "timing",
+      "synopsis": "Insert a buffer or repeater cell on a net to fix timing or signal integrity",
+      "syntax": "insert_buffer <net_name> <lib_cell> [-between <driver_pin> <load_pin>] [-new_cell_name <name>]",
+      "key_options": [
+        { "option": "<net_name>", "description": "Net on which to insert the buffer" },
+        { "option": "<lib_cell>", "description": "Library cell to instantiate as the buffer" },
+        { "option": "-between <driver_pin> <load_pin>", "description": "Insert buffer between specific driver and load pins" },
+        { "option": "-new_cell_name <name>", "description": "Name for the newly inserted buffer instance" }
+      ],
+      "examples": [
+        "insert_buffer u_core/long_net sky130_fd_sc_hd__buf_4",
+        "insert_buffer n_clk_div sky130_fd_sc_hd__clkbuf_8 -new_cell_name u_clkbuf_eco_1"
+      ],
+      "related": ["remove_buffer", "size_cell", "fix_eco_timing"]
+    },
+    {
+      "name": "remove_buffer",
+      "tool": "icc2",
+      "category": "timing",
+      "synopsis": "Remove a buffer or inverter-pair and reconnect its driver directly to loads",
+      "syntax": "remove_buffer <cell_name>",
+      "key_options": [
+        { "option": "<cell_name>", "description": "Instance name of the buffer cell to remove" }
+      ],
+      "examples": [
+        "remove_buffer u_core/u_buf_hold_fix_1",
+        "foreach_in_collection buf [get_cells -filter \"lib_cell.name == sky130_fd_sc_hd__buf_1\"] { remove_buffer $buf }"
+      ],
+      "related": ["insert_buffer", "size_cell"]
+    },
+    {
+      "name": "fix_eco_timing",
+      "tool": "icc2",
+      "category": "timing",
+      "synopsis": "Automatically fix timing violations using ECO sizing, buffering, and cell swapping",
+      "syntax": "fix_eco_timing [-setup] [-hold] [-max_paths <n>] [-slack_lesser_than <float>] [-buffer_list <list>] [-cell_list <list>] [-eco_mode <mode>]",
+      "key_options": [
+        { "option": "-setup", "description": "Fix setup (max delay) violations" },
+        { "option": "-hold", "description": "Fix hold (min delay) violations" },
+        { "option": "-max_paths <n>", "description": "Maximum number of paths to attempt to fix" },
+        { "option": "-slack_lesser_than <float>", "description": "Fix paths with slack worse than this value" },
+        { "option": "-buffer_list <list>", "description": "List of allowed buffer cells for hold fixing" },
+        { "option": "-cell_list <list>", "description": "List of allowed cells for upsizing/downsizing" }
+      ],
+      "examples": [
+        "fix_eco_timing -setup -max_paths 500",
+        "fix_eco_timing -hold -buffer_list {sky130_fd_sc_hd__buf_1 sky130_fd_sc_hd__buf_2}",
+        "fix_eco_timing -setup -hold -slack_lesser_than -0.05"
+      ],
+      "related": ["size_cell", "insert_buffer", "route_eco"]
+    },
+    {
+      "name": "route_auto",
+      "tool": "icc2",
+      "category": "routing",
+      "synopsis": "Run full automatic global and detail routing",
+      "syntax": "route_auto [-max_detail_route_iterations <n>] [-effort_level low|medium|high]",
+      "key_options": [
+        { "option": "-max_detail_route_iterations <n>", "description": "Maximum detail routing iterations (default 10)" },
+        { "option": "-effort_level low|medium|high", "description": "Routing effort level affecting runtime vs quality" }
+      ],
+      "examples": [
+        "route_auto",
+        "route_auto -max_detail_route_iterations 20 -effort_level high"
+      ],
+      "related": ["route_detail", "route_global", "check_routes"]
+    },
+    {
+      "name": "route_detail",
+      "tool": "icc2",
+      "category": "routing",
+      "synopsis": "Run detail routing only (assumes global routing is complete)",
+      "syntax": "route_detail [-max_number_of_passes <n>] [-incremental]",
+      "key_options": [
+        { "option": "-max_number_of_passes <n>", "description": "Maximum number of detail routing passes" },
+        { "option": "-incremental", "description": "Run incremental detail routing to fix DRC violations only" }
+      ],
+      "examples": [
+        "route_detail",
+        "route_detail -incremental -max_number_of_passes 5"
+      ],
+      "related": ["route_auto", "route_global", "check_routes"]
+    },
+    {
+      "name": "check_design",
+      "tool": "icc2",
+      "category": "general",
+      "synopsis": "Check design for netlist, constraint, and physical integrity errors",
+      "syntax": "check_design [-checks <check_list>] [-max_errors <n>] [-nosplit]",
+      "key_options": [
+        { "option": "-checks <check_list>", "description": "Specific checks to run: netlist, placement, routing, timing" },
+        { "option": "-max_errors <n>", "description": "Stop after this many errors per check type" },
+        { "option": "-nosplit", "description": "Do not wrap long output lines" }
+      ],
+      "examples": [
+        "check_design",
+        "check_design -checks {netlist timing_constraints}",
+        "check_design -checks {pre_route_stage} -max_errors 50"
+      ],
+      "related": ["report_constraint", "verify_drc"]
+    },
+    {
+      "name": "report_routing",
+      "tool": "icc2",
+      "category": "routing",
+      "synopsis": "Report routing completion, DRC violations, and wire statistics",
+      "syntax": "report_routing [-layers <list>] [-nworst <n>] [-nosplit]",
+      "key_options": [
+        { "option": "-layers <list>", "description": "Report statistics for specific metal layers only" },
+        { "option": "-nworst <n>", "description": "Report only the n worst DRC violations" }
+      ],
+      "examples": [
+        "report_routing",
+        "report_routing -nworst 20",
+        "report_routing -layers {M1 M2 M3} > routing_layer_report.rpt"
+      ],
+      "related": ["route_auto", "route_detail", "check_design"]
+    },
+    {
+      "name": "set_app_options",
+      "tool": "icc2",
+      "category": "general",
+      "synopsis": "Set application-level options controlling tool behavior and algorithms",
+      "syntax": "set_app_options -name <option_name> -value <value>",
+      "key_options": [
+        { "option": "-name <option_name>", "description": "Dot-separated option name (e.g. place.legalize.max_utilization)" },
+        { "option": "-value <value>", "description": "New value for the option" },
+        { "option": "-list", "description": "List all available options with current values" }
+      ],
+      "examples": [
+        "set_app_options -name place.legalize.max_utilization -value 0.9",
+        "set_app_options -name route.detail.timing_driven -value true",
+        "set_app_options -name time.remove_clock_reconvergence_pessimism -value true",
+        "set_app_options -name opt.common.max_utilization -value 0.85"
+      ],
+      "related": ["get_app_options", "report_app_options"]
+    },
+    {
+      "name": "create_placement",
+      "tool": "icc2",
+      "category": "placement",
+      "synopsis": "Run placement (coarse + legalization) for the current design",
+      "syntax": "create_placement [-floorplan] [-effort low|medium|high] [-timing_driven] [-congestion_driven]",
+      "key_options": [
+        { "option": "-floorplan", "description": "Re-run floorplan-aware placement" },
+        { "option": "-effort low|medium|high", "description": "Placement effort level (default medium)" },
+        { "option": "-timing_driven", "description": "Enable timing-driven placement" },
+        { "option": "-congestion_driven", "description": "Enable congestion-driven placement" }
+      ],
+      "examples": [
+        "create_placement -effort high -timing_driven -congestion_driven",
+        "create_placement -timing_driven"
+      ],
+      "related": ["optimize_design", "report_placement", "check_design"]
+    },
+    {
+      "name": "optimize_design",
+      "tool": "icc2",
+      "category": "timing",
+      "synopsis": "Run post-placement or post-route timing optimization (hold, setup, DRV)",
+      "syntax": "optimize_design [-pre_route_stage] [-post_route_stage] [-hold] [-setup] [-drv_fixing] [-effort low|medium|high]",
+      "key_options": [
+        { "option": "-pre_route_stage", "description": "Run pre-route optimization (after placement)" },
+        { "option": "-post_route_stage", "description": "Run post-route optimization (after routing)" },
+        { "option": "-hold", "description": "Optimize hold timing" },
+        { "option": "-setup", "description": "Optimize setup timing" },
+        { "option": "-drv_fixing", "description": "Fix design rule violations (slew, cap, fanout)" },
+        { "option": "-effort low|medium|high", "description": "Optimization effort level" }
+      ],
+      "examples": [
+        "optimize_design -pre_route_stage",
+        "optimize_design -post_route_stage -setup -hold -drv_fixing",
+        "optimize_design -post_route_stage -hold -effort high"
+      ],
+      "related": ["create_placement", "route_auto", "fix_eco_timing"]
+    },
+    {
+      "name": "report_timing",
+      "tool": "innovus",
+      "category": "timing",
+      "synopsis": "Report timing paths for setup or hold analysis",
+      "syntax": "report_timing [-path_type full|summary] [-late|-early] [-max_paths <n>] [-nworst <n>] [-slack_lesser_than <float>] [-from <list>] [-to <list>] [-through <list>] [-net] [-cap] [-tran] [-nosplit] [-rpt_file <file>]",
+      "key_options": [
+        { "option": "-late", "description": "Report setup (late) timing paths (default)" },
+        { "option": "-early", "description": "Report hold (early) timing paths" },
+        { "option": "-max_paths <n>", "description": "Maximum number of paths to report" },
+        { "option": "-nworst <n>", "description": "Maximum number of paths per endpoint" },
+        { "option": "-slack_lesser_than <float>", "description": "Report only paths with slack below this threshold" },
+        { "option": "-from <list>", "description": "Restrict startpoints" },
+        { "option": "-to <list>", "description": "Restrict endpoints" },
+        { "option": "-through <list>", "description": "Paths must pass through these pins or nets" },
+        { "option": "-net", "description": "Show net names in path report" },
+        { "option": "-tran", "description": "Show transition times (slew) in path report" },
+        { "option": "-cap", "description": "Show capacitance values in path report" },
+        { "option": "-rpt_file <file>", "description": "Write report to specified file" }
+      ],
+      "examples": [
+        "report_timing -late -max_paths 50 -nworst 3 -slack_lesser_than 0",
+        "report_timing -early -max_paths 20 -rpt_file hold_timing.rpt",
+        "report_timing -late -from [all_inputs] -net -tran -cap",
+        "report_timing -path_type summary -max_paths 100"
+      ],
+      "related": ["report_analysis_summary", "optDesign", "setOptMode"]
+    },
+    {
+      "name": "report_analysis_summary",
+      "tool": "innovus",
+      "category": "timing",
+      "synopsis": "Report QoR summary including WNS, TNS, failing endpoints, and DRV counts",
+      "syntax": "report_analysis_summary [-rpt_file <file>] [-format text|tcl]",
+      "key_options": [
+        { "option": "-rpt_file <file>", "description": "Write the summary to a file" },
+        { "option": "-format text|tcl", "description": "Output format; tcl returns a dict for scripting" }
+      ],
+      "examples": [
+        "report_analysis_summary",
+        "report_analysis_summary -rpt_file qor_summary.rpt",
+        "set qor [report_analysis_summary -format tcl]"
+      ],
+      "related": ["report_timing", "optDesign"]
+    },
+    {
+      "name": "optDesign",
+      "tool": "innovus",
+      "category": "timing",
+      "synopsis": "Run timing optimization for specified design stage",
+      "syntax": "optDesign -preCTS|-postCTS|-postRoute [-setup] [-hold] [-drv] [-rpt_file <file>]",
+      "key_options": [
+        { "option": "-preCTS", "description": "Run pre-CTS optimization (setup, DRV)" },
+        { "option": "-postCTS", "description": "Run post-CTS optimization (setup, hold, DRV)" },
+        { "option": "-postRoute", "description": "Run post-route optimization" },
+        { "option": "-setup", "description": "Optimize setup timing" },
+        { "option": "-hold", "description": "Optimize hold timing (inserts delay cells)" },
+        { "option": "-drv", "description": "Fix design rule violations" }
+      ],
+      "examples": [
+        "optDesign -preCTS",
+        "optDesign -postCTS -setup -hold",
+        "optDesign -postRoute -hold -rpt_file postroute_hold.rpt"
+      ],
+      "related": ["setOptMode", "report_timing", "report_analysis_summary"]
+    },
+    {
+      "name": "routeDesign",
+      "tool": "innovus",
+      "category": "routing",
+      "synopsis": "Run full NanoRoute detail routing",
+      "syntax": "routeDesign [-globalDetail] [-viaOpt] [-wireOpt] [-rpt_file <file>]",
+      "key_options": [
+        { "option": "-globalDetail", "description": "Run global routing followed by detail routing" },
+        { "option": "-viaOpt", "description": "Enable via optimization during routing" },
+        { "option": "-wireOpt", "description": "Enable wire optimization during routing" }
+      ],
+      "examples": [
+        "routeDesign",
+        "routeDesign -globalDetail -viaOpt -wireOpt"
+      ],
+      "related": ["setNanoRouteMode", "verify_drc", "optDesign"]
+    },
+    {
+      "name": "setOptMode",
+      "tool": "innovus",
+      "category": "timing",
+      "synopsis": "Configure optimization mode settings for optDesign",
+      "syntax": "setOptMode [-effort low|medium|high] [-fixHoldAllowSetupTns <float>] [-holdTargetSlack <float>] [-setupTargetSlack <float>] [-maxLength <float>] [-usefulSkew true|false] [-clkGatingAware true|false]",
+      "key_options": [
+        { "option": "-effort low|medium|high", "description": "Optimization effort level (default medium)" },
+        { "option": "-holdTargetSlack <float>", "description": "Target hold slack (default 0.0)" },
+        { "option": "-setupTargetSlack <float>", "description": "Target setup slack (default 0.0)" },
+        { "option": "-fixHoldAllowSetupTns <float>", "description": "Allow setup TNS degradation up to this value when fixing hold" },
+        { "option": "-usefulSkew true|false", "description": "Enable useful skew optimization" },
+        { "option": "-clkGatingAware true|false", "description": "Enable clock gating awareness in optimization" }
+      ],
+      "examples": [
+        "setOptMode -effort high",
+        "setOptMode -holdTargetSlack 0.05 -fixHoldAllowSetupTns -0.1",
+        "setOptMode -usefulSkew true -effort high"
+      ],
+      "related": ["optDesign", "setNanoRouteMode"]
+    },
+    {
+      "name": "setNanoRouteMode",
+      "tool": "innovus",
+      "category": "routing",
+      "synopsis": "Configure NanoRoute detail routing mode settings",
+      "syntax": "setNanoRouteMode [-routeWithTimingDriven true|false] [-routeWithSiDriven true|false] [-routeTopRoutingLayer <n>] [-routeBottomRoutingLayer <n>] [-drouteFixAntenna true|false] [-routeInsertAntennaDiode true|false]",
+      "key_options": [
+        { "option": "-routeWithTimingDriven true|false", "description": "Enable timing-driven routing (default true)" },
+        { "option": "-routeWithSiDriven true|false", "description": "Enable signal-integrity-driven routing" },
+        { "option": "-routeTopRoutingLayer <n>", "description": "Restrict routing to layers at or below this layer number" },
+        { "option": "-routeBottomRoutingLayer <n>", "description": "Restrict routing to layers at or above this layer number" },
+        { "option": "-drouteFixAntenna true|false", "description": "Enable antenna violation fixing during detail route" },
+        { "option": "-routeInsertAntennaDiode true|false", "description": "Insert antenna diodes to fix antenna violations" }
+      ],
+      "examples": [
+        "setNanoRouteMode -routeWithTimingDriven true -routeWithSiDriven true",
+        "setNanoRouteMode -drouteFixAntenna true -routeInsertAntennaDiode true",
+        "setNanoRouteMode -routeTopRoutingLayer 8 -routeBottomRoutingLayer 2"
+      ],
+      "related": ["routeDesign", "verify_drc"]
+    },
+    {
+      "name": "ecoChangeCell",
+      "tool": "innovus",
+      "category": "timing",
+      "synopsis": "ECO resize or swap a cell to a different library cell variant",
+      "syntax": "ecoChangeCell -inst <inst_name> -cell <lib_cell_name>",
+      "key_options": [
+        { "option": "-inst <inst_name>", "description": "Instance name to resize or swap" },
+        { "option": "-cell <lib_cell_name>", "description": "Target library cell (same function, different strength)" }
+      ],
+      "examples": [
+        "ecoChangeCell -inst u_core/clk_buf_2 -cell sky130_fd_sc_hd__buf_8",
+        "ecoChangeCell -inst u_ctrl/u_inv_drv -cell sky130_fd_sc_hd__inv_4"
+      ],
+      "related": ["ecoAddRepeater", "optDesign"]
+    },
+    {
+      "name": "ecoAddRepeater",
+      "tool": "innovus",
+      "category": "timing",
+      "synopsis": "ECO insert a repeater buffer on a net at a specified location",
+      "syntax": "ecoAddRepeater -cells <lib_cell> -net <net_name> -toInst <inst_name> -toPin <pin_name> [-point <x y>]",
+      "key_options": [
+        { "option": "-cells <lib_cell>", "description": "Library cell to use as the repeater" },
+        { "option": "-net <net_name>", "description": "Net to insert the repeater on" },
+        { "option": "-toInst <inst_name>", "description": "Load instance that the repeater drives" },
+        { "option": "-toPin <pin_name>", "description": "Load pin that the repeater drives" },
+        { "option": "-point <x y>", "description": "Placement coordinate for the new repeater" }
+      ],
+      "examples": [
+        "ecoAddRepeater -cells sky130_fd_sc_hd__buf_4 -net n_long_data -toInst u_flop_32 -toPin D",
+        "ecoAddRepeater -cells sky130_fd_sc_hd__clkbuf_8 -net n_clk_div2 -toInst u_reg_A -toPin CLK -point {150.0 200.0}"
+      ],
+      "related": ["ecoChangeCell", "optDesign", "routeDesign"]
+    },
+    {
+      "name": "verify_drc",
+      "tool": "innovus",
+      "category": "drc",
+      "synopsis": "Run built-in NanoRoute DRC checking on the routed design",
+      "syntax": "verify_drc [-report <file>] [-limit <n>]",
+      "key_options": [
+        { "option": "-report <file>", "description": "Write DRC report to file (default: drc.rpt)" },
+        { "option": "-limit <n>", "description": "Stop after finding n violations (default: unlimited)" }
+      ],
+      "examples": [
+        "verify_drc -report postroute_drc.rpt",
+        "verify_drc -report drc.rpt -limit 1000"
+      ],
+      "related": ["routeDesign", "checkDesign", "setNanoRouteMode"]
+    },
+    {
+      "name": "checkDesign",
+      "tool": "innovus",
+      "category": "general",
+      "synopsis": "Check design integrity: netlist connectivity, floorplan, and placement legality",
+      "syntax": "checkDesign [-netlist] [-floorplan] [-place] [-all] [-rpt_file <file>]",
+      "key_options": [
+        { "option": "-netlist", "description": "Check logical netlist for unconnected pins and multi-driven nets" },
+        { "option": "-floorplan", "description": "Check floorplan for power/ground rail and row issues" },
+        { "option": "-place", "description": "Check for illegal placements, overlaps" },
+        { "option": "-all", "description": "Run all available checks" }
+      ],
+      "examples": [
+        "checkDesign -all",
+        "checkDesign -netlist -floorplan",
+        "checkDesign -place -rpt_file place_check.rpt"
+      ],
+      "related": ["verify_drc", "placeDesign"]
+    },
+    {
+      "name": "placeDesign",
+      "tool": "innovus",
+      "category": "placement",
+      "synopsis": "Run global placement and legalization",
+      "syntax": "placeDesign [-prePlaceOpt] [-inPlaceOpt] [-noPrePlaceOpt] [-congEffort low|medium|high]",
+      "key_options": [
+        { "option": "-prePlaceOpt", "description": "Run pre-placement optimization before placement" },
+        { "option": "-inPlaceOpt", "description": "Run in-place optimization during placement" },
+        { "option": "-noPrePlaceOpt", "description": "Skip pre-placement optimization" },
+        { "option": "-congEffort low|medium|high", "description": "Congestion-driven placement effort (default medium)" }
+      ],
+      "examples": [
+        "placeDesign",
+        "placeDesign -prePlaceOpt -inPlaceOpt",
+        "placeDesign -congEffort high"
+      ],
+      "related": ["optDesign", "checkDesign", "routeDesign"]
+    },
+    {
+      "name": "report_route",
+      "tool": "innovus",
+      "category": "routing",
+      "synopsis": "Report routing completion and DRC violation statistics",
+      "syntax": "report_route [-summary] [-rpt_file <file>]",
+      "key_options": [
+        { "option": "-summary", "description": "Print a one-line summary of routing statistics" },
+        { "option": "-rpt_file <file>", "description": "Write report to file" }
+      ],
+      "examples": [
+        "report_route",
+        "report_route -summary",
+        "report_route -rpt_file route_stats.rpt"
+      ],
+      "related": ["routeDesign", "verify_drc", "setNanoRouteMode"]
+    },
+    {
+      "name": "report_timing",
+      "tool": "primetime",
+      "category": "timing",
+      "synopsis": "Report timing paths for setup or hold analysis",
+      "syntax": "report_timing [-path_type full|full_clock|full_clock_expanded|short|summary] [-delay_type max|min] [-max_paths <n>] [-nworst <n>] [-slack_lesser_than <float>] [-from <list>] [-to <list>] [-through <list>] [-nosplit] [-input_pins] [-nets] [-transition_time] [-capacitance] [-significant_digits <n>]",
+      "key_options": [
+        { "option": "-delay_type max|min", "description": "Report setup (max) or hold (min) paths; default is max" },
+        { "option": "-max_paths <n>", "description": "Maximum number of paths to report per path group" },
+        { "option": "-nworst <n>", "description": "Maximum number of paths per endpoint (default 1)" },
+        { "option": "-slack_lesser_than <float>", "description": "Report only paths with slack below this value" },
+        { "option": "-from <list>", "description": "Startpoints filter: clocks, ports, or pins" },
+        { "option": "-to <list>", "description": "Endpoints filter: flip-flop D pins or output ports" },
+        { "option": "-through <list>", "description": "Path must pass through these pins, nets, or cells" },
+        { "option": "-path_type full_clock_expanded", "description": "Expand full clock network in path output" },
+        { "option": "-input_pins", "description": "Include input pins in the path detail" },
+        { "option": "-transition_time", "description": "Show slew (transition) values in path report" },
+        { "option": "-capacitance", "description": "Show capacitance values in path report" },
+        { "option": "-nosplit", "description": "Suppress line splitting in output" }
+      ],
+      "examples": [
+        "report_timing -delay_type max -max_paths 50 -nworst 3 -slack_lesser_than 0",
+        "report_timing -delay_type min -max_paths 20 -path_type full_clock_expanded",
+        "report_timing -from [all_inputs] -to [all_registers] -max_paths 10 -input_pins -nets",
+        "report_timing -path_type summary -max_paths 200 -slack_lesser_than 0 > setup_violations.rpt"
+      ],
+      "related": ["report_constraint", "report_clock_timing", "update_timing"]
+    },
+    {
+      "name": "report_constraint",
+      "tool": "primetime",
+      "category": "timing",
+      "synopsis": "Report constraint violations including setup, hold, DRV, and all clock exceptions",
+      "syntax": "report_constraint [-all_violators] [-verbose] [-nosplit] [-max_transition] [-max_capacitance] [-min_capacitance] [-max_fanout] [-late] [-early] [-significant_digits <n>] [-physical]",
+      "key_options": [
+        { "option": "-all_violators", "description": "Report only violated constraints (filtered view)" },
+        { "option": "-verbose", "description": "Print detailed constraint breakdown" },
+        { "option": "-max_transition", "description": "Include max transition (slew) constraint violations" },
+        { "option": "-max_capacitance", "description": "Include max capacitance constraint violations" },
+        { "option": "-max_fanout", "description": "Include max fanout constraint violations" },
+        { "option": "-late", "description": "Report late (setup) violations" },
+        { "option": "-early", "description": "Report early (hold) violations" },
+        { "option": "-physical", "description": "Include physical DRC-related constraints" }
+      ],
+      "examples": [
+        "report_constraint -all_violators",
+        "report_constraint -all_violators -max_transition -max_capacitance",
+        "report_constraint -all_violators -late -verbose > setup_violations.rpt",
+        "report_constraint -all_violators -early"
+      ],
+      "related": ["report_timing", "report_clock_timing", "update_timing"]
+    },
+    {
+      "name": "report_clock_timing",
+      "tool": "primetime",
+      "category": "timing",
+      "synopsis": "Report clock tree timing: latency, skew, and pulse width per clock domain",
+      "syntax": "report_clock_timing [-type latency|skew|pulse_width|summary] [-clock <list>] [-nosplit] [-significant_digits <n>]",
+      "key_options": [
+        { "option": "-type latency", "description": "Report clock source and network latency per endpoint" },
+        { "option": "-type skew", "description": "Report local and global clock skew" },
+        { "option": "-type pulse_width", "description": "Report min pulse width violations" },
+        { "option": "-type summary", "description": "Report one-line summary of all clock domains" },
+        { "option": "-clock <list>", "description": "Limit report to specified clock domains" }
+      ],
+      "examples": [
+        "report_clock_timing -type summary",
+        "report_clock_timing -type skew -clock clk_sys",
+        "report_clock_timing -type latency -clock {clk_sys clk_mem} -nosplit > clock_latency.rpt",
+        "report_clock_timing -type pulse_width"
+      ],
+      "related": ["report_timing", "report_constraint", "update_timing"]
+    },
+    {
+      "name": "update_timing",
+      "tool": "primetime",
+      "category": "timing",
+      "synopsis": "Propagate all timing and recompute slack before reporting",
+      "syntax": "update_timing [-full] [-nosplit]",
+      "key_options": [
+        { "option": "-full", "description": "Force a full incremental timing update (default: incremental only)" }
+      ],
+      "examples": [
+        "update_timing",
+        "update_timing -full"
+      ],
+      "related": ["report_timing", "report_constraint", "report_clock_timing"]
+    },
+    {
+      "name": "set_timing_derate",
+      "tool": "primetime",
+      "category": "timing",
+      "synopsis": "Apply OCV derate factors to cell or net delays for statistical margin analysis",
+      "syntax": "set_timing_derate [-early|-late] [-cell_delay|-cell_check|-net_delay] [-clock|-data] <derate_factor>",
+      "key_options": [
+        { "option": "-early", "description": "Apply derate to early (hold) analysis arcs" },
+        { "option": "-late", "description": "Apply derate to late (setup) analysis arcs" },
+        { "option": "-cell_delay", "description": "Derate cell propagation delays" },
+        { "option": "-cell_check", "description": "Derate cell setup/hold check times" },
+        { "option": "-net_delay", "description": "Derate net (wire) delays" },
+        { "option": "-clock", "description": "Apply derate only to clock network paths" },
+        { "option": "-data", "description": "Apply derate only to data paths" },
+        { "option": "<derate_factor>", "description": "Multiplicative derate value (e.g. 1.05 for +5% late derate)" }
+      ],
+      "examples": [
+        "set_timing_derate -late 1.05",
+        "set_timing_derate -early 0.95",
+        "set_timing_derate -late -cell_delay -clock 1.03",
+        "set_timing_derate -early -cell_delay -data 0.97"
+      ],
+      "related": ["update_timing", "report_timing", "report_constraint"]
+    },
+    {
+      "name": "report_analysis_coverage",
+      "tool": "primetime",
+      "category": "timing",
+      "synopsis": "Report the coverage of timing paths by constraints and exceptions",
+      "syntax": "report_analysis_coverage [-status untested|covered|not_covered] [-nosplit] [-significant_digits <n>]",
+      "key_options": [
+        { "option": "-status untested", "description": "Show paths not covered by any timing exception" },
+        { "option": "-status covered", "description": "Show paths covered by at least one timing exception" },
+        { "option": "-status not_covered", "description": "Show paths explicitly excluded from analysis" }
+      ],
+      "examples": [
+        "report_analysis_coverage",
+        "report_analysis_coverage -status untested",
+        "report_analysis_coverage -status covered > coverage_report.rpt"
+      ],
+      "related": ["report_timing", "report_constraint", "update_timing"]
+    }
+  ]
+}

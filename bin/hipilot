@@ -1,0 +1,184 @@
+#!/bin/bash
+# HiPilot Workspace Launcher
+# Creates a tmux 50/50 split layout for Claude Code + EDA tool
+# with status bar and keyboard shortcuts per UX specification
+#
+# Usage:
+#   bin/hipilot                  # Launch workspace
+#   bin/hipilot --no-terminal    # Create session without opening new window
+
+set -e
+
+# Auto-detect project root
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Session name
+HIPILOT_SESSION="${HIPILOT_SESSION:-hipilot}"
+
+# Colors
+GREEN="\033[0;32m"
+CYAN="\033[0;36m"
+RED="\033[0;31m"
+YELLOW="\033[1;33m"
+NC="\033[0m"
+
+# Parse args
+NO_TERMINAL=false
+for arg in "$@"; do
+  case $arg in
+    --no-terminal) NO_TERMINAL=true ;;
+  esac
+done
+
+# Check tmux
+if ! command -v tmux &> /dev/null; then
+    echo -e "${RED}Error: tmux not found.${NC}"
+    echo "Install: apt install tmux  OR  brew install tmux"
+    exit 1
+fi
+
+echo -e "${CYAN}"
+echo "╔══════════════════════════════════════════════════════╗"
+echo "║   HiPilot v0.1.0 - VLSI Physical Design Copilot    ║"
+echo "╚══════════════════════════════════════════════════════╝"
+echo -e "${NC}"
+
+# Check if session already exists
+if tmux -L "$HIPILOT_SESSION" has-session 2>/dev/null; then
+    echo -e "${GREEN}✓ HiPilot session already running${NC}"
+
+    if [ "$NO_TERMINAL" = true ]; then
+        echo "Attach with: tmux -L $HIPILOT_SESSION attach-session"
+    else
+        tmux -L "$HIPILOT_SESSION" attach-session
+    fi
+    exit 0
+fi
+
+echo -e "${GREEN}Creating HiPilot workspace...${NC}"
+echo ""
+
+# Create new session with 50/50 split (detached)
+tmux -L "$HIPILOT_SESSION" new-session -d -s "$HIPILOT_SESSION" -n "HiPilot" -c "$PROJECT_DIR"
+
+# Split window 50/50
+tmux -L "$HIPILOT_SESSION" split-window -h -l 50% -c "$PROJECT_DIR"
+
+# -------------------------------------------------------------------
+# Status Bar Configuration (UX Spec Section 5)
+# Layout: | tool_section | skill_section | job_section | context_section |
+# -------------------------------------------------------------------
+
+# Status bar colors per UX spec
+tmux -L "$HIPILOT_SESSION" set-option -g status on
+tmux -L "$HIPILOT_SESSION" set-option -g status-interval 5
+tmux -L "$HIPILOT_SESSION" set-option -g status-style "bg=#1a1a2e,fg=#e0e0e0"
+
+# Left status: Tool + Skill sections
+tmux -L "$HIPILOT_SESSION" set-option -g status-left-length 60
+tmux -L "$HIPILOT_SESSION" set-option -g status-left "\
+#[fg=#00d4ff,bg=#1a1a2e,bold] ⚙ HiPilot #[fg=#666666]│\
+#[fg=#ffd700,nobold] 📋 ready #[fg=#666666]│"
+
+# Right status: Job + Context sections
+tmux -L "$HIPILOT_SESSION" set-option -g status-right-length 60
+tmux -L "$HIPILOT_SESSION" set-option -g status-right "\
+#[fg=#666666]│#[fg=#00ff88] ▶ idle \
+#[fg=#666666]│#[fg=#e0e0e0] design: —  "
+
+# Window status (center)
+tmux -L "$HIPILOT_SESSION" set-option -g status-justify centre
+tmux -L "$HIPILOT_SESSION" set-option -g window-status-format " #W "
+tmux -L "$HIPILOT_SESSION" set-option -g window-status-current-format "#[fg=#00d4ff,bold] #W "
+
+# Pane borders
+tmux -L "$HIPILOT_SESSION" set-option -g pane-border-style "fg=#666666"
+tmux -L "$HIPILOT_SESSION" set-option -g pane-active-border-style "fg=#00d4ff"
+
+# Pane border labels (if tmux supports it - 3.2+)
+tmux -L "$HIPILOT_SESSION" set-option -g pane-border-status top 2>/dev/null || true
+tmux -L "$HIPILOT_SESSION" set-option -g pane-border-format \
+  "#{?#{==:#{pane_index},0}, Chat (Claude Code) , EDA Terminal }" 2>/dev/null || true
+
+# -------------------------------------------------------------------
+# Keyboard Shortcuts (UX Spec Section 8)
+# -------------------------------------------------------------------
+
+# Ctrl+E: Switch focus to EDA pane (right)
+tmux -L "$HIPILOT_SESSION" bind-key -n C-e select-pane -t 1
+
+# Ctrl+H: Switch focus to Chat pane (left)
+# Note: Ctrl+H conflicts with backspace in some terminals, use prefix+h as fallback
+tmux -L "$HIPILOT_SESSION" bind-key h select-pane -t 0
+
+# Ctrl+S: Save last generated Tcl (copies latest /tmp/hipilot_generated_*.tcl to project scripts/)
+tmux -L "$HIPILOT_SESSION" bind-key -n C-s run-shell "mkdir -p $PROJECT_DIR/scripts && cp \$(ls -t /tmp/hipilot_generated_*.tcl 2>/dev/null | head -1) $PROJECT_DIR/scripts/ 2>/dev/null && tmux -L $HIPILOT_SESSION display-message 'Saved to scripts/' || tmux -L $HIPILOT_SESSION display-message 'No generated Tcl to save'" 2>/dev/null || true
+
+# Prefix + r: Refresh status bar
+tmux -L "$HIPILOT_SESSION" bind-key r run-shell "tmux -L $HIPILOT_SESSION display-message 'Status refreshed'" 2>/dev/null || true
+
+# -------------------------------------------------------------------
+# Pane setup
+# -------------------------------------------------------------------
+
+# Setup left pane (Chat) - show welcome
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "clear" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo '  HiPilot Chat Pane'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo '  ─────────────────'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo '  Start Claude Code here:'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo '    claude'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo '  Quick commands:'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo '    /project:timing   - Run timing report'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo '    /project:drc      - Run DRC check'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo '    /project:power    - Power analysis'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo '    /project:area     - Area report'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo '  Shortcuts:'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo '    Ctrl+E  Switch to EDA pane'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo '    Ctrl+S  Save last Tcl to scripts/'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 0 "echo ''" Enter
+
+# Setup right pane (EDA) - show welcome
+tmux -L "$HIPILOT_SESSION" send-keys -t 1 "clear" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 1 "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 1 "echo '  EDA Tool Pane'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 1 "echo '  ──────────────'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 1 "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 1 "echo '  Start your EDA tool:'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 1 "echo '    icc2_shell    (Synopsys ICC2)'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 1 "echo '    innovus       (Cadence Innovus)'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 1 "echo '    pt_shell      (Synopsys PrimeTime)'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 1 "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 1 "echo '  HiPilot will send Tcl scripts here.'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 1 "echo '  You can also type commands directly.'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t 1 "echo ''" Enter
+
+# Select left pane (chat) as default focus
+tmux -L "$HIPILOT_SESSION" select-pane -t 0
+
+echo -e "${GREEN}✓ Workspace created${NC}"
+echo ""
+echo "  Layout:"
+echo "  ┌──────────────────────┬──────────────────────┐"
+echo "  │ Pane 0: Chat (50%)   │ Pane 1: EDA (50%)    │"
+echo "  │ Claude Code          │ icc2_shell / innovus  │"
+echo "  ├──────────────────────┴──────────────────────┤"
+echo "  │ Status Bar: Tool │ Skill │ Job │ Design     │"
+echo "  └─────────────────────────────────────────────┘"
+echo ""
+echo "  Keyboard shortcuts:"
+echo "    Ctrl+E    Switch to EDA pane"
+echo "    Ctrl+S    Save last generated Tcl"
+echo "    prefix+h  Switch to Chat pane"
+echo "    prefix+r  Refresh status"
+echo ""
+
+if [ "$NO_TERMINAL" = true ]; then
+    echo "Attach with: tmux -L $HIPILOT_SESSION attach-session"
+else
+    tmux -L "$HIPILOT_SESSION" attach-session
+fi
