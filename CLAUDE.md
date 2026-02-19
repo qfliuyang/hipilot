@@ -34,7 +34,7 @@ Claude Code (Pane 0)              Innovus/ICC2 (Pane 1)
 - MCP servers registered in `~/.claude/settings.json` with absolute paths (NOT project-level)
 - Claude Code started with `--dangerously-skip-permissions` for automation
 
-See `docs/TEST_STAND.md` for the complete test stand documentation with 10 lessons learned.
+See `docs/TEST_MUSTKNOW.md` for the complete test stand documentation with 10 lessons learned.
 
 ## Critical Context from Architecture Discussion
 
@@ -434,7 +434,7 @@ node test_parser.js /tmp/timing_test.rpt
 
 ### 9. Test Stand - Automated Testing via tmux + Claude Code
 
-**READ THIS FIRST when testing HiPilot.** Full details in `docs/TEST_STAND.md`.
+**READ THIS FIRST when testing HiPilot.** Full details in `docs/TEST_MUSTKNOW.md`.
 
 We can remotely control Claude Code on the EDA server via `tmux send-keys`. This is the official way to test HiPilot end-to-end.
 
