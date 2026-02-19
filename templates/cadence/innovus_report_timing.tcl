@@ -76,7 +76,11 @@ puts "INFO: HiPilot - Comprehensive Timing Report"
 puts "INFO: Timestamp  : $timestamp"
 puts "INFO: Max paths  : $max_paths"
 puts "INFO: Delay type : $delay_type"
-puts "INFO: Path group : [expr { $path_group eq \"\" ? \"(all)\" : $path_group }]"
+if { $path_group eq "" } {
+    puts "INFO: Path group : (all)"
+} else {
+    puts "INFO: Path group : $path_group"
+}
 puts "INFO: Output     : $output_file"
 puts "INFO: =================================================="
 

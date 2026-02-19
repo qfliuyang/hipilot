@@ -75,9 +75,17 @@ puts "======================================================================"
 puts "Parameters:"
 puts "  max_paths         = $max_paths"
 puts "  slack_threshold   = $slack_threshold ns"
-puts "  buffer_cell       = [expr {$buffer_cell eq \"\" ? \"(auto-select)\" : $buffer_cell}]"
+if { $buffer_cell eq "" } {
+    puts "  buffer_cell       = (auto-select)"
+} else {
+    puts "  buffer_cell       = $buffer_cell"
+}
 puts "  max_iterations    = $max_iterations"
-puts "  target_scenario   = [expr {$target_scenario eq \"\" ? \"(current)\" : $target_scenario}]"
+if { $target_scenario eq "" } {
+    puts "  target_scenario   = (current)"
+} else {
+    puts "  target_scenario   = $target_scenario"
+}
 puts "  report_prefix     = $report_prefix"
 puts "  setup_guard_band  = $setup_guard_band ns"
 puts ""
