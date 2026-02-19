@@ -404,6 +404,49 @@ node test_parser.js /tmp/timing_test.rpt
 
 **Key advantage:** Can validate everything against real EDA tools, not theoretical specs.
 
+### 9. Test Stand - Automated Testing via tmux + Claude Code
+
+**READ THIS FIRST when testing HiPilot.** Full details in `docs/TEST_STAND.md`.
+
+We can remotely control Claude Code on the EDA server via `tmux send-keys`. This is the official way to test HiPilot end-to-end.
+
+**Quick reference:**
+```bash
+# From local machine - use sshpass for non-interactive SSH
+SSH="sshpass -p 'eda2020' ssh -o StrictHostKeyChecking=no EDA@192.168.112.163"
+
+# Kill old tmux servers first (prevents protocol version mismatch)
+$SSH 'pkill -u EDA tmux'
+
+# Set up workspace: tmux split with Claude Code + Innovus
+$SSH 'export PATH=/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin:$PATH
+tmux new-session -d -s hipilot -x 240 -y 60
+tmux split-window -h -t hipilot:0
+tmux send-keys -t hipilot:0.1 "innovus" Enter
+sleep 3
+tmux send-keys -t hipilot:0.0 "cd /home/EDA/hipilot_test/hipilot-v0.1.0 && claude --dangerously-skip-permissions" Enter
+sleep 15'
+
+# Send a prompt to Claude Code
+$SSH 'tmux send-keys -t hipilot:0.0 "list all hipilot skills" Enter'
+sleep 40
+
+# Read Claude Code's response
+$SSH 'tmux capture-pane -t hipilot:0.0 -e -p -S -200 | strings | grep -v "^$" | tail -50'
+
+# Record the real desktop (:0, NOT Xvfb)
+$SSH 'DISPLAY=:0 ffmpeg -y -f x11grab -framerate 25 -video_size 2560x1558 -i :0 \
+  -c:v libx264 -preset fast -crf 23 -pix_fmt yuv420p /tmp/demo.mp4 &'
+```
+
+**Critical gotchas:**
+- MCP servers must be in `~/.claude/settings.json` (user-level) with **absolute paths** for both node binary and server scripts
+- Always `pkill -u EDA tmux` before starting (prevents protocol version mismatch between tmux 1.8 and 3.4)
+- Wait 30-60 seconds between prompts (Claude Code needs time to respond)
+- Use `--dangerously-skip-permissions` to avoid permission prompts blocking automation
+- Record from `:0` (real desktop), not `:99` (Xvfb)
+- Use `gnome-terminal` (not xterm) for proper tmux rendering
+
 ## Original Documentation (Still Relevant)
 
 The following sections from the original architecture docs remain accurate and should be referenced:
