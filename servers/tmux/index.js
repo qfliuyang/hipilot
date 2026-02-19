@@ -15,10 +15,15 @@ import {
 import { execSync } from 'child_process';
 
 const HIPILOT_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
+// Use -L <socket> only if HIPILOT_TMUX_SOCKET is explicitly set.
+// Default: use the standard tmux server socket so the MCP server
+// talks to the same tmux server that the workspace was created on.
+const TMUX_SOCKET = process.env.HIPILOT_TMUX_SOCKET || '';
 
 function tmuxExec(args) {
   try {
-    const cmd = `tmux -L ${HIPILOT_SESSION} ${args}`;
+    const socketFlag = TMUX_SOCKET ? `-L ${TMUX_SOCKET} ` : '';
+    const cmd = `tmux ${socketFlag}${args}`;
     return execSync(cmd, { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 });
   } catch (error) {
     throw new Error('Tmux command failed: ' + error.message);
@@ -161,8 +166,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     switch (name) {
       case 'tmux.send_keys': {
         const paneId = resolvePane(args.pane);
-        // Send keys directly - tmux send-keys handles Enter as a literal key name
-        tmuxExec(`send-keys -t ${paneId} ${JSON.stringify(args.keys)} Enter`);
+        const target = `${HIPILOT_SESSION}:0.${paneId}`;
+        // Send keys as-is. Caller should include "Enter" in keys if they want to submit.
+        // Quote the keys to handle spaces and special characters.
+        const socketFlag = TMUX_SOCKET ? `-L ${TMUX_SOCKET} ` : '';
+        execSync(`tmux ${socketFlag}send-keys -t ${target} ${JSON.stringify(args.keys)}`, { encoding: 'utf-8' });
         return {
           content: [{ type: 'text', text: `Sent to pane ${args.pane}: ${args.keys}` }],
         };
@@ -170,9 +178,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case 'tmux.capture_pane': {
         const paneId = resolvePane(args.pane);
+        const target = `${HIPILOT_SESSION}:0.${paneId}`;
         const lines = args.lines || 0;
         const lineArg = lines > 0 ? ` -S -${lines}` : '';
-        const capture = tmuxExec(`capture-pane -t ${paneId} -p${lineArg}`);
+        const capture = tmuxExec(`capture-pane -t ${target} -p${lineArg}`);
         return {
           content: [{ type: 'text', text: capture }],
         };
@@ -180,8 +189,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case 'tmux.get_pane_output': {
         const paneId = resolvePane(args.pane);
+        const target = `${HIPILOT_SESSION}:0.${paneId}`;
         const lines = args.lines || 100;
-        const output = tmuxExec(`capture-pane -t ${paneId} -p -S -${lines} -E -1`);
+        const output = tmuxExec(`capture-pane -t ${target} -p -S -${lines} -E -1`);
         return {
           content: [{ type: 'text', text: output }],
         };
@@ -189,10 +199,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case 'tmux.setup_layout': {
         const workDir = args.working_dir || process.cwd();
+        const socketFlag = TMUX_SOCKET ? `-L ${TMUX_SOCKET} ` : '';
 
         // Check if session exists
         try {
-          tmuxExec('has-session');
+          tmuxExec(`has-session -t ${HIPILOT_SESSION}`);
           return {
             content: [{ type: 'text', text: `HiPilot session "${HIPILOT_SESSION}" already exists. Use tmux.list_panes to see layout.` }],
           };
@@ -201,9 +212,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
 
         // Create new session with 50/50 split
-        execSync(`tmux -L ${HIPILOT_SESSION} new-session -d -s ${HIPILOT_SESSION} -n HiPilot -c "${workDir}"`, { encoding: 'utf-8' });
-        tmuxExec(`split-window -h -l 50% -c "${workDir}"`);
-        tmuxExec('select-pane -t 0');
+        execSync(`tmux ${socketFlag}new-session -d -s ${HIPILOT_SESSION} -n HiPilot -c "${workDir}"`, { encoding: 'utf-8' });
+        tmuxExec(`split-window -h -t ${HIPILOT_SESSION} -l 50% -c "${workDir}"`);
+        tmuxExec(`select-pane -t ${HIPILOT_SESSION}:0.0`);
 
         return {
           content: [{ type: 'text', text: `Created HiPilot workspace: 50/50 split in "${workDir}"\n  Pane 0 (left): Chat\n  Pane 1 (right): EDA` }],
@@ -230,7 +241,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'tmux.list_panes': {
-        const panes = tmuxExec('list-panes -F "#{pane_index} #{pane_id} #{pane_width}x#{pane_height} #{pane_current_command}"');
+        const panes = tmuxExec(`list-panes -t ${HIPILOT_SESSION} -F "#{pane_index} #{pane_id} #{pane_width}x#{pane_height} #{pane_current_command}"`);
         return {
           content: [{ type: 'text', text: 'Panes:\n' + panes }],
         };
@@ -238,8 +249,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case 'tmux.resize_pane': {
         const paneId = resolvePane(args.pane);
-        if (args.width) tmuxExec(`resize-pane -t ${paneId} -x ${args.width}%`);
-        if (args.height) tmuxExec(`resize-pane -t ${paneId} -y ${args.height}`);
+        const target = `${HIPILOT_SESSION}:0.${paneId}`;
+        if (args.width) tmuxExec(`resize-pane -t ${target} -x ${args.width}%`);
+        if (args.height) tmuxExec(`resize-pane -t ${target} -y ${args.height}`);
         return {
           content: [{ type: 'text', text: 'Resized pane ' + args.pane }],
         };
