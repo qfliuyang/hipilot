@@ -117,12 +117,14 @@ tmux select-pane -t hipilot:0.1 -T "EDA Terminal"
 ### 4. Start EDA Tool
 
 ```bash
-# Innovus
-tmux send-keys -t hipilot:0.1 "cd /home/EDA/hipilot_test/ibex_work_upload && innovus" Enter
+# Innovus (no GUI - prevents blocking the tmux screen)
+tmux send-keys -t hipilot:0.1 "cd /home/EDA/hipilot_test/ibex_work_upload && innovus -nowin" Enter
 
-# Or ICC2
-tmux send-keys -t hipilot:0.1 "icc2_shell" Enter
+# Or ICC2 (no GUI)
+tmux send-keys -t hipilot:0.1 "icc2_shell -no_gui" Enter
 ```
+
+**IMPORTANT:** Always use `-nowin` (Innovus) or `-no_gui` (ICC2) to prevent the EDA tool GUI from blocking the tmux terminal.
 
 ### 5. Start Claude Code
 
@@ -303,8 +305,8 @@ tmux split-window -h -t hipilot:0
 tmux select-pane -t hipilot:0.0 -T "Chat"
 tmux select-pane -t hipilot:0.1 -T "EDA"
 
-# Start Innovus
-tmux send-keys -t hipilot:0.1 "cd /home/EDA/hipilot_test/ibex_work_upload && innovus" Enter
+# Start Innovus (no GUI)
+tmux send-keys -t hipilot:0.1 "cd /home/EDA/hipilot_test/ibex_work_upload && innovus -nowin" Enter
 sleep 3
 
 # Start Claude Code with MCP servers

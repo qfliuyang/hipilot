@@ -422,7 +422,7 @@ $SSH 'pkill -u EDA tmux'
 $SSH 'export PATH=/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin:$PATH
 tmux new-session -d -s hipilot -x 240 -y 60
 tmux split-window -h -t hipilot:0
-tmux send-keys -t hipilot:0.1 "innovus" Enter
+tmux send-keys -t hipilot:0.1 "innovus -nowin" Enter
 sleep 3
 tmux send-keys -t hipilot:0.0 "cd /home/EDA/hipilot_test/hipilot-v0.1.0 && claude --dangerously-skip-permissions" Enter
 sleep 15'
