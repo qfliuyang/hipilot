@@ -1,6 +1,6 @@
 {
   "name": "hipilot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "VLSI Physical Design Copilot - AI assistant for EDA engineers",
   "main": "src/index.js",
   "bin": {
