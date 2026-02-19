@@ -1,0 +1,53 @@
+{
+  "name": "hipilot",
+  "version": "0.1.0",
+  "description": "VLSI Physical Design Copilot - AI assistant for EDA engineers",
+  "main": "src/index.js",
+  "bin": {
+    "hipilot": "./src/index.js"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "hipilot": "node src/index.js",
+    "setup": "bash bin/setup.sh",
+    "install:all": "npm install && cd servers/eda && npm install && cd ../tmux && npm install && cd ../knowledge && npm install",
+    "dev:eda": "node servers/eda/index.js",
+    "dev:tmux": "node servers/tmux/index.js",
+    "dev:knowledge": "node servers/knowledge/index.js",
+    "test": "node servers/eda/index.js --help 2>&1 || true && node servers/knowledge/index.js --help 2>&1 || true"
+  },
+  "keywords": [
+    "hipilot",
+    "vlsi",
+    "physical-design",
+    "eda",
+    "copilot",
+    "mcp",
+    "synopsys",
+    "cadence",
+    "timing",
+    "tcl"
+  ],
+  "author": "HiPilot Team",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "chalk": "^5.3.0",
+    "boxen": "^7.1.1",
+    "cli-table3": "^0.6.3",
+    "ora": "^6.3.1",
+    "commander": "^9.5.0",
+    "nunjucks": "^3.2.4"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/hipilot.git"
+  }
+}

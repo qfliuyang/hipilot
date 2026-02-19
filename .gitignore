@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# OMC state (session-specific)
+.omc/
+
+# Demo videos (too large for git)
+*.mp4
+
+# Runtime artifacts
+.hipilot/history/
+.hipilot/checkpoints/
+
+# Logs
+*.log
+
+# Editor
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# npm
+package-lock.json

@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "hipilot-eda": {
+      "command": "node",
+      "args": ["servers/eda/index.js"],
+      "env": {}
+    },
+    "hipilot-tmux": {
+      "command": "node",
+      "args": ["servers/tmux/index.js"],
+      "env": {}
+    },
+    "hipilot-knowledge": {
+      "command": "node",
+      "args": ["servers/knowledge/index.js"],
+      "env": {}
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@hipilot/tmux-mcp-server",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Tmux MCP Server - Pane management and send-to-EDA bridge",
+  "main": "index.js",
+  "bin": {
+    "hipilot-tmux-mcp": "./index.js"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  }
+}
