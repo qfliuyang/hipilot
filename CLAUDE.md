@@ -174,8 +174,7 @@ not because of a badge."
 
 **System:**
 - OS: CentOS 7.9.2009 (glibc 2.17)
-- **Critical:** Old glibc means modern Node.js won't work
-- **Solution:** Node.js v16.20.2 works (installed at `/home/EDA/hipilot_test/node-v16.20.2-linux-x64/`)
+- Node.js v20.18.3 installed (glibc-217 compatible build at `/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/`)
 
 **EDA Tools Available:**
 - Synopsys ICC2: T-2022.03
@@ -184,8 +183,8 @@ not because of a badge."
 - Plus: StarRC, SpyGlass, Calibre, Tempus
 
 **Development Tools:**
-- Node.js: v16.20.2 (verified working)
-- npm: 8.19.4
+- Node.js: v20.18.3 (glibc-217 build)
+- npm: 10.8.2
 - Python: 3.6.8, 2.7.5
 - tmux: 1.8
 - git, gcc, g++: Available
@@ -353,14 +352,11 @@ hipilot:
 
 **Strategy:** Keep fork minimal (10% changes), leverage MCP for 90% of functionality.
 
-#### Node.js Version Constraint
+#### Node.js Version
 
-**Problem:** CentOS 7 has glibc 2.17, modern Node.js requires glibc 2.28+
-
-**Solution:**
-- Use Node.js v16.x (last version compatible with glibc 2.17)
-- Installed and tested: v16.20.2 works perfectly
-- `package.json` must specify: `"engines": { "node": ">=16 <17" }`
+- Node.js v20.x installed on EDA server (v20.18.3, glibc-217 build)
+- HiPilot and Claude Code share the same Node version
+- `package.json` specifies: `"engines": { "node": ">=20.0.0" }`
 
 #### EDA Tool Limitations
 
@@ -379,7 +375,7 @@ hipilot:
 ❌ **Don't make rigid workflows** - Skills should be flexible, AI can adapt
 ❌ **Don't rely on trust badges alone** - Show reasoning and sources
 ❌ **Don't use web UI** - Stay pure terminal
-❌ **Don't require latest Node.js** - v16.x is fine for this use case
+❌ **Don't use incompatible Node.js** - v20.x glibc-217 build is required for CentOS 7
 ❌ **Don't hide AI's work** - Transparency is non-negotiable
 
 ### 8. Development Workflow (with EDA Server Access)
@@ -391,7 +387,7 @@ hipilot:
 ssh EDA@192.168.112.163
 
 # 2. Set up environment
-export PATH=/home/EDA/hipilot_test/node-v16.20.2-linux-x64/bin:$PATH
+export PATH=/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin:$PATH
 cd /home/EDA/hipilot_test
 
 # 3. Test against real tools
@@ -478,7 +474,7 @@ When starting a new development session:
 1. **Read this section first** (Critical Context from Architecture Discussion)
 2. **Connect to EDA server** to test against real tools
 3. **Reference the MCP specs** for implementation details
-4. **Use Node.js v16.x** (not newer)
+4. **Use Node.js v20.x** (glibc-217 build on CentOS 7)
 5. **Stay pure terminal** (no web UI)
 6. **Let AI read reports** (don't over-engineer parsers)
 7. **Focus on skills** (the core value proposition)
@@ -488,7 +484,7 @@ When starting a new development session:
 
 - **Base:** Claude Code (light fork)
 - **MCP Protocol:** Model Context Protocol
-- **Runtime:** Node.js v16.x (glibc 2.17 compatibility)
+- **Runtime:** Node.js v20.x
 - **Language:** TypeScript 5+
 - **Template Engine:** Nunjucks (Jinja2-compatible)
 - **Database:** SQLite with FTS5
@@ -603,7 +599,7 @@ See `docs/SCREEN_RECORDING_SETUP.md` for complete guide.
 ### Environment on EDA Server
 
 **Installed:**
-- Node.js v16.20.2 (at `/home/EDA/hipilot_test/node-v16.20.2-linux-x64/`)
+- Node.js v20.18.3 (at `/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/`)
 - npm 8.19.4
 - Python 3.6.8, 2.7.5
 - tmux 1.8
@@ -618,6 +614,5 @@ See `docs/SCREEN_RECORDING_SETUP.md` for complete guide.
 
 **PATH Setup (add to ~/.bashrc):**
 ```bash
-export PATH=/home/EDA/hipilot_test/node-v16.20.2-linux-x64/bin:$PATH
-export DISPLAY=:99  # For screen recording
+export PATH=/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin:$PATH
 ```
