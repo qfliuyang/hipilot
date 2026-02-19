@@ -1,5 +1,50 @@
 # HiPilot Test Stand - Automated Testing via tmux + Claude Code
 
+## The Breakthrough: Tools Communicating Through tmux
+
+**This is the core architectural insight of HiPilot v0.2.0.**
+
+Claude Code and EDA tools (Innovus, ICC2) run in adjacent tmux panes. They communicate through tmux itself - Claude Code sends Tcl commands to the EDA pane via `tmux send-keys`, and reads EDA output via `tmux capture-pane`. This creates a **real-time feedback loop**:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    tmux session "hipilot"                       │
+│                                                                 │
+│  ┌─── Pane 0 (Chat) ──────┐  ┌─── Pane 1 (EDA) ──────────┐   │
+│  │                         │  │                             │   │
+│  │  Claude Code            │  │  Innovus / ICC2             │   │
+│  │  + HiPilot MCP servers  │  │  (real EDA tool)            │   │
+│  │                         │  │                             │   │
+│  │  1. Generate Tcl ──────────> 2. Execute Tcl              │   │
+│  │                         │  │                             │   │
+│  │  4. Analyze results  <──────── 3. Produce output         │   │
+│  │                         │  │                             │   │
+│  │  5. Fix issues ────────────> 6. Re-execute               │   │
+│  │                         │  │                             │   │
+│  └─────────────────────────┘  └─────────────────────────────┘   │
+│                                                                 │
+│  Status bar: HiPilot v0.2.0 │ Innovus + Claude Code │ READY    │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Proven during live testing (Feb 19, 2026):**
+1. Claude Code generated a timing report Tcl script from the `innovus_report_timing.tcl` template
+2. Sent it to the Innovus pane via `tmux send-keys`
+3. Innovus executed it and reported a Tcl quoting error
+4. Claude Code captured the error via `tmux capture-pane`, understood the root cause
+5. Claude Code **fixed the template itself** (replaced `expr` ternary with `if/else`)
+6. Re-sent the fixed Tcl to Innovus
+7. Innovus executed successfully, printed the timing report header
+8. Correctly stopped at "No design loaded" (expected - no design was loaded yet)
+
+**This is not scripted. Claude Code autonomously:**
+- Detected the failure in real EDA tool output
+- Diagnosed the root cause (Tcl quoting inside double-quoted strings)
+- Fixed the source template (not just a one-off patch)
+- Verified the fix worked
+
+This feedback loop is what makes HiPilot different from static Tcl generators. The AI sees real EDA tool behavior and adapts.
+
 ## Overview
 
 This document describes how to remotely control Claude Code on the EDA server via tmux `send-keys`. This enables:

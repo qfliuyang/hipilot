@@ -6,7 +6,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 HiPilot is a VLSI Physical Design copilot system - a lightweight fork of Claude Code with three specialized MCP (Model Context Protocol) servers. It provides physical design engineers with an AI-powered assistant that generates vendor-specific Tcl scripts, parses EDA reports, and manages a tmux-based workspace.
 
-**Current State:** This repository contains **architectural documentation and specifications only**. The actual implementation is being developed on a separate EDA server with real tool access.
+**Current State (v0.2.0):** Working implementation with 3 MCP servers, 10 skills, 20 Tcl templates, tested on real EDA server with Cadence Innovus and Claude Code communicating through tmux.
+
+## Breakthrough: AI + EDA Tool Feedback Loop via tmux
+
+**This is the most important section. Read this first.**
+
+Claude Code and EDA tools (Innovus, ICC2) run in adjacent tmux panes and communicate through tmux itself. This creates a real-time feedback loop that was **proven working on Feb 19, 2026**:
+
+```
+Claude Code (Pane 0)              Innovus/ICC2 (Pane 1)
+─────────────────────────────────────────────────────────
+1. Generate Tcl from template  →  2. Execute Tcl
+4. Analyze results (capture)   ←  3. Produce output
+5. Fix issues if needed        →  6. Re-execute
+```
+
+**What happened during live testing:**
+- Claude Code generated timing Tcl from a template and sent it to Innovus
+- Innovus reported a Tcl quoting error
+- Claude Code captured the error, diagnosed the root cause, **fixed the template source code**, and re-ran successfully
+- This was autonomous - Claude Code detected, diagnosed, fixed, and verified without human intervention
+
+**Key mechanisms:**
+- `tmux send-keys -t hipilot:0.1 "source /tmp/script.tcl" Enter` - send commands to EDA
+- `tmux capture-pane -t hipilot:0.1 -p -S -200` - read EDA output back
+- MCP servers registered in `~/.claude/settings.json` with absolute paths (NOT project-level)
+- Claude Code started with `--dangerously-skip-permissions` for automation
+
+See `docs/TEST_STAND.md` for the complete test stand documentation with 10 lessons learned.
 
 ## Critical Context from Architecture Discussion
 
