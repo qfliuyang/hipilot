@@ -759,6 +759,43 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {},
         },
       },
+      {
+        name: 'eda.quick',
+        description: 'ONE-CALL solution for common EDA operations. Generates Tcl, analyzes risk, and sends to terminal in one step. Use this instead of calling generate_tcl + send_to_terminal separately. Operations: timing, power, area, drc, setup, hold, route, save.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            operation: {
+              type: 'string',
+              description: 'Operation to perform',
+              enum: ['timing', 'power', 'area', 'drc', 'setup', 'hold', 'route', 'save', 'load'],
+            },
+            params: {
+              type: 'object',
+              description: 'Optional parameters (max_paths, path_group, corner, etc.)',
+            },
+          },
+          required: ['operation'],
+        },
+      },
+      {
+        name: 'eda.run_skill',
+        description: 'Execute a HiPilot skill by name. Skills encode team expertise for common workflows. Available skills: report-timing, fix-setup-timing, fix-hold-timing, report-power, report-area, run-drc.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            skill: {
+              type: 'string',
+              description: 'Skill name to execute',
+            },
+            params: {
+              type: 'object',
+              description: 'Skill parameters',
+            },
+          },
+          required: ['skill'],
+        },
+      },
     ],
   };
 });
@@ -1161,6 +1198,171 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             has_pending: pending.exists,
             eda_tool: detectedTool,
             templates_count: templates.length
+          }
+        };
+      }
+
+      case 'eda.quick': {
+        // ONE-CALL solution for common operations
+        const { operation, params = {} } = args;
+
+        // Map quick operation to full operation name
+        const operationMap = {
+          'timing': 'report_timing',
+          'power': 'report_power',
+          'area': 'report_area',
+          'drc': 'check_drc',
+          'setup': 'fix_setup_timing',
+          'hold': 'fix_hold_timing',
+          'route': 'route_design',
+          'save': 'save_design',
+          'load': 'read_design',
+        };
+
+        const fullOperation = operationMap[operation] || operation;
+
+        // Detect tool
+        const detectedTool = detectTool();
+        const tool = detectedTool?.vendor || 'cadence';
+
+        // Generate Tcl
+        const genResult = generateTcl(`${operation} report/action`, {
+          operation: fullOperation,
+          tool,
+          variables: params
+        });
+
+        if (!genResult.tcl) {
+          return {
+            content: [{ type: 'text', text: `❌ Could not generate Tcl for operation: ${operation}` }],
+            isError: true,
+          };
+        }
+
+        // Analyze risk
+        const riskAnalysis = analyzeRisk(genResult.tcl);
+
+        // Send to terminal
+        const sendResult = sendToTerminal(genResult.tcl, 'eda');
+
+        if (sendResult.queued) {
+          updateTmuxModeStatus('manual', true);
+        }
+
+        // Build compact response
+        let text = `🔧 **${operation.toUpperCase()}** ${riskAnalysis.color}\n\n`;
+        text += `**Tcl:**\n\`\`\`tcl\n${genResult.tcl}\n\`\`\`\n\n`;
+
+        if (sendResult.queued) {
+          text += `**Status:** ⏳ Waiting for approval\n`;
+          text += `**Risk:** ${riskAnalysis.color} ${riskAnalysis.label}\n`;
+          text += `**Time:** ${riskAnalysis.estimated_time_display}\n\n`;
+          text += `▶ Say "yes" to execute, "no" to cancel`;
+        } else if (sendResult.mode === 'auto') {
+          text += `**Status:** ⚡ Executed (auto mode)\n`;
+        } else {
+          text += `**Status:** ${sendResult.message}\n`;
+        }
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: {
+            operation,
+            risk_category: riskAnalysis.category,
+            template: genResult.template_path,
+            queued: sendResult.queued
+          }
+        };
+      }
+
+      case 'eda.run_skill': {
+        // Execute a HiPilot skill
+        const { skill, params = {} } = args;
+
+        // Load skill file
+        const skillPath = join(PROJECT_ROOT, 'skills', `${skill}.md`);
+        if (!existsSync(skillPath)) {
+          // Try with hyphens converted to underscores
+          const altPath = join(PROJECT_ROOT, 'skills', `${skill.replace(/-/g, '_')}.md`);
+          if (!existsSync(altPath)) {
+            return {
+              content: [{ type: 'text', text: `❌ Skill not found: ${skill}\n\nAvailable skills: report-timing, fix-setup-timing, fix-hold-timing, report-power, report-area, run-drc` }],
+              isError: true,
+            };
+          }
+        }
+
+        // Read skill content
+        const skillContent = readFileSync(skillPath, 'utf-8');
+
+        // Extract skill metadata from frontmatter
+        const frontmatterMatch = skillContent.match(/^---\n([\s\S]*?)\n---/);
+        let skillMeta = {};
+        if (frontmatterMatch) {
+          const frontmatter = frontmatterMatch[1];
+          // Simple YAML parsing for key fields
+          const nameMatch = frontmatter.match(/^name:\s*(.+)$/m);
+          const descMatch = frontmatter.match(/^description:\s*(.+)$/m);
+          if (nameMatch) skillMeta.name = nameMatch[1].trim();
+          if (descMatch) skillMeta.description = descMatch[1].trim();
+        }
+
+        // Detect tool and get template
+        const detectedTool = detectTool();
+        const vendor = detectedTool?.vendor || 'cadence';
+
+        // Look for template reference in skill
+        const templateMatch = skillContent.match(/template_path:\s*\n\s*synopsys:\s*(\S+)\s*\n\s*cadence:\s*(\S+)/);
+        let templatePath = null;
+        if (templateMatch) {
+          templatePath = vendor === 'synopsys' ? templateMatch[1] : templateMatch[2];
+        }
+
+        // Generate Tcl based on skill
+        const operationMap = {
+          'report-timing': 'report_timing',
+          'fix-setup-timing': 'fix_setup_timing',
+          'fix-hold-timing': 'fix_hold_timing',
+          'report-power': 'report_power',
+          'report-area': 'report_area',
+          'run-drc': 'check_drc',
+        };
+
+        const operation = operationMap[skill] || skill.replace(/-/g, '_');
+        const genResult = generateTcl(skillMeta.description || skill, {
+          operation,
+          tool: vendor,
+          variables: params
+        });
+
+        // Analyze and send
+        const riskAnalysis = analyzeRisk(genResult.tcl);
+        const sendResult = sendToTerminal(genResult.tcl, 'eda');
+
+        if (sendResult.queued) {
+          updateTmuxModeStatus('manual', true);
+        }
+
+        // Build response
+        let text = `🎯 **Skill: ${skillMeta.name || skill}**\n\n`;
+        text += `${skillMeta.description || ''}\n\n`;
+        text += `**Tcl:**\n\`\`\`tcl\n${genResult.tcl}\n\`\`\`\n\n`;
+        text += `**Risk:** ${riskAnalysis.color} ${riskAnalysis.label}\n`;
+        text += `**Time:** ${riskAnalysis.estimated_time_display}\n\n`;
+
+        if (sendResult.queued) {
+          text += `▶ Say "yes" to execute, "no" to cancel`;
+        } else {
+          text += `**Status:** ${sendResult.message}`;
+        }
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: {
+            skill,
+            operation,
+            risk_category: riskAnalysis.category,
+            template: templatePath
           }
         };
       }
