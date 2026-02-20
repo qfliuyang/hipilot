@@ -37,6 +37,11 @@ import {
   MODES,
   PENDING_FILE,
 } from '../../src/lib/mode.js';
+import {
+  analyzeRisk,
+  generateApprovalPrompt,
+  validateConfirmation,
+} from '../../src/lib/risk-analyzer.js';
 
 const TMUX_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
 
@@ -462,29 +467,58 @@ function executeTcl(tcl, pane = 'eda') {
 
 /**
  * Send Tcl to EDA terminal - respects mode (manual/auto)
- * In MANUAL mode: queues Tcl for user approval
- * In AUTO mode: executes immediately
+ * In MANUAL mode: queues Tcl for user approval with risk analysis
+ * In AUTO mode: executes immediately (but still warns for dangerous ops)
  */
 function sendToTerminal(tcl, pane = 'eda', metadata = {}) {
   const mode = getMode();
-  
+
+  // Analyze risk regardless of mode (for logging and display)
+  const riskAnalysis = analyzeRisk(tcl);
+
+  // Store risk analysis with pending Tcl
+  const enrichedMetadata = {
+    ...metadata,
+    risk_analysis: riskAnalysis,
+    queued_at: new Date().toISOString()
+  };
+
   if (mode === MODES.AUTO) {
+    // Even in auto mode, warn about dangerous operations
+    if (riskAnalysis.category >= 2) {
+      // For dangerous/critical ops in auto mode, still require confirmation
+      queuePending(tcl, enrichedMetadata);
+      return {
+        success: true,
+        queued: true,
+        mode: 'auto_blocked',
+        blocked_reason: 'dangerous_operation',
+        risk_analysis: riskAnalysis,
+        message: `⚠️ Auto mode blocked for ${riskAnalysis.label.toLowerCase()} operation. Manual confirmation required.`,
+        approval_prompt: generateApprovalPrompt(riskAnalysis, tcl),
+        pendingFile: PENDING_FILE,
+      };
+    }
+
     const result = executeTcl(tcl, pane);
     return {
       ...result,
       mode: 'auto',
-      message: result.success 
+      risk_analysis: riskAnalysis,
+      message: result.success
         ? `⚡ Claude has conn - executed immediately: ${result.message}`
         : result.message,
     };
   } else {
-    queuePending(tcl, { pane, ...metadata });
+    queuePending(tcl, enrichedMetadata);
     const status = getModeStatus();
     return {
       success: true,
       queued: true,
       mode: 'manual',
-      message: `🔒 Manual mode - Tcl queued for approval. Press Enter in EDA pane to run, Esc to cancel.`,
+      risk_analysis: riskAnalysis,
+      approval_prompt: generateApprovalPrompt(riskAnalysis, tcl),
+      message: `🔒 Manual mode - Tcl queued for approval`,
       pendingFile: PENDING_FILE,
       status: status,
     };
@@ -689,6 +723,42 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {},
         },
       },
+      {
+        name: 'eda.confirm_dangerous',
+        description: 'Confirm execution of a dangerous/critical Tcl command by providing the required confirmation text. Use this after user explicitly confirms dangerous operations.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            confirmation_text: {
+              type: 'string',
+              description: 'The confirmation text the user provided (e.g., "CONFIRM" for dangerous, or the full phrase for critical operations)',
+            },
+          },
+          required: ['confirmation_text'],
+        },
+      },
+      {
+        name: 'eda.get_risk_analysis',
+        description: 'Analyze the risk level of a Tcl script without executing it. Returns risk category, dangerous commands, and estimated time.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tcl: {
+              type: 'string',
+              description: 'Tcl script to analyze',
+            },
+          },
+          required: ['tcl'],
+        },
+      },
+      {
+        name: 'eda.get_status',
+        description: 'Get comprehensive HiPilot system status. USE THIS FIRST before any EDA operation to understand the current state. Returns: mode, pending Tcl, detected EDA tool, and available actions.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
     ],
   };
 });
@@ -728,21 +798,42 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case 'eda.send_to_terminal': {
         const { tcl, pane = 'eda' } = args;
         const result = sendToTerminal(tcl, pane);
-        
+
         if (result.queued) {
           updateTmuxModeStatus('manual', true);
+        }
+
+        // Build response based on result type
+        let responseText = '';
+
+        if (result.queued) {
+          // Use the generated approval prompt
+          responseText = result.approval_prompt;
+        } else if (result.mode === 'auto') {
+          // Auto mode - show what was executed
+          responseText = `⚡ **Auto Mode - Executed Immediately**\n\n`;
+          responseText += `**Risk Level:** ${result.risk_analysis?.summary?.risk_level || 'Unknown'}\n\n`;
+          responseText += `**Tcl Executed:**\n\`\`\`tcl\n${tcl}\n\`\`\`\n\n`;
+          responseText += result.message;
+        } else {
+          responseText = result.success
+            ? `✓ ${result.message}`
+            : `✗ ${result.message}`;
         }
 
         return {
           content: [{
             type: 'text',
-            text: result.success
-              ? result.queued 
-                ? `🔒 Queued for approval: ${result.message}\n\nPress prefix+y to approve, prefix+n to reject.`
-                : `Sent to terminal: ${result.message}`
-              : `Failed: ${result.message}`,
+            text: responseText,
           }],
           isError: !result.success,
+          // Include metadata for programmatic handling
+          _metadata: {
+            status: result.queued ? 'pending_approval' : (result.success ? 'executed' : 'failed'),
+            mode: result.mode,
+            risk_category: result.risk_analysis?.category,
+            pending_file: result.pendingFile,
+          }
         };
       }
 
@@ -910,12 +1001,167 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case 'eda.reject_pending': {
         const result = rejectPendingTcl();
         updateTmuxModeStatus('manual', false);
-        
+
         return {
           content: [{
             type: 'text',
             text: `✗ Pending Tcl rejected and cleared.`,
           }],
+        };
+      }
+
+      case 'eda.confirm_dangerous': {
+        const { confirmation_text } = args;
+        const pending = getPending();
+
+        if (!pending.exists) {
+          return {
+            content: [{ type: 'text', text: 'No pending Tcl to confirm.' }],
+            isError: true,
+          };
+        }
+
+        // Get the risk analysis from pending metadata
+        const riskAnalysis = pending.meta.risk_analysis || analyzeRisk(pending.tcl);
+        const validation = validateConfirmation(confirmation_text, riskAnalysis);
+
+        if (validation.valid) {
+          // Confirmation accepted - execute the Tcl
+          const result = approveAndExecute();
+          updateTmuxModeStatus('manual', false);
+
+          return {
+            content: [{
+              type: 'text',
+              text: result.success
+                ? `✓ ${validation.message}\n\nExecuted: ${result.message}`
+                : `✗ Execution failed: ${result.message}`,
+            }],
+            isError: !result.success,
+          };
+        } else if (validation.cancelled) {
+          // User cancelled
+          rejectPending();
+          updateTmuxModeStatus('manual', false);
+          return {
+            content: [{ type: 'text', text: `✗ Cancelled: ${validation.message}` }],
+          };
+        } else {
+          // Invalid confirmation
+          let text = `⚠️ ${validation.message}\n\n`;
+          if (validation.hint) {
+            text += `**Required phrase:**\n\`\`\`\n${validation.hint}\n\`\`\`\n\n`;
+          }
+          text += `Please try again with the correct confirmation text.`;
+
+          return {
+            content: [{ type: 'text', text }],
+            isError: true,
+          };
+        }
+      }
+
+      case 'eda.get_risk_analysis': {
+        const { tcl } = args;
+        const analysis = analyzeRisk(tcl);
+
+        let text = `**Tcl Risk Analysis**\n\n`;
+        text += `**Category:** ${analysis.color} ${analysis.label}\n`;
+        text += `**Description:** ${analysis.description}\n`;
+        text += `**Estimated Time:** ${analysis.estimated_time_display}\n`;
+        text += `**Requires Confirmation:** ${analysis.requires_confirmation ? 'Yes' : 'No'}\n\n`;
+
+        if (analysis.detected_risks.length > 0) {
+          text += `**Detected Operations:**\n`;
+          for (const risk of analysis.detected_risks) {
+            text += `- ${risk.color} ${risk.level}: \`${risk.line}\`\n`;
+          }
+          text += `\n`;
+        }
+
+        if (analysis.dangerous_commands.length > 0) {
+          text += `**Dangerous Commands:** ${analysis.dangerous_commands.length}\n`;
+        }
+        if (analysis.critical_commands.length > 0) {
+          text += `**Critical Commands:** ${analysis.critical_commands.length}\n`;
+        }
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: { analysis }
+        };
+      }
+
+      case 'eda.get_status': {
+        // Get comprehensive system status
+        const modeStatus = getModeStatus();
+        const pending = getPending();
+        const detectedTool = detectTool();
+        const templates = listTemplates();
+
+        let text = `📊 **HiPilot System Status**\n\n`;
+
+        // Mode
+        text += `**Mode:** ${modeStatus.icon} ${modeStatus.mode.toUpperCase()}`;
+        if (modeStatus.mode === 'manual') {
+          text += ` (approval required for each command)`;
+        } else {
+          text += ` (commands execute immediately)`;
+        }
+        text += `\n`;
+
+        // EDA Tool
+        text += `**EDA Tool:** `;
+        if (detectedTool) {
+          text += `${detectedTool.tool} ${detectedTool.version} (${detectedTool.vendor})`;
+        } else {
+          text += `None detected. Start icc2_shell, innovus, or pt_shell in the EDA pane.`;
+        }
+        text += `\n`;
+
+        // Pending Tcl
+        text += `**Pending Tcl:** `;
+        if (pending.exists) {
+          text += `Yes (${pending.tcl.split('\n').length} lines waiting for approval)\n`;
+          text += `  Use \`eda.approve_pending()\` or \`eda.reject_pending()\`\n`;
+        } else {
+          text += `None\n`;
+        }
+        text += `\n`;
+
+        // Templates
+        text += `**Templates Available:** ${templates.length}\n`;
+        text += `\n`;
+
+        // Available tools
+        text += `**Available MCP Tools:**\n`;
+        text += `  - \`eda.generate_tcl()\` - Generate Tcl from intent\n`;
+        text += `  - \`eda.send_to_terminal()\` - Send Tcl to EDA pane (with approval)\n`;
+        text += `  - \`eda.get_risk_analysis()\` - Analyze risk level\n`;
+        text += `  - \`eda.approve_pending()\` - Approve queued Tcl\n`;
+        text += `  - \`eda.reject_pending()\` - Reject queued Tcl\n`;
+        text += `  - \`eda.confirm_dangerous()\` - Confirm dangerous/critical operations\n`;
+        text += `  - \`eda.get_mode()\` / \`eda.set_mode()\` - Check/change mode\n`;
+        text += `\n`;
+
+        // Instructions
+        text += `---\n\n`;
+        text += `**Workflow:**\n`;
+        text += `1. Use \`eda.generate_tcl()\` to create Tcl from intent\n`;
+        text += `2. Use \`eda.send_to_terminal()\` to send (will prompt for approval in Manual mode)\n`;
+        text += `3. User approves → Tcl executes in EDA pane\n`;
+        text += `\n`;
+        text += `**⚠️ IMPORTANT:** Always use MCP tools (not Bash) to send Tcl commands.\n`;
+        text += `Using Bash bypasses the approval system.\n`;
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: {
+            mode: modeStatus.mode,
+            has_pending: pending.exists,
+            eda_tool: detectedTool,
+            templates_count: templates.length
+          }
         };
       }
 
