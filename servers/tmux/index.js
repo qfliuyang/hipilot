@@ -62,7 +62,7 @@ function resolvePane(pane) {
 const server = new Server(
   {
     name: 'hipilot-tmux-mcp-server',
-    version: '0.2.0',
+    version: '0.2.1',
   },
   {
     capabilities: {
@@ -122,7 +122,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: 'tmux.update_status',
-        description: 'Update the tmux status bar with current context',
+        description: 'Update the tmux status bar with current context (tool, skill, job, design, mode)',
         inputSchema: {
           type: 'object',
           properties: {
@@ -131,7 +131,21 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             job_status: { type: 'string', enum: ['Running', 'Completed', 'Failed', 'Idle'] },
             design: { type: 'string', description: 'Design name' },
             wns: { type: 'string', description: 'Current WNS value' },
+            mode: { type: 'string', enum: ['manual', 'auto'], description: 'Execution mode' },
+            pending: { type: 'boolean', description: 'Whether there is pending Tcl waiting for approval' },
           },
+        },
+      },
+      {
+        name: 'tmux.set_mode_status',
+        description: 'Update status bar to show current execution mode (manual/auto)',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            mode: { type: 'string', enum: ['manual', 'auto'], description: 'Execution mode' },
+            pending: { type: 'boolean', description: 'Pending Tcl waiting for approval' },
+          },
+          required: ['mode'],
         },
       },
       {
@@ -222,7 +236,22 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'tmux.update_status': {
-        const { tool, skill, job_status, design, wns } = args;
+        const { tool, skill, job_status, design, wns, mode, pending } = args;
+        
+        let statusLeft;
+        if (mode === 'auto') {
+          statusLeft = `#[fg=#000000,bg=#00ff88,bold] ⚡ Claude has conn #[default]#[fg=#666666]│`;
+        } else {
+          const pendingIndicator = pending ? ' ⏳' : '';
+          statusLeft = `#[fg=#00d4ff,bg=#1a1a2e,bold] ⚙ HiPilot #[fg=#666666]│#[fg=#ffd700] 🔒 Manual${pendingIndicator} #[fg=#666666]│`;
+        }
+        
+        try {
+          tmuxExec(`set-option -g status-left "${statusLeft}"`);
+        } catch {
+          // Status bar update is best-effort
+        }
+        
         const parts = [];
         if (tool) parts.push('Tool: ' + tool);
         if (skill) parts.push('Skill: ' + skill);
@@ -230,13 +259,41 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         if (design) parts.push('Design: ' + design);
         if (wns) parts.push('WNS: ' + wns);
         const statusText = parts.join(' | ');
+        
         try {
           tmuxExec(`set-option -p pane-border-format " ${statusText} "`);
         } catch {
           // Status bar update is best-effort
         }
+        
         return {
-          content: [{ type: 'text', text: 'Status: ' + statusText }],
+          content: [{ type: 'text', text: 'Status updated: ' + statusText + (mode ? ` (mode: ${mode})` : '') }],
+        };
+      }
+
+      case 'tmux.set_mode_status': {
+        const { mode, pending = false } = args;
+        
+        let statusLeft;
+        let message;
+        
+        if (mode === 'auto') {
+          statusLeft = `#[fg=#000000,bg=#00ff88,bold] ⚡ Claude has conn #[default]#[fg=#666666]│`;
+          message = '⚡ AUTO MODE - Claude has the conn';
+        } else {
+          const pendingIndicator = pending ? ' ⏳ pending' : '';
+          statusLeft = `#[fg=#00d4ff,bg=#1a1a2e,bold] ⚙ HiPilot #[fg=#666666]│#[fg=#ffd700] 🔒 Manual${pendingIndicator} #[fg=#666666]│`;
+          message = '🔒 MANUAL MODE - Approval required' + (pending ? ' (Tcl pending)' : '');
+        }
+        
+        try {
+          tmuxExec(`set-option -g status-left "${statusLeft}"`);
+        } catch {
+          // Status bar update is best-effort
+        }
+        
+        return {
+          content: [{ type: 'text', text: message }],
         };
       }
 

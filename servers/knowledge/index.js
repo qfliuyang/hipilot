@@ -367,7 +367,7 @@ function matchSkill(intent) {
 const server = new Server(
   {
     name: 'hipilot-knowledge-mcp-server',
-    version: '0.2.0',
+    version: '0.2.1',
   },
   {
     capabilities: {

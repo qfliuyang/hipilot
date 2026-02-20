@@ -1,8 +1,8 @@
 # HiPilot - VLSI Physical Design Copilot
 
-**Status:** ✅ v0.1.0 COMPLETE - All Tasks Finished
-**Version:** 0.1.0
-**Date:** 2026-02-19
+**Status:** ✅ v0.2.1 COMPLETE - Mode System Implemented
+**Version:** 0.2.1
+**Date:** 2026-02-20
 
 ---
 
@@ -11,8 +11,8 @@
 HiPilot is a **VLSI Physical Design Copilot** - an AI-powered assistant for EDA engineers built as an extension to Claude Code. It provides:
 
 - **50/50 Terminal Workspace** - Chat + EDA tool panes
-- **3 MCP Servers** - Tmux, EDA, Knowledge
-- **4 Built-in Skills** - Common workflows
+- **3 MCP Servers** - Tmux (7 tools), EDA (11 tools), Knowledge (7 tools)
+- **10 Built-in Skills** - Common workflows
 - **Natural Language → Tcl** - Generate scripts from intent
 - **Real Ibex Design Integration** - Tested on actual RISC-V CPU
 
@@ -42,6 +42,31 @@ hipilot
 │  [▶ Run]          │  [Executes here]   │
 └────────────────────┴────────────────────┘
 ```
+
+### 🔒 Execution Modes (NEW!)
+
+HiPilot uses a **two-mode safety system**:
+
+| Mode | Icon | Description |
+|------|------|-------------|
+| **Manual** | 🔒 | Each Tcl command requires your approval (default) |
+| **Auto** | ⚡ | "Claude has the conn" - commands execute immediately |
+
+**Mode Controls:**
+- **Ctrl+M** - Toggle between modes
+- **prefix+y** - Approve pending Tcl
+- **prefix+n** - Reject pending Tcl
+- **prefix+M** - Show current mode status
+
+In **Manual mode** (default), when Claude generates Tcl:
+1. Tcl is queued for approval
+2. Status bar shows "⏳ pending"
+3. Press `prefix+y` to execute or `prefix+n` to reject
+
+In **Auto mode** ("Claude has the conn"):
+- All Tcl commands execute immediately
+- Status bar turns green with "⚡ Claude has conn"
+- Use for trusted automation workflows
 
 ---
 
@@ -82,20 +107,28 @@ hipilot
 
 ### 2. MCP Servers (Task 2)
 
-**Tmux MCP Server** (6 tools):
+**Tmux MCP Server** (7 tools):
 - `send_keys` - Send commands to panes
 - `capture_pane` - Read pane content
 - `get_pane_output` - Get last N lines
-- `update_status` - Update status bar
+- `update_status` - Update status bar (with mode)
+- `set_mode_status` - Update mode in status bar
 - `list_panes` - List all panes
 - `resize_pane` - Resize panes
 
-**EDA MCP Server** (5 tools):
+**EDA MCP Server** (11 tools):
 - `generate_tcl` - Generate Tcl from intent
+- `send_to_terminal` - Send Tcl to EDA pane (respects mode)
 - `extract_qor` - Extract WNS/TNS/violations
 - `list_templates` - List available templates
 - `detect_tool` - Detect ICC2/Innovus/PT
 - `get_job_status` - Check job status
+- `get_mode` - Get current execution mode
+- `set_mode` - Set manual/auto mode
+- `toggle_mode` - Toggle between modes
+- `get_pending` - Get pending Tcl
+- `approve_pending` - Approve and execute
+- `reject_pending` - Reject pending Tcl
 
 **Knowledge MCP Server** (4 tools):
 - `search_docs` - Search documentation
