@@ -2,6 +2,58 @@
 
 All notable changes to HiPilot will be documented in this file.
 
+## [0.3.0] - 2026-02-20
+
+### Added
+- **Risk-Based Approval System** - 4-level risk categorization for Tcl scripts
+  - 🟢 **Safe** - Read-only operations (report_timing, check_*)
+  - 🟡 **Moderate** - Design modifications (optDesign, routeDesign)
+  - 🟠 **Dangerous** - Destructive operations (remove_*, delete_*)
+  - 🔴 **Critical** - Irreversible operations (remove_design -all, exit)
+  - Each category requires different confirmation levels
+
+### New MCP Tools (3 added)
+- `eda.get_status` - Comprehensive system status (mode, tool, pending Tcl)
+- `eda.get_risk_analysis` - Analyze Tcl risk level without executing
+- `eda.confirm_dangerous` - Explicit confirmation for dangerous/critical operations
+
+### New Module
+- `src/lib/risk-analyzer.js` - Risk analysis engine
+  - `analyzeRisk()` - Categorize Tcl by risk level
+  - `generateApprovalPrompt()` - Create formatted approval prompt
+  - `validateConfirmation()` - Validate user confirmation text
+
+### New Documentation
+- `docs/TESTING_GUIDE.md` - Complete E2E testing reference
+  - SSH connection with sshpass
+  - Code upload workflow
+  - Screen recording on display :0
+  - Pre-test cleanup procedures
+  - Problems encountered and solutions
+- `docs/specs/approval-system-spec.md` - Full approval system specification
+- `docs/research/MODE_SYSTEM_RESEARCH.md` - Research on mode improvements
+
+### New Claude Commands
+- `/hipilot-status` - Check system status before EDA operations
+- `/eda-workflow` - Guide for using MCP tools vs Bash commands
+- `/eda-approval-protocol` - Documentation for approval flow
+
+### Enhanced
+- **eda.send_to_terminal** - Now includes risk analysis in response
+- **Approval prompt** - Shows risk level, estimated time, and Tcl preview
+- **MCP response format** - Rich metadata for programmatic handling
+
+### Tested
+- E2E test on EDA server (CentOS 7) with Claude Code + Innovus
+- Approval flow validated: Claude asks → User approves → Tcl executes
+- Screen recording workflow documented and tested
+- Demo video: `hipilot_e2e_final.mp4` (17 MB)
+
+### Key Findings
+- Claude Code uses its own approval UI ("Your choice: y/n/e/view")
+- MCP tools available but Claude prefers Bash + tmux for sending
+- Simple approval flow works effectively in practice
+
 ## [0.2.1] - 2026-02-20
 
 ### Added
