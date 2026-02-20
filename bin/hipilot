@@ -40,7 +40,7 @@ fi
 
 echo -e "${CYAN}"
 echo "╔══════════════════════════════════════════════════════╗"
-echo "║   HiPilot v0.1.0 - VLSI Physical Design Copilot    ║"
+echo "║   HiPilot v0.1.2 - VLSI Physical Design Copilot    ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 
@@ -70,35 +70,35 @@ tmux -L "$HIPILOT_SESSION" split-window -h -l 50% -c "$PROJECT_DIR"
 # Layout: | tool_section | skill_section | job_section | context_section |
 # -------------------------------------------------------------------
 
-# Status bar colors per UX spec
-tmux -L "$HIPILOT_SESSION" set-option -g status on
-tmux -L "$HIPILOT_SESSION" set-option -g status-interval 5
-tmux -L "$HIPILOT_SESSION" set-option -g status-style "bg=#1a1a2e,fg=#e0e0e0"
+# Status bar colors per UX spec (session-specific, not global)
+tmux -L "$HIPILOT_SESSION" set-option status on
+tmux -L "$HIPILOT_SESSION" set-option status-interval 5
+tmux -L "$HIPILOT_SESSION" set-option status-style "bg=#1a1a2e,fg=#e0e0e0"
 
 # Left status: Tool + Skill sections
-tmux -L "$HIPILOT_SESSION" set-option -g status-left-length 60
-tmux -L "$HIPILOT_SESSION" set-option -g status-left "\
+tmux -L "$HIPILOT_SESSION" set-option status-left-length 60
+tmux -L "$HIPILOT_SESSION" set-option status-left "\
 #[fg=#00d4ff,bg=#1a1a2e,bold] ⚙ HiPilot #[fg=#666666]│\
 #[fg=#ffd700,nobold] 📋 ready #[fg=#666666]│"
 
 # Right status: Job + Context sections
-tmux -L "$HIPILOT_SESSION" set-option -g status-right-length 60
-tmux -L "$HIPILOT_SESSION" set-option -g status-right "\
+tmux -L "$HIPILOT_SESSION" set-option status-right-length 60
+tmux -L "$HIPILOT_SESSION" set-option status-right "\
 #[fg=#666666]│#[fg=#00ff88] ▶ idle \
 #[fg=#666666]│#[fg=#e0e0e0] design: —  "
 
 # Window status (center)
-tmux -L "$HIPILOT_SESSION" set-option -g status-justify centre
-tmux -L "$HIPILOT_SESSION" set-option -g window-status-format " #W "
-tmux -L "$HIPILOT_SESSION" set-option -g window-status-current-format "#[fg=#00d4ff,bold] #W "
+tmux -L "$HIPILOT_SESSION" set-option status-justify centre
+tmux -L "$HIPILOT_SESSION" set-option window-status-format " #W "
+tmux -L "$HIPILOT_SESSION" set-option window-status-current-format "#[fg=#00d4ff,bold] #W "
 
 # Pane borders
-tmux -L "$HIPILOT_SESSION" set-option -g pane-border-style "fg=#666666"
-tmux -L "$HIPILOT_SESSION" set-option -g pane-active-border-style "fg=#00d4ff"
+tmux -L "$HIPILOT_SESSION" set-option pane-border-style "fg=#666666"
+tmux -L "$HIPILOT_SESSION" set-option pane-active-border-style "fg=#00d4ff"
 
 # Pane border labels (if tmux supports it - 3.2+)
-tmux -L "$HIPILOT_SESSION" set-option -g pane-border-status top 2>/dev/null || true
-tmux -L "$HIPILOT_SESSION" set-option -g pane-border-format \
+tmux -L "$HIPILOT_SESSION" set-option pane-border-status top 2>/dev/null || true
+tmux -L "$HIPILOT_SESSION" set-option pane-border-format \
   "#{?#{==:#{pane_index},0}, Chat (Claude Code) , EDA Terminal }" 2>/dev/null || true
 
 # -------------------------------------------------------------------
@@ -109,63 +109,64 @@ tmux -L "$HIPILOT_SESSION" set-option -g pane-border-format \
 echo "manual" > /tmp/hipilot_mode 2>/dev/null || true
 
 # Ctrl+E: Switch focus to EDA pane (right)
-tmux bind-key -n C-e select-pane -t 1
+tmux -L "$HIPILOT_SESSION" bind-key -n C-e select-pane -t "$HIPILOT_SESSION:0.1"
 
 # Ctrl+H: Switch focus to Chat pane (left)
-tmux bind-key h select-pane -t 0
+tmux -L "$HIPILOT_SESSION" bind-key h select-pane -t "$HIPILOT_SESSION:0.0"
 
 # Ctrl+S: Save last generated Tcl
-tmux bind-key -n C-s run-shell "mkdir -p $PROJECT_DIR/scripts && cp \$(ls -t /tmp/hipilot_generated_*.tcl 2>/dev/null | head -1) $PROJECT_DIR/scripts/ 2>/dev/null && display-message 'Saved to scripts/' || display-message 'No generated Tcl to save'" 2>/dev/null || true
+tmux -L "$HIPILOT_SESSION" bind-key -n C-s run-shell "mkdir -p $PROJECT_DIR/scripts && cp \$(ls -t /tmp/hipilot_generated_*.tcl 2>/dev/null | head -1) $PROJECT_DIR/scripts/ 2>/dev/null && tmux -L $HIPILOT_SESSION display-message 'Saved to scripts/' || tmux -L $HIPILOT_SESSION display-message 'No generated Tcl to save'" 2>/dev/null || true
 
-# Ctrl+M: Toggle mode (manual <-> auto / "Claude has the conn")
-tmux bind-key -n C-m run-shell "\
+# Prefix+m: Toggle mode (manual <-> auto / "Claude has the conn")
+# NOTE: Using prefix+m instead of Ctrl+M because Ctrl+M sends same byte as Enter!
+tmux -L "$HIPILOT_SESSION" bind-key m run-shell "\
   MODE=\$(cat /tmp/hipilot_mode 2>/dev/null || echo 'manual'); \
   if [ \"\$MODE\" = 'manual' ]; then \
     echo 'auto' > /tmp/hipilot_mode; \
-    tmux set-option -g status-left '#[fg=#000000,bg=#00ff88,bold] ⚡ Claude has conn #[default]'; \
-    tmux display-message '⚡ Claude has the conn (auto mode)'; \
+    tmux -L $HIPILOT_SESSION set-option -t $HIPILOT_SESSION status-left '#[fg=#000000,bg=#00ff88,bold] ⚡ Claude has conn #[default]'; \
+    tmux -L $HIPILOT_SESSION display-message '⚡ Claude has the conn (auto mode)'; \
   else \
     echo 'manual' > /tmp/hipilot_mode; \
-    tmux set-option -g status-left '#[fg=#00d4ff,bg=#1a1a2e,bold] ⚙ HiPilot #[fg=#666666]│#[fg=#ffd700] 🔒 Manual '; \
-    tmux display-message '🔒 Manual mode (approval required)'; \
+    tmux -L $HIPILOT_SESSION set-option -t $HIPILOT_SESSION status-left '#[fg=#00d4ff,bg=#1a1a2e,bold] ⚙ HiPilot #[fg=#666666]│#[fg=#ffd700] 🔒 Manual '; \
+    tmux -L $HIPILOT_SESSION display-message '🔒 Manual mode (approval required)'; \
   fi" 2>/dev/null || true
 
-# Prefix + y (yes): Approve pending Tcl and execute
-tmux bind-key y run-shell "\
+# Prefix+y (yes): Approve pending Tcl and execute
+tmux -L "$HIPILOT_SESSION" bind-key y run-shell "\
   if [ -f /tmp/hipilot_pending.tcl ]; then \
     TMPFILE=/tmp/hipilot_exec_\$(date +%s).tcl; \
     cp /tmp/hipilot_pending.tcl \$TMPFILE; \
     rm -f /tmp/hipilot_pending.tcl /tmp/hipilot_pending_meta.json; \
-    tmux send-keys -t 1 \"source \$TMPFILE\" Enter; \
-    tmux display-message '✓ Approved and executed pending Tcl'; \
+    tmux -L $HIPILOT_SESSION send-keys -t $HIPILOT_SESSION:0.1 \"source \$TMPFILE\" Enter; \
+    tmux -L $HIPILOT_SESSION display-message '✓ Approved and executed pending Tcl'; \
   else \
-    tmux display-message 'No pending Tcl to approve'; \
+    tmux -L $HIPILOT_SESSION display-message 'No pending Tcl to approve'; \
   fi" 2>/dev/null || true
 
-# Prefix + n (no): Reject pending Tcl
-tmux bind-key n run-shell "\
+# Prefix+n (no): Reject pending Tcl
+tmux -L "$HIPILOT_SESSION" bind-key n run-shell "\
   if [ -f /tmp/hipilot_pending.tcl ]; then \
     rm -f /tmp/hipilot_pending.tcl /tmp/hipilot_pending_meta.json; \
-    tmux display-message '✗ Pending Tcl rejected'; \
+    tmux -L $HIPILOT_SESSION display-message '✗ Pending Tcl rejected'; \
   else \
-    tmux display-message 'No pending Tcl to reject'; \
+    tmux -L $HIPILOT_SESSION display-message 'No pending Tcl to reject'; \
   fi" 2>/dev/null || true
 
-# Prefix + r: Refresh status bar
-tmux bind-key r run-shell "tmux display-message 'Status refreshed'" 2>/dev/null || true
+# Prefix+r: Refresh status bar
+tmux -L "$HIPILOT_SESSION" bind-key r run-shell "tmux -L $HIPILOT_SESSION display-message 'Status refreshed'" 2>/dev/null || true
 
-# Prefix + m: Show mode status
-tmux bind-key M run-shell "\
+# Prefix+M (shift+m): Show mode status
+tmux -L "$HIPILOT_SESSION" bind-key M run-shell "\
   MODE=\$(cat /tmp/hipilot_mode 2>/dev/null || echo 'manual'); \
   if [ \"\$MODE\" = 'auto' ]; then \
-    tmux display-message '⚡ AUTO: Claude has the conn - commands execute immediately'; \
+    tmux -L $HIPILOT_SESSION display-message '⚡ AUTO: Claude has the conn - commands execute immediately'; \
   else \
     PENDING=''; \
     if [ -f /tmp/hipilot_pending.tcl ]; then \
       LINES=\$(wc -l < /tmp/hipilot_pending.tcl); \
       PENDING=\" - \$LINES lines pending\"; \
     fi; \
-    tmux display-message \"🔒 MANUAL: Approval required\$PENDING\"; \
+    tmux -L $HIPILOT_SESSION display-message \"🔒 MANUAL: Approval required\$PENDING\"; \
   fi" 2>/dev/null || true
 
 # -------------------------------------------------------------------
@@ -173,47 +174,47 @@ tmux bind-key M run-shell "\
 # -------------------------------------------------------------------
 
 # Setup left pane (Chat) - show welcome
-tmux send-keys -t 0 "clear" Enter
-tmux send-keys -t 0 "echo ''" Enter
-tmux send-keys -t 0 "echo '  HiPilot Chat Pane'" Enter
-tmux send-keys -t 0 "echo '  ─────────────────'" Enter
-tmux send-keys -t 0 "echo ''" Enter
-tmux send-keys -t 0 "echo '  Start Claude Code here:'" Enter
-tmux send-keys -t 0 "echo '    claude'" Enter
-tmux send-keys -t 0 "echo ''" Enter
-tmux send-keys -t 0 "echo '  Quick commands:'" Enter
-tmux send-keys -t 0 "echo '    /project:timing   - Run timing report'" Enter
-tmux send-keys -t 0 "echo '    /project:drc      - Run DRC check'" Enter
-tmux send-keys -t 0 "echo '    /project:power    - Power analysis'" Enter
-tmux send-keys -t 0 "echo '    /project:area     - Area report'" Enter
-tmux send-keys -t 0 "echo ''" Enter
-tmux send-keys -t 0 "echo '  Mode Shortcuts:'" Enter
-tmux send-keys -t 0 "echo '    Ctrl+M   Toggle mode (manual <-> Claude has conn)'" Enter
-tmux send-keys -t 0 "echo '    prefix+y Approve pending Tcl'" Enter
-tmux send-keys -t 0 "echo '    prefix+n Reject pending Tcl'" Enter
-tmux send-keys -t 0 "echo '    prefix+M Show mode status'" Enter
-tmux send-keys -t 0 "echo ''" Enter
-tmux send-keys -t 0 "echo '  Other Shortcuts:'" Enter
-tmux send-keys -t 0 "echo '    Ctrl+E   Switch to EDA pane'" Enter
-tmux send-keys -t 0 "echo '    Ctrl+S   Save last Tcl to scripts/'" Enter
-tmux send-keys -t 0 "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "clear" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '  HiPilot Chat Pane'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '  ─────────────────'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '  Start Claude Code here:'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '    claude'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '  Quick commands:'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '    /project:timing   - Run timing report'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '    /project:drc      - Run DRC check'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '    /project:power    - Power analysis'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '    /project:area     - Area report'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '  Mode Shortcuts:'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '    prefix+m  Toggle mode (manual <-> Claude has conn)'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '    prefix+y  Approve pending Tcl'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '    prefix+n  Reject pending Tcl'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '    prefix+M  Show mode status'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '  Other Shortcuts:'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '    Ctrl+E   Switch to EDA pane'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '    Ctrl+S   Save last Tcl to scripts/'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo ''" Enter
 
 # Setup right pane (EDA) - show welcome
-tmux send-keys -t 1 "clear" Enter
-tmux send-keys -t 1 "echo ''" Enter
-tmux send-keys -t 1 "echo '  EDA Tool Pane'" Enter
-tmux send-keys -t 1 "echo '  ──────────────'" Enter
-tmux send-keys -t 1 "echo ''" Enter
-tmux send-keys -t 1 "echo '  Start your EDA tool:'" Enter
-tmux send-keys -t 1 "echo '    icc2_shell    (Synopsys ICC2)'" Enter
-tmux send-keys -t 1 "echo '    innovus       (Cadence Innovus)'" Enter
-tmux send-keys -t 1 "echo '    pt_shell      (Synopsys PrimeTime)'" Enter
-tmux send-keys -t 1 "echo ''" Enter
-tmux send-keys -t 1 "echo '  🔒 Manual mode active (default)'" Enter
-tmux send-keys -t 1 "echo '  HiPilot Tcl commands require approval.'" Enter
-tmux send-keys -t 1 "echo ''" Enter
-tmux send-keys -t 1 "echo '  Press Ctrl+M to enable \"Claude has the conn\"'" Enter
-tmux send-keys -t 1 "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "clear" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '  EDA Tool Pane'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '  ──────────────'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '  Start your EDA tool:'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '    icc2_shell    (Synopsys ICC2)'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '    innovus       (Cadence Innovus)'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '    pt_shell      (Synopsys PrimeTime)'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '  🔒 Manual mode active (default)'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '  HiPilot Tcl commands require approval.'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '  Press prefix+m to enable \"Claude has the conn\"'" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo ''" Enter
 
 # Select left pane (chat) as default focus
 tmux -L "$HIPILOT_SESSION" select-pane -t 0
@@ -228,17 +229,17 @@ echo "  ├──────────────────────┴
 echo "  │ Status Bar: Mode │ Tool │ Job │ Design      │"
 echo "  └─────────────────────────────────────────────┘"
 echo ""
-echo "  Mode: 🔒 MANUAL (default - approval required)"
-echo "    Ctrl+M     Toggle mode (manual <-> Claude has conn)"
-echo "    prefix+y   Approve pending Tcl"
-echo "    prefix+n   Reject pending Tcl"
-echo "    prefix+M   Show mode status"
-echo ""
-echo "  Other shortcuts:"
-echo "    Ctrl+E     Switch to EDA pane"
-echo "    Ctrl+S     Save last generated Tcl"
-echo "    prefix+h   Switch to Chat pane"
-echo "    prefix+r   Refresh status"
+  echo "  Mode: 🔒 MANUAL (default - approval required)"
+  echo "    prefix+m  Toggle mode (manual <-> Claude has conn)"
+  echo "    prefix+y  Approve pending Tcl"
+  echo "    prefix+n  Reject pending Tcl"
+  echo "    prefix+M  Show mode status"
+  echo ""
+  echo "  Other shortcuts:"
+  echo "    Ctrl+E    Switch to EDA pane"
+  echo "    Ctrl+S    Save last generated Tcl"
+  echo "    prefix+h  Switch to Chat pane"
+  echo "    prefix+r  Refresh status"
 echo ""
 
 if [ "$NO_TERMINAL" = true ]; then

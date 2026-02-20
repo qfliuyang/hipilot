@@ -42,6 +42,7 @@ const TMUX_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
 
 function updateTmuxModeStatus(mode, pending = false) {
   try {
+    const session = process.env.HIPILOT_SESSION || 'hipilot';
     let statusLeft;
     if (mode === 'auto') {
       statusLeft = `#[fg=#000000,bg=#00ff88,bold] ⚡ Claude has conn #[default]#[fg=#666666]│`;
@@ -49,7 +50,7 @@ function updateTmuxModeStatus(mode, pending = false) {
       const pendingIndicator = pending ? ' ⏳' : '';
       statusLeft = `#[fg=#00d4ff,bg=#1a1a2e,bold] ⚙ HiPilot #[fg=#666666]│#[fg=#ffd700] 🔒 Manual${pendingIndicator} #[fg=#666666]│`;
     }
-    execSync(`tmux set-option -g status-left "${statusLeft}"`, { stdio: 'pipe' });
+    execSync(`tmux -L ${session} set-option -t ${session} status-left "${statusLeft}"`, { stdio: 'pipe' });
   } catch {
     // Tmux status update is best-effort
   }
@@ -439,9 +440,17 @@ function executeTcl(tcl, pane = 'eda') {
       // History archiving is best-effort
     }
 
-    const paneTarget = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
+    let paneTarget;
+    if (pane === 'eda' || pane === '1') {
+      paneTarget = `${session}:0.1`;
+    } else if (pane === 'chat' || pane === '0') {
+      paneTarget = `${session}:0.0`;
+    } else {
+      paneTarget = pane;
+    }
+
     execSync(
-      `tmux send-keys -t ${paneTarget} "source ${tmpFile}" Enter`,
+      `tmux -L ${session} send-keys -t ${paneTarget} "source ${tmpFile}" Enter`,
       { encoding: 'utf-8', stdio: 'pipe' }
     );
 
@@ -508,7 +517,7 @@ function rejectPendingTcl() {
 const server = new Server(
   {
     name: 'hipilot-eda-mcp-server',
-    version: '0.2.1',
+    version: '0.1.2',
   },
   {
     capabilities: {
