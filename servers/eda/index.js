@@ -23,6 +23,37 @@ import { writeFileSync, readFileSync, existsSync, mkdirSync, readdirSync } from 
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import nunjucks from 'nunjucks';
+import {
+  getMode,
+  setMode,
+  toggleMode,
+  isAutoMode,
+  isManualMode,
+  queuePending,
+  getPending,
+  approvePending,
+  rejectPending,
+  getModeStatus,
+  MODES,
+  PENDING_FILE,
+} from '../../src/lib/mode.js';
+
+const TMUX_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
+
+function updateTmuxModeStatus(mode, pending = false) {
+  try {
+    let statusLeft;
+    if (mode === 'auto') {
+      statusLeft = `#[fg=#000000,bg=#00ff88,bold] ⚡ Claude has conn #[default]#[fg=#666666]│`;
+    } else {
+      const pendingIndicator = pending ? ' ⏳' : '';
+      statusLeft = `#[fg=#00d4ff,bg=#1a1a2e,bold] ⚙ HiPilot #[fg=#666666]│#[fg=#ffd700] 🔒 Manual${pendingIndicator} #[fg=#666666]│`;
+    }
+    execSync(`tmux set-option -g status-left "${statusLeft}"`, { stdio: 'pipe' });
+  } catch {
+    // Tmux status update is best-effort
+  }
+}
 
 // Auto-detect project root from server location
 const __filename = fileURLToPath(import.meta.url);
@@ -391,17 +422,15 @@ function generateTcl(intent, params) {
 }
 
 /**
- * Send Tcl to EDA terminal via tmux and archive to history
+ * Execute Tcl in EDA terminal (internal function, called after approval or in auto mode)
  */
-function sendToTerminal(tcl, pane = 'eda') {
+function executeTcl(tcl, pane = 'eda') {
   const session = process.env.HIPILOT_SESSION || 'hipilot';
   try {
-    // Write to temp file and source it (safer for multi-line)
     const timestamp = Date.now();
     const tmpFile = `/tmp/hipilot_exec_${timestamp}.tcl`;
     writeFileSync(tmpFile, tcl);
 
-    // Archive to history
     try {
       if (!existsSync(HISTORY_DIR)) mkdirSync(HISTORY_DIR, { recursive: true });
       const histFile = join(HISTORY_DIR, `${new Date().toISOString().replace(/[:.]/g, '-')}.tcl`);
@@ -412,7 +441,7 @@ function sendToTerminal(tcl, pane = 'eda') {
 
     const paneTarget = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
     execSync(
-      `tmux -L ${session} send-keys -t ${paneTarget} "source ${tmpFile}" Enter`,
+      `tmux send-keys -t ${paneTarget} "source ${tmpFile}" Enter`,
       { encoding: 'utf-8', stdio: 'pipe' }
     );
 
@@ -423,12 +452,63 @@ function sendToTerminal(tcl, pane = 'eda') {
 }
 
 /**
+ * Send Tcl to EDA terminal - respects mode (manual/auto)
+ * In MANUAL mode: queues Tcl for user approval
+ * In AUTO mode: executes immediately
+ */
+function sendToTerminal(tcl, pane = 'eda', metadata = {}) {
+  const mode = getMode();
+  
+  if (mode === MODES.AUTO) {
+    const result = executeTcl(tcl, pane);
+    return {
+      ...result,
+      mode: 'auto',
+      message: result.success 
+        ? `⚡ Claude has conn - executed immediately: ${result.message}`
+        : result.message,
+    };
+  } else {
+    queuePending(tcl, { pane, ...metadata });
+    const status = getModeStatus();
+    return {
+      success: true,
+      queued: true,
+      mode: 'manual',
+      message: `🔒 Manual mode - Tcl queued for approval. Press Enter in EDA pane to run, Esc to cancel.`,
+      pendingFile: PENDING_FILE,
+      status: status,
+    };
+  }
+}
+
+/**
+ * Approve and execute pending Tcl
+ */
+function approveAndExecute() {
+  const pending = approvePending();
+  if (!pending.approved) {
+    return { success: false, message: 'No pending Tcl to approve' };
+  }
+  const pane = pending.meta.pane || 'eda';
+  return executeTcl(pending.tcl, pane);
+}
+
+/**
+ * Reject pending Tcl
+ */
+function rejectPendingTcl() {
+  rejectPending();
+  return { success: true, message: 'Pending Tcl rejected and cleared' };
+}
+
+/**
  * Create server
  */
 const server = new Server(
   {
     name: 'hipilot-eda-mcp-server',
-    version: '0.2.0',
+    version: '0.2.1',
   },
   {
     capabilities: {
@@ -545,6 +625,61 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
         },
       },
+      {
+        name: 'eda.get_mode',
+        description: 'Get current execution mode: "manual" (requires approval) or "auto" (Claude has conn)',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
+        name: 'eda.set_mode',
+        description: 'Set execution mode: "manual" (user approves each command) or "auto" (Claude has conn - auto-execute)',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            mode: {
+              type: 'string',
+              description: 'Execution mode',
+              enum: ['manual', 'auto'],
+            },
+          },
+          required: ['mode'],
+        },
+      },
+      {
+        name: 'eda.toggle_mode',
+        description: 'Toggle between manual and auto mode ("Claude has the conn")',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
+        name: 'eda.get_pending',
+        description: 'Get pending Tcl waiting for approval (in manual mode)',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
+        name: 'eda.approve_pending',
+        description: 'Approve and execute pending Tcl command',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
+        name: 'eda.reject_pending',
+        description: 'Reject and discard pending Tcl command',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
     ],
   };
 });
@@ -584,12 +719,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case 'eda.send_to_terminal': {
         const { tcl, pane = 'eda' } = args;
         const result = sendToTerminal(tcl, pane);
+        
+        if (result.queued) {
+          updateTmuxModeStatus('manual', true);
+        }
 
         return {
           content: [{
             type: 'text',
             text: result.success
-              ? `Sent to terminal: ${result.message}`
+              ? result.queued 
+                ? `🔒 Queued for approval: ${result.message}\n\nPress prefix+y to approve, prefix+n to reject.`
+                : `Sent to terminal: ${result.message}`
               : `Failed: ${result.message}`,
           }],
           isError: !result.success,
@@ -674,6 +815,99 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             };
           }
         }
+      }
+
+      case 'eda.get_mode': {
+        const status = getModeStatus();
+        const icon = status.icon;
+        const modeText = status.mode === 'auto'
+          ? `${icon} AUTO MODE - Claude has the conn\n\nCommands execute immediately without approval.`
+          : `${icon} MANUAL MODE - Approval required\n\nEach command must be approved before execution.`;
+        
+        let text = modeText;
+        if (status.pending) {
+          text += `\n\n⏳ Pending Tcl waiting for approval (${status.pendingInfo.lines} lines)`;
+        }
+        
+        return {
+          content: [{ type: 'text', text }],
+        };
+      }
+
+      case 'eda.set_mode': {
+        const { mode } = args;
+        setMode(mode);
+        updateTmuxModeStatus(mode, false);
+        
+        return {
+          content: [{
+            type: 'text',
+            text: mode === 'auto'
+              ? `⚡ AUTO MODE enabled - Claude has the conn\n\nAll Tcl commands will execute immediately.`
+              : `🔒 MANUAL MODE enabled\n\nEach Tcl command requires your approval.`,
+          }],
+        };
+      }
+
+      case 'eda.toggle_mode': {
+        const newMode = toggleMode();
+        updateTmuxModeStatus(newMode, false);
+        
+        return {
+          content: [{
+            type: 'text',
+            text: newMode === 'auto'
+              ? `⚡ Toggled to AUTO MODE - Claude has the conn\n\nAll Tcl commands will execute immediately.`
+              : `🔒 Toggled to MANUAL MODE\n\nEach Tcl command requires your approval.`,
+          }],
+        };
+      }
+
+      case 'eda.get_pending': {
+        const pending = getPending();
+        
+        if (!pending.exists) {
+          return {
+            content: [{ type: 'text', text: 'No pending Tcl commands.' }],
+          };
+        }
+        
+        let text = `⏳ Pending Tcl Command:\n\n`;
+        text += `Queued at: ${pending.meta.queuedAt || 'unknown'}\n`;
+        text += `Lines: ${pending.tcl.split('\n').length}\n\n`;
+        text += `--- Tcl Content ---\n${pending.tcl}\n--- End ---\n\n`;
+        text += `Use eda.approve_pending to execute, or eda.reject_pending to cancel.`;
+        
+        return {
+          content: [{ type: 'text', text }],
+        };
+      }
+
+      case 'eda.approve_pending': {
+        const result = approveAndExecute();
+        updateTmuxModeStatus('manual', false);
+        
+        return {
+          content: [{
+            type: 'text',
+            text: result.success
+              ? `✓ Approved and executed: ${result.message}`
+              : `✗ ${result.message}`,
+          }],
+          isError: !result.success,
+        };
+      }
+
+      case 'eda.reject_pending': {
+        const result = rejectPendingTcl();
+        updateTmuxModeStatus('manual', false);
+        
+        return {
+          content: [{
+            type: 'text',
+            text: `✗ Pending Tcl rejected and cleared.`,
+          }],
+        };
       }
 
       default:

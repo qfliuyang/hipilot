@@ -1,6 +1,6 @@
 {
   "name": "@hipilot/tmux-mcp-server",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "description": "Tmux MCP Server - Pane management and send-to-EDA bridge",
   "main": "index.js",

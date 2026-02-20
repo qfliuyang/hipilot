@@ -1,6 +1,6 @@
 {
   "name": "@hipilot/knowledge-mcp-server",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "description": "Knowledge MCP Server - Document indexing and skill management",
   "main": "index.js",
