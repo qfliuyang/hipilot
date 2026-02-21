@@ -1,6 +1,8 @@
 import chalk from 'chalk';
 import Table from 'cli-table3';
 import boxen from 'boxen';
+import { VERSION } from './version.js';
+import { highlightTcl } from './tcl-highlighter.js';
 
 export const colors = {
   cyan: '#8be9fd',
@@ -28,7 +30,7 @@ export const icons = {
 };
 
 export function showHeader(title) {
-  const headerText = chalk.bold.white('HiPilot v0.1.0 - VLSI PD Copilot');
+  const headerText = chalk.bold.white(`HiPilot v${VERSION} - VLSI PD Copilot`);
   const box = boxen(headerText, {
     padding: 1,
     margin: 1,
@@ -58,8 +60,11 @@ export function showTclBlock(title, code, trust = 'unverified') {
 
   console.log('');
   console.log(badges[trust] || badges.unverified);
-  
-  const box = boxen(code, {
+
+  // Apply syntax highlighting
+  const highlightedCode = highlightTcl(code);
+
+  const box = boxen(highlightedCode, {
     title: title,
     titleAlignment: 'left',
     borderStyle: 'classic',

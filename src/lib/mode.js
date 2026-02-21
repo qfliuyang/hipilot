@@ -1,20 +1,33 @@
 /**
  * HiPilot Mode Management
- * 
+ *
  * Implements the "Claude has the conn" safety system:
  * - MANUAL mode (default): Each Tcl command requires user approval
  * - AUTO mode ("Claude has the conn"): Commands execute immediately
- * 
- * Mode is stored in /tmp/hipilot_mode file
- * Pending Tcl is stored in /tmp/hipilot_pending.tcl
+ *
+ * Mode is stored in user-specific temp directory
+ * Pending Tcl is stored in user-specific temp directory
  */
 
-import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'fs';
-import { homedir } from 'os';
+import { readFileSync, writeFileSync, existsSync, unlinkSync, mkdirSync } from 'fs';
+import { getHipilotPaths } from './paths.js';
+import { warn, debug } from './logger.js';
 
-export const MODE_FILE = '/tmp/hipilot_mode';
-export const PENDING_FILE = '/tmp/hipilot_pending.tcl';
-export const PENDING_META_FILE = '/tmp/hipilot_pending_meta.json';
+// Get user-specific paths
+const paths = getHipilotPaths();
+
+// Ensure temp directory exists
+try {
+  if (!existsSync(paths.baseDir)) {
+    mkdirSync(paths.baseDir, { recursive: true });
+  }
+} catch (err) {
+  debug('Temp directory creation failed', { error: err.message });
+}
+
+export const MODE_FILE = paths.modeFile;
+export const PENDING_FILE = paths.pendingFile;
+export const PENDING_META_FILE = paths.pendingMetaFile;
 
 export const MODES = {
   MANUAL: 'manual',   // User must approve each command
@@ -32,8 +45,8 @@ export function getMode() {
         return mode;
       }
     }
-  } catch {
-    // Ignore errors, default to manual
+  } catch (err) {
+    debug('Failed to read mode file', { error: err.message });
   }
   return MODES.MANUAL;
 }
@@ -98,8 +111,8 @@ export function getPending() {
       }
       return { tcl, meta, exists: true };
     }
-  } catch {
-    // Ignore errors
+  } catch (err) {
+    debug('Failed to read pending Tcl', { error: err.message });
   }
   return { tcl: null, meta: {}, exists: false };
 }
@@ -111,8 +124,8 @@ export function clearPending() {
   try {
     if (existsSync(PENDING_FILE)) unlinkSync(PENDING_FILE);
     if (existsSync(PENDING_META_FILE)) unlinkSync(PENDING_META_FILE);
-  } catch {
-    // Ignore errors
+  } catch (err) {
+    debug('Failed to clear pending Tcl', { error: err.message });
   }
 }
 
@@ -142,7 +155,7 @@ export function rejectPending() {
 export function getModeStatus() {
   const mode = getMode();
   const pending = getPending();
-  
+
   if (mode === MODES.AUTO) {
     return {
       mode,

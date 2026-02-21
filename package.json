@@ -1,6 +1,6 @@
 {
   "name": "hipilot",
-  "version": "0.1.2",
+  "version": "0.2.1",
   "description": "VLSI Physical Design Copilot - AI assistant for EDA engineers",
   "main": "src/index.js",
   "bin": {
@@ -18,7 +18,7 @@
     "dev:eda": "node servers/eda/index.js",
     "dev:tmux": "node servers/tmux/index.js",
     "dev:knowledge": "node servers/knowledge/index.js",
-    "test": "node servers/eda/index.js --help 2>&1 || true && node servers/knowledge/index.js --help 2>&1 || true"
+    "test": "vitest run"
   },
   "keywords": [
     "hipilot",
@@ -42,6 +42,9 @@
     "ora": "^6.3.1",
     "commander": "^9.5.0",
     "nunjucks": "^3.2.4"
+  },
+  "devDependencies": {
+    "vitest": "^1.0.0"
   },
   "directories": {
     "doc": "docs"

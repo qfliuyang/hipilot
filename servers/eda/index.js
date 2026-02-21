@@ -23,6 +23,8 @@ import { writeFileSync, readFileSync, existsSync, mkdirSync, readdirSync } from 
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import nunjucks from 'nunjucks';
+import { VERSION } from '../../src/lib/version.js';
+import { getHipilotPaths } from '../../src/lib/paths.js';
 import {
   getMode,
   setMode,
@@ -44,6 +46,9 @@ import {
 } from '../../src/lib/risk-analyzer.js';
 
 const TMUX_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
+
+// Get user-specific temp paths
+const hipilotPaths = getHipilotPaths();
 
 function updateTmuxModeStatus(mode, pending = false) {
   try {
@@ -254,7 +259,7 @@ function generateTcl(intent, params) {
     targets: targets || '*',
     max_paths: 10,
     corner: 'func_worst',
-    report_path: `/tmp/hipilot_${operation}_${Date.now()}.rpt`,
+    report_path: `${hipilotPaths.baseDir}/hipilot_${operation}_${Date.now()}.rpt`,
     ...(variables || {}),
   };
 
@@ -404,12 +409,12 @@ function generateTcl(intent, params) {
       tcl += `# Compare QoR between runs\n`;
       tcl += `# Baseline: ${context.targets || 'previous'}\n`;
       if (prefix === 'innovus') {
-        tcl += `report_timing -late > /tmp/hipilot_current_timing.rpt\n`;
-        tcl += `report_power > /tmp/hipilot_current_power.rpt\n`;
+        tcl += `report_timing -late > ${hipilotPaths.baseDir}/hipilot_current_timing.rpt\n`;
+        tcl += `report_power > ${hipilotPaths.baseDir}/hipilot_current_power.rpt\n`;
       } else {
-        tcl += `report_timing -max_paths 100 > /tmp/hipilot_current_timing.rpt\n`;
-        tcl += `report_power > /tmp/hipilot_current_power.rpt\n`;
-        tcl += `report_qor > /tmp/hipilot_current_qor.rpt\n`;
+        tcl += `report_timing -max_paths 100 > ${hipilotPaths.baseDir}/hipilot_current_timing.rpt\n`;
+        tcl += `report_power > ${hipilotPaths.baseDir}/hipilot_current_power.rpt\n`;
+        tcl += `report_qor > ${hipilotPaths.baseDir}/hipilot_current_qor.rpt\n`;
       }
       break;
 
@@ -434,7 +439,7 @@ function executeTcl(tcl, pane = 'eda') {
   const session = process.env.HIPILOT_SESSION || 'hipilot';
   try {
     const timestamp = Date.now();
-    const tmpFile = `/tmp/hipilot_exec_${timestamp}.tcl`;
+    const tmpFile = `${hipilotPaths.execDir}/hipilot_exec_${timestamp}.tcl`;
     writeFileSync(tmpFile, tcl);
 
     try {
@@ -551,7 +556,7 @@ function rejectPendingTcl() {
 const server = new Server(
   {
     name: 'hipilot-eda-mcp-server',
-    version: '0.1.2',
+    version: VERSION,
   },
   {
     capabilities: {
@@ -779,6 +784,32 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
+        name: 'eda.capture_and_analyze',
+        description: 'Capture EDA pane output and extract QoR metrics. Use this after running a command to analyze timing/DRC/power reports. Returns captured text and structured metrics (WNS, TNS, violations).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            pane: {
+              type: 'string',
+              description: 'Pane to capture: "eda" (default) or "chat"',
+              enum: ['eda', 'chat', '0', '1'],
+              default: 'eda',
+            },
+            lines: {
+              type: 'number',
+              description: 'Number of lines to capture from end of pane (default: 200)',
+              default: 200,
+            },
+            report_type: {
+              type: 'string',
+              description: 'Type of report for targeted analysis: timing, power, area, drc, or auto (default)',
+              enum: ['auto', 'timing', 'power', 'area', 'drc'],
+              default: 'auto',
+            },
+          },
+        },
+      },
+      {
         name: 'eda.run_skill',
         description: 'Execute a HiPilot skill by name. Skills encode team expertise for common workflows. Available skills: report-timing, fix-setup-timing, fix-hold-timing, report-power, report-area, run-drc.',
         inputSchema: {
@@ -794,6 +825,47 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
           },
           required: ['skill'],
+        },
+      },
+      {
+        name: 'eda.edit_tcl',
+        description: 'Open pending or generated Tcl in $EDITOR for manual modification. Waits for user to save and exit, then returns the edited content. Use this when user wants to modify Tcl before execution.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tcl: {
+              type: 'string',
+              description: 'Tcl content to edit (if not using pending)',
+            },
+            use_pending: {
+              type: 'boolean',
+              description: 'Edit the pending Tcl instead of provided content',
+              default: false,
+            },
+          },
+        },
+      },
+      {
+        name: 'eda.save_tcl',
+        description: 'Save Tcl script to the project scripts directory. Creates the directory if it does not exist. Generates a timestamped filename if none provided.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tcl: {
+              type: 'string',
+              description: 'Tcl content to save',
+            },
+            filename: {
+              type: 'string',
+              description: 'Optional custom filename (default: auto-generated with timestamp)',
+            },
+            directory: {
+              type: 'string',
+              description: 'Directory to save to (default: ./scripts/)',
+              default: './scripts/',
+            },
+          },
+          required: ['tcl'],
         },
       },
     ],
@@ -814,7 +886,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
         // Write generated Tcl to temp file
         const timestamp = Date.now();
-        const tempFile = `/tmp/hipilot_generated_${timestamp}.tcl`;
+        const tempFile = `${hipilotPaths.generatedDir}/hipilot_generated_${timestamp}.tcl`;
         writeFileSync(tempFile, result.tcl);
 
         let text = `${result.badge} Generated Tcl script:\n\n${result.tcl}\n`;
@@ -1363,6 +1435,199 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             operation,
             risk_category: riskAnalysis.category,
             template: templatePath
+          }
+        };
+      }
+
+      case 'eda.capture_and_analyze': {
+        // AI Report Comprehension Pipeline - THE MAJOR BREAKTHROUGH
+        const { pane = 'eda', lines = 200, report_type = 'auto' } = args;
+
+        // Capture EDA pane output
+        let capturedOutput;
+        try {
+          const session = process.env.HIPILOT_SESSION || 'hipilot';
+          const paneTarget = pane === 'eda' || pane === '1' ? `${session}:0.1` : `${session}:0.0`;
+          capturedOutput = execSync(
+            `tmux -L ${session} capture-pane -t ${paneTarget} -p -S -${lines}`,
+            { encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 }
+          );
+        } catch (err) {
+          return {
+            content: [{ type: 'text', text: `❌ Failed to capture pane: ${err.message}` }],
+            isError: true,
+          };
+        }
+
+        if (!capturedOutput || capturedOutput.trim().length === 0) {
+          return {
+            content: [{ type: 'text', text: '⚠️ No output captured from EDA pane. The pane may be empty or the command may not have completed yet.' }],
+          };
+        }
+
+        // Extract basic QoR metrics for structured data
+        const metrics = extractQoR(capturedOutput);
+
+        // Build analysis prompt based on report type
+        const analysisPrompt = `Analyze this EDA tool output and provide a structured summary:
+
+**Detected Metrics:**
+- WNS: ${metrics.wns !== null ? metrics.wns + ' ns' : 'N/A'}
+- TNS: ${metrics.tns !== null ? metrics.tns + ' ns' : 'N/A'}
+- Setup Violations: ${metrics.setup_violations}
+- Hold Violations: ${metrics.hold_violations}
+- DRC Violations: ${metrics.drc_violations}
+
+**Raw Output (last ${lines} lines):**
+\`\`\`
+${capturedOutput.slice(-5000)}
+\`\`\`
+
+Please provide:
+1. **Summary**: What is the current state of the design?
+2. **Key Issues**: What are the most critical problems found?
+3. **Recommendations**: What actions should be taken next?
+4. **Confidence**: How confident are you in this analysis (high/medium/low)?`;
+
+        return {
+          content: [{
+            type: 'text',
+            text: `📊 **EDA Output Analysis**\n\n**Captured:** ${capturedOutput.split('\n').length} lines\n**Pane:** ${pane}\n\n**Quick Metrics:**\n- WNS: ${metrics.wns !== null ? metrics.wns + ' ns' : 'N/A'}\n- TNS: ${metrics.tns !== null ? metrics.tns + ' ns' : 'N/A'}\n- Setup Violations: ${metrics.setup_violations}\n- Hold Violations: ${metrics.hold_violations}\n- DRC Violations: ${metrics.drc_violations}\n\n---\n\n**AI Analysis Prompt:**\nThe following prompt can be sent to Claude for detailed analysis:\n\n\`\`\`\n${analysisPrompt}\n\`\`\`\n\nTo get AI analysis, ask: "Analyze this EDA report" and provide the output above.`
+          }],
+          _metadata: {
+            captured_lines: capturedOutput.split('\n').length,
+            metrics,
+            analysis_prompt: analysisPrompt,
+          }
+        };
+      }
+
+      case 'eda.edit_tcl': {
+        const { tcl, use_pending = false } = args;
+
+        // Get content to edit
+        let contentToEdit = tcl;
+        if (use_pending) {
+          const pending = getPending();
+          if (!pending.exists) {
+            return {
+              content: [{ type: 'text', text: '❌ No pending Tcl to edit.' }],
+              isError: true,
+            };
+          }
+          contentToEdit = pending.tcl;
+        }
+
+        if (!contentToEdit) {
+          return {
+            content: [{ type: 'text', text: '❌ No Tcl content provided.' }],
+            isError: true,
+          };
+        }
+
+        // Write to temp file
+        const timestamp = Date.now();
+        const tmpFile = join(hipilotPaths.baseDir, `edit_${timestamp}.tcl`);
+        writeFileSync(tmpFile, contentToEdit);
+
+        // Open in editor with timeout to prevent hanging
+        const editor = process.env.EDITOR || 'vi';
+        try {
+          execSync(`${editor} "${tmpFile}"`, {
+            stdio: 'inherit',
+            timeout: 300000, // 5 minute timeout
+            killSignal: 'SIGTERM'
+          });
+        } catch (err) {
+          // Clean up temp file on error
+          try { unlinkSync(tmpFile); } catch {}
+          if (err.code === 'ETIMEDOUT') {
+            return {
+              content: [{ type: 'text', text: '❌ Editor timed out after 5 minutes.' }],
+              isError: true,
+            };
+          }
+          return {
+            content: [{ type: 'text', text: `❌ Editor failed: ${err.message}` }],
+            isError: true,
+          };
+        }
+
+        // Read back edited content
+        let editedContent;
+        try {
+          editedContent = readFileSync(tmpFile, 'utf-8');
+          unlinkSync(tmpFile); // Clean up
+        } catch (err) {
+          return {
+            content: [{ type: 'text', text: `❌ Failed to read edited file: ${err.message}` }],
+            isError: true,
+          };
+        }
+
+        // If editing pending, update it
+        if (use_pending) {
+          queuePending(editedContent, { edited: true, editedAt: new Date().toISOString() });
+        }
+
+        return {
+          content: [{
+            type: 'text',
+            text: `✏️ **Tcl Edited**\n\n\`\`\`tcl\n${editedContent}\n\`\`\`\n\n${use_pending ? 'Pending Tcl updated.' : 'Use this edited content as needed.'}`
+          }],
+          _metadata: {
+            edited: true,
+            length: editedContent.length,
+            updated_pending: use_pending,
+          }
+        };
+      }
+
+      case 'eda.save_tcl': {
+        const { tcl, filename, directory = './scripts/' } = args;
+
+        if (!tcl) {
+          return {
+            content: [{ type: 'text', text: '❌ No Tcl content provided.' }],
+            isError: true,
+          };
+        }
+
+        // Ensure directory exists
+        try {
+          if (!existsSync(directory)) {
+            mkdirSync(directory, { recursive: true });
+          }
+        } catch (err) {
+          return {
+            content: [{ type: 'text', text: `❌ Failed to create directory: ${err.message}` }],
+            isError: true,
+          };
+        }
+
+        // Generate filename if not provided
+        const saveFile = filename || `hipilot_${new Date().toISOString().replace(/[:.]/g, '-')}.tcl`;
+        const fullPath = join(directory, saveFile);
+
+        // Write file
+        try {
+          writeFileSync(fullPath, tcl);
+        } catch (err) {
+          return {
+            content: [{ type: 'text', text: `❌ Failed to save file: ${err.message}` }],
+            isError: true,
+          };
+        }
+
+        return {
+          content: [{
+            type: 'text',
+            text: `💾 **Tcl Saved**\n\n**Path:** ${fullPath}\n**Size:** ${tcl.length} characters`
+          }],
+          _metadata: {
+            saved: true,
+            path: fullPath,
+            size: tcl.length,
           }
         };
       }
