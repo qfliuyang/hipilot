@@ -161,10 +161,15 @@ class E2ETestRunner extends TestRunner {
 
   async executeEDACommands() {
     this.tmux.setSSH(this.ssh.bind(this));
-    await this.tmux.sendKeys('hipilot:0.1', 'puts "=== HiTestBot E2E ==="', true);
+    // Ask Claude Code (via HiPilot) to execute EDA commands
+    // This tests the actual HiPilot workflow: Claude -> MCP -> EDA tool
+    await this.tmux.sendKeys('hipilot:0.0', 'execute "help report_timing" in the Innovus terminal', false);
     await this.sleep(1000);
-    await this.tmux.sendKeys('hipilot:0.1', 'help report_timing', true);
-    await this.sleep(10000);
+    await this.tmux.sendKeys('hipilot:0.0', null, true, 'C-m');
+    await this.sleep(15000);
+
+    // Wait for HiPilot to send command and Innovus to respond
+    await this.sleep(5000);
   }
 
   async captureEvidence() {
