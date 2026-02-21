@@ -4,11 +4,12 @@
  * Creates markdown reports with all evidence and results.
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 class TestReporter {
   constructor(options = {}) {
+    this.testName = options.testName || 'Test';
     this.testDir = options.testDir;
     this.localDir = options.localDir;
     this.timestamp = options.timestamp;
@@ -32,10 +33,10 @@ class TestReporter {
     const passed = steps.filter(s => s.status === 'passed').length;
     const failed = steps.filter(s => s.status === 'failed').length;
 
-    return `# HiTestBot E2E Test Report
+    return `# HiTestBot - ${this.testName} Report
 
 **Timestamp:** ${this.timestamp}
-**Test Directory:** ${this.testDir}
+**Test Directory:** ${this.testDir || 'N/A'}
 
 ## Summary
 
@@ -112,4 +113,4 @@ ${error.stack}
   }
 }
 
-module.exports = { TestReporter };
+export { TestReporter };
