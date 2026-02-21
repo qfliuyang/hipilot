@@ -2,6 +2,68 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## IMPORTANT: Always Use HiPilot MCP Tools for EDA Operations
+
+**When working on EDA tasks in this project, you MUST use HiPilot's MCP tools instead of any built-in skills.**
+
+### Why This Matters
+
+This project (HiPilot) provides its own MCP (Model Context Protocol) servers for EDA operations:
+- `hipilot-eda` - Tcl generation, QoR extraction, EDA tool interaction
+- `hipilot-tmux` - Tmux pane management and workspace control
+- `hipilot-knowledge` - Documentation search and command reference
+
+**DO NOT use global `/timing`, `/eda-*` or similar skills** - they bypass HiPilot's architecture.
+
+### MCP Tools Available
+
+**eda.* tools (for EDA operations):**
+- `eda.get_status()` - Check HiPilot system status (use this first)
+- `eda.generate_tcl()` - Generate Tcl from templates
+- `eda.send_to_terminal()` - Send Tcl to EDA tool
+- `eda.capture_and_analyze()` - Capture EDA output and analyze
+- `eda.quick()` - One-call operations (timing, power, area, drc)
+- `eda.approve_pending()` / `eda.reject_pending()` - Manual mode approval
+- `eda.get_mode()` / `eda.set_mode()` - Check/change execution mode
+
+**tmux.* tools (for workspace):**
+- `tmux.setup_layout()` - Create HiPilot workspace
+- `tmux.send_keys()` - Send keystrokes to panes
+- `tmux.capture_pane()` - Read pane content
+
+**knowledge.* tools (for docs):**
+- `knowledge.search_docs()` - Search EDA documentation
+- `knowledge.get_command_ref()` - Get exact command syntax
+
+### Workflow Pattern
+
+```
+User Request -> You use MCP tool -> EDA Tool responds -> You analyze
+```
+
+**Example:**
+- User: "Run a timing report"
+- You: Use `eda.quick({ operation: "timing" })` or `eda.generate_tcl()` + `eda.send_to_terminal()`
+- NOT: Use `/timing` skill (that's for other projects, not HiPilot)
+
+### Context Clues
+
+Use HiPilot MCP tools when:
+- The user mentions Innovus, ICC2, PrimeTime, or EDA tools
+- The user asks about timing, power, area, DRC, routing, etc.
+- You're in the HiPilot project directory (has `servers/eda/`, `templates/`)
+- The user mentions "HiPilot" or asks about Tcl scripts
+
+### Testing with HiTestBot
+
+When HiTestBot sends test commands like:
+- "Use the eda.get_status MCP tool..."
+- "Generate a timing report..."
+
+**ALWAYS use the MCP tools** - this validates HiPilot's architecture.
+
+---
+
 ## Project Overview
 
 HiPilot is a VLSI Physical Design copilot system - a lightweight fork of Claude Code with three specialized MCP (Model Context Protocol) servers. It provides physical design engineers with an AI-powered assistant that generates vendor-specific Tcl scripts, parses EDA reports, and manages a tmux-based workspace.

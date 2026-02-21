@@ -190,19 +190,24 @@ class E2ETestRunner extends TestRunner {
     await this.tmux.sendKeys('hipilot:0.0', 'echo "========================================"', true);
     await this.tmux.sendKeys('hipilot:0.0', 'echo "  HiTestBot E2E Test"', true);
     await this.tmux.sendKeys('hipilot:0.0', 'echo "========================================"', true);
+
+    // Copy CLAUDE.md to the test directory so Claude Code reads it as project context
+    // This ensures Claude uses HiPilot MCP tools instead of global skills
+    await this.ssh(`cp ${testDir}/CLAUDE.md ${this.testDir}/CLAUDE.md 2>/dev/null || true`);
+
     await this.tmux.sendKeys('hipilot:0.0', `cd ${testDir} && claude --dangerously-skip-permissions`, true);
     await this.sleep(35000);
   }
 
   /**
-   * Test: Check HiPilot MCP status
-   * Tests: Claude uses eda.get_status MCP tool
+   * Test: Check HiPilot status
+   * Tests: Claude uses eda.get_status MCP tool (guided by CLAUDE.md)
    */
   async testListSkills() {
     this.tmux.setSSH(this.ssh.bind(this));
 
-    // Explicitly ask Claude to use the eda.get_status MCP tool
-    await this.tmux.sendKeys('hipilot:0.0', 'Use the eda.get_status MCP tool to check HiPilot status', false);
+    // With CLAUDE.md in place, Claude should automatically use MCP tools
+    await this.tmux.sendKeys('hipilot:0.0', 'Check HiPilot system status', false);
     await this.sleep(1000);
     await this.tmux.sendKeys('hipilot:0.0', null, true, 'C-m');
     await this.sleep(30000);
@@ -212,14 +217,14 @@ class E2ETestRunner extends TestRunner {
   }
 
   /**
-   * Test: Generate Tcl using MCP
-   * Tests: Claude uses eda.generate_tcl MCP tool
+   * Test: Generate Tcl for timing report
+   * Tests: Claude uses eda.generate_tcl MCP tool (guided by CLAUDE.md)
    */
   async testGenerateTcl() {
     this.tmux.setSSH(this.ssh.bind(this));
 
-    // Explicitly ask Claude to use the eda.generate_tcl MCP tool
-    await this.tmux.sendKeys('hipilot:0.0', 'Use the eda.generate_tcl MCP tool to generate a timing report script', false);
+    // With CLAUDE.md in place, Claude should automatically use MCP tools
+    await this.tmux.sendKeys('hipilot:0.0', 'Generate a Tcl script to run a timing report for the current design', false);
     await this.sleep(1000);
     await this.tmux.sendKeys('hipilot:0.0', null, true, 'C-m');
     await this.sleep(30000);
@@ -229,14 +234,14 @@ class E2ETestRunner extends TestRunner {
   }
 
   /**
-   * Test: Send Tcl to EDA tool via MCP
-   * Tests: Claude uses eda.send_to_terminal MCP tool
+   * Test: Send command to EDA tool
+   * Tests: Claude uses eda.send_to_terminal MCP tool (guided by CLAUDE.md)
    */
   async testSendToEDA() {
     this.tmux.setSSH(this.ssh.bind(this));
 
-    // First generate Tcl, then send it
-    await this.tmux.sendKeys('hipilot:0.0', 'Use eda.generate_tcl to create a "help report_timing" script, then use eda.send_to_terminal to send it to Innovus', false);
+    // With CLAUDE.md in place, Claude should automatically use MCP tools
+    await this.tmux.sendKeys('hipilot:0.0', 'Send "help report_timing" command to Innovus', false);
     await this.sleep(1000);
     await this.tmux.sendKeys('hipilot:0.0', null, true, 'C-m');
     await this.sleep(30000);
@@ -246,14 +251,14 @@ class E2ETestRunner extends TestRunner {
   }
 
   /**
-   * Test: Capture EDA output via MCP
-   * Tests: Claude uses eda.capture_and_analyze MCP tool
+   * Test: Capture and analyze EDA output
+   * Tests: Claude uses eda.capture_and_analyze MCP tool (guided by CLAUDE.md)
    */
   async testCaptureAndAnalyze() {
     this.tmux.setSSH(this.ssh.bind(this));
 
-    // Explicitly ask Claude to use the capture_and_analyze MCP tool
-    await this.tmux.sendKeys('hipilot:0.0', 'Use the eda.capture_and_analyze MCP tool to capture the EDA pane output', false);
+    // With CLAUDE.md in place, Claude should automatically use MCP tools
+    await this.tmux.sendKeys('hipilot:0.0', 'Capture and analyze the EDA pane output', false);
     await this.sleep(1000);
     await this.tmux.sendKeys('hipilot:0.0', null, true, 'C-m');
     await this.sleep(30000);
