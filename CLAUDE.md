@@ -4,7 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## IMPORTANT: Always Use HiPilot MCP Tools for EDA Operations
 
-**When working on EDA tasks in this project, you MUST use HiPilot's MCP tools instead of any built-in skills.**
+**When working on EDA tasks in this project, you MUST use HiPilot's MCP tools instead of any built-in skills or Bash commands.**
+
+### CRITICAL RULES
+
+**NEVER use Bash for EDA operations. ALWAYS use MCP tools.**
+
+❌ **WRONG:** `Bash(tmux send-keys -t hipilot:0.1 "help report_timing" Enter)`
+✅ **CORRECT:** `eda.send_to_terminal({ tcl: "help report_timing" })`
+
+❌ **WRONG:** `Bash(tmux capture-pane -t hipilot:0.1 -p -S -100)`
+✅ **CORRECT:** `eda.capture_and_analyze({ pane: "eda" })`
+
+❌ **WRONG:** `Skill(/timing)`
+✅ **CORRECT:** `eda.quick({ operation: "timing" })` or `eda.generate_tcl()`
 
 ### Why This Matters
 
@@ -14,6 +27,8 @@ This project (HiPilot) provides its own MCP (Model Context Protocol) servers for
 - `hipilot-knowledge` - Documentation search and command reference
 
 **DO NOT use global `/timing`, `/eda-*` or similar skills** - they bypass HiPilot's architecture.
+
+**DO NOT use Bash to send commands to tmux** - this bypasses HiPilot's approval system and mode management.
 
 ### MCP Tools Available
 
