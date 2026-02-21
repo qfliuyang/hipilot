@@ -344,12 +344,10 @@ export function generateApprovalPrompt(riskAnalysis, tcl) {
 export function validateConfirmation(userInput, riskAnalysis) {
   const { category, confirmation_type, confirmation_text } = riskAnalysis;
 
-  // Normalize input
   const normalizedInput = userInput.trim().toUpperCase();
   const requiredText = (confirmation_text || '').toUpperCase();
 
   if (category < 2) {
-    // Safe or moderate - simple yes/no
     const yesWords = ['YES', 'Y', 'EXECUTE', 'RUN', 'OK', 'SURE', 'DO IT', 'APPROVE', 'CONFIRM'];
     const noWords = ['NO', 'N', 'CANCEL', 'REJECT', 'SKIP', "DON'T", 'ABORT'];
 
@@ -363,7 +361,6 @@ export function validateConfirmation(userInput, riskAnalysis) {
   }
 
   if (category === 2) {
-    // Dangerous - requires typing "CONFIRM"
     if (normalizedInput === 'CONFIRM' || normalizedInput === requiredText) {
       return { valid: true, message: 'Confirmed - dangerous operation approved' };
     }
@@ -371,7 +368,6 @@ export function validateConfirmation(userInput, riskAnalysis) {
   }
 
   if (category === 3) {
-    // Critical - requires typing full phrase
     if (normalizedInput === requiredText) {
       return { valid: true, message: 'Confirmed - critical operation approved' };
     }
@@ -385,10 +381,127 @@ export function validateConfirmation(userInput, riskAnalysis) {
   return { valid: false, message: 'Unknown risk category' };
 }
 
+const SIDE_EFFECT_PATTERNS = [
+  {
+    triggers: [/fix_eco_timing/i, /optDesign.*setup/i, /size_cell/i, /sizeCell/i],
+    sideEffect: 'hold_violations',
+    severity: 'medium',
+    title: 'Hold Timing Risk',
+    description: 'Setup timing fixes may introduce hold violations on receiving flip-flops',
+    recommendation: 'Run /timing --hold after this operation to verify hold timing'
+  },
+  {
+    triggers: [/insert_buffer/i, /addBuffer/i, /insertBuffer/i],
+    sideEffect: 'clock_skew',
+    severity: 'medium',
+    title: 'Clock Skew Impact',
+    description: 'Buffer insertion may affect clock tree balance and introduce skew',
+    recommendation: 'Verify clock tree timing after buffer insertion'
+  },
+  {
+    triggers: [/size_cell/i, /ecoChangeCell/i],
+    sideEffect: 'drc_violations',
+    severity: 'low',
+    title: 'DRC Risk',
+    description: 'Cell resizing may cause antenna or enclosure violations',
+    recommendation: 'Run /drc after resizing to check for new violations'
+  },
+  {
+    triggers: [/remove_/i, /delete_/i],
+    sideEffect: 'connectivity_loss',
+    severity: 'high',
+    title: 'Connectivity Risk',
+    description: 'Removal operations may disconnect nets or leave floating pins',
+    recommendation: 'Verify connectivity after removal operations'
+  },
+  {
+    triggers: [/clockDesign/i, /ccopt_design/i, /synthesize_clock/i],
+    sideEffect: 'global_timing_change',
+    severity: 'medium',
+    title: 'Global Timing Impact',
+    description: 'Clock tree synthesis affects all clocked paths in the design',
+    recommendation: 'Full timing signoff recommended after CTS changes'
+  },
+  {
+    triggers: [/routeDesign/i, /route_auto/i, /routeDesign/i],
+    sideEffect: 'timing_signoff_drift',
+    severity: 'low',
+    title: 'Timing Drift',
+    description: 'Routing may introduce additional delay on critical paths',
+    recommendation: 'Verify timing convergence after routing'
+  }
+];
+
+export function analyzeSideEffects(tcl) {
+  if (!tcl || typeof tcl !== 'string') {
+    return { has_side_effects: false, side_effects: [] };
+  }
+
+  const detectedEffects = [];
+  const lines = tcl.split('\n');
+
+  for (const line of lines) {
+    const cleanLine = line.trim();
+    if (!cleanLine || cleanLine.startsWith('#')) continue;
+
+    for (const pattern of SIDE_EFFECT_PATTERNS) {
+      for (const trigger of pattern.triggers) {
+        if (trigger.test(cleanLine)) {
+          const existing = detectedEffects.find(e => e.sideEffect === pattern.sideEffect);
+          if (!existing) {
+            detectedEffects.push({
+              sideEffect: pattern.sideEffect,
+              severity: pattern.severity,
+              title: pattern.title,
+              description: pattern.description,
+              recommendation: pattern.recommendation,
+              triggered_by: cleanLine.substring(0, 60)
+            });
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  return {
+    has_side_effects: detectedEffects.length > 0,
+    side_effects: detectedEffects,
+    summary: detectedEffects.map(e => `${e.title}: ${e.description}`).join('; ')
+  };
+}
+
+export function generateSideEffectWarnings(sideEffectAnalysis) {
+  if (!sideEffectAnalysis.has_side_effects) {
+    return [];
+  }
+
+  const warnings = [];
+  const severityOrder = { high: 0, medium: 1, low: 2 };
+  const sorted = [...sideEffectAnalysis.side_effects].sort(
+    (a, b) => severityOrder[a.severity] - severityOrder[b.severity]
+  );
+
+  for (const effect of sorted) {
+    const icon = effect.severity === 'high' ? '🔴' : effect.severity === 'medium' ? '🟠' : '🟡';
+    warnings.push({
+      level: effect.severity,
+      icon,
+      title: effect.title,
+      message: effect.description,
+      recommendation: effect.recommendation
+    });
+  }
+
+  return warnings;
+}
+
 export default {
   analyzeRisk,
   generateApprovalPrompt,
   validateConfirmation,
+  analyzeSideEffects,
+  generateSideEffectWarnings,
   RISK_PATTERNS,
   TIME_ESTIMATES,
   CONFIRMATION_REQUIREMENTS

@@ -206,9 +206,10 @@ class TestRunner {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  /**
-   * Generate final report
-   */
+  log(message) {
+    console.log(`   ${message}`);
+  }
+
   async generateReport() {
     return this.reporter.generate(this.steps, this.config);
   }
