@@ -429,6 +429,148 @@ report_constraint -all_violators -nosplit > ./reports/pt_constraint.rpt
 
 ---
 
+## PrimeTime Static Timing Analysis
+
+PrimeTime is the industry-standard signoff timing analysis tool. It provides gold-standard timing verification after physical design.
+
+### PrimeTime vs Innovus STA
+
+| Aspect | Innovus | PrimeTime |
+|--------|---------|-----------|
+| Purpose | Optimization during P&R | Signoff verification |
+| Timing accuracy | Estimated | Signoff-quality |
+| Library format | .lib or .db | **.db only** |
+| SDC support | Extended | Standard only |
+
+### Library Setup (CRITICAL)
+
+**IMPORTANT:** PrimeTime requires `.db` format libraries, NOT `.lib` files.
+
+```tcl
+# CORRECT: Use .db files
+set target_library $lib_path/sky130_fd_sc_hd__tt_025C_1v80.db
+set link_library "* $target_library"
+
+# WRONG: .lib files require Library Compiler
+# PrimeTime will fail with "Library Compiler executable path is not set"
+```
+
+### SDC Compatibility
+
+PrimeTime uses strict SDC syntax. Some Design Compiler constructs are not valid:
+
+```tcl
+# WRONG in PrimeTime SDC
+current_design ibex_core  ;# Not valid SDC, remove this
+
+# WRONG in some PrimeTime versions
+set non_clock_inputs [all_inputs -no_clock]  ;# -no_clock may not work
+
+# CORRECT alternative
+set non_clock_inputs [get_ports -filter "direction == in && name != clk_i"]
+```
+
+### Complete PrimeTime Script Template
+
+```tcl
+#!/usr/bin/tclsh
+# pt_sta.tcl - PrimeTime STA script
+
+#===========================================
+# Configuration
+#===========================================
+set design ibex_core
+set lib_path /path/to/pdk/lib
+set netlist_path /path/to/netlist.v
+
+#===========================================
+# Library Setup (use .db files!)
+#===========================================
+set target_library $lib_path/sky130_fd_sc_hd__tt_025C_1v80.db
+set link_library "* $target_library"
+
+#===========================================
+# Read Design
+#===========================================
+read_verilog $netlist_path
+current_design $design
+link_design
+
+#===========================================
+# Constraints (SDC without current_design!)
+#===========================================
+# Do NOT include "current_design" in SDC file
+read_sdc constraints.sdc
+
+# Or define inline:
+# create_clock -name clk_i -period 10.0 [get_ports clk_i]
+# set_input_delay 0.5 -clock clk_i [get_ports -filter "direction == in && name != clk_i"]
+# set_output_delay 0.5 -clock clk_i [all_outputs]
+
+#===========================================
+# Update and Report
+#===========================================
+update_timing
+
+# Setup timing (max delay)
+echo "=== SETUP TIMING ==="
+report_timing -max_paths 10 -delay max
+
+# Hold timing (min delay)
+echo "=== HOLD TIMING ==="
+report_timing -max_paths 10 -delay min
+
+# QoR summary
+report_qor
+
+exit
+```
+
+### Running PrimeTime
+
+```bash
+# Run PrimeTime with script
+pt_shell -f pt_sta.tcl
+
+# Or interactively
+pt_shell
+```
+
+### Common Errors
+
+#### "Library Compiler executable path is not set"
+
+**Cause:** Trying to read .lib file instead of .db
+**Fix:** Convert .lib to .db, or use existing .db file
+
+#### "No constrained timing paths found"
+
+**Cause:** SDC constraints not applied correctly
+**Fix:**
+1. Remove `current_design` from SDC file
+2. Check clock was created: `report_clocks`
+3. Check ports match: `get_ports *`
+
+#### "unknown option '-no_clock'"
+
+**Cause:** PrimeTime version doesn't support this option
+**Fix:** Use `get_ports -filter` instead
+
+### Skywater 130nm Example
+
+```bash
+# Tested on PrimeTime T-2022.03
+cd /home/EDA/hipilot_test/ibex_work_upload
+pt_shell -f scripts/pt_sta.tcl
+
+# Expected output:
+# Setup WNS: >= 0 (MET)
+# Hold WNS: >= 0 (MET)
+# Clock: core_clock, Period: 17.40ns
+```
+
+---
+
 ## Core Principles
 
 1. **Always report with propagated clocks.** Ideal-clock timing reports are useful only in synthesis. Post-CTS and post-route reports must use propagated clocks to include real clock tree latency and skew.

@@ -72,6 +72,47 @@ source /tools/mentor/calibre_setup.sh   # Calibre
 
 ---
 
+## Important: Physical-Only Mode Limitation
+
+### What is Physical-Only Mode?
+
+When a design is initialized in Innovus without timing libraries, it runs in "physical-only mode." This means:
+- No timing information is available
+- Clock signals are treated as regular ports
+- CTS cannot be performed
+- Timing-driven optimization is limited
+- STA reports will show "No constrained timing paths found"
+
+### When This Happens
+
+Physical-only mode occurs when:
+1. Design initialized with only LEF files (no Liberty)
+2. No MMMC views created
+3. No SDC constraints loaded during init
+
+### Impact on Flow
+
+| Stage | Physical-Only Mode | Full Timing Mode |
+|-------|-------------------|------------------|
+| Floorplan | ✓ Works | ✓ Works |
+| Placement | ✓ Works (not timing-driven) | ✓ Works (timing-driven) |
+| CTS | ✗ Not possible | ✓ Works |
+| Routing | ✓ Works | ✓ Works |
+| RC Extraction | ✓ Works | ✓ Works |
+| Innovus STA | ✗ Limited | ✓ Full |
+| PrimeTime STA | ✓ Works (uses netlist) | ✓ Works |
+
+### Recommendation
+
+For production flows, **always initialize with timing libraries**. Physical-only mode is acceptable for:
+- Quick congestion/routability studies
+- Area estimation
+- Learning/demonstration purposes
+
+See `/design-init` skill for proper initialization with timing.
+
+---
+
 ## Flow Stages
 
 ### Stage 1: Synthesis (Design Compiler)
@@ -158,6 +199,24 @@ grep -E "(ERROR|WARNING)" result/pr/log/init
 # "Design initialized successfully"
 # No missing libraries
 ```
+
+### Timing-Aware Initialization (Recommended)
+
+For full timing-driven flow, include timing libraries during init:
+
+```tcl
+# Set up MMMC views
+create_library_set -name libs_tt -timing {sky130_fd_sc_hd__tt_025C_1v80.lib}
+create_rc_corner -name rc_tt
+create_delay_corner -name delay_tt -library_set libs_tt -rc_corner rc_tt
+create_constraint_mode -name const_mode -sdc_files {constraints.sdc}
+create_analysis_view -name view_tt -constraint_mode const_mode -delay_corner delay_tt
+
+# Then initialize design
+init_design
+```
+
+This enables timing-driven placement, CTS, and full STA capabilities.
 
 ---
 
@@ -372,38 +431,39 @@ result/pr/sdf/           # SDF file
 
 ### Stage 9: Static Timing Analysis (PrimeTime)
 
-**Purpose:** Signoff-quality timing verification
+**Purpose:** Gold-standard timing verification for signoff
 
 **Command:**
 ```bash
-make run_pt
+cd /home/EDA/hipilot_test/ibex_work_upload
+pt_shell -f scripts/pt_sta.tcl
 ```
 
 **What happens:**
-1. Load design in PrimeTime
-2. Apply signoff corners
-3. Report setup/hold timing
-4. Generate signoff reports
+1. Load synthesized/routed netlist
+2. Apply timing libraries (.db format)
+3. Read SDC constraints
+4. Report setup/hold timing
 
-**Output:**
-```
-result/sta/report/
-```
+**Key Points:**
+- Use `.db` libraries (not `.lib`)
+- SDC should NOT contain `current_design` command
+- Use `get_ports -filter` instead of `all_inputs -no_clock`
 
 **Success criteria:**
-- Setup WNS > 0 (all corners)
-- Hold WNS > 0 (all corners)
-- No timing violations
+- Setup WNS ≥ 0
+- Hold WNS ≥ 0
 
 **Check results:**
 ```tcl
-# In PrimeTime report
-grep -E "(slack|WNS|TNS)" result/sta/report/*.rpt
+# In PrimeTime
+report_timing -delay max -max_paths 10  ;# Setup
+report_timing -delay min -max_paths 10  ;# Hold
 
-# Target:
-# Setup WNS: > 0 ps
-# Hold WNS: > 0 ps
+# Look for "No paths with slack less than 0.000"
 ```
+
+See `/report-timing` skill for complete PrimeTime usage.
 
 ---
 
@@ -656,3 +716,77 @@ Ready for tapeout!
 - Subsequent runs from checkpoints are faster
 - Always save checkpoints between stages
 - Keep log files for debugging
+
+---
+
+## Command Syntax Reference
+
+### Tested Commands (RTL2GDS Flow)
+
+**Design Compiler (Synthesis):**
+```tcl
+# Elaborate and compile
+read_verilog rtl/design.v
+elaborate design_name
+compile_ultra
+write -format verilog -hierarchy -output netlist.v
+```
+
+**Innovus (Place & Route):**
+```tcl
+# Initialize with timing
+create_library_set -name libs_tt -timing {sky130_fd_sc_hd__tt_025C_1v80.lib}
+create_rc_corner -name rc_tt
+create_delay_corner -name delay_tt -library_set libs_tt -rc_corner rc_tt
+create_constraint_mode -name const_mode -sdc_files {constraints.sdc}
+create_analysis_view -name view_tt -constraint_mode const_mode -delay_corner delay_tt
+init_design
+
+# Floorplan
+createFloorplan -dieSize 500 500 0 0 0 0
+
+# Place IO
+place_io -pinLayer {M3 M4}
+
+# Power plan
+addRing -nets {VDD VSS} -layer {top M1 bottom M1 left M2 right M2}
+
+# Placement
+placeDesign
+
+# CTS (requires timing-aware init)
+create_ccopt_clock_tree_spec
+ccopt_design
+
+# Routing
+routeDesign
+
+# Timing checks
+report_timing -max_paths 10
+```
+
+**PrimeTime (Signoff STA):**
+```tcl
+# Load design (use .db libraries, not .lib)
+read_db /path/to/timing_libs/*.db
+read_verilog netlist.v
+current_design design_name
+
+# Read constraints (SDC should NOT have current_design)
+read_sdc constraints.sdc
+
+# Timing analysis
+report_timing -delay max -max_paths 10  ;# Setup
+report_timing -delay min -max_paths 10  ;# Hold
+
+# Port filtering (use get_ports -filter)
+# Incorrect: all_inputs -no_clock
+# Correct: get_ports -filter "direction==in && is_clock==false"
+```
+
+**Key Takeaways from Testing:**
+1. Physical-only mode prevents CTS - always init with timing libraries
+2. PrimeTime requires .db format libraries
+3. SDC constraints for PrimeTime should not include `current_design`
+4. Use `get_ports -filter` instead of `all_inputs -no_clock` for PrimeTime
+
