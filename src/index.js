@@ -8,6 +8,7 @@
  *   hipilot workspace - Launch tmux workspace
  *   hipilot skills    - List available skills
  *   hipilot templates - List available Tcl templates
+ *   hipilot skill-gen - Generate skill from documentation
  *   hipilot version   - Show version
  */
 
@@ -19,6 +20,14 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 import { VERSION } from './lib/version.js';
+import { runSkillGenerationWorkflow, quickGenerate } from './lib/skill-cli.js';
+import {
+  parseQuickCommand,
+  executeQuickCommand,
+  formatQuickCommandHelp,
+  getCommandHelp,
+  listQuickCommands,
+} from './lib/quick-commands.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -181,7 +190,7 @@ function cmdStatus() {
     console.log(chalk.dim('    1. Run "hipilot workspace" to launch tmux layout'));
     console.log(chalk.dim('    2. Start Claude Code in the chat pane: claude'));
     console.log(chalk.dim('    3. Start your EDA tool in the EDA pane'));
-    console.log(chalk.dim('    4. Try: "fix setup timing on pcie_rx" or /project:timing'));
+    console.log(chalk.dim('    4. Try: "fix setup timing on pcie_rx" or /timing reg2reg'));
   }
   console.log('');
 }
@@ -264,10 +273,116 @@ function cmdVersion() {
   console.log(`hipilot v${VERSION}`);
 }
 
+async function cmdSkillGen() {
+  header();
+
+  // Check for piped input (non-interactive mode)
+  const isPiped = !process.stdin.isTTY;
+
+  if (isPiped) {
+    // Non-interactive mode: read from stdin
+    let sourceText = '';
+    process.stdin.setEncoding('utf8');
+    process.stdin.on('data', (chunk) => {
+      sourceText += chunk;
+    });
+    process.stdin.on('end', async () => {
+      const isPreview = process.argv.includes('--preview');
+      const result = await quickGenerate(sourceText, {
+        sourceName: 'piped-input',
+        previewOnly: isPreview,
+        force: process.argv.includes('--force'),
+      });
+
+      if (isPreview) {
+        // Preview mode: just show the generated skill
+        if (result.success) {
+          console.log(chalk.hex(colors.cyan)('Generated Skill Preview:'));
+          console.log(chalk.dim('─'.repeat(60)));
+          console.log(result.skill);
+          console.log(chalk.dim('─'.repeat(60)));
+        } else {
+          console.error(chalk.hex(colors.red)(`Failed to generate: ${result.error}`));
+          process.exit(1);
+        }
+      } else if (result.success) {
+        console.log(chalk.hex(colors.green)('✓ Skill generated and saved:'));
+        console.log(`  ${result.path}`);
+      } else if (result.error === 'file_exists') {
+        console.log(chalk.hex(colors.yellow)(`File already exists: ${result.path}`));
+        console.log(chalk.dim('Use --force to overwrite'));
+        console.log('');
+        console.log('Generated skill content:');
+        console.log(chalk.dim('─'.repeat(60)));
+        console.log(result.skill);
+      } else {
+        console.error(chalk.hex(colors.red)(`Failed: ${result.error}`));
+        process.exit(1);
+      }
+    });
+    return;
+  }
+
+  // Interactive mode
+  try {
+    await runSkillGenerationWorkflow();
+  } catch (err) {
+    console.error(chalk.hex(colors.red)(`Error: ${err.message}`));
+    process.exit(1);
+  }
+}
+
 function checkSlashCommands() {
   const cmdDir = join(PROJECT_ROOT, '.claude', 'commands');
   if (!existsSync(cmdDir)) return [];
   return readdirSync(cmdDir).filter(f => f.endsWith('.md')).map(f => f.replace('.md', ''));
+}
+
+function cmdQuick() {
+  header();
+
+  const commands = listQuickCommands();
+
+  if (commands.length === 0) {
+    console.log(chalk.hex(colors.yellow)('  No quick commands available.'));
+    console.log('');
+    return;
+  }
+
+  console.log(chalk.bold('  Quick Commands:\n'));
+
+  for (const cmd of commands) {
+    const cmdStr = chalk.hex(colors.cyan)(`/${cmd.name}`);
+    const argStr = cmd.hasArgument ? chalk.dim(` [${cmd.argumentName}]`) : '';
+    console.log(`  ${cmdStr}${argStr}`);
+    console.log(`    ${cmd.description}`);
+    console.log(`    Usage: ${chalk.dim(cmd.usage)}`);
+    console.log('');
+  }
+
+  console.log(chalk.dim(`  ${commands.length} quick commands available`));
+  console.log(chalk.dim('  Use in Claude Code: /timing, /drc, /power, /area, /compare, /history'));
+  console.log('');
+}
+
+function cmdQuickHelp(subcommand) {
+  header();
+
+  if (!subcommand) {
+    console.log(chalk.hex(colors.yellow)('  Usage: hipilot quick <command>'));
+    console.log('');
+    cmdQuick();
+    return;
+  }
+
+  const help = getCommandHelp(subcommand);
+  if (help) {
+    console.log(help);
+  } else {
+    console.log(chalk.hex(colors.red)(`  Unknown command: ${subcommand}`));
+    console.log('');
+    cmdQuick();
+  }
 }
 
 function cmdHelp() {
@@ -278,20 +393,23 @@ function cmdHelp() {
   console.log('    hipilot workspace    Launch tmux workspace (50/50 split)');
   console.log('    hipilot skills       List available skills');
   console.log('    hipilot templates    List available Tcl templates');
+  console.log('    hipilot skill-gen    Generate skill from documentation');
+  console.log('    hipilot quick        List quick commands');
   console.log('    hipilot version      Show version');
   console.log('    hipilot help         Show this help');
   console.log('');
   console.log('  Quick Commands (in Claude Code):\n');
-  console.log('    /project:timing      Run timing report and analyze');
-  console.log('    /project:drc         Run DRC check and summarize');
-  console.log('    /project:power       Power analysis');
-  console.log('    /project:area        Area/utilization report');
-  console.log('    /project:compare     Compare QoR with baseline');
-  console.log('    /project:history     Show Tcl commands sent this session');
+  console.log('    /timing [group]      Run timing report and analyze');
+  console.log('    /drc                 Run DRC check and summarize');
+  console.log('    /power               Power analysis');
+  console.log('    /area                Area/utilization report');
+  console.log('    /compare [baseline]  Compare QoR with baseline');
+  console.log('    /history             Show Tcl commands sent this session');
   console.log('');
   console.log('  MCP Tools:\n');
   console.log('    eda.generate_tcl        Generate Tcl from intent (Nunjucks templates)');
   console.log('    eda.send_to_terminal    Send Tcl to EDA pane');
+  console.log('    eda.quick               One-call operations (timing, drc, power, area)');
   console.log('    eda.extract_qor         Extract QoR from reports');
   console.log('    eda.detect_tool         Detect running EDA tool');
   console.log('    tmux.send_keys          Send keys to pane');
@@ -319,6 +437,8 @@ switch (command) {
   case 'workspace': cmdWorkspace(); break;
   case 'skills':    cmdSkills(); break;
   case 'templates': cmdTemplates(); break;
+  case 'skill-gen': cmdSkillGen(); break;
+  case 'quick':     cmdQuickHelp(process.argv[3]); break;
   case 'version':
   case '--version':
   case '-v':        cmdVersion(); break;

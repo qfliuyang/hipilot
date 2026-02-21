@@ -44,6 +44,22 @@ import {
   generateApprovalPrompt,
   validateConfirmation,
 } from '../../src/lib/risk-analyzer.js';
+import {
+  analyzeReport,
+  REPORT_TYPES,
+  generateTimingPrompt,
+  generateDrcPrompt,
+  generatePowerPrompt,
+  generateAreaPrompt,
+} from '../../src/lib/report-analyzer.js';
+import {
+  getCachedAnalysis,
+  setCachedAnalysis,
+  getCacheStats,
+  clearCache,
+  generateActionButtons,
+  formatActionButtons,
+} from '../../src/lib/report-cache.js';
 
 const TMUX_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
 
@@ -868,6 +884,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ['tcl'],
         },
       },
+      {
+        name: 'eda.analyze_report',
+        description: 'Analyze EDA report (timing, DRC, power, area) using AI. Auto-detects report type or accepts explicit type. Returns structured analysis with LLM prompt for detailed insights. Use this to understand report contents and get actionable recommendations.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            report_content: {
+              type: 'string',
+              description: 'Full text content of the EDA report to analyze',
+            },
+            report_path: {
+              type: 'string',
+              description: 'Path to report file (alternative to report_content)',
+            },
+            report_type: {
+              type: 'string',
+              description: 'Type of report for targeted analysis (auto-detected if not specified)',
+              enum: ['auto', 'timing', 'drc', 'power', 'area'],
+              default: 'auto',
+            },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'eda.get_analysis_cache',
+        description: 'Get report analysis cache statistics or clear cache. Shows number of cached analyses, cache size, and hit rates. Use action:clear to clear all cached analyses.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            action: {
+              type: 'string',
+              description: 'Action to perform',
+              enum: ['stats', 'clear'],
+              default: 'stats',
+            },
+          },
+        },
+      },
     ],
   };
 });
@@ -1440,8 +1495,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'eda.capture_and_analyze': {
-        // AI Report Comprehension Pipeline - THE MAJOR BREAKTHROUGH
-        const { pane = 'eda', lines = 200, report_type = 'auto' } = args;
+        // AI Report Comprehension Pipeline - with caching and action buttons
+        const { pane = 'eda', lines = 200, report_type = 'auto', use_cache = true } = args;
 
         // Capture EDA pane output
         let capturedOutput;
@@ -1465,39 +1520,71 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           };
         }
 
-        // Extract basic QoR metrics for structured data
-        const metrics = extractQoR(capturedOutput);
+        // Check cache first
+        let analysis;
+        let cached = false;
+        if (use_cache) {
+          const cachedResult = getCachedAnalysis(capturedOutput, report_type);
+          if (cachedResult) {
+            analysis = cachedResult;
+            cached = true;
+          }
+        }
 
-        // Build analysis prompt based on report type
-        const analysisPrompt = `Analyze this EDA tool output and provide a structured summary:
+        // If not cached, perform analysis
+        if (!analysis) {
+          // Use the full report analyzer
+          analysis = analyzeReport(capturedOutput, report_type);
 
-**Detected Metrics:**
-- WNS: ${metrics.wns !== null ? metrics.wns + ' ns' : 'N/A'}
-- TNS: ${metrics.tns !== null ? metrics.tns + ' ns' : 'N/A'}
-- Setup Violations: ${metrics.setup_violations}
-- Hold Violations: ${metrics.hold_violations}
-- DRC Violations: ${metrics.drc_violations}
+          // Store in cache
+          if (use_cache) {
+            setCachedAnalysis(capturedOutput, report_type, analysis);
+          }
+        }
 
-**Raw Output (last ${lines} lines):**
-\`\`\`
-${capturedOutput.slice(-5000)}
-\`\`\`
+        // Generate action buttons
+        const actionButtons = generateActionButtons(analysis.type, true);
 
-Please provide:
-1. **Summary**: What is the current state of the design?
-2. **Key Issues**: What are the most critical problems found?
-3. **Recommendations**: What actions should be taken next?
-4. **Confidence**: How confident are you in this analysis (high/medium/low)?`;
+        // Build response
+        let text = `📊 **EDA Output Analysis: ${analysis.type.toUpperCase()}**`;
+        if (cached) {
+          text += ' 🔄 (cached)';
+        }
+        text += `\n\n**Captured:** ${capturedOutput.split('\n').length} lines from ${pane} pane\n\n`;
+
+        // Show extracted metrics
+        if (analysis.metrics) {
+          text += `**Extracted Metrics:**\n`;
+          for (const [key, value] of Object.entries(analysis.metrics)) {
+            if (value !== null && value !== undefined && value !== 0) {
+              text += `  • ${key}: ${value}\n`;
+            }
+          }
+          text += `\n`;
+        }
+
+        // Show summary
+        text += `**Summary:** ${analysis.summary}\n`;
+
+        // Add action buttons
+        text += formatActionButtons(actionButtons);
+
+        // Show the LLM prompt
+        text += `\n\n---\n\n**🤖 AI Analysis Prompt:**\n\n`;
+        text += `The following prompt can be sent to Claude for detailed analysis:\n\n`;
+        text += `\`\`\`\n${analysis.prompt}\n\`\`\`\n\n`;
+        text += `To get AI analysis, ask: "Please analyze this EDA report" and provide the prompt above.`;
 
         return {
-          content: [{
-            type: 'text',
-            text: `📊 **EDA Output Analysis**\n\n**Captured:** ${capturedOutput.split('\n').length} lines\n**Pane:** ${pane}\n\n**Quick Metrics:**\n- WNS: ${metrics.wns !== null ? metrics.wns + ' ns' : 'N/A'}\n- TNS: ${metrics.tns !== null ? metrics.tns + ' ns' : 'N/A'}\n- Setup Violations: ${metrics.setup_violations}\n- Hold Violations: ${metrics.hold_violations}\n- DRC Violations: ${metrics.drc_violations}\n\n---\n\n**AI Analysis Prompt:**\nThe following prompt can be sent to Claude for detailed analysis:\n\n\`\`\`\n${analysisPrompt}\n\`\`\`\n\nTo get AI analysis, ask: "Analyze this EDA report" and provide the output above.`
-          }],
+          content: [{ type: 'text', text }],
           _metadata: {
             captured_lines: capturedOutput.split('\n').length,
-            metrics,
-            analysis_prompt: analysisPrompt,
+            report_type: analysis.type,
+            metrics: analysis.metrics,
+            summary: analysis.summary,
+            prompt: analysis.prompt,
+            cached,
+            action_buttons: actionButtons,
           }
         };
       }
@@ -1629,6 +1716,126 @@ Please provide:
             path: fullPath,
             size: tcl.length,
           }
+        };
+      }
+
+      case 'eda.analyze_report': {
+        // AI Report Analysis - uses LLM to comprehend EDA reports with caching
+        const { report_content, report_path, report_type = 'auto', use_cache = true } = args;
+
+        // Get report content from file or argument
+        let content = report_content;
+        if (report_path && !content) {
+          if (!existsSync(report_path)) {
+            return {
+              content: [{ type: 'text', text: `❌ Report file not found: ${report_path}` }],
+              isError: true,
+            };
+          }
+          content = readFileSync(report_path, 'utf-8');
+        }
+
+        if (!content || content.trim().length === 0) {
+          return {
+            content: [{ type: 'text', text: '❌ No report content provided. Use report_content or report_path.' }],
+            isError: true,
+          };
+        }
+
+        // Check cache first
+        let analysis;
+        let cached = false;
+        if (use_cache) {
+          const cachedResult = getCachedAnalysis(content, report_type);
+          if (cachedResult) {
+            analysis = cachedResult;
+            cached = true;
+          }
+        }
+
+        // If not cached, analyze the report
+        if (!analysis) {
+          analysis = analyzeReport(content, report_type);
+          // Store in cache for future use
+          if (use_cache) {
+            setCachedAnalysis(content, report_type, analysis);
+          }
+        }
+
+        // Build response
+        let text = `📊 **Report Analysis: ${analysis.type.toUpperCase()}**`;
+        if (cached) {
+          text += ' 🔄 (cached)';
+        }
+        text += '\n\n';
+
+        // Show extracted metrics if available
+        if (analysis.metrics) {
+          text += `**Extracted Metrics:**\n`;
+          const metrics = analysis.metrics;
+          for (const [key, value] of Object.entries(metrics)) {
+            if (value !== null && value !== undefined && value !== 0) {
+              text += `  • ${key}: ${value}\n`;
+            }
+          }
+          text += `\n`;
+        }
+
+        // Show summary
+        text += `**Summary:** ${analysis.summary}\n\n`;
+
+        // Generate action buttons
+        const actionButtons = generateActionButtons(analysis.type, true);
+        text += formatActionButtons(actionButtons);
+
+        // Show the LLM prompt for analysis
+        text += `\n\n---\n\n**🤖 AI Analysis Prompt:**\n\n`;
+        text += `The following prompt can be sent to Claude for detailed analysis:\n\n`;
+        text += `\`\`\`\n${analysis.prompt}\n\`\`\`\n\n`;
+        text += `To get AI analysis, ask: "Please analyze this EDA report" and provide the prompt above.`;
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: {
+            report_type: analysis.type,
+            metrics: analysis.metrics,
+            summary: analysis.summary,
+            prompt: analysis.prompt,
+            cached,
+            action_buttons: actionButtons,
+          }
+        };
+      }
+
+      case 'eda.get_analysis_cache': {
+        const { action = 'stats' } = args;
+
+        if (action === 'clear') {
+          const result = clearCache();
+          return {
+            content: [{
+              type: 'text',
+              text: result.error
+                ? `❌ Failed to clear cache: ${result.error}`
+                : `✓ Cleared ${result.cleared} cached analysis entries`
+            }],
+            _metadata: result,
+          };
+        }
+
+        // Default: show stats
+        const stats = getCacheStats();
+        let text = '📊 **Analysis Cache Statistics**\n\n';
+        text += `**Valid Entries:** ${stats.entries}\n`;
+        text += `**Expired Entries:** ${stats.expired || 0}\n`;
+        text += `**Total Cache Size:** ${stats.sizeKB} KB\n\n`;
+        text += `**Cache Location:** ~/.hipilot/analysis-cache/\n`;
+        text += `**TTL:** 24 hours\n\n`;
+        text += `Use \`eda.get_analysis_cache({ action: 'clear' })\` to clear all cached analyses.`;
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: stats,
         };
       }
 

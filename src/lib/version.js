@@ -5,6 +5,6 @@
  * All components (CLI, MCP servers, documentation) should import from here.
  */
 
-export const VERSION = '0.2.1';
+export const VERSION = '0.4.0';
 
 export default VERSION;
