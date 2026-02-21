@@ -2,101 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## IMPORTANT: Always Use HiPilot MCP Tools for EDA Operations
-
-**When working on EDA tasks in this project, you MUST use HiPilot's MCP tools instead of any built-in skills or Bash commands.**
-
-### CRITICAL RULES
-
-**NEVER use Bash for EDA operations. ALWAYS use MCP tools.**
-
-❌ **WRONG:** `Bash(tmux send-keys -t hipilot:0.1 "help report_timing" Enter)`
-✅ **CORRECT:** `eda.send_to_terminal({ tcl: "help report_timing" })`
-
-❌ **WRONG:** `Bash(tmux capture-pane -t hipilot:0.1 -p -S -100)`
-✅ **CORRECT:** `eda.capture_and_analyze({ pane: "eda" })`
-
-❌ **WRONG:** `Skill(/timing)`
-✅ **CORRECT:** `eda.quick({ operation: "timing" })` or `eda.generate_tcl()`
-
-### Why This Matters
-
-This project (HiPilot) provides its own MCP (Model Context Protocol) servers for EDA operations:
-- `hipilot-eda` - Tcl generation, QoR extraction, EDA tool interaction
-- `hipilot-tmux` - Tmux pane management and workspace control
-- `hipilot-knowledge` - Documentation search and command reference
-
-**DO NOT use global `/timing`, `/eda-*` or similar skills** - they bypass HiPilot's architecture.
-
-**DO NOT use Bash to send commands to tmux** - this bypasses HiPilot's approval system and mode management.
-
-### MCP Tools Available
-
-**eda.* tools (for EDA operations):**
-- `eda.get_status()` - Check HiPilot system status (use this first)
-- `eda.generate_tcl()` - Generate Tcl from templates
-- `eda.send_to_terminal()` - Send Tcl to EDA tool
-- `eda.capture_and_analyze()` - Capture EDA output and analyze
-- `eda.quick()` - One-call operations (timing, power, area, drc)
-- `eda.approve_pending()` / `eda.reject_pending()` - Manual mode approval
-- `eda.get_mode()` / `eda.set_mode()` - Check/change execution mode
-
-**tmux.* tools (for workspace):**
-- `tmux.setup_layout()` - Create HiPilot workspace
-- `tmux.send_keys()` - Send keystrokes to panes
-- `tmux.capture_pane()` - Read pane content
-
-**knowledge.* tools (for docs):**
-- `knowledge.search_docs()` - Search EDA documentation
-- `knowledge.get_command_ref()` - Get exact command syntax
-
-### Workflow Pattern
-
-```
-User Request -> You use MCP tool -> EDA Tool responds -> You analyze
-```
-
-**Example:**
-- User: "Run a timing report"
-- You: Use `eda.quick({ operation: "timing" })` or `eda.generate_tcl()` + `eda.send_to_terminal()`
-- NOT: Use `/timing` skill (that's for other projects, not HiPilot)
-
-### Context Clues
-
-Use HiPilot MCP tools when:
-- The user mentions Innovus, ICC2, PrimeTime, or EDA tools
-- The user asks about timing, power, area, DRC, routing, etc.
-- You're in the HiPilot project directory (has `servers/eda/`, `templates/`)
-- The user mentions "HiPilot" or asks about Tcl scripts
-
-### Prompt Guidance for EDA Tasks
-
-**When users ask about EDA operations, ALWAYS explicitly mention and use MCP tools.**
-
-**For natural language requests, translate to explicit MCP tool calls:**
-
-| User Says | You Should |
-|-----------|------------|
-| "Check status" | Use `eda.get_status()` MCP tool |
-| "Generate timing Tcl" | Use `eda.generate_tcl()` MCP tool with timing template |
-| "Send to Innovus" | Use `eda.send_to_terminal()` MCP tool |
-| "Capture output" | Use `eda.capture_and_analyze()` MCP tool |
-| "Run timing report" | Use `eda.quick()` MCP tool with operation: "timing" |
-| "Search docs" | Use `knowledge.search_docs()` MCP tool |
-
-**Never say:** "I'll help you with that" and then use Bash.
-**Always say:** "I'll use the [tool_name] MCP tool to [do action]"
-
-### Testing with HiTestBot
-
-When HiTestBot sends test commands like:
-- "Use the eda.get_status MCP tool..."
-- "Generate a timing report..."
-
-**ALWAYS use the MCP tools** - this validates HiPilot's architecture.
-
----
-
 ## Project Overview
 
 HiPilot is a VLSI Physical Design copilot system - a lightweight fork of Claude Code with three specialized MCP (Model Context Protocol) servers. It provides physical design engineers with an AI-powered assistant that generates vendor-specific Tcl scripts, parses EDA reports, and manages a tmux-based workspace.
@@ -129,7 +34,7 @@ Claude Code (Pane 0)              Innovus/ICC2 (Pane 1)
 - MCP servers registered in `~/.claude/settings.json` with absolute paths (NOT project-level)
 - Claude Code started with `--dangerously-skip-permissions` for automation
 
-See `docs/TEST_MUSTKNOW.md` for the complete test stand documentation with 10 lessons learned.
+See `docs/TEST_STAND.md` for the complete test stand documentation with 10 lessons learned.
 
 ## Critical Context from Architecture Discussion
 
@@ -529,7 +434,7 @@ node test_parser.js /tmp/timing_test.rpt
 
 ### 9. Test Stand - Automated Testing via tmux + Claude Code
 
-**READ THIS FIRST when testing HiPilot.** Full details in `docs/TEST_MUSTKNOW.md`.
+**READ THIS FIRST when testing HiPilot.** Full details in `docs/TEST_STAND.md`.
 
 We can remotely control Claude Code on the EDA server via `tmux send-keys`. This is the official way to test HiPilot end-to-end.
 
