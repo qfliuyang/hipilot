@@ -1,0 +1,39 @@
+#!/usr/bin/expect -f
+set timeout 30
+set password "eda2020"
+set server "EDA@192.168.112.163"
+
+spawn ssh -o StrictHostKeyChecking=no $server
+
+expect "password:"
+send "$password\r"
+
+expect "$ "
+
+# Launch gnome-terminal with tmux attached (visible on desktop)
+send "export DISPLAY=:0\r"
+expect "$ "
+
+# Kill any existing terminal windows
+send "pkill -f 'hipilot' 2>/dev/null; sleep 1\r"
+expect "$ "
+
+# Launch terminal with tmux session attached
+send "gnome-terminal --geometry=140x40+50+50 --title='HiPilot E2E Test' -e 'tmux attach -t hipilot' &\r"
+expect "$ "
+
+sleep 3
+
+# Capture screenshot with visible terminal
+send "import -window root /tmp/hipilot_visible_terminal.png\r"
+expect "$ "
+
+# Also capture just the gnome-terminal window
+send "import -window \$(xdotool search --name 'HiPilot' | head -1) /tmp/hipilot_window_only.png 2>/dev/null || echo 'window capture failed'\r"
+expect "$ "
+
+send "ls -la /tmp/hipilot_visible*.png /tmp/hipilot_window*.png 2>/dev/null\r"
+expect "$ "
+
+send "exit\r"
+expect eof

@@ -1,0 +1,10 @@
+#!/usr/bin/expect -f
+set timeout 60
+set password "eda2020"
+
+spawn scp EDA@192.168.112.163:/tmp/hipilot_ibex_integration.png /tmp/hipilot_mcp_demo.png /tmp/hipilot_mcp_working.png /tmp/hipilot_v2_test.png /Users/luzi/code/hipilot-0.3.0/hipilot/e2e_evidence/
+
+expect "password:"
+send "$password\r"
+
+expect eof
