@@ -21,6 +21,54 @@ hipilot:
   qor_metrics: [Clock_Skew, Clock_Latency, Clock_Power, Buf_Count]
   risk_level: moderate
   typical_duration: "3-15 minutes depending on design size"
+  prerequisites:
+    - "Timing libraries loaded during design init"
+    - "SDC constraints applied"
+---
+
+## Prerequisites (CRITICAL)
+
+### Timing Libraries Must Be Loaded
+
+**IMPORTANT:** CTS requires timing libraries to be loaded during design initialization. If the design is in "physical-only mode" (no timing libraries), CTS commands will fail or be skipped.
+
+**Check if timing libraries are loaded:**
+```tcl
+# In Innovus
+report_libs
+# If empty or error, timing libraries are not loaded
+```
+
+**Signs of physical-only mode:**
+- `create_ccopt_clock_tree_spec` fails with timing-related errors
+- `report_timing` shows "No constrained timing paths found"
+- Clock signals treated as regular ports
+
+### MMMC Setup for CTS
+
+For CTS to work, the design must have:
+1. Timing libraries loaded (Liberty .lib or .db)
+2. SDC constraints applied (clock definitions)
+3. RC corner defined
+
+```tcl
+# MMMC setup example for Skywater 130nm
+create_library_set -name libs_tt -timing {sky130_fd_sc_hd__tt_025C_1v80.lib}
+create_rc_corner -name rc_tt
+create_delay_corner -name delay_tt -library_set libs_tt -rc_corner rc_tt
+create_constraint_mode -name const_mode -sdc_files {constraints.sdc}
+create_analysis_view -name view_tt -constraint_mode const_mode -delay_corner delay_tt
+set_analysis_view -setup {view_tt} -hold {view_tt}
+```
+
+### Physical-Only Mode Limitation
+
+If CTS is not possible due to physical-only mode:
+- Document the limitation
+- Skip CTS stage
+- Note that timing analysis will be limited
+- Recommend re-initializing with timing libraries for production flows
+
 ---
 
 # Clock Tree Synthesis (CTS)
@@ -442,6 +490,59 @@ set_ccopt_property buffer_cells {CLKBUF_X2 CLKBUF_X4 CLKBUF_X8}
 set_ccopt_property clock_gating_cells {CLKGATE_X2 CLKGATE_X4}
 ccopt_design
 ```
+
+### Issue 5: CTS Fails - Physical-Only Mode
+
+**Symptoms:**
+- `create_ccopt_clock_tree_spec` fails with errors about timing or libraries
+- `report_timing` shows "No constrained timing paths found"
+- CTS commands are skipped or produce no output
+- Clock signals treated as regular ports, not clocks
+
+**Diagnosis:**
+```tcl
+# Check if timing libraries are loaded
+report_libs
+# If empty or returns error, design is in physical-only mode
+
+# Check for constrained timing paths
+report_timing -max_paths 1
+# If "No constrained timing paths found", no timing data available
+
+# Check analysis views
+report_analysis_view
+# If empty, MMMC not set up
+```
+
+**Root Cause:**
+Design was initialized without timing libraries (physical-only mode), typically seen in:
+- LEF/DEF only flows (no Liberty .lib/.db)
+- Abstract flow for floorplanning verification
+- Missing MMMC setup during initialization
+
+**Solution:**
+```tcl
+# 1. Re-initialize design with timing libraries
+# Load timing libraries
+read_libs sky130_fd_sc_hd__tt_025C_1v80.lib
+
+# 2. Set up MMMC
+create_library_set -name libs_tt -timing {sky130_fd_sc_hd__tt_025C_1v80.lib}
+create_rc_corner -name rc_tt
+create_delay_corner -name delay_tt -library_set libs_tt -rc_corner rc_tt
+create_constraint_mode -name const_mode -sdc_files {constraints.sdc}
+create_analysis_view -name view_tt -constraint_mode const_mode -delay_corner delay_tt
+set_analysis_view -setup {view_tt} -hold {view_tt}
+
+# 3. Re-load design with timing
+# (May need to restart and re-run init with proper libraries)
+```
+
+**Workaround (if timing libraries unavailable):**
+- Document that CTS is skipped due to physical-only mode limitation
+- Proceed with manual clock routing if needed for physical verification
+- Note that timing analysis will not be available
+- Recommend re-running flow with proper timing libraries for production
 
 ---
 

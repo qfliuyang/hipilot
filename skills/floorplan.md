@@ -99,6 +99,53 @@ initialize_floorplan -die_size {500 500 10 10 10 10}
 initialize_floorplan -template floorplan_template.fp
 ```
 
+---
+
+## Innovus Version-Specific Commands
+
+**IMPORTANT:** Different Innovus versions have different floorplan command syntax.
+
+### Innovus v20.10 and Later
+
+```tcl
+# CORRECT for Innovus v20.10+
+# Syntax: floorPlan -site <site> -r <aspect_ratio> <utilization> <left> <bottom> <right> <top>
+floorPlan -site unithd -r 1.0 0.70 10 10 10 10
+
+# Alternative using create_floorplan (may require different options)
+create_floorplan -core_utilization 0.7 -core_aspect_ratio 1.0
+```
+
+### Version Compatibility Table
+
+| Command | v19.x | v20.x | Notes |
+|---------|-------|-------|-------|
+| `floorPlan -site -r ...` | ✓ | ✓ | Recommended - works across versions |
+| `create_floorplan -core_utilization` | ✓ | ⚠️ | May fail in v20.10 |
+| `create_floorplan -core_margins` | ✓ | ✓ | Works if syntax correct |
+
+### Skywater 130nm Example (Tested)
+
+```tcl
+# Tested on Innovus v20.10 with Skywater 130nm HD
+floorPlan -site unithd -r 1.0 0.70 10 10 10 10
+# Creates: aspect ratio 1.0, 70% utilization, 10um margins
+
+# Result:
+# Core: 417.68 x 416.16 um
+# Utilization: ~70%
+```
+
+### Floorplan Syntax Errors
+
+**Error:** `invalid command name "create_floorplan"` or option errors
+**Cause:** Innovus version incompatibility
+**Fix:** Use `floorPlan -site unithd -r 1.0 0.70 10 10 10 10` instead
+
+**Error:** `-utilization is not a legal option`
+**Cause:** v20.10 doesn't support this option in some contexts
+**Fix:** Use `-r <aspect> <util> <margins>` syntax
+
 ### Step 2: Place IO Pins
 
 **Innovus:**
@@ -451,10 +498,13 @@ addStripe -spacing 1.0 -width 1.0 ...  ;# Doubled spacing
 
 ## Complete Script Template
 
+**NOTE:** For Innovus v20.10+, use `floorPlan -site -r` syntax instead of `create_floorplan` for better compatibility.
+
 **Innovus:**
 ```tcl
 #!/usr/bin/tclsh
 # floorplan.tcl - Complete floorplan script
+# For Innovus v20.10+: Use floorPlan -site syntax
 
 #===========================================
 # Configuration

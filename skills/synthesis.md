@@ -82,6 +82,38 @@ genus
 
 ---
 
+## Environment Setup
+
+### Design Compiler PATH Setup (CRITICAL)
+
+**IMPORTANT:** Design Compiler requires explicit PATH setup including the DC binary directory.
+
+```bash
+# CORRECT: Explicit PATH setup including DC binaries
+export PATH=/opt/synopsys/syn_2022.03/T-2022.03-SP2/bin:$PATH
+
+# For Skywater 130nm on the test server
+export PATH=/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin:/opt/synopsys/syn_2022.03/T-2022.03-SP2/bin:$PATH
+```
+
+**Common Error:** If PATH is not set correctly, synthesis may fail with:
+```
+child process exited abnormally
+```
+
+### Library Setup for Skywater 130nm
+
+```tcl
+# Skywater 130nm HD library paths
+set search_path [list ./rtl ./scripts ./constraints \
+    /home/EDA/hipilot_test/ibex_work_upload/designs/sky130hd/pdk/lib]
+
+set target_library "sky130_fd_sc_hd__tt_025C_1v80.db"
+set link_library "* sky130_fd_sc_hd__tt_025C_1v80.db"
+```
+
+---
+
 ## Complete Synthesis Flow
 
 ### Stage 1: Environment Setup
@@ -418,6 +450,28 @@ compile_ultra -incremental
 
 ---
 
+## Troubleshooting
+
+### "child process exited abnormally"
+
+**Cause:** DC binaries not in PATH
+**Fix:**
+```bash
+export PATH=/opt/synopsys/syn_2022.03/T-2022.03-SP2/bin:$PATH
+```
+
+### "Can't find library"
+
+**Cause:** Library path not in search_path
+**Fix:** Check search_path includes library directory
+
+### Synthesis hangs
+
+**Cause:** License issue or resource constraint
+**Fix:** Check license with `lmstat`, monitor memory usage
+
+---
+
 ## Complete Script Template
 
 **Design Compiler:**
@@ -494,6 +548,7 @@ DESIGN = ibex_core
 DC = dc_shell-topo
 
 syn:
+	export PATH=/opt/synopsys/syn_2022.03/T-2022.03-SP2/bin:$$PATH && \
 	$(DC) -f scripts/syn.tcl -output_log_file logs/syn.log
 
 syn_report:
