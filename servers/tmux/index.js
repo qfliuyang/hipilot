@@ -13,6 +13,8 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { execSync } from 'child_process';
+import { VERSION } from '../../src/lib/version.js';
+import { shellEscape, validateInt } from '../../src/lib/shell-escape.js';
 
 const HIPILOT_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
 // Use -L <socket> only if HIPILOT_TMUX_SOCKET is explicitly set.
@@ -35,6 +37,11 @@ function tmuxExec(args) {
  * Accepts: "chat"/"eda" (by title), "0"/"1" (by index), or raw pane ID.
  */
 function resolvePane(pane) {
+  // Validate pane input to prevent shell injection
+  if (!/^[\w%.:-]+$/.test(pane)) {
+    throw new Error(`Invalid pane identifier: ${pane}`);
+  }
+
   // Numeric index - use directly
   if (/^\d+$/.test(pane)) return pane;
 
@@ -62,7 +69,7 @@ function resolvePane(pane) {
 const server = new Server(
   {
     name: 'hipilot-tmux-mcp-server',
-    version: '0.2.1',
+    version: VERSION,
   },
   {
     capabilities: {
@@ -184,7 +191,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         // Send keys as-is. Caller should include "Enter" in keys if they want to submit.
         // Quote the keys to handle spaces and special characters.
         const socketFlag = TMUX_SOCKET ? `-L ${TMUX_SOCKET} ` : '';
-        execSync(`tmux ${socketFlag}send-keys -t ${target} ${JSON.stringify(args.keys)}`, { encoding: 'utf-8' });
+        execSync(`tmux ${socketFlag}send-keys -t ${target} ${shellEscape(args.keys)}`, { encoding: 'utf-8' });
         return {
           content: [{ type: 'text', text: `Sent to pane ${args.pane}: ${args.keys}` }],
         };
@@ -226,8 +233,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
 
         // Create new session with 50/50 split
-        execSync(`tmux ${socketFlag}new-session -d -s ${HIPILOT_SESSION} -n HiPilot -c "${workDir}"`, { encoding: 'utf-8' });
-        tmuxExec(`split-window -h -t ${HIPILOT_SESSION} -l 50% -c "${workDir}"`);
+        execSync(`tmux ${socketFlag}new-session -d -s ${HIPILOT_SESSION} -n HiPilot -c ${shellEscape(workDir)}`, { encoding: 'utf-8' });
+        tmuxExec(`split-window -h -t ${HIPILOT_SESSION} -l 50% -c ${shellEscape(workDir)}`);
         tmuxExec(`select-pane -t ${HIPILOT_SESSION}:0.0`);
 
         return {

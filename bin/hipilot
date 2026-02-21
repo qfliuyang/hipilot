@@ -13,6 +13,12 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
+# User-specific temp directory (must match src/lib/paths.js)
+HIPILOT_TMPDIR="/tmp/hipilot-$(whoami)"
+mkdir -p "$HIPILOT_TMPDIR"
+mkdir -p "$HIPILOT_TMPDIR/exec"
+mkdir -p "$HIPILOT_TMPDIR/generated"
+
 # Session name
 HIPILOT_SESSION="${HIPILOT_SESSION:-hipilot}"
 
@@ -40,7 +46,7 @@ fi
 
 echo -e "${CYAN}"
 echo "╔══════════════════════════════════════════════════════╗"
-echo "║   HiPilot v0.1.2 - VLSI Physical Design Copilot    ║"
+echo "║   HiPilot v0.2.1 - VLSI Physical Design Copilot    ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 
@@ -106,7 +112,7 @@ tmux -L "$HIPILOT_SESSION" set-option pane-border-format \
 # -------------------------------------------------------------------
 
 # Initialize mode to manual (safety first)
-echo "manual" > /tmp/hipilot_mode 2>/dev/null || true
+echo "manual" > $HIPILOT_TMPDIR/mode 2>/dev/null || true
 
 # Ctrl+E: Switch focus to EDA pane (right)
 tmux -L "$HIPILOT_SESSION" bind-key -n C-e select-pane -t "$HIPILOT_SESSION:0.1"
@@ -115,28 +121,28 @@ tmux -L "$HIPILOT_SESSION" bind-key -n C-e select-pane -t "$HIPILOT_SESSION:0.1"
 tmux -L "$HIPILOT_SESSION" bind-key h select-pane -t "$HIPILOT_SESSION:0.0"
 
 # Ctrl+S: Save last generated Tcl
-tmux -L "$HIPILOT_SESSION" bind-key -n C-s run-shell "mkdir -p $PROJECT_DIR/scripts && cp \$(ls -t /tmp/hipilot_generated_*.tcl 2>/dev/null | head -1) $PROJECT_DIR/scripts/ 2>/dev/null && tmux -L $HIPILOT_SESSION display-message 'Saved to scripts/' || tmux -L $HIPILOT_SESSION display-message 'No generated Tcl to save'" 2>/dev/null || true
+tmux -L "$HIPILOT_SESSION" bind-key -n C-s run-shell "mkdir -p $PROJECT_DIR/scripts && cp \$(ls -t $HIPILOT_TMPDIR/generated/*.tcl 2>/dev/null | head -1) $PROJECT_DIR/scripts/ 2>/dev/null && tmux -L $HIPILOT_SESSION display-message 'Saved to scripts/' || tmux -L $HIPILOT_SESSION display-message 'No generated Tcl to save'" 2>/dev/null || true
 
 # Prefix+m: Toggle mode (manual <-> auto / "Claude has the conn")
 # NOTE: Using prefix+m instead of Ctrl+M because Ctrl+M sends same byte as Enter!
 tmux -L "$HIPILOT_SESSION" bind-key m run-shell "\
-  MODE=\$(cat /tmp/hipilot_mode 2>/dev/null || echo 'manual'); \
+  MODE=\$(cat $HIPILOT_TMPDIR/mode 2>/dev/null || echo 'manual'); \
   if [ \"\$MODE\" = 'manual' ]; then \
-    echo 'auto' > /tmp/hipilot_mode; \
+    echo 'auto' > $HIPILOT_TMPDIR/mode; \
     tmux -L $HIPILOT_SESSION set-option -t $HIPILOT_SESSION status-left '#[fg=#000000,bg=#00ff88,bold] ⚡ Claude has conn #[default]'; \
     tmux -L $HIPILOT_SESSION display-message '⚡ Claude has the conn (auto mode)'; \
   else \
-    echo 'manual' > /tmp/hipilot_mode; \
+    echo 'manual' > $HIPILOT_TMPDIR/mode; \
     tmux -L $HIPILOT_SESSION set-option -t $HIPILOT_SESSION status-left '#[fg=#00d4ff,bg=#1a1a2e,bold] ⚙ HiPilot #[fg=#666666]│#[fg=#ffd700] 🔒 Manual '; \
     tmux -L $HIPILOT_SESSION display-message '🔒 Manual mode (approval required)'; \
   fi" 2>/dev/null || true
 
 # Prefix+y (yes): Approve pending Tcl and execute
 tmux -L "$HIPILOT_SESSION" bind-key y run-shell "\
-  if [ -f /tmp/hipilot_pending.tcl ]; then \
-    TMPFILE=/tmp/hipilot_exec_\$(date +%s).tcl; \
-    cp /tmp/hipilot_pending.tcl \$TMPFILE; \
-    rm -f /tmp/hipilot_pending.tcl /tmp/hipilot_pending_meta.json; \
+  if [ -f $HIPILOT_TMPDIR/pending.tcl ]; then \
+    TMPFILE=$HIPILOT_TMPDIR/exec/exec_\$(date +%s).tcl; \
+    cp $HIPILOT_TMPDIR/pending.tcl \$TMPFILE; \
+    rm -f $HIPILOT_TMPDIR/pending.tcl $HIPILOT_TMPDIR/pending_meta.json; \
     tmux -L $HIPILOT_SESSION send-keys -t $HIPILOT_SESSION:0.1 \"source \$TMPFILE\" Enter; \
     tmux -L $HIPILOT_SESSION display-message '✓ Approved and executed pending Tcl'; \
   else \
@@ -145,8 +151,8 @@ tmux -L "$HIPILOT_SESSION" bind-key y run-shell "\
 
 # Prefix+n (no): Reject pending Tcl
 tmux -L "$HIPILOT_SESSION" bind-key n run-shell "\
-  if [ -f /tmp/hipilot_pending.tcl ]; then \
-    rm -f /tmp/hipilot_pending.tcl /tmp/hipilot_pending_meta.json; \
+  if [ -f $HIPILOT_TMPDIR/pending.tcl ]; then \
+    rm -f $HIPILOT_TMPDIR/pending.tcl $HIPILOT_TMPDIR/pending_meta.json; \
     tmux -L $HIPILOT_SESSION display-message '✗ Pending Tcl rejected'; \
   else \
     tmux -L $HIPILOT_SESSION display-message 'No pending Tcl to reject'; \
@@ -157,13 +163,13 @@ tmux -L "$HIPILOT_SESSION" bind-key r run-shell "tmux -L $HIPILOT_SESSION displa
 
 # Prefix+M (shift+m): Show mode status
 tmux -L "$HIPILOT_SESSION" bind-key M run-shell "\
-  MODE=\$(cat /tmp/hipilot_mode 2>/dev/null || echo 'manual'); \
+  MODE=\$(cat $HIPILOT_TMPDIR/mode 2>/dev/null || echo 'manual'); \
   if [ \"\$MODE\" = 'auto' ]; then \
     tmux -L $HIPILOT_SESSION display-message '⚡ AUTO: Claude has the conn - commands execute immediately'; \
   else \
     PENDING=''; \
-    if [ -f /tmp/hipilot_pending.tcl ]; then \
-      LINES=\$(wc -l < /tmp/hipilot_pending.tcl); \
+    if [ -f $HIPILOT_TMPDIR/pending.tcl ]; then \
+      LINES=\$(wc -l < $HIPILOT_TMPDIR/pending.tcl); \
       PENDING=\" - \$LINES lines pending\"; \
     fi; \
     tmux -L $HIPILOT_SESSION display-message \"🔒 MANUAL: Approval required\$PENDING\"; \

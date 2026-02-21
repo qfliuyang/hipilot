@@ -153,6 +153,9 @@ export function trySyncWithLog(operationName, fn, fallback = null) {
   }
 }
 
+// Named exports
+export { LOG_LEVELS };
+
 export default {
   error,
   warn,

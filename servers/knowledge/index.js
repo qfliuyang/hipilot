@@ -22,6 +22,7 @@ import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { homedir } from 'os';
+import { VERSION } from '../../src/lib/version.js';
 
 // Auto-detect project root from server location
 const __filename = fileURLToPath(import.meta.url);
@@ -367,7 +368,7 @@ function matchSkill(intent) {
 const server = new Server(
   {
     name: 'hipilot-knowledge-mcp-server',
-    version: '0.2.1',
+    version: VERSION,
   },
   {
     capabilities: {
