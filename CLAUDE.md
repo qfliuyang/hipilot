@@ -69,6 +69,24 @@ Use HiPilot MCP tools when:
 - You're in the HiPilot project directory (has `servers/eda/`, `templates/`)
 - The user mentions "HiPilot" or asks about Tcl scripts
 
+### Prompt Guidance for EDA Tasks
+
+**When users ask about EDA operations, ALWAYS explicitly mention and use MCP tools.**
+
+**For natural language requests, translate to explicit MCP tool calls:**
+
+| User Says | You Should |
+|-----------|------------|
+| "Check status" | Use `eda.get_status()` MCP tool |
+| "Generate timing Tcl" | Use `eda.generate_tcl()` MCP tool with timing template |
+| "Send to Innovus" | Use `eda.send_to_terminal()` MCP tool |
+| "Capture output" | Use `eda.capture_and_analyze()` MCP tool |
+| "Run timing report" | Use `eda.quick()` MCP tool with operation: "timing" |
+| "Search docs" | Use `knowledge.search_docs()` MCP tool |
+
+**Never say:** "I'll help you with that" and then use Bash.
+**Always say:** "I'll use the [tool_name] MCP tool to [do action]"
+
 ### Testing with HiTestBot
 
 When HiTestBot sends test commands like:
