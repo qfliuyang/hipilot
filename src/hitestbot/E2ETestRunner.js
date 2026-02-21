@@ -65,13 +65,15 @@ class E2ETestRunner extends TestRunner {
     await this.step('Open Windowed Terminal', () => this.openTerminal());
     await this.step('Start Claude Code', () => this.startClaudeCode());
 
-    // === Phase 3: HiPilot Feature Tests (MCP via Claude Code) ===
+    // === Phase 3: HiPilot Feature Tests (Explicit MCP Tool Calls) ===
     // These steps test the actual HiPilot workflow:
-    // User request -> Claude Code -> MCP tools -> EDA Tool
-    await this.step('Test: List HiPilot Skills', () => this.testListSkills());
+    // User explicitly asks for MCP tool -> Claude Code uses MCP tool -> EDA Tool
+    // Note: We must explicitly mention MCP tools because Claude Code on the EDA
+    // server has its own global skills that would otherwise take precedence
+    await this.step('Test: Check HiPilot MCP Status', () => this.testListSkills());
     await this.step('Test: Generate Tcl via MCP', () => this.testGenerateTcl());
     await this.step('Test: Send to EDA via MCP', () => this.testSendToEDA());
-    await this.step('Test: Capture and Analyze', () => this.testCaptureAndAnalyze());
+    await this.step('Test: Capture and Analyze via MCP', () => this.testCaptureAndAnalyze());
 
     // === Phase 4: Evidence Collection ===
     await this.step('Capture Evidence', () => this.captureEvidence());
@@ -193,74 +195,70 @@ class E2ETestRunner extends TestRunner {
   }
 
   /**
-   * Test: List HiPilot skills
-   * Tests: User asks Claude about skills -> Claude responds with skill list
+   * Test: Check HiPilot MCP status
+   * Tests: Claude uses eda.get_status MCP tool
    */
   async testListSkills() {
     this.tmux.setSSH(this.ssh.bind(this));
 
-    // Send natural language request to Claude Code
-    // Claude should use the skills system to list available skills
-    await this.tmux.sendKeys('hipilot:0.0', 'What HiPilot skills are available?', false);
+    // Explicitly ask Claude to use the eda.get_status MCP tool
+    await this.tmux.sendKeys('hipilot:0.0', 'Use the eda.get_status MCP tool to check HiPilot status', false);
     await this.sleep(1000);
     await this.tmux.sendKeys('hipilot:0.0', null, true, 'C-m');
     await this.sleep(30000);
 
-    // Wait for Claude to respond with skills list
+    // Wait for response
     await this.sleep(5000);
   }
 
   /**
    * Test: Generate Tcl using MCP
-   * Tests: User requests Tcl -> Claude uses eda.generate_tcl MCP tool
+   * Tests: Claude uses eda.generate_tcl MCP tool
    */
   async testGenerateTcl() {
     this.tmux.setSSH(this.ssh.bind(this));
 
-    // Ask Claude to generate a timing report Tcl
-    // Claude should use the eda.generate_tcl MCP tool, NOT bash
-    await this.tmux.sendKeys('hipilot:0.0', 'Generate a Tcl script to run a timing report for the current design', false);
+    // Explicitly ask Claude to use the eda.generate_tcl MCP tool
+    await this.tmux.sendKeys('hipilot:0.0', 'Use the eda.generate_tcl MCP tool to generate a timing report script', false);
     await this.sleep(1000);
     await this.tmux.sendKeys('hipilot:0.0', null, true, 'C-m');
     await this.sleep(30000);
 
-    // Wait for Tcl generation and display
+    // Wait for response
     await this.sleep(5000);
   }
 
   /**
    * Test: Send Tcl to EDA tool via MCP
-   * Tests: User approves Tcl -> Claude uses eda.send_to_terminal MCP tool
+   * Tests: Claude uses eda.send_to_terminal MCP tool
    */
   async testSendToEDA() {
     this.tmux.setSSH(this.ssh.bind(this));
 
-    // Ask Claude to send the "help report_timing" command to Innovus
-    // Claude should use the eda.send_to_terminal MCP tool
-    await this.tmux.sendKeys('hipilot:0.0', 'Send "help report_timing" to the Innovus terminal', false);
+    // First generate Tcl, then send it
+    await this.tmux.sendKeys('hipilot:0.0', 'Use eda.generate_tcl to create a "help report_timing" script, then use eda.send_to_terminal to send it to Innovus', false);
     await this.sleep(1000);
     await this.tmux.sendKeys('hipilot:0.0', null, true, 'C-m');
-    await this.sleep(20000);
+    await this.sleep(30000);
 
-    // Wait for command execution and response
+    // Wait for response
     await this.sleep(5000);
   }
 
   /**
-   * Test: Capture EDA output and analyze via MCP
-   * Tests: User asks for analysis -> Claude uses eda.capture_and_analyze MCP tool
+   * Test: Capture EDA output via MCP
+   * Tests: Claude uses eda.capture_and_analyze MCP tool
    */
   async testCaptureAndAnalyze() {
     this.tmux.setSSH(this.ssh.bind(this));
 
-    // Ask Claude to capture and analyze the EDA output
-    // Claude should use the eda.capture_and_analyze MCP tool
-    await this.tmux.sendKeys('hipilot:0.0', 'Capture and analyze the EDA pane output', false);
+    // Explicitly ask Claude to use the capture_and_analyze MCP tool
+    await this.tmux.sendKeys('hipilot:0.0', 'Use the eda.capture_and_analyze MCP tool to capture the EDA pane output', false);
     await this.sleep(1000);
     await this.tmux.sendKeys('hipilot:0.0', null, true, 'C-m');
-    await this.sleep(20000);
+    await this.sleep(30000);
 
-    // Wait for capture and analysis
+    // Wait for response
     await this.sleep(5000);
   }
 
