@@ -195,12 +195,9 @@ class E2ETestRunner extends TestRunner {
     // This ensures Claude uses HiPilot MCP tools instead of global skills
     await this.ssh(`cp ${testDir}/CLAUDE.md ${this.testDir}/CLAUDE.md 2>/dev/null || true`);
 
-    // Start Claude Code in the test directory so it reads CLAUDE.md
-    // We send cd first, then start claude in a separate command to ensure
-    // the working directory is set correctly
-    await this.tmux.sendKeys('hipilot:0.0', `cd ${testDir}`, true);
-    await this.sleep(500);
-    await this.tmux.sendKeys('hipilot:0.0', 'claude --dangerously-skip-permissions', true);
+    // Start Claude Code in the test directory with MCP server env vars
+    // CLAUDE_CODE_MCP=1 ensures MCP servers are loaded
+    await this.tmux.sendKeys('hipilot:0.0', `cd ${testDir} && CLAUDE_CODE_MCP=1 claude --dangerously-skip-permissions`, true);
     await this.sleep(35000);
   }
 
