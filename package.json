@@ -20,7 +20,8 @@
     "dev:knowledge": "node servers/knowledge/index.js",
     "test": "vitest run",
     "test:e2e": "vitest run --config vitest.e2e.config.js",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "hitestbot": "node src/hitestbot/index.js"
   },
   "keywords": [
     "hipilot",

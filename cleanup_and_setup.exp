@@ -1,0 +1,35 @@
+#!/usr/bin/expect -f
+set timeout 30
+set password "eda2020"
+set timestamp [exec date +%Y%m%d_%H%M%S]
+set testdir "/home/EDA/hipilot_test/test_${timestamp}"
+
+spawn ssh -o StrictHostKeyChecking=no EDA@192.168.112.163
+
+expect "password:"
+send "$password\r"
+
+expect "$ "
+
+# Clean up old test data (keep ibex_work_upload)
+send "cd /home/EDA/hipilot_test && rm -rf hipilot-latest hipilot-v* test_* *.log *.png 2>/dev/null; ls -la\r"
+expect "$ "
+
+# Create timestamped test directory
+send "mkdir -p ${testdir} && echo 'Test dir: ${testdir}'\r"
+expect "$ "
+
+# Create subdirectories for evidence
+send "mkdir -p ${testdir}/{evidence,logs,screenshots,recordings}\r"
+expect "$ "
+
+# Create a marker file with test info
+send "echo 'HiPilot Test Session' > ${testdir}/README.txt && echo 'Created: ${timestamp}' >> ${testdir}/README.txt\r"
+expect "$ "
+
+# Show the new structure
+send "ls -la ${testdir}/\r"
+expect "$ "
+
+send "exit\r"
+expect eof
