@@ -20,7 +20,7 @@ warn="${YELLOW}⚠${NC}"
 
 echo ""
 echo -e "${CYAN}${BOLD}╔══════════════════════════════════════════════════════╗${NC}"
-echo -e "${CYAN}${BOLD}║   HiPilot v0.1.0 Setup Wizard                      ║${NC}"
+echo -e "${CYAN}${BOLD}║   HiPilot v0.2.1 Setup Wizard                      ║${NC}"
 echo -e "${CYAN}${BOLD}║   VLSI Physical Design Copilot                      ║${NC}"
 echo -e "${CYAN}${BOLD}╚══════════════════════════════════════════════════════╝${NC}"
 echo ""
