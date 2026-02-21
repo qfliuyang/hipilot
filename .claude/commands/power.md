@@ -1,11 +1,13 @@
-Run power analysis on the current design. Generate and execute power report, then analyze results.
+Run power analysis on the current design.
 
-Arguments: $ARGUMENTS
+Usage: /power
+
+This command uses the `eda.quick` MCP tool with operation="power" for a one-call solution.
 
 Steps:
-1. Detect EDA tool (eda.detect_tool)
-2. Generate power report Tcl (eda.generate_tcl with operation=report_power)
-3. Send to EDA terminal (eda.send_to_terminal)
-4. Capture output (tmux.capture_pane pane=eda)
-5. Extract: leakage power, internal power, switching power, total power
-6. Present breakdown table, compare to budget if provided
+1. Call `eda.quick` with operation="power"
+2. The tool generates appropriate Tcl, analyzes risk, and queues for approval (in manual mode)
+3. If approved, the Tcl is sent to the EDA pane automatically
+4. After execution, offer to capture and analyze the results
+
+The power report will include: leakage power, internal power, switching power, and total power.
