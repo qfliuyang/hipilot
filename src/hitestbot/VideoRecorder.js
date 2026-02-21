@@ -31,12 +31,14 @@ class VideoRecorder {
     // Create recordings directory
     await sshFn(`mkdir -p ${recordingsDir}`);
 
-    // Start ffmpeg with nohup and proper redirection
     const ffmpegCmd = `
       export DISPLAY=${this.display}
       cd ${recordingsDir}
 
-      nohup ffmpeg -y -f x11grab -video_size ${this.resolution} -framerate ${this.framerate} -i ${this.display} \
+      RESOLUTION=\$(xdpyinfo | grep dimensions | awk '{print \$2}')
+      echo "Detected resolution: \$RESOLUTION"
+
+      nohup ffmpeg -y -f x11grab -video_size \$RESOLUTION -framerate ${this.framerate} -i ${this.display} \
         -c:v libx264 -preset fast -crf 20 -pix_fmt yuv420p \
         ${this.outputFile} \
         > ${this.logFile} 2>&1 < /dev/null &

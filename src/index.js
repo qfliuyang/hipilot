@@ -139,59 +139,81 @@ function cmdStatus() {
   const no = chalk.hex(colors.red)('✗');
   const warn = chalk.hex(colors.yellow)('⚠');
 
-  // Dependencies
   const depsOk = checkDeps();
   console.log(`  ${depsOk ? ok : no} Dependencies: ${depsOk ? 'installed' : 'not installed (run: hipilot setup)'}`);
 
-  // MCP registration
   const mcp = checkMcpRegistered();
   console.log(`  ${mcp.registered ? ok : no} MCP servers: ${mcp.registered ? mcp.servers.join(', ') : 'not registered'}`);
 
-  // Skills
   const skills = checkSkills();
   console.log(`  ${skills.length > 0 ? ok : warn} Skills: ${skills.length} loaded`);
 
-  // Templates
   const templates = checkTemplates();
   console.log(`  ${templates.length > 0 ? ok : warn} Templates: ${templates.length} available`);
 
-  // Command reference
   const cmdRefPath = join(PROJECT_ROOT, 'data', 'command-reference.json');
   let cmdCount = 0;
   if (existsSync(cmdRefPath)) {
     try {
       const ref = JSON.parse(readFileSync(cmdRefPath, 'utf-8'));
       cmdCount = ref.commands ? ref.commands.length : 0;
-    } catch { /* skip */ }
+    } catch {  }
   }
   console.log(`  ${cmdCount > 0 ? ok : warn} Command reference: ${cmdCount} commands`);
 
-  // Quick commands
   const cmdDir = join(PROJECT_ROOT, '.claude', 'commands');
   let slashCmds = 0;
   if (existsSync(cmdDir)) {
-    try { slashCmds = readdirSync(cmdDir).filter(f => f.endsWith('.md')).length; } catch { /* skip */ }
+    try { slashCmds = readdirSync(cmdDir).filter(f => f.endsWith('.md')).length; } catch {  }
   }
   console.log(`  ${slashCmds > 0 ? ok : warn} Quick commands: ${slashCmds} available`);
 
-  // EDA tool
   const edaTool = detectEdaTool();
   console.log(`  ${edaTool ? ok : chalk.dim('-')} EDA tool: ${edaTool || 'none detected'}`);
 
   console.log('');
 
-  // Usage hint
   if (!depsOk) {
     console.log(chalk.hex(colors.yellow)('  Run "hipilot setup" to install dependencies.'));
-  } else if (!mcp.registered) {
-    console.log(chalk.hex(colors.yellow)('  Run "hipilot setup" to register MCP servers.'));
-  } else {
-    console.log(chalk.dim('  Getting started:'));
-    console.log(chalk.dim('    1. Run "hipilot workspace" to launch tmux layout'));
-    console.log(chalk.dim('    2. Start Claude Code in the chat pane: claude'));
-    console.log(chalk.dim('    3. Start your EDA tool in the EDA pane'));
-    console.log(chalk.dim('    4. Try: "fix setup timing on pcie_rx" or /timing reg2reg'));
+    console.log('');
+    return;
   }
+
+  if (!mcp.registered) {
+    console.log(chalk.hex(colors.yellow)('  Run "hipilot setup" to register MCP servers.'));
+    console.log('');
+    return;
+  }
+
+  console.log(chalk.bold('  Quick Start:'));
+  console.log('');
+  console.log(chalk.dim('    1. Launch workspace:'));
+  console.log(chalk.hex(colors.cyan)('       hipilot workspace'));
+  console.log('');
+  console.log(chalk.dim('    2. Start Claude Code (left pane):'));
+  console.log(chalk.hex(colors.cyan)('       claude'));
+  console.log('');
+  console.log(chalk.dim('    3. Start EDA tool (right pane):'));
+  console.log(chalk.hex(colors.cyan)('       innovus -nowin   # or icc2_shell, pt_shell'));
+  console.log('');
+  console.log(chalk.dim('    4. Try a quick command:'));
+  console.log(chalk.hex(colors.cyan)('       /timing          # Run timing analysis'));
+  console.log(chalk.hex(colors.cyan)('       /drc             # Check design rules'));
+  console.log(chalk.hex(colors.cyan)('       /fix-setup       # Fix setup timing'));
+  console.log('');
+
+  console.log(chalk.bold('  Available Commands:'));
+  console.log(chalk.dim('    /timing [group]    Run timing analysis'));
+  console.log(chalk.dim('    /drc               Check design rules'));
+  console.log(chalk.dim('    /power             Power analysis'));
+  console.log(chalk.dim('    /area              Area/utilization'));
+  console.log(chalk.dim('    /compare [base]    Compare QoR'));
+  console.log(chalk.dim('    /history           Show command history'));
+  console.log(chalk.dim('    /fix-setup         One-command timing fix'));
+  console.log(chalk.dim('    /fix-hold          One-command hold fix'));
+  console.log('');
+
+  console.log(chalk.dim('  Type "hipilot help" for more commands.'));
   console.log('');
 }
 

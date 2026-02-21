@@ -330,7 +330,7 @@ Format your response with clear headings and bullet points for readability.`;
 
 /**
  * Analyze timing report - returns structured analysis object
- * Note: Actual LLM call happens in the MCP server; this prepares the prompt
+ * Returns prompt for Claude to analyze. Claude Code (not MCP) handles LLM calls.
  */
 export function analyzeTimingReport(reportText) {
   logger.debug('Analyzing timing report', { length: reportText?.length });

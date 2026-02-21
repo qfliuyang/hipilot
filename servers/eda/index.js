@@ -43,6 +43,8 @@ import {
   analyzeRisk,
   generateApprovalPrompt,
   validateConfirmation,
+  analyzeSideEffects,
+  generateSideEffectWarnings,
 } from '../../src/lib/risk-analyzer.js';
 import {
   analyzeReport,
@@ -494,29 +496,30 @@ function executeTcl(tcl, pane = 'eda') {
 function sendToTerminal(tcl, pane = 'eda', metadata = {}) {
   const mode = getMode();
 
-  // Analyze risk regardless of mode (for logging and display)
   const riskAnalysis = analyzeRisk(tcl);
+  const sideEffectAnalysis = analyzeSideEffects(tcl);
+  const sideEffectWarnings = generateSideEffectWarnings(sideEffectAnalysis);
 
-  // Store risk analysis with pending Tcl
   const enrichedMetadata = {
     ...metadata,
     risk_analysis: riskAnalysis,
+    side_effects: sideEffectAnalysis,
     queued_at: new Date().toISOString()
   };
 
   if (mode === MODES.AUTO) {
-    // Even in auto mode, warn about dangerous operations
     if (riskAnalysis.category >= 2) {
-      // For dangerous/critical ops in auto mode, still require confirmation
       queuePending(tcl, enrichedMetadata);
+      const approvalPrompt = generateApprovalPromptWithSideEffects(riskAnalysis, tcl, sideEffectWarnings);
       return {
         success: true,
         queued: true,
         mode: 'auto_blocked',
         blocked_reason: 'dangerous_operation',
         risk_analysis: riskAnalysis,
-        message: `⚠️ Auto mode blocked for ${riskAnalysis.label.toLowerCase()} operation. Manual confirmation required.`,
-        approval_prompt: generateApprovalPrompt(riskAnalysis, tcl),
+        side_effects: sideEffectAnalysis,
+        message: `Auto mode blocked for ${riskAnalysis.label.toLowerCase()} operation. Manual confirmation required.`,
+        approval_prompt: approvalPrompt,
         pendingFile: PENDING_FILE,
       };
     }
@@ -526,24 +529,41 @@ function sendToTerminal(tcl, pane = 'eda', metadata = {}) {
       ...result,
       mode: 'auto',
       risk_analysis: riskAnalysis,
+      side_effects: sideEffectAnalysis,
       message: result.success
-        ? `⚡ Claude has conn - executed immediately: ${result.message}`
+        ? `Executed immediately: ${result.message}`
         : result.message,
     };
   } else {
     queuePending(tcl, enrichedMetadata);
     const status = getModeStatus();
+    const approvalPrompt = generateApprovalPromptWithSideEffects(riskAnalysis, tcl, sideEffectWarnings);
     return {
       success: true,
       queued: true,
       mode: 'manual',
       risk_analysis: riskAnalysis,
-      approval_prompt: generateApprovalPrompt(riskAnalysis, tcl),
-      message: `🔒 Manual mode - Tcl queued for approval`,
+      side_effects: sideEffectAnalysis,
+      approval_prompt: approvalPrompt,
+      message: `Manual mode - Tcl queued for approval`,
       pendingFile: PENDING_FILE,
       status: status,
     };
   }
+}
+
+function generateApprovalPromptWithSideEffects(riskAnalysis, tcl, sideEffectWarnings) {
+  let prompt = generateApprovalPrompt(riskAnalysis, tcl);
+
+  if (sideEffectWarnings && sideEffectWarnings.length > 0) {
+    const warningSection = '\n---\n\n**Potential Side Effects:**\n\n';
+    const warnings = sideEffectWarnings.map(w => 
+      `${w.icon} **${w.title}**: ${w.message}\n   _${w.recommendation}_`
+    ).join('\n\n');
+    prompt = prompt.replace('---\n\n**Actions:**', warningSection + warnings + '\n\n---\n\n**Actions:**');
+  }
+
+  return prompt;
 }
 
 /**
@@ -939,23 +959,57 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { intent, tool, operation, targets, variables } = args;
         const result = generateTcl(intent, { tool, operation, targets, variables });
 
-        // Write generated Tcl to temp file
+        const sideEffectAnalysis = analyzeSideEffects(result.tcl);
+        const sideEffectWarnings = generateSideEffectWarnings(sideEffectAnalysis);
+
         const timestamp = Date.now();
         const tempFile = `${hipilotPaths.generatedDir}/hipilot_generated_${timestamp}.tcl`;
         writeFileSync(tempFile, result.tcl);
 
-        let text = `${result.badge} Generated Tcl script:\n\n${result.tcl}\n`;
-        text += `\nSaved to: ${tempFile}`;
+        let text = '';
+
+        text += `## Analysis\n`;
+        text += `**Intent:** ${intent || operation}\n`;
+        text += `**Operation:** ${operation}\n`;
+        if (tool) {
+          text += `**Target Tool:** ${tool}\n`;
+        }
+
+        text += `\n## Source\n`;
         if (result.template_path) {
-          text += `\nTemplate: ${result.template_path}`;
+          text += `**Type:** Template-based (trusted)\n`;
+          text += `**Template:** \`${result.template_path}\`\n`;
+        } else {
+          text += `**Type:** Generated (review recommended)\n`;
+          text += `**Reasoning:** Built from operation mapping for ${operation}\n`;
         }
-        if (result.reasoning) {
-          text += `\nReasoning: ${result.reasoning}`;
+
+        if (sideEffectWarnings.length > 0) {
+          text += `\n## Side Effects\n`;
+          text += `⚠️ This operation may cause unintended side effects:\n\n`;
+          for (const w of sideEffectWarnings) {
+            text += `${w.icon} **${w.title}**: ${w.message}\n`;
+            text += `   _${w.recommendation}_\n\n`;
+          }
         }
-        text += `\n\nTo execute: use eda.send_to_terminal or run 'source ${tempFile}' in the EDA tool`;
+
+        text += `\n## Generated Tcl\n`;
+        text += `\`\`\`tcl\n${result.tcl}\n\`\`\`\n`;
+
+        text += `\n## Actions\n`;
+        text += `**Saved to:** ${tempFile}\n`;
+        text += `**To execute:** Use \`eda.send_to_terminal\` or run \`source ${tempFile}\` in the EDA tool\n`;
+        text += `**Mode:** ${getModeStatus().mode === 'auto' ? 'Auto (immediate)' : 'Manual (approval required)'}`;
 
         return {
           content: [{ type: 'text', text }],
+          _metadata: {
+            source: result.source,
+            template_path: result.template_path,
+            badge: result.badge,
+            file: tempFile,
+            side_effects: sideEffectAnalysis,
+          }
         };
       }
 
@@ -1330,10 +1384,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'eda.quick': {
-        // ONE-CALL solution for common operations
         const { operation, params = {} } = args;
 
-        // Map quick operation to full operation name
         const operationMap = {
           'timing': 'report_timing',
           'power': 'report_power',
@@ -1348,11 +1400,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
         const fullOperation = operationMap[operation] || operation;
 
-        // Detect tool
         const detectedTool = detectTool();
         const tool = detectedTool?.vendor || 'cadence';
 
-        // Generate Tcl
         const genResult = generateTcl(`${operation} report/action`, {
           operation: fullOperation,
           tool,
@@ -1366,19 +1416,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           };
         }
 
-        // Analyze risk
         const riskAnalysis = analyzeRisk(genResult.tcl);
+        const sideEffectAnalysis = analyzeSideEffects(genResult.tcl);
+        const sideEffectWarnings = generateSideEffectWarnings(sideEffectAnalysis);
 
-        // Send to terminal
         const sendResult = sendToTerminal(genResult.tcl, 'eda');
 
         if (sendResult.queued) {
           updateTmuxModeStatus('manual', true);
         }
 
-        // Build compact response
         let text = `🔧 **${operation.toUpperCase()}** ${riskAnalysis.color}\n\n`;
         text += `**Tcl:**\n\`\`\`tcl\n${genResult.tcl}\n\`\`\`\n\n`;
+
+        if (sideEffectWarnings.length > 0) {
+          text += `**Side Effects:**\n`;
+          for (const w of sideEffectWarnings) {
+            text += `${w.icon} ${w.title}: ${w.message}\n`;
+          }
+          text += `\n`;
+        }
 
         if (sendResult.queued) {
           text += `**Status:** ⏳ Waiting for approval\n`;
@@ -1397,7 +1454,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             operation,
             risk_category: riskAnalysis.category,
             template: genResult.template_path,
-            queued: sendResult.queued
+            queued: sendResult.queued,
+            side_effects: sideEffectAnalysis,
           }
         };
       }
@@ -1569,11 +1627,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         // Add action buttons
         text += formatActionButtons(actionButtons);
 
-        // Show the LLM prompt
-        text += `\n\n---\n\n**🤖 AI Analysis Prompt:**\n\n`;
-        text += `The following prompt can be sent to Claude for detailed analysis:\n\n`;
-        text += `\`\`\`\n${analysis.prompt}\n\`\`\`\n\n`;
-        text += `To get AI analysis, ask: "Please analyze this EDA report" and provide the prompt above.`;
+        text += `\n\n---\n\n`;
+        text += analysis.prompt;
 
         return {
           content: [{ type: 'text', text }],
@@ -1788,11 +1843,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const actionButtons = generateActionButtons(analysis.type, true);
         text += formatActionButtons(actionButtons);
 
-        // Show the LLM prompt for analysis
-        text += `\n\n---\n\n**🤖 AI Analysis Prompt:**\n\n`;
-        text += `The following prompt can be sent to Claude for detailed analysis:\n\n`;
-        text += `\`\`\`\n${analysis.prompt}\n\`\`\`\n\n`;
-        text += `To get AI analysis, ask: "Please analyze this EDA report" and provide the prompt above.`;
+        text += `\n\n---\n\n`;
+        text += analysis.prompt;
 
         return {
           content: [{ type: 'text', text }],

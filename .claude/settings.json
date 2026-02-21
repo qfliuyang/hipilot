@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "mcp__hipilot-eda__*",
-      "mcp__hipilot-tmux__*",
-      "mcp__hipilot-knowledge__*"
-    ]
-  }
-}
