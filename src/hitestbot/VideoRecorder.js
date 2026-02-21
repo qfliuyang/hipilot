@@ -5,8 +5,8 @@
  * Properly stops recording with SIGINT for clean ffmpeg shutdown.
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 class VideoRecorder {
   constructor(options = {}) {
@@ -144,4 +144,4 @@ class VideoRecorder {
   }
 }
 
-module.exports = { VideoRecorder };
+export { VideoRecorder };

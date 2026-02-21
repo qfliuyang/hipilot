@@ -110,4 +110,4 @@ class TmuxController {
   }
 }
 
-module.exports = { TmuxController };
+export { TmuxController };
