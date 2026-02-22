@@ -943,6 +943,285 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
         },
       },
+      // === PHASE 1.1: FEEDBACK LOOP TOOLS ===
+      {
+        name: 'eda.wait_for_pattern',
+        description: 'Wait for a specific regex pattern to appear in EDA pane output. Essential for detecting when EDA commands complete. Returns matched content and timing.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            pattern: {
+              type: 'string',
+              description: 'Regex pattern to wait for (e.g., "innovus \\d+>", "SUCCESS", "ERROR")',
+            },
+            timeout: {
+              type: 'number',
+              description: 'Timeout in seconds (default: 60)',
+              default: 60,
+            },
+            pane: {
+              type: 'string',
+              description: 'Pane to monitor (default: eda)',
+              enum: ['eda', 'chat', '0', '1'],
+              default: 'eda',
+            },
+          },
+          required: ['pattern'],
+        },
+      },
+      {
+        name: 'eda.wait_for_prompt',
+        description: 'Wait for EDA tool prompt (auto-detected per tool). Detects innovus, icc2_shell, pt_shell, tempus prompts. Use after sending commands to wait for completion.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            timeout: {
+              type: 'number',
+              description: 'Timeout in seconds (default: 30)',
+              default: 30,
+            },
+            pane: {
+              type: 'string',
+              description: 'Pane to monitor (default: eda)',
+              enum: ['eda', 'chat', '0', '1'],
+              default: 'eda',
+            },
+          },
+        },
+      },
+      {
+        name: 'eda.get_last_result',
+        description: 'Parse last EDA command output to determine success/failure. Analyzes output for common error patterns and success indicators.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            lines: {
+              type: 'number',
+              description: 'Number of lines to analyze (default: 50)',
+              default: 50,
+            },
+            pane: {
+              type: 'string',
+              description: 'Pane to analyze (default: eda)',
+              enum: ['eda', 'chat', '0', '1'],
+              default: 'eda',
+            },
+          },
+        },
+      },
+      {
+        name: 'eda.capture_and_wait',
+        description: 'Combined: send Tcl command, wait for prompt, return output with result analysis. Best for commands that complete quickly.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tcl: {
+              type: 'string',
+              description: 'Tcl command to send',
+            },
+            timeout: {
+              type: 'number',
+              description: 'Timeout in seconds (default: 60)',
+              default: 60,
+            },
+            pane: {
+              type: 'string',
+              description: 'Target pane (default: eda)',
+              enum: ['eda', 'chat', '0', '1'],
+              default: 'eda',
+            },
+          },
+          required: ['tcl'],
+        },
+      },
+      // === PHASE 1.2: SESSION STATE TOOLS ===
+      {
+        name: 'session.save_checkpoint',
+        description: 'Save current session state as a named checkpoint. Includes QoR snapshot, command history, and design context.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              description: 'Checkpoint name (e.g., "pre_cts", "after_opt")',
+            },
+            description: {
+              type: 'string',
+              description: 'Description of the checkpoint',
+            },
+          },
+          required: ['name'],
+        },
+      },
+      {
+        name: 'session.list_checkpoints',
+        description: 'List all saved session checkpoints with timestamps and QoR summaries.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
+        name: 'session.restore_checkpoint',
+        description: 'Restore session context from a checkpoint (context only, does not undo EDA changes).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            checkpoint_id: {
+              type: 'string',
+              description: 'Checkpoint ID or name to restore',
+            },
+          },
+          required: ['checkpoint_id'],
+        },
+      },
+      {
+        name: 'session.get_history',
+        description: 'Get command history with result summaries. Shows what commands were run and their outcomes.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            limit: {
+              type: 'number',
+              description: 'Maximum number of entries (default: 50)',
+              default: 50,
+            },
+          },
+        },
+      },
+      {
+        name: 'session.get_context',
+        description: 'Get current session context summary: design, stage, tool, last commands, pending actions, QoR.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      // === PHASE 1.3: CONTEXT DETECTION TOOLS ===
+      {
+        name: 'context.detect',
+        description: 'Auto-detect current design context from EDA output and project files. Returns design name, technology, stage, tool, corners.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
+        name: 'context.get_stage',
+        description: 'Get current flow stage (synthesis, floorplan, place, cts, route, signoff) with confidence level.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
+        name: 'context.suggest_next',
+        description: 'Suggest next logical step based on current stage and QoR status. Returns prioritized action list.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      // === PHASE 2.1: QOR TRACKING TOOLS ===
+      {
+        name: 'qor.snapshot',
+        description: 'Capture current QoR metrics as a named snapshot. Use for before/after comparisons.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              description: 'Snapshot name (e.g., "baseline", "after_cts")',
+            },
+            description: {
+              type: 'string',
+              description: 'Optional description',
+            },
+          },
+          required: ['name'],
+        },
+      },
+      {
+        name: 'qor.list_snapshots',
+        description: 'List all saved QoR snapshots with metrics.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
+        name: 'qor.compare',
+        description: 'Compare two QoR snapshots and show delta. Identifies improvements and regressions.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            snapshot1: {
+              type: 'string',
+              description: 'First snapshot ID or name (baseline)',
+            },
+            snapshot2: {
+              type: 'string',
+              description: 'Second snapshot ID or name (current)',
+            },
+          },
+          required: ['snapshot1', 'snapshot2'],
+        },
+      },
+      {
+        name: 'qor.get_trend',
+        description: 'Show QoR trend over last N snapshots. Identifies improvement/degradation patterns.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            metric: {
+              type: 'string',
+              description: 'Metric to track',
+              enum: ['wns', 'tns', 'violations', 'power', 'area'],
+              default: 'wns',
+            },
+            snapshots: {
+              type: 'number',
+              description: 'Number of snapshots to analyze (default: 10)',
+              default: 10,
+            },
+          },
+        },
+      },
+      // === PHASE 2.2: ERROR DIAGNOSIS TOOLS ===
+      {
+        name: 'eda.diagnose_error',
+        description: 'Analyze EDA error output and explain the problem with fix suggestions. Categorizes errors and provides actionable recommendations.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            output: {
+              type: 'string',
+              description: 'EDA error output to analyze',
+            },
+            tool: {
+              type: 'string',
+              description: 'EDA tool name (optional, auto-detected if not provided)',
+              enum: ['icc2', 'innovus', 'pt_shell', 'tempus', 'auto'],
+              default: 'auto',
+            },
+          },
+          required: ['output'],
+        },
+      },
+      {
+        name: 'eda.validate_tcl',
+        description: 'Validate Tcl syntax before sending to EDA. Catches common syntax errors and provides fix suggestions.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tcl: {
+              type: 'string',
+              description: 'Tcl code to validate',
+            },
+          },
+          required: ['tcl'],
+        },
+      },
     ],
   };
 });
@@ -1889,6 +2168,681 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           content: [{ type: 'text', text }],
           _metadata: stats,
         };
+      }
+
+      // === PHASE 1.1: FEEDBACK LOOP TOOL HANDLERS ===
+      case 'eda.wait_for_pattern': {
+        const { pattern, timeout = 60, pane = 'eda' } = args;
+        const startTime = Date.now();
+        const timeoutMs = timeout * 1000;
+        const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
+        const target = `${TMUX_SESSION}:0.${paneIdx}`;
+        const regex = new RegExp(pattern);
+        
+        while (Date.now() - startTime < timeoutMs) {
+          try {
+            const output = execSync(
+              `tmux capture-pane -t ${target} -p -S -100 2>/dev/null || echo ""`,
+              { encoding: 'utf-8', timeout: 5000 }
+            );
+            const match = output.match(regex);
+            if (match) {
+              return {
+                content: [{
+                  type: 'text',
+                  text: `✓ Pattern matched after ${((Date.now() - startTime) / 1000).toFixed(1)}s\n\nMatch: ${match[0]}\n\nContext:\n${output.slice(-500)}`
+                }],
+                _metadata: { matched: true, match: match[0], elapsed_ms: Date.now() - startTime }
+              };
+            }
+          } catch {}
+          await new Promise(r => setTimeout(r, 500));
+        }
+        
+        return {
+          content: [{ type: 'text', text: `⏱ Timeout waiting for pattern: ${pattern}` }],
+          isError: true,
+          _metadata: { matched: false, elapsed_ms: timeoutMs }
+        };
+      }
+
+      case 'eda.wait_for_prompt': {
+        const { timeout = 30, pane = 'eda' } = args;
+        const startTime = Date.now();
+        const timeoutMs = timeout * 1000;
+        const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
+        const target = `${TMUX_SESSION}:0.${paneIdx}`;
+        
+        const promptPatterns = [
+          /innovus\s*\d+>/i,
+          /icc2_shell>/i,
+          /icc2>/i,
+          /pt_shell>/i,
+          /tempus\s*\d*>/i,
+          /\]\s*$/m,
+        ];
+        
+        while (Date.now() - startTime < timeoutMs) {
+          try {
+            const output = execSync(
+              `tmux capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
+              { encoding: 'utf-8', timeout: 5000 }
+            );
+            const lastLine = output.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
+            for (const pattern of promptPatterns) {
+              if (pattern.test(lastLine)) {
+                return {
+                  content: [{
+                    type: 'text',
+                    text: `✓ EDA prompt detected after ${((Date.now() - startTime) / 1000).toFixed(1)}s\n\nPrompt: ${lastLine.trim()}`
+                  }],
+                  _metadata: { ready: true, prompt: lastLine.trim(), elapsed_ms: Date.now() - startTime }
+                };
+              }
+            }
+          } catch {}
+          await new Promise(r => setTimeout(r, 500));
+        }
+        
+        return {
+          content: [{ type: 'text', text: `⏱ Timeout waiting for EDA prompt` }],
+          isError: true,
+          _metadata: { ready: false, elapsed_ms: timeoutMs }
+        };
+      }
+
+      case 'eda.get_last_result': {
+        const { lines = 50, pane = 'eda' } = args;
+        const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
+        const target = `${TMUX_SESSION}:0.${paneIdx}`;
+        
+        let output;
+        try {
+          output = execSync(
+            `tmux capture-pane -t ${target} -p -S -${lines} 2>/dev/null || echo ""`,
+            { encoding: 'utf-8', timeout: 5000 }
+          );
+        } catch (e) {
+          return { content: [{ type: 'text', text: `❌ Failed to capture pane: ${e.message}` }], isError: true };
+        }
+        
+        const successPatterns = [/^#\s*$/m, /successfully/i, /completed/i, /pass/i, /no\s+(error|violation)/i];
+        const errorPatterns = [/^Error:/m, /ERROR:/i, /failed/i, /cannot/i, /unknown\s+command/i, /syntax\s+error/i];
+        
+        let success = false;
+        let errorType = null;
+        let errorLine = null;
+        
+        for (const p of successPatterns) {
+          if (p.test(output)) { success = true; break; }
+        }
+        for (const p of errorPatterns) {
+          const m = output.match(p);
+          if (m) {
+            success = false;
+            errorType = m[0].trim();
+            const lines = output.split('\n');
+            for (const line of lines) {
+              if (p.test(line)) { errorLine = line.trim(); break; }
+            }
+            break;
+          }
+        }
+        
+        const summary = success 
+          ? '✓ Command appears to have completed successfully'
+          : errorType 
+            ? `✗ Error detected: ${errorType}`
+            : '⚠ Unable to determine result (no clear success/error indicators)';
+        
+        return {
+          content: [{ type: 'text', text: `${summary}\n\nLast output:\n${output.slice(-800)}` }],
+          _metadata: { success, error_type: errorType, error_line: errorLine }
+        };
+      }
+
+      case 'eda.capture_and_wait': {
+        const { tcl, timeout = 60, pane = 'eda' } = args;
+        const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
+        const target = `${TMUX_SESSION}:0.${paneIdx}`;
+        
+        
+        const tclFile = `${hipilotPaths.tempDir}/capture_wait_${Date.now()}.tcl`;
+        writeFileSync(tclFile, tcl);
+        try {
+          execSync(`tmux send-keys -t ${target} "source ${tclFile}" Enter`, { encoding: 'utf-8' });
+        } catch (e) {
+          return { content: [{ type: 'text', text: `❌ Failed to send Tcl: ${e.message}` }], isError: true };
+        }
+        
+        
+        await new Promise(r => setTimeout(r, 1000));
+        
+        const startTime = Date.now();
+        const timeoutMs = timeout * 1000;
+        const promptPatterns = [/innovus\s*\d+>/i, /icc2_shell>/i, /pt_shell>/i, /\]\s*$/m];
+        
+        while (Date.now() - startTime < timeoutMs) {
+          try {
+            const output = execSync(`tmux capture-pane -t ${target} -p -S -100`, { encoding: 'utf-8', timeout: 5000 });
+            const lastLine = output.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
+            for (const pattern of promptPatterns) {
+              if (pattern.test(lastLine)) {
+                
+                try { unlinkSync(tclFile); } catch {}
+                return {
+                  content: [{
+                    type: 'text',
+                    text: `✓ Command completed in ${((Date.now() - startTime) / 1000).toFixed(1)}s\n\nOutput:\n${output.slice(-1000)}`
+                  }],
+                  _metadata: { success: true, elapsed_ms: Date.now() - startTime }
+                };
+              }
+            }
+          } catch {}
+          await new Promise(r => setTimeout(r, 500));
+        }
+        
+        try { unlinkSync(tclFile); } catch {}
+        return {
+          content: [{ type: 'text', text: `⏱ Command timed out after ${timeout}s` }],
+          isError: true,
+          _metadata: { success: false, elapsed_ms: timeoutMs }
+        };
+      }
+
+      // === PHASE 1.2: SESSION STATE TOOL HANDLERS ===
+      case 'session.save_checkpoint': {
+        const { name, description = '' } = args;
+        const checkpointsDir = join(hipilotPaths.hipilotDir, 'session', 'checkpoints');
+        mkdirSync(checkpointsDir, { recursive: true });
+        
+        
+        let qorMetrics = {};
+        try {
+          const paneOutput = execSync(
+            `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
+            { encoding: 'utf-8' }
+          );
+          qorMetrics = extractQoR(paneOutput);
+        } catch {}
+        
+        const checkpoint = {
+          id: `ckpt_${Date.now()}`,
+          name,
+          description,
+          saved_at: new Date().toISOString(),
+          qor: qorMetrics,
+          context: {
+            tool: detectTool()?.tool || null,
+            stage: 'unknown',
+          }
+        };
+        
+        const checkpointPath = join(checkpointsDir, `${checkpoint.id}.json`);
+        writeFileSync(checkpointPath, JSON.stringify(checkpoint, null, 2));
+        
+        return {
+          content: [{
+            type: 'text',
+            text: `💾 **Checkpoint Saved**\n\n**Name:** ${name}\n**ID:** ${checkpoint.id}\n**Time:** ${checkpoint.saved_at}\n${description ? `**Description:** ${description}\n` : ''}`
+          }],
+          _metadata: checkpoint
+        };
+      }
+
+      case 'session.list_checkpoints': {
+        const checkpointsDir = join(hipilotPaths.hipilotDir, 'session', 'checkpoints');
+        const checkpoints = [];
+        
+        if (existsSync(checkpointsDir)) {
+          for (const file of readdirSync(checkpointsDir).filter(f => f.endsWith('.json'))) {
+            try {
+              const cp = JSON.parse(readFileSync(join(checkpointsDir, file), 'utf-8'));
+              checkpoints.push(cp);
+            } catch {}
+          }
+        }
+        
+        checkpoints.sort((a, b) => new Date(b.saved_at) - new Date(a.saved_at));
+        
+        let text = `📋 **Session Checkpoints** (${checkpoints.length})\n\n`;
+        if (checkpoints.length === 0) {
+          text += 'No checkpoints saved yet.\n\nUse `session.save_checkpoint` to create one.';
+        } else {
+          for (const cp of checkpoints) {
+            text += `**${cp.name}** (${cp.id})\n`;
+            text += `  Saved: ${cp.saved_at}\n`;
+            if (cp.qor?.wns !== undefined) text += `  WNS: ${cp.qor.wns}\n`;
+            text += '\n';
+          }
+        }
+        
+        return { content: [{ type: 'text', text }], _metadata: { checkpoints } };
+      }
+
+      case 'session.restore_checkpoint': {
+        const { checkpoint_id } = args;
+        const checkpointsDir = join(hipilotPaths.hipilotDir, 'session', 'checkpoints');
+        
+        let checkpointPath = join(checkpointsDir, `${checkpoint_id}.json`);
+        if (!existsSync(checkpointPath)) {
+          const files = readdirSync(checkpointsDir).filter(f => f.includes(checkpoint_id));
+          if (files.length === 0) {
+            return { content: [{ type: 'text', text: `❌ Checkpoint not found: ${checkpoint_id}` }], isError: true };
+          }
+          checkpointPath = join(checkpointsDir, files[0]);
+        }
+        
+        const checkpoint = JSON.parse(readFileSync(checkpointPath, 'utf-8'));
+        
+        return {
+          content: [{
+            type: 'text',
+            text: `✓ **Checkpoint Context Restored**\n\n**Name:** ${checkpoint.name}\n**Saved:** ${checkpoint.saved_at}\n\nContext is now loaded. Note: This does NOT undo EDA changes.`
+          }],
+          _metadata: { restored: true, checkpoint }
+        };
+      }
+
+      case 'session.get_history': {
+        const { limit = 50 } = args;
+        const historyPath = join(hipilotPaths.hipilotDir, 'history');
+        const entries = [];
+        
+        if (existsSync(historyPath)) {
+          for (const file of readdirSync(historyPath).filter(f => f.endsWith('.tcl')).slice(-limit)) {
+            try {
+              const stat = { file, time: new Date(parseInt(file.split('_').pop()) || 0) };
+              entries.push(stat);
+            } catch {}
+          }
+        }
+        
+        let text = `📜 **Command History** (${entries.length} recent)\n\n`;
+        for (const e of entries.reverse()) {
+          text += `• ${e.file}\n`;
+        }
+        
+        return { content: [{ type: 'text', text }], _metadata: { entries } };
+      }
+
+      case 'session.get_context': {
+        const tool = detectTool();
+        let qorMetrics = {};
+        try {
+          const output = execSync(
+            `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -100 2>/dev/null || echo ""`,
+            { encoding: 'utf-8' }
+          );
+          qorMetrics = extractQoR(output);
+        } catch {}
+        
+        const context = {
+          tool: tool?.tool || 'none',
+          vendor: tool?.vendor || 'unknown',
+          stage: 'unknown',
+          qor: qorMetrics,
+          mode: getModeStatus().mode,
+        };
+        
+        let text = `📍 **Current Session Context**\n\n`;
+        text += `**Tool:** ${context.tool}\n`;
+        text += `**Vendor:** ${context.vendor}\n`;
+        text += `**Stage:** ${context.stage}\n`;
+        text += `**Mode:** ${context.mode}\n`;
+        if (context.qor.wns !== undefined) text += `**WNS:** ${context.qor.wns}\n`;
+        if (context.qor.tns !== undefined) text += `**TNS:** ${context.qor.tns}\n`;
+        
+        return { content: [{ type: 'text', text }], _metadata: context };
+      }
+
+      // === PHASE 1.3: CONTEXT DETECTION TOOL HANDLERS ===
+      case 'context.detect': {
+        const tool = detectTool();
+        
+        const context = {
+          design_name: null,
+          technology: null,
+          stage: 'unknown',
+          tool: tool?.tool || null,
+          vendor: tool?.vendor || null,
+          corners: [],
+        };
+        
+        
+        try {
+          const output = execSync(
+            `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -500 2>/dev/null || echo ""`,
+            { encoding: 'utf-8' }
+          );
+          
+          
+          if (/CTS|clock_tree/i.test(output)) context.stage = 'cts';
+          else if (/route|routing/i.test(output)) context.stage = 'route';
+          else if (/place|placement/i.test(output)) context.stage = 'place';
+          else if (/floorplan/i.test(output)) context.stage = 'floorplan';
+          else if (/synthesis|synthesize/i.test(output)) context.stage = 'synthesis';
+          else if (/signoff|drc|lvs/i.test(output)) context.stage = 'signoff';
+          
+          
+          const designMatch = output.match(/design[:\s]+["']?(\w+)/i);
+          if (designMatch) context.design_name = designMatch[1];
+          
+        } catch {}
+        
+        let text = `🔍 **Detected Context**\n\n`;
+        text += `**Tool:** ${context.tool || 'Not detected'}\n`;
+        text += `**Vendor:** ${context.vendor || 'Unknown'}\n`;
+        text += `**Stage:** ${context.stage}\n`;
+        if (context.design_name) text += `**Design:** ${context.design_name}\n`;
+        
+        return { content: [{ type: 'text', text }], _metadata: context };
+      }
+
+      case 'context.get_stage': {
+        const tool = detectTool();
+        let stage = 'unknown';
+        let confidence = 0;
+        
+        try {
+          const output = execSync(
+            `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -300 2>/dev/null || echo ""`,
+            { encoding: 'utf-8' }
+          );
+          
+          const stagePatterns = [
+            { stage: 'synthesis', patterns: [/synthesis|synthesize/i], weight: 1 },
+            { stage: 'floorplan', patterns: [/floorplan|io_placement/i], weight: 1 },
+            { stage: 'place', patterns: [/placement|placed/i], weight: 1 },
+            { stage: 'cts', patterns: [/CTS|clock_tree|ccopt/i], weight: 1 },
+            { stage: 'route', patterns: [/route|routing|nanoroute/i], weight: 1 },
+            { stage: 'signoff', patterns: [/signoff|drc|lvs|sta/i], weight: 1 },
+          ];
+          
+          for (const sp of stagePatterns) {
+            for (const p of sp.patterns) {
+              if (p.test(output)) {
+                stage = sp.stage;
+                confidence = 0.8;
+                break;
+              }
+            }
+            if (confidence > 0) break;
+          }
+        } catch {}
+        
+        return {
+          content: [{ type: 'text', text: `**Current Stage:** ${stage}\n**Confidence:** ${Math.round(confidence * 100)}%` }],
+          _metadata: { stage, confidence }
+        };
+      }
+
+      case 'context.suggest_next': {
+        const stageResult = await (async () => {
+          try {
+            const output = execSync(
+              `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -300 2>/dev/null || echo ""`,
+              { encoding: 'utf-8' }
+            );
+            if (/CTS|clock_tree/i.test(output)) return 'cts';
+            if (/route|routing/i.test(output)) return 'route';
+            if (/place|placement/i.test(output)) return 'place';
+            if (/floorplan/i.test(output)) return 'floorplan';
+            return 'unknown';
+          } catch { return 'unknown'; }
+        })();
+        
+        const suggestions = {
+          synthesis: [{ action: 'Run placement', reason: 'Synthesis complete, start physical design', priority: 1 }],
+          floorplan: [{ action: 'Run placement', reason: 'Floorplan ready for cell placement', priority: 1 }],
+          place: [{ action: 'Run CTS', reason: 'Placement complete, build clock tree', priority: 1 }],
+          cts: [{ action: 'Run routing', reason: 'Clock tree ready for signal routing', priority: 1 }],
+          route: [{ action: 'Run timing optimization', reason: 'Routing done, optimize timing closure', priority: 1 }],
+          signoff: [{ action: 'Review results', reason: 'Design in signoff stage', priority: 1 }],
+          unknown: [{ action: 'Detect design status', reason: 'Unable to determine current stage', priority: 1 }],
+        };
+        
+        const list = suggestions[stageResult] || suggestions.unknown;
+        
+        let text = `💡 **Suggested Next Steps**\n\n`;
+        for (const s of list) {
+          text += `${s.priority}. **${s.action}**\n   ${s.reason}\n\n`;
+        }
+        
+        return { content: [{ type: 'text', text }], _metadata: { stage: stageResult, suggestions: list } };
+      }
+
+      // === PHASE 2.1: QOR TRACKING TOOL HANDLERS ===
+      case 'qor.snapshot': {
+        const { name, description = '' } = args;
+        const snapshotsDir = join(hipilotPaths.hipilotDir, 'qor_snapshots');
+        mkdirSync(snapshotsDir, { recursive: true });
+        
+        let metrics = {};
+        try {
+          const output = execSync(
+            `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
+            { encoding: 'utf-8' }
+          );
+          metrics = extractQoR(output);
+        } catch {}
+        
+        const snapshot = {
+          id: `qor_${Date.now()}`,
+          name,
+          description,
+          timestamp: new Date().toISOString(),
+          metrics
+        };
+        
+        const snapshotPath = join(snapshotsDir, `${snapshot.id}.json`);
+        writeFileSync(snapshotPath, JSON.stringify(snapshot, null, 2));
+        
+        let text = `📊 **QoR Snapshot Saved**\n\n**Name:** ${name}\n**ID:** ${snapshot.id}\n\n`;
+        if (metrics.wns !== undefined) text += `**WNS:** ${metrics.wns}\n`;
+        if (metrics.tns !== undefined) text += `**TNS:** ${metrics.tns}\n`;
+        if (metrics.violations !== undefined) text += `**Violations:** ${metrics.violations}\n`;
+        
+        return { content: [{ type: 'text', text }], _metadata: snapshot };
+      }
+
+      case 'qor.list_snapshots': {
+        const snapshotsDir = join(hipilotPaths.hipilotDir, 'qor_snapshots');
+        const snapshots = [];
+        
+        if (existsSync(snapshotsDir)) {
+          for (const file of readdirSync(snapshotsDir).filter(f => f.endsWith('.json'))) {
+            try {
+              const snap = JSON.parse(readFileSync(join(snapshotsDir, file), 'utf-8'));
+              snapshots.push(snap);
+            } catch {}
+          }
+        }
+        
+        snapshots.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        let text = `📈 **QoR Snapshots** (${snapshots.length})\n\n`;
+        if (snapshots.length === 0) {
+          text += 'No snapshots saved.\n\nUse `qor.snapshot` to create one.';
+        } else {
+          for (const snap of snapshots) {
+            text += `**${snap.name}** (${snap.id})\n`;
+            text += `  Time: ${snap.timestamp}\n`;
+            if (snap.metrics?.wns !== undefined) text += `  WNS: ${snap.metrics.wns}\n`;
+            if (snap.metrics?.tns !== undefined) text += `  TNS: ${snap.metrics.tns}\n`;
+            text += '\n';
+          }
+        }
+        
+        return { content: [{ type: 'text', text }], _metadata: { snapshots } };
+      }
+
+      case 'qor.compare': {
+        const { snapshot1, snapshot2 } = args;
+        const snapshotsDir = join(hipilotPaths.hipilotDir, 'qor_snapshots');
+        
+        const findSnapshot = (id) => {
+          let path = join(snapshotsDir, `${id}.json`);
+          if (existsSync(path)) return JSON.parse(readFileSync(path, 'utf-8'));
+          for (const file of readdirSync(snapshotsDir).filter(f => f.includes(id))) {
+            return JSON.parse(readFileSync(join(snapshotsDir, file), 'utf-8'));
+          }
+          return null;
+        };
+        
+        const snap1 = findSnapshot(snapshot1);
+        const snap2 = findSnapshot(snapshot2);
+        
+        if (!snap1 || !snap2) {
+          return { content: [{ type: 'text', text: `❌ Snapshot not found` }], isError: true };
+        }
+        
+        const delta = {};
+        const metrics = ['wns', 'tns', 'violations', 'power_total', 'total_area'];
+        for (const m of metrics) {
+          if (snap1.metrics?.[m] !== undefined && snap2.metrics?.[m] !== undefined) {
+            delta[m] = snap2.metrics[m] - snap1.metrics[m];
+          }
+        }
+        
+        const improved = (delta.wns !== undefined && delta.wns > 0) || 
+                        (delta.tns !== undefined && delta.tns > 0) ||
+                        (delta.violations !== undefined && delta.violations < 0);
+        
+        let text = `📊 **QoR Comparison**\n\n`;
+        text += `**Baseline:** ${snap1.name} (${snap1.timestamp})\n`;
+        text += `**Current:** ${snap2.name} (${snap2.timestamp})\n\n`;
+        text += `**Delta:**\n`;
+        for (const [m, v] of Object.entries(delta)) {
+          const icon = (m === 'violations' ? v < 0 : v > 0) ? '✓' : v === 0 ? '=' : '✗';
+          text += `  ${icon} ${m}: ${v > 0 ? '+' : ''}${v}\n`;
+        }
+        text += `\n**Result:** ${improved ? '✓ Improved' : '✗ Regressed or unchanged'}`;
+        
+        return { content: [{ type: 'text', text }], _metadata: { delta, improved } };
+      }
+
+      case 'qor.get_trend': {
+        const { metric = 'wns', snapshots = 10 } = args;
+        const snapshotsDir = join(hipilotPaths.hipilotDir, 'qor_snapshots');
+        const data = [];
+        
+        if (existsSync(snapshotsDir)) {
+          const files = readdirSync(snapshotsDir)
+            .filter(f => f.endsWith('.json'))
+            .sort()
+            .slice(-snapshots);
+          
+          for (const file of files) {
+            try {
+              const snap = JSON.parse(readFileSync(join(snapshotsDir, file), 'utf-8'));
+              if (snap.metrics?.[metric] !== undefined) {
+                data.push({ name: snap.name, value: snap.metrics[metric] });
+              }
+            } catch {}
+          }
+        }
+        
+        if (data.length < 2) {
+          return { content: [{ type: 'text', text: 'Need at least 2 snapshots with this metric to show trend.' }] };
+        }
+        
+        const trend = data[data.length - 1].value > data[0].value ? 'improving' :
+                      data[data.length - 1].value < data[0].value ? 'degrading' : 'stable';
+        
+        let text = `📈 **QoR Trend: ${metric.toUpperCase()}**\n\n`;
+        for (const d of data) {
+          text += `${d.name}: ${d.value}\n`;
+        }
+        text += `\n**Trend:** ${trend}`;
+        
+        return { content: [{ type: 'text', text }], _metadata: { trend, data } };
+      }
+
+      // === PHASE 2.2: ERROR DIAGNOSIS TOOL HANDLERS ===
+      case 'eda.diagnose_error': {
+        const { output, tool = 'auto' } = args;
+        
+        const errorPatterns = [
+          { category: 'syntax', patterns: [/syntax error/i, /unknown command/i, /invalid command/i], fix: 'Check Tcl syntax and command names' },
+          { category: 'constraint', patterns: [/cannot find.*clock/i, /no clock/i, /missing.*constraint/i], fix: 'Verify clocks and constraints are defined' },
+          { category: 'timing', patterns: [/setup violation/i, /hold violation/i, /negative slack/i], fix: 'Review timing paths and apply fixes' },
+          { category: 'drc', patterns: [/DRC violation/i, /design rule/i, /spacing/i], fix: 'Check design rules and fix violations' },
+          { category: 'resource', patterns: [/out of memory/i, /license/i, /timeout/i], fix: 'Check resources, licenses, or increase timeout' },
+          { category: 'data', patterns: [/file not found/i, /cannot open/i, /no such/i], fix: 'Verify file paths and data availability' },
+        ];
+        
+        let diagnosis = { category: 'unknown', explanation: 'Unable to categorize error', suggested_fixes: [] };
+        
+        for (const ep of errorPatterns) {
+          for (const pattern of ep.patterns) {
+            const match = output.match(pattern);
+            if (match) {
+              diagnosis = {
+                category: ep.category,
+                explanation: `Detected ${ep.category} error: ${match[0]}`,
+                suggested_fixes: [ep.fix]
+              };
+              break;
+            }
+          }
+          if (diagnosis.category !== 'unknown') break;
+        }
+        
+        let text = `🔍 **Error Diagnosis**\n\n`;
+        text += `**Category:** ${diagnosis.category}\n`;
+        text += `**Explanation:** ${diagnosis.explanation}\n`;
+        text += `\n**Suggested Fixes:**\n`;
+        for (const fix of diagnosis.suggested_fixes) {
+          text += `  • ${fix}\n`;
+        }
+        text += `\n**Error Output:**\n${output.slice(0, 500)}`;
+        
+        return { content: [{ type: 'text', text }], _metadata: diagnosis };
+      }
+
+      case 'eda.validate_tcl': {
+        const { tcl } = args;
+        const errors = [];
+        
+        const lines = tcl.split('\n');
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          const lineNum = i + 1;
+          
+          
+          const openBraces = (line.match(/\{/g) || []).length;
+          const closeBraces = (line.match(/\}/g) || []).length;
+          
+          
+          const openBrackets = (line.match(/\[/g) || []).length;
+          const closeBrackets = (line.match(/\]/g) || []).length;
+          
+          
+          if (/\bsets\b/.test(line) && !/\bset\s/.test(line)) {
+            errors.push({ line: lineNum, message: 'Possible typo: "sets" instead of "set"' });
+          }
+        }
+        
+        
+        const totalOpen = (tcl.match(/\{/g) || []).length;
+        const totalClose = (tcl.match(/\}/g) || []).length;
+        if (totalOpen !== totalClose) {
+          errors.push({ line: 0, message: `Unmatched braces: ${totalOpen} open, ${totalClose} close` });
+        }
+        
+        const valid = errors.length === 0;
+        
+        let text = valid 
+          ? `✓ **Tcl Validation Passed**\n\nNo syntax errors detected.`
+          : `✗ **Tcl Validation Failed**\n\nFound ${errors.length} issue(s):\n`;
+        
+        for (const e of errors) {
+          text += `  Line ${e.line}: ${e.message}\n`;
+        }
+        
+        return { content: [{ type: 'text', text }], _metadata: { valid, errors } };
       }
 
       default:
