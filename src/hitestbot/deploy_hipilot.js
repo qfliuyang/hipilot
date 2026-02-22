@@ -74,11 +74,23 @@ async function deploy() {
   `);
   console.log('   Swap complete');
   
-  // Step 6: Configure MCP
+  // Step 6: Configure MCP (MERGE with existing settings!)
   console.log('[6/6] Configuring MCP servers...');
   const hipilotDir = `${REMOTE_DIR}/current`;
-  const settings = {
+  
+  let existingSettings = {};
+  try {
+    const existingJson = ssh(`cat ~/.claude/settings.json 2>/dev/null || echo '{}'`);
+    existingSettings = JSON.parse(existingJson);
+    console.log('   Found existing settings, will merge...');
+  } catch (e) {
+    console.log('   No existing settings, creating new...');
+  }
+  
+  const mergedSettings = {
+    ...existingSettings,
     mcpServers: {
+      ...(existingSettings.mcpServers || {}),
       'hipilot-eda': {
         command: `${NODE_PATH}/node`,
         args: [`${hipilotDir}/servers/eda/index.js`],
@@ -100,9 +112,9 @@ async function deploy() {
   
   ssh(`mkdir -p ~/.claude`);
   ssh(`cat > ~/.claude/settings.json << 'EOFSETTINGS'
-${JSON.stringify(settings, null, 2)}
+${JSON.stringify(mergedSettings, null, 2)}
 EOFSETTINGS`);
-  console.log('   MCP configured');
+  console.log('   MCP configured (settings merged)');
   
   // Cleanup
   unlinkSync(tarFile);
