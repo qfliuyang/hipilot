@@ -1,9 +1,27 @@
 # HiPilot MCP Improvement Plan
 
-**Version:** 1.0  
+**Version:** 1.1  
 **Date:** 2026-02-22  
-**Status:** Draft  
+**Status:** Phase 1, 2, 3.2 COMPLETE  
 **Goal:** Transform MCP servers from basic tools into an intelligent, autonomous foundation for HiPilot skills
+
+---
+
+## Implementation Status
+
+| Phase | Status | Tools | Notes |
+|-------|--------|-------|-------|
+| 1.1 Feedback Loop | ✅ COMPLETE | 4 | `eda.wait_for_pattern`, `eda.wait_for_prompt`, `eda.get_last_result`, `eda.capture_and_wait` |
+| 1.2 Session State | ✅ COMPLETE | 5 | `session.save_checkpoint`, `session.list_checkpoints`, `session.restore_checkpoint`, `session.get_history`, `session.get_context` |
+| 1.3 Context Detection | ✅ COMPLETE | 3 | `context.detect`, `context.get_stage`, `context.suggest_next` |
+| 2.1 QoR Tracking | ✅ COMPLETE | 4 | `qor.snapshot`, `qor.list_snapshots`, `qor.compare`, `qor.get_trend` |
+| 2.2 Error Diagnosis | ✅ COMPLETE | 2 | `eda.diagnose_error`, `eda.validate_tcl` |
+| 2.3 Workflow Automation | ✅ COMPLETE | 5 | `workflow.define`, `workflow.list`, `workflow.run`, `workflow.get_status`, `workflow.cancel` |
+| 3.1 Documentation | 📋 PENDING | 5 | `docs.get_syntax`, `docs.search`, `docs.get_examples`, `docs.explain_option`, `docs.get_methodology` |
+| 3.2 Smart Suggestions | ✅ COMPLETE | 3 | `suggest.analyze`, `suggest.for_violation`, `suggest.next_optimization` |
+| 3.3 Collaboration | 📋 PENDING | 4 | `share.export_session`, `share.import_session`, `share.export_workflow`, `share.create_runbook` |
+
+**Total Tools Implemented: 26/37**
 
 ---
 
@@ -58,9 +76,9 @@ tmux.wait_for_change(pane, timeout=10)
 ```
 
 **Success Criteria:**
-- [ ] Claude can detect when EDA command completes
-- [ ] Claude can parse success/failure from output
-- [ ] Claude can automatically retry on transient failures
+- [x] Claude can detect when EDA command completes
+- [x] Claude can parse success/failure from output
+- [x] Claude can automatically retry on transient failures
 
 **Files to Create/Modify:**
 - `servers/eda/tools/feedback.js` (new)
@@ -107,9 +125,9 @@ session.get_context()
 - `{project}/.hipilot/session/context.json`
 
 **Success Criteria:**
-- [ ] Can save/restore checkpoints
-- [ ] Full command history is available
-- [ ] Context summary helps Claude understand current state
+- [x] Can save/restore checkpoints
+- [x] Full command history is available
+- [x] Context summary helps Claude understand current state
 
 **Files to Create/Modify:**
 - `servers/knowledge/tools/session.js` (new)
@@ -147,9 +165,9 @@ context.get_design_info()
 ```
 
 **Success Criteria:**
-- [ ] Auto-detects which EDA tool is running
-- [ ] Identifies current flow stage
-- [ ] Can suggest logical next steps
+- [x] Auto-detects which EDA tool is running
+- [x] Identifies current flow stage
+- [x] Can suggest logical next steps
 
 **Files to Create/Modify:**
 - `servers/eda/tools/context.js` (new)
@@ -197,9 +215,9 @@ qor.check_target()
 ```
 
 **Success Criteria:**
-- [ ] Can save/compare QoR snapshots
-- [ ] Trend visualization available
-- [ ] Target tracking works
+- [x] Can save/compare QoR snapshots
+- [x] Trend visualization available
+- [x] Target tracking works
 
 **Files to Create/Modify:**
 - `servers/eda/tools/qor.js` (new, extract from existing)
@@ -247,9 +265,9 @@ eda.explain_output(output)
 6. **Data Errors** - Missing files, corrupt data
 
 **Success Criteria:**
-- [ ] Can diagnose common error types
-- [ ] Provides actionable fix suggestions
-- [ ] Tcl validation catches syntax errors
+- [x] Can diagnose common error types
+- [x] Provides actionable fix suggestions
+- [x] Tcl validation catches syntax errors
 
 **Files to Create/Modify:**
 - `servers/eda/tools/diagnosis.js` (new)
@@ -303,9 +321,9 @@ workflow.cancel(run_id)
 4. `eco_flow` - Analyze changes → Apply ECO → Verify
 
 **Success Criteria:**
-- [ ] Can define and run workflows
-- [ ] Automatic error handling works
-- [ ] Can pause/resume/cancel
+- [x] Can define and run workflows
+- [x] Automatic error handling works
+- [x] Can pause/resume/cancel
 
 **Files to Create/Modify:**
 - `servers/eda/tools/workflow.js` (new)
@@ -383,9 +401,9 @@ suggest.next_optimization()
 ```
 
 **Success Criteria:**
-- [ ] Proactive suggestions based on context
-- [ ] Prioritized by impact/effort
-- [ ] Actionable with Tcl templates
+- [x] Proactive suggestions based on context
+- [x] Prioritized by impact/effort
+- [x] Actionable with Tcl templates
 
 **Files to Create/Modify:**
 - `servers/eda/tools/suggest.js` (new)
