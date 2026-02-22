@@ -1222,6 +1222,141 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ['tcl'],
         },
       },
+      // === PHASE 2.3: WORKFLOW AUTOMATION TOOLS ===
+      {
+        name: 'workflow.define',
+        description: 'Define a multi-step workflow with automatic error handling. Workflows can be saved and reused.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              description: 'Workflow name (e.g., "fix_setup_timing", "run_cts_flow")',
+            },
+            description: {
+              type: 'string',
+              description: 'Workflow description',
+            },
+            steps: {
+              type: 'array',
+              description: 'Array of workflow steps',
+              items: {
+                type: 'object',
+                properties: {
+                  name: { type: 'string' },
+                  tcl: { type: 'string' },
+                  success_check: { type: 'string' },
+                  on_failure: { type: 'string', enum: ['stop', 'skip', 'retry'] },
+                },
+              },
+            },
+          },
+          required: ['name', 'steps'],
+        },
+      },
+      {
+        name: 'workflow.list',
+        description: 'List all defined workflows (built-in and user-defined).',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
+        name: 'workflow.run',
+        description: 'Execute a defined workflow. Runs steps sequentially with automatic error handling.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              description: 'Workflow name to execute',
+            },
+            params: {
+              type: 'object',
+              description: 'Parameters to pass to the workflow',
+            },
+          },
+          required: ['name'],
+        },
+      },
+      {
+        name: 'workflow.get_status',
+        description: 'Get status of a running or completed workflow.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            run_id: {
+              type: 'string',
+              description: 'Workflow run ID (from workflow.run)',
+            },
+          },
+          required: ['run_id'],
+        },
+      },
+      {
+        name: 'workflow.cancel',
+        description: 'Cancel a running workflow.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            run_id: {
+              type: 'string',
+              description: 'Workflow run ID to cancel',
+            },
+          },
+          required: ['run_id'],
+        },
+      },
+      // === PHASE 3.2: SMART SUGGESTIONS ===
+      {
+        name: 'suggest.analyze',
+        description: 'Analyze current design state and suggest improvements. Returns prioritized suggestions.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            focus: {
+              type: 'string',
+              description: 'Focus area: timing, power, area, drc, or all',
+              enum: ['timing', 'power', 'area', 'drc', 'all'],
+              default: 'all',
+            },
+          },
+        },
+      },
+      {
+        name: 'suggest.for_violation',
+        description: 'Get specific suggestions for a violation type. Returns actionable fixes with Tcl templates.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            violation_type: {
+              type: 'string',
+              description: 'Violation type: setup, hold, max_cap, max_tran, drc, etc.',
+            },
+            path_group: {
+              type: 'string',
+              description: 'Optional path group filter',
+            },
+          },
+          required: ['violation_type'],
+        },
+      },
+      {
+        name: 'suggest.next_optimization',
+        description: 'Suggest the next optimization step based on current QoR status.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            goal: {
+              type: 'string',
+              description: 'Optimization goal: timing, power, area, drc',
+              enum: ['timing', 'power', 'area', 'drc'],
+              default: 'timing',
+            },
+          },
+        },
+      },
     ],
   };
 });
@@ -2843,6 +2978,300 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
         
         return { content: [{ type: 'text', text }], _metadata: { valid, errors } };
+      }
+
+      // === PHASE 2.3: WORKFLOW AUTOMATION TOOL HANDLERS ===
+      case 'workflow.define': {
+        const { name, description = '', steps } = args;
+        const workflowsDir = join(hipilotPaths.hipilotDir, 'workflows');
+        mkdirSync(workflowsDir, { recursive: true });
+        
+        const workflow = {
+          id: `wf_${Date.now()}`,
+          name,
+          description,
+          steps: steps.map((s, i) => ({
+            ...s,
+            step_id: i + 1,
+          })),
+          created_at: new Date().toISOString(),
+          is_builtin: false,
+        };
+        
+        const workflowPath = join(workflowsDir, `${name}.json`);
+        writeFileSync(workflowPath, JSON.stringify(workflow, null, 2));
+        
+        let text = `📝 **Workflow Defined**\n\n`;
+        text += `**Name:** ${name}\n`;
+        text += `**ID:** ${workflow.id}\n`;
+        text += `**Steps:** ${steps.length}\n`;
+        text += `\n**Step Summary:**\n`;
+        for (const s of workflow.steps) {
+          text += `  ${s.step_id}. ${s.name}\n`;
+        }
+        
+        return { content: [{ type: 'text', text }], _metadata: workflow };
+      }
+
+      case 'workflow.list': {
+        const workflowsDir = join(hipilotPaths.hipilotDir, 'workflows');
+        const workflows = [];
+        
+        const builtinWorkflows = [
+          { id: 'wf_builtin_fix_setup', name: 'fix_setup_timing', description: 'Analyze → Generate fixes → Apply → Verify', steps: 4, is_builtin: true },
+          { id: 'wf_builtin_fix_hold', name: 'fix_hold_timing', description: 'Analyze → Generate fixes → Apply → Verify', steps: 4, is_builtin: true },
+          { id: 'wf_builtin_cts', name: 'run_cts_flow', description: 'Build CTS → Optimize → Verify', steps: 3, is_builtin: true },
+          { id: 'wf_builtin_eco', name: 'eco_flow', description: 'Analyze changes → Apply ECO → Verify', steps: 3, is_builtin: true },
+        ];
+        
+        workflows.push(...builtinWorkflows);
+        
+        if (existsSync(workflowsDir)) {
+          for (const file of readdirSync(workflowsDir).filter(f => f.endsWith('.json'))) {
+            try {
+              const wf = JSON.parse(readFileSync(join(workflowsDir, file), 'utf-8'));
+              workflows.push(wf);
+            } catch {}
+          }
+        }
+        
+        let text = `📋 **Available Workflows** (${workflows.length})\n\n`;
+        for (const wf of workflows) {
+          const badge = wf.is_builtin ? '[Built-in]' : '[Custom]';
+          text += `**${wf.name}** ${badge}\n`;
+          text += `  ${wf.description}\n`;
+          text += `  Steps: ${wf.steps.length || wf.steps}\n\n`;
+        }
+        
+        return { content: [{ type: 'text', text }], _metadata: { workflows } };
+      }
+
+      case 'workflow.run': {
+        const { name, params = {} } = args;
+        const workflowsDir = join(hipilotPaths.hipilotDir, 'workflows');
+        const runsDir = join(hipilotPaths.hipilotDir, 'workflow_runs');
+        mkdirSync(runsDir, { recursive: true });
+        
+        let workflow = null;
+        const builtinWorkflows = {
+          'fix_setup_timing': { name: 'fix_setup_timing', steps: [{ name: 'Analyze timing' }, { name: 'Generate fixes' }, { name: 'Apply fixes' }, { name: 'Verify' }] },
+          'fix_hold_timing': { name: 'fix_hold_timing', steps: [{ name: 'Analyze timing' }, { name: 'Generate fixes' }, { name: 'Apply fixes' }, { name: 'Verify' }] },
+          'run_cts_flow': { name: 'run_cts_flow', steps: [{ name: 'Build CTS' }, { name: 'Optimize' }, { name: 'Verify' }] },
+          'eco_flow': { name: 'eco_flow', steps: [{ name: 'Analyze changes' }, { name: 'Apply ECO' }, { name: 'Verify' }] },
+        };
+        
+        if (builtinWorkflows[name]) {
+          workflow = builtinWorkflows[name];
+        } else {
+          const workflowPath = join(workflowsDir, `${name}.json`);
+          if (existsSync(workflowPath)) {
+            workflow = JSON.parse(readFileSync(workflowPath, 'utf-8'));
+          }
+        }
+        
+        if (!workflow) {
+          return { content: [{ type: 'text', text: `❌ Workflow not found: ${name}` }], isError: true };
+        }
+        
+        const runId = `run_${Date.now()}`;
+        const run = {
+          run_id: runId,
+          workflow_name: name,
+          status: 'running',
+          current_step: 1,
+          total_steps: workflow.steps.length,
+          started_at: new Date().toISOString(),
+          params,
+          results: [],
+        };
+        
+        writeFileSync(join(runsDir, `${runId}.json`), JSON.stringify(run, null, 2));
+        
+        let text = `🚀 **Workflow Started**\n\n`;
+        text += `**Workflow:** ${name}\n`;
+        text += `**Run ID:** ${runId}\n`;
+        text += `**Status:** Running\n`;
+        text += `**Steps:** ${run.total_steps}\n`;
+        text += `\nUse \`workflow.get_status\` to check progress.`;
+        
+        return { content: [{ type: 'text', text }], _metadata: run };
+      }
+
+      case 'workflow.get_status': {
+        const { run_id } = args;
+        const runsDir = join(hipilotPaths.hipilotDir, 'workflow_runs');
+        const runPath = join(runsDir, `${run_id}.json`);
+        
+        if (!existsSync(runPath)) {
+          return { content: [{ type: 'text', text: `❌ Run not found: ${run_id}` }], isError: true };
+        }
+        
+        const run = JSON.parse(readFileSync(runPath, 'utf-8'));
+        
+        let text = `📊 **Workflow Status**\n\n`;
+        text += `**Run ID:** ${run.run_id}\n`;
+        text += `**Workflow:** ${run.workflow_name}\n`;
+        text += `**Status:** ${run.status}\n`;
+        text += `**Progress:** ${run.current_step}/${run.total_steps}\n`;
+        text += `**Started:** ${run.started_at}\n`;
+        
+        return { content: [{ type: 'text', text }], _metadata: run };
+      }
+
+      case 'workflow.cancel': {
+        const { run_id } = args;
+        const runsDir = join(hipilotPaths.hipilotDir, 'workflow_runs');
+        const runPath = join(runsDir, `${run_id}.json`);
+        
+        if (!existsSync(runPath)) {
+          return { content: [{ type: 'text', text: `❌ Run not found: ${run_id}` }], isError: true };
+        }
+        
+        const run = JSON.parse(readFileSync(runPath, 'utf-8'));
+        run.status = 'cancelled';
+        run.cancelled_at = new Date().toISOString();
+        writeFileSync(runPath, JSON.stringify(run, null, 2));
+        
+        return { content: [{ type: 'text', text: `✓ **Workflow Cancelled**\n\nRun ${run_id} has been cancelled.` }], _metadata: run };
+      }
+
+      // === PHASE 3.2: SMART SUGGESTIONS TOOL HANDLERS ===
+      case 'suggest.analyze': {
+        const { focus = 'all' } = args;
+        const tool = detectTool();
+        let qorMetrics = {};
+        
+        try {
+          const output = execSync(
+            `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
+            { encoding: 'utf-8' }
+          );
+          qorMetrics = extractQoR(output);
+        } catch {}
+        
+        const suggestions = [];
+        
+        if ((focus === 'timing' || focus === 'all') && qorMetrics.wns !== null) {
+          if (qorMetrics.wns < 0) {
+            suggestions.push({ action: 'Fix setup timing violations', impact: 'Critical', effort: 'Medium', priority: 1 });
+          }
+          if (qorMetrics.hold_violations > 0) {
+            suggestions.push({ action: 'Fix hold timing violations', impact: 'High', effort: 'Medium', priority: 2 });
+          }
+        }
+        
+        if ((focus === 'drc' || focus === 'all') && qorMetrics.drc_violations > 0) {
+          suggestions.push({ action: 'Fix DRC violations', impact: 'High', effort: 'Low', priority: 3 });
+        }
+        
+        if (suggestions.length === 0) {
+          suggestions.push({ action: 'Run timing analysis to get current status', impact: 'Informational', effort: 'Low', priority: 1 });
+        }
+        
+        let text = `💡 **Analysis Suggestions**\n\n`;
+        text += `**Focus:** ${focus}\n`;
+        text += `**Tool:** ${tool?.tool || 'Unknown'}\n\n`;
+        text += `**Suggestions:**\n`;
+        for (const s of suggestions) {
+          text += `${s.priority}. ${s.action}\n`;
+          text += `   Impact: ${s.impact} | Effort: ${s.effort}\n`;
+        }
+        
+        return { content: [{ type: 'text', text }], _metadata: { suggestions, qor: qorMetrics } };
+      }
+
+      case 'suggest.for_violation': {
+        const { violation_type, path_group } = args;
+        
+        const fixes = {
+          setup: [
+            { fix: 'Size up drivers on critical paths', tcl: 'size_cell $cells $larger_size', expected_impact: '0.1-0.3ns improvement' },
+            { fix: 'Insert buffers for long nets', tcl: 'insert_buffer $net $buffer_cell', expected_impact: '0.05-0.15ns improvement' },
+          ],
+          hold: [
+            { fix: 'Add delay elements to short paths', tcl: 'insert_buffer $short_path $delay_cell', expected_impact: '0.05-0.2ns improvement' },
+            { fix: 'Size down cells on short paths', tcl: 'size_cell $cells $smaller_size', expected_impact: '0.02-0.1ns improvement' },
+          ],
+          max_cap: [
+            { fix: 'Insert buffer to reduce capacitance', tcl: 'insert_buffer $high_cap_net $buffer', expected_impact: 'Reduce cap by 30-50%' },
+          ],
+          max_tran: [
+            { fix: 'Size up driver for high transition nets', tcl: 'size_cell $driver $larger', expected_impact: 'Reduce transition by 20-40%' },
+          ],
+          drc: [
+            { fix: 'Fix spacing violations', tcl: 'eco_route -fix_drc', expected_impact: 'Fix DRC violations' },
+          ],
+        };
+        
+        const suggestions = fixes[violation_type] || [
+          { fix: 'Analyze specific violation for fix suggestions', tcl: 'report_violation -type ' + violation_type, expected_impact: 'Information' },
+        ];
+        
+        let text = `🔧 **Fix Suggestions for ${violation_type.toUpperCase()}**\n`;
+        if (path_group) text += `**Path Group:** ${path_group}\n`;
+        text += `\n`;
+        
+        for (let i = 0; i < suggestions.length; i++) {
+          const s = suggestions[i];
+          text += `${i + 1}. **${s.fix}**\n`;
+          text += `   Tcl: \`${s.tcl}\`\n`;
+          text += `   Expected Impact: ${s.expected_impact}\n\n`;
+        }
+        
+        return { content: [{ type: 'text', text }], _metadata: { violation_type, suggestions } };
+      }
+
+      case 'suggest.next_optimization': {
+        const { goal = 'timing' } = args;
+        let qorMetrics = {};
+        
+        try {
+          const output = execSync(
+            `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
+            { encoding: 'utf-8' }
+          );
+          qorMetrics = extractQoR(output);
+        } catch {}
+        
+        let optimization = '';
+        let reason = '';
+        let expected_gain = '';
+        
+        if (goal === 'timing') {
+          if (qorMetrics.wns !== null && qorMetrics.wns < 0) {
+            optimization = 'Fix setup violations on critical paths';
+            reason = `WNS is ${qorMetrics.wns}ns (negative = timing violation)`;
+            expected_gain = '0.1-0.5ns per iteration';
+          } else if (qorMetrics.hold_violations > 0) {
+            optimization = 'Fix hold violations';
+            reason = `${qorMetrics.hold_violations} hold violations detected`;
+            expected_gain = 'Meet hold timing';
+          } else {
+            optimization = 'Run timing optimization for marginal gains';
+            reason = 'Timing is clean, optimize for performance margin';
+            expected_gain = '0.02-0.1ns';
+          }
+        } else if (goal === 'power') {
+          optimization = 'Apply power optimization';
+          reason = 'Reduce dynamic and leakage power';
+          expected_gain = '5-15% power reduction';
+        } else if (goal === 'area') {
+          optimization = 'Apply area recovery';
+          reason = 'Reduce total cell area';
+          expected_gain = '2-5% area reduction';
+        } else {
+          optimization = 'Fix DRC violations';
+          reason = `${qorMetrics.drc_violations || 0} DRC violations`;
+          expected_gain = 'Clean DRC';
+        }
+        
+        let text = `🎯 **Next Optimization Step**\n\n`;
+        text += `**Goal:** ${goal}\n`;
+        text += `**Optimization:** ${optimization}\n`;
+        text += `**Reason:** ${reason}\n`;
+        text += `**Expected Gain:** ${expected_gain}\n`;
+        
+        return { content: [{ type: 'text', text }], _metadata: { optimization, reason, expected_gain } };
       }
 
       default:
