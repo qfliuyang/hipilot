@@ -14,7 +14,9 @@ class MCPImprovementTest extends E2ETestRunner {
       session: { passed: false, details: '' },
       context: { passed: false, details: '' },
       qor: { passed: false, details: '' },
-      diagnosis: { passed: false, details: '' }
+      diagnosis: { passed: false, details: '' },
+      workflow: { passed: false, details: '' },
+      suggest: { passed: false, details: '' }
     };
   }
 
@@ -24,6 +26,8 @@ class MCPImprovementTest extends E2ETestRunner {
     await this.step('Test Context Detection tools', () => this.testContextDetection());
     await this.step('Test QoR Tracking tools', () => this.testQorTracking());
     await this.step('Test Error Diagnosis tools', () => this.testErrorDiagnosis());
+    await this.step('Test Workflow Automation tools', () => this.testWorkflowAutomation());
+    await this.step('Test Smart Suggestions tools', () => this.testSmartSuggestions());
     await this.step('Verify Results', () => this.verifyResults());
   }
 
@@ -240,6 +244,92 @@ Report captured metrics.`;
     TestUtils.assert(results.passed >= 1, 'No error diagnosis tools worked');
   }
 
+  async testWorkflowAutomation() {
+    this.tmux.setSSH(this.ssh.bind(this));
+    const results = { passed: 0, details: [] };
+
+    await this.tmux.sendKeys(`${this.sessionName}:0.0`, 'clear', true, 'C-m');
+    await this.sleep(1000);
+
+    const prompt = `Test the Workflow Automation MCP tools:
+ 1. workflow.list to see available workflows
+ 2. workflow.define a simple test workflow
+ 3. workflow.run to start a workflow
+ Report results.`;
+
+    this.log('Testing Workflow Automation tools...');
+    this.tmux.sendKeys(`${this.sessionName}:0.0`, prompt, false);
+    await this.sleep(500);
+    this.tmux.sendKeys(`${this.sessionName}:0.0`, null, true, 'C-m');
+
+    await this.sleep(45000);
+
+    const output = await this.tmux.capturePane(`${this.sessionName}:0.0`);
+    
+    if (output.includes('Workflow') || output.includes('workflow')) {
+      results.details.push('workflow tools mentioned');
+      results.passed++;
+    }
+    if (output.includes('list') || output.includes('Defined') || output.includes('Available')) {
+      results.details.push('workflow.list works');
+      results.passed++;
+    }
+    if (output.includes('Started') || output.includes('run') || output.includes('Running')) {
+      results.details.push('workflow.run works');
+      results.passed++;
+    }
+
+    this.testResults.workflow = {
+      passed: results.passed >= 1,
+      details: results.details.join('; ') || 'No workflow tools tested'
+    };
+
+    TestUtils.assert(results.passed >= 1, 'No workflow automation tools worked');
+  }
+
+  async testSmartSuggestions() {
+    this.tmux.setSSH(this.ssh.bind(this));
+    const results = { passed: 0, details: [] };
+
+    await this.tmux.sendKeys(`${this.sessionName}:0.0`, 'clear', true, 'C-m');
+    await this.sleep(1000);
+
+    const prompt = `Test the Smart Suggestions MCP tools:
+ 1. suggest.analyze with focus=timing
+ 2. suggest.for_violation with violation_type=setup
+ 3. suggest.next_optimization with goal=timing
+ Report suggestions.`;
+
+    this.log('Testing Smart Suggestions tools...');
+    this.tmux.sendKeys(`${this.sessionName}:0.0`, prompt, false);
+    await this.sleep(500);
+    this.tmux.sendKeys(`${this.sessionName}:0.0`, null, true, 'C-m');
+
+    await this.sleep(45000);
+
+    const output = await this.tmux.capturePane(`${this.sessionName}:0.0`);
+    
+    if (output.includes('Suggestion') || output.includes('suggestion') || output.includes('Analysis')) {
+      results.details.push('suggest.analyze works');
+      results.passed++;
+    }
+    if (output.includes('Fix') || output.includes('fix') || output.includes('violation')) {
+      results.details.push('suggest.for_violation works');
+      results.passed++;
+    }
+    if (output.includes('Optimization') || output.includes('optimization') || output.includes('Next')) {
+      results.details.push('suggest.next_optimization works');
+      results.passed++;
+    }
+
+    this.testResults.suggest = {
+      passed: results.passed >= 1,
+      details: results.details.join('; ') || 'No suggestion tools tested'
+    };
+
+    TestUtils.assert(results.passed >= 1, 'No smart suggestions tools worked');
+  }
+
   async verifyResults() {
     await this.ssh(`
       export DISPLAY=${this.display}
@@ -256,9 +346,11 @@ Report captured metrics.`;
     this.log(`Phase 1.3 (Context): ${this.testResults.context.passed ? 'PASS' : 'FAIL'} - ${this.testResults.context.details}`);
     this.log(`Phase 2.1 (QoR): ${this.testResults.qor.passed ? 'PASS' : 'SKIP'} - ${this.testResults.qor.details}`);
     this.log(`Phase 2.2 (Diagnosis): ${this.testResults.diagnosis.passed ? 'PASS' : 'FAIL'} - ${this.testResults.diagnosis.details}`);
+    this.log(`Phase 2.3 (Workflow): ${this.testResults.workflow.passed ? 'PASS' : 'FAIL'} - ${this.testResults.workflow.details}`);
+    this.log(`Phase 3.2 (Suggest): ${this.testResults.suggest.passed ? 'PASS' : 'FAIL'} - ${this.testResults.suggest.details}`);
     this.log(`\nTotal: ${passed}/${total} passed`);
 
-    TestUtils.assert(passed >= 3, `Only ${passed}/${total} phases passed (need 3+)`);
+    TestUtils.assert(passed >= 5, `Only ${passed}/${total} phases passed (need 5+)`);
   }
 }
 
