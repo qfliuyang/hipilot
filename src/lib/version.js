@@ -1,10 +1,3 @@
-/**
- * HiPilot Version - Single Source of Truth
- *
- * This file is the canonical version reference for the entire project.
- * All components (CLI, MCP servers, documentation) should import from here.
- */
-
-export const VERSION = '0.4.0';
+export const VERSION = '0.5.0';
 
 export default VERSION;
