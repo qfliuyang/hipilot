@@ -28,6 +28,7 @@ export function getHipilotPaths() {
   const paths = {
     baseDir,
     hipilotDir: baseDir,  // Alias for MCP tools
+    tempDir: baseDir,     // Alias for temp files
     modeFile: join(baseDir, 'mode'),
     pendingFile: join(baseDir, 'pending.tcl'),
     pendingMetaFile: join(baseDir, 'pending_meta.json'),

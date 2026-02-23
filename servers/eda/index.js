@@ -2445,7 +2445,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const tclFile = `${hipilotPaths.tempDir}/capture_wait_${Date.now()}.tcl`;
         writeFileSync(tclFile, tcl);
         try {
-          execSync(`tmux send-keys -t ${target} "source ${tclFile}" Enter`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} "source ${tclFile}" Enter`, { encoding: 'utf-8' });
         } catch (e) {
           return { content: [{ type: 'text', text: `❌ Failed to send Tcl: ${e.message}` }], isError: true };
         }
@@ -2459,7 +2459,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         
         while (Date.now() - startTime < timeoutMs) {
           try {
-            const output = execSync(`tmux capture-pane -t ${target} -p -S -100`, { encoding: 'utf-8', timeout: 5000 });
+            const output = execSync(`tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -100`, { encoding: 'utf-8', timeout: 5000 });
             const lastLine = output.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
             for (const pattern of promptPatterns) {
               if (pattern.test(lastLine)) {
