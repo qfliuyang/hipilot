@@ -14,10 +14,12 @@
 | 1.1 Autonomous Fix | ✅ COMPLETE | `auto-fix-timing` |
 | 1.2 QoR Tracking | ✅ COMPLETE | `track-progress` |
 | 1.3 Session Management | ✅ COMPLETE | `create-checkpoint`, `resume-work` |
-| 2.1 Workflow Automation | 📋 PENDING | `run-cts-flow`, `run-eco-flow`, `auto-fix-drc` |
-| 3.1 Error Recovery | 📋 PENDING | `debug-failure`, `auto-recover`, `compare-implementations` |
+| 2.1 Workflow Automation | ✅ COMPLETE | `run-cts-flow`, `run-eco-flow` |
+| 2.2 DRC Automation | ✅ COMPLETE | `auto-fix-drc` |
+| 3.1 Error Recovery | ✅ COMPLETE | `debug-failure`, `auto-recover` |
+| 3.2 QoR Comparison | ✅ COMPLETE | `compare-implementations` |
 
-**Total Skills: 21** (17 original + 4 new MCP-powered skills)
+**Total Skills: 27** (17 original + 10 new MCP-powered skills)
 
 ---
 
