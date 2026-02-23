@@ -2496,7 +2496,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         let qorMetrics = {};
         try {
           const paneOutput = execSync(
-            `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
+            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
             { encoding: 'utf-8' }
           );
           qorMetrics = extractQoR(paneOutput);
@@ -2757,7 +2757,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         let metrics = {};
         try {
           const output = execSync(
-            `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
+            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
             { encoding: 'utf-8' }
           );
           metrics = extractQoR(output);
@@ -3143,7 +3143,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         
         try {
           const output = execSync(
-            `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
+            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
             { encoding: 'utf-8' }
           );
           qorMetrics = extractQoR(output);
@@ -3227,7 +3227,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         
         try {
           const output = execSync(
-            `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
+            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
             { encoding: 'utf-8' }
           );
           qorMetrics = extractQoR(output);
