@@ -69,19 +69,16 @@ class E2ETestRunner extends TestRunner {
 
   async setupTmuxWorkspace() {
     this.tmux.setSSH(this.ssh.bind(this));
+    const tmuxBin = this.tmux.tmuxBin;
     
-    await this.ssh(`
-      export PATH=/home/EDA/hipilot_test/.local/bin:$PATH
-      tmux -L ${this.sessionName} kill-server 2>/dev/null || true
-    `);
+    await this.ssh(`${tmuxBin} -L ${this.sessionName} kill-server 2>/dev/null || true`);
     await this.sleep(2000);
 
     await this.ssh(`
-      export PATH=/home/EDA/hipilot_test/.local/bin:$PATH
-      tmux -L ${this.sessionName} new-session -d -s ${this.sessionName} -x 200 -y 50
-      tmux -L ${this.sessionName} split-window -h -l 50%
-      tmux -L ${this.sessionName} set-option -g status on
-      tmux -L ${this.sessionName} set-option -g status-style 'bg=#1a1a2e,fg=#00d4ff'
+      ${tmuxBin} -L ${this.sessionName} new-session -d -s ${this.sessionName} -x 200 -y 50
+      ${tmuxBin} -L ${this.sessionName} split-window -h -l 50%
+      ${tmuxBin} -L ${this.sessionName} set-option -g status on
+      ${tmuxBin} -L ${this.sessionName} set-option -g status-style 'bg=#1a1a2e,fg=#00d4ff'
     `);
     await this.sleep(2000);
   }
