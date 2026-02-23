@@ -18,6 +18,7 @@
 | [RTL2GDS_FLOW.md](RTL2GDS_FLOW.md) | Complete flow execution guide | EDA engineers |
 | [EDA_SERVER_SETUP.md](EDA_SERVER_SETUP.md) | Server configuration | Administrators |
 | [DEPLOY_GUIDE.md](DEPLOY_GUIDE.md) | Installation & deployment | Everyone |
+| [MAKEFILE_VS_MCP_FLOW_COMPARISON.md](MAKEFILE_VS_MCP_FLOW_COMPARISON.md) | Flow execution comparison | Engineers |
 
 ---
 
@@ -112,6 +113,15 @@
 - Configuration reference
 - Troubleshooting
 
+### MAKEFILE_VS_MCP_FLOW_COMPARISON.md
+- Execution method comparison
+- User interaction differences
+- Technical architecture comparison
+- Command-by-command comparison
+- Output comparison
+- Performance metrics
+- Use case recommendations
+
 ---
 
 ## Additional Resources
@@ -145,6 +155,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.5.1 | 2026-02-24 | Added Makefile vs MCP flow comparison document |
 | 0.5.0 | 2026-02-24 | Added 8 new RTL-to-GDS flow skills |
 | 0.4.0 | 2026-02-23 | Complete RTL-to-GDS flow execution |
 | 0.3.0 | 2026-02-22 | MCP wrapper script |
