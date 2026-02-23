@@ -1,7 +1,7 @@
 {
   "name": "hipilot",
   "version": "0.5.0",
-  "description": "VLSI Physical Design Copilot - AI assistant for EDA engineers",
+  "description": "VLSI Physical Design Copilot - AI assistant for EDA engineers. Generate Tcl scripts, control EDA tools, and manage RTL-to-GDS flows with Claude Code.",
   "main": "src/index.js",
   "bin": {
     "hipilot": "./src/index.js"
@@ -15,6 +15,7 @@
     "hipilot": "node src/index.js",
     "tui": "node src/cli.js",
     "setup": "bash bin/setup.sh",
+    "postinstall": "node scripts/postinstall.js",
     "install:all": "npm install && cd servers/eda && npm install && cd ../tmux && npm install && cd ../knowledge && npm install",
     "dev:eda": "node servers/eda/index.js",
     "dev:tmux": "node servers/tmux/index.js",
@@ -22,7 +23,8 @@
     "test": "vitest run",
     "test:e2e": "vitest run --config vitest.e2e.config.js",
     "test:coverage": "vitest run --coverage",
-    "hitestbot": "node src/hitestbot/index.js"
+    "hitestbot": "node src/hitestbot/index.js",
+    "prepublishOnly": "npm run install:all"
   },
   "keywords": [
     "hipilot",
@@ -34,7 +36,14 @@
     "synopsys",
     "cadence",
     "timing",
-    "tcl"
+    "tcl",
+    "innovus",
+    "icc2",
+    "primetime",
+    "design-compiler",
+    "rtl-to-gds",
+    "chip-design",
+    "semiconductor"
   ],
   "author": "HiPilot Team",
   "license": "MIT",
@@ -60,11 +69,32 @@
   "devDependencies": {
     "vitest": "^1.0.0"
   },
+  "files": [
+    "bin/",
+    "src/",
+    "servers/",
+    "skills/",
+    "scripts/",
+    "templates/",
+    "docs_latest/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
   "directories": {
-    "doc": "docs"
+    "bin": "./bin",
+    "doc": "./docs_latest",
+    "lib": "./src"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/hipilot.git"
+    "url": "git+https://github.com/qfliuyang/hipilot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/qfliuyang/hipilot/issues"
+  },
+  "homepage": "https://github.com/qfliuyang/hipilot#readme",
+  "publishConfig": {
+    "access": "public"
   }
 }
