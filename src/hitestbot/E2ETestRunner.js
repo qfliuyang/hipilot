@@ -16,7 +16,9 @@ class E2ETestRunner extends TestRunner {
 
     this.testDir = options.testDir || `/home/EDA/hipilot_test/sessions/${this.testName.toLowerCase().replace(/\s+/g, '_')}_${this.timestamp}`;
     this.display = options.display || ':0';
-    this.sessionName = `hipilot_${this.timestamp}`;
+    
+    this.sessionName = 'hipilot';
+    this.socketName = 'hipilot';
 
     this.recorder = new VideoRecorder({
       testDir: this.testDir,
@@ -27,7 +29,7 @@ class E2ETestRunner extends TestRunner {
 
     this.tmux = new TmuxController({
       sessionName: this.sessionName,
-      socketName: this.sessionName,
+      socketName: this.socketName,
       tmuxBin: '/home/EDA/hipilot_test/.local/bin/tmux'
     });
   }
@@ -85,8 +87,9 @@ class E2ETestRunner extends TestRunner {
 
   async startInnovus() {
     this.tmux.setSSH(this.ssh.bind(this));
+    this.innovusLogFile = `${this.testDir}/evidence/innovus_main.log`;
     await this.tmux.sendKeys(`${this.sessionName}:0.1`, 
-      'export PATH=/opt/cadence/INNOVUS20.10/bin:$PATH && innovus -nowin', true);
+      `export PATH=/opt/cadence/INNOVUS20.10/bin:$PATH && innovus -nowin -log ${this.innovusLogFile}`, true);
     await this.sleep(20000);
   }
 
@@ -130,6 +133,10 @@ class E2ETestRunner extends TestRunner {
       /home/EDA/hipilot_test/.local/bin/tmux -L ${this.sessionName} capture-pane -t ${this.sessionName}:0.1 -p -S -300 > ${evidenceDir}/eda_pane.log
 
       import -window root ${evidenceDir}/final.png
+
+      sleep 2
+
+      cp ${this.innovusLogFile} ${evidenceDir}/innovus_main.log 2>/dev/null || echo "Innovus log captured"
     `, 30000);
   }
 
