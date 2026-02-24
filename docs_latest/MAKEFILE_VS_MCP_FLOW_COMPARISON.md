@@ -2,7 +2,7 @@
 
 **Document Date:** 2026-02-24
 **Author:** HiPilot Development Team
-**Version:** 1.0
+**Version:** 1.1 (Updated with MCP flow test results)
 
 ---
 
@@ -43,9 +43,45 @@ Both approaches produce identical physical design outputs, but differ significan
 - Density: 41.8%
 - Total Instances: 11,780
 
-### MCP/Skills Flow (Proposed)
+### MCP/Skills Flow (Tested: 2026-02-24 08:10)
 
-The MCP/Skills approach was designed but not fully executed. The skill `/ibex-rtl2gds-flow` defines the complete flow with MCP commands that would produce identical results.
+**Status: Partially Complete - Technical Challenges Encountered**
+
+| Stage | Status | Duration | Notes |
+|-------|--------|----------|-------|
+| Synthesis | ✅ Complete | ~6 min | Used existing netlist from Makefile run |
+| Design Init | ✅ Complete | ~2 min | Required inline MMMC setup (no env vars) |
+| Floorplan | ✅ Complete | ~1 min | Commands sent via tmux |
+| Power Planning | ✅ Complete | ~2 min | 461 connectivity violations (expected) |
+| Placement | ❌ Failed | N/A | Scan chain definition missing |
+| CTS | ⏸️ Blocked | N/A | Server became unresponsive |
+| Post-CTS Opt | ⏸️ Blocked | N/A | - |
+| Routing | ⏸️ Blocked | N/A | - |
+| Route Opt | ⏸️ Blocked | N/A | - |
+| Chip Done | ⏸️ Blocked | N/A | - |
+
+**Technical Challenges Encountered:**
+
+1. **Environment Variables Not Available**
+   - MCP commands executed via `tmux send-keys` cannot access shell environment variables
+   - Solution: Created `mmmc_inline.view` file with hardcoded paths instead of `$::env(VAR)`
+   - Impact: Extra setup step required for each design
+
+2. **Scan Chain Definition Missing**
+   - Synthesis created scan flops but no scan chain definition
+   - Error: `IMPSP-9099: Scan chains exist in this design but are not defined for 99.95% flops`
+   - The Makefile flow includes scan chain insertion in synthesis scripts
+   - MCP flow would need to include scan chain definition commands
+
+3. **Server Resource Constraints**
+   - Innovus process caused server to become unresponsive during placement
+   - The MCP approach sends many small commands, increasing overhead
+   - The Makefile approach batches commands in Tcl scripts
+
+**Lessons Learned:**
+- MCP/Skills approach requires careful handling of environment variables
+- Scan chain setup must be included in MCP flow or pre-synthesis
+- Server resource management is critical for long-running flows
 
 ---
 
