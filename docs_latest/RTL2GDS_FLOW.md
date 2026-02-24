@@ -478,7 +478,6 @@ All flow execution evidence is stored in:
 e2e_evidence/20260223_complete_rtl2gds/
 ├── innovus_main.cmd      # Command log
 ├── innovus_main.log      # Full log
-├── visual_evidence.mp4   # Screen recording
 └── claude_code_pane.log  # Claude interaction
 ```
 
