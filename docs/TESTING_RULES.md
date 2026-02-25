@@ -30,13 +30,27 @@ Tests MUST report **how far the AI got**, not just whether it finished.
 
 The AI-to-EDA pipeline has multiple layers. A failure at any layer looks the same from the outside ("it didn't work"), but requires completely different fixes. Tests MUST collect evidence at each layer so failures can be diagnosed without re-running.
 
-### Principle 3: Classify the Failure
+### Principle 3: Test Like a Human — Three-View Correlation
+
+A test framework that only grades its own programmatic checks is **grading its own homework**. A real human engineer judges quality by correlating three independent views:
+
+1. **Logs** — What the system _recorded_ happened (pane captures, MCP call logs, EDA tool logs)
+2. **Screenshots** — What the screen _actually looked like_ at key moments
+3. **Video** — What _actually happened_ over time, including things no log captures (hesitation, confusion, recovery, ordering)
+
+These three views may tell different stories. The log might say "PASS" (keyword found), but the video shows Claude was confused and stumbling. The log might say "FAIL" (keyword not found), but the screenshot shows the task was actually completed using different wording. **The truth lives in the correlation of all three, not in any single view.**
+
+### Principle 4: Observer Review — Independent Judgment
+
+Every test MUST produce artifacts that can be reviewed by an **independent observer** (human or AI) who was not part of the test framework. The observer forms their own judgment from the raw evidence, and that judgment is captured separately from the programmatic score. When programmatic scoring and observer review disagree, the observer review takes precedence.
+
+### Principle 5: Classify the Failure
 
 When something goes wrong, the report MUST answer: **is this a HiPilot bug, an AI behavior issue, or an environment issue?** These require different people and different fixes.
 
-### Principle 4: Every Test is Replayable
+### Principle 6: Every Test is Replayable
 
-All evidence (pane captures, MCP logs, generated Tcl, screenshots) MUST be saved so that any test result can be analyzed after the fact without needing to reproduce the failure.
+All evidence (pane captures, MCP logs, generated Tcl, screenshots, video) MUST be saved with synchronized timestamps so that any test result can be analyzed after the fact without needing to reproduce the failure.
 
 ---
 
@@ -112,36 +126,46 @@ Each stage is evaluated across 5 evidence layers, each scored 0.0 to 1.0:
 
 ### Level 3: Diagnostic Evidence Bundle
 
-Raw evidence files for post-mortem analysis:
+Raw evidence files for post-mortem analysis. Designed so an **independent observer** (human or AI) can reconstruct and judge the entire test from these artifacts alone, without access to the test framework's internal state.
 
 ```
 evidence/20260225_103045/
 ├── flow_progress.json              # Machine-readable progress map
-├── stage_scorecards.json           # All stage scores
+├── stage_scorecards.json           # All stage scores (programmatic)
+├── observation_points.jsonl        # Timeline of all observation points
 ├── FLOW_REPORT.md                  # Human-readable report (Levels 1+2)
+├── OBSERVER_REVIEW.md              # Observer's independent review (Section 6)
 │
 ├── stage_01_init/
-│   ├── claude_pane.log             # Claude Code pane capture
-│   ├── eda_pane.log                # EDA tool pane capture
-│   ├── mcp_calls.jsonl             # MCP tool call log
+│   ├── claude_pane.log             # Claude Code pane capture (final)
+│   ├── eda_pane.log                # EDA tool pane capture (final)
+│   ├── mcp_calls.jsonl             # MCP tool call log for this stage
 │   ├── generated.tcl               # Tcl that was generated
-│   ├── screenshot.png              # Visual state after stage
-│   └── qor_snapshot.json           # QoR metrics
-│
-├── stage_02_floorplan/
-│   └── ...
+│   ├── qor_snapshot.json           # QoR metrics after stage
+│   ├── obs_stage_start.png         # Screenshot: before prompt sent
+│   ├── obs_stage_start_claude.log  # Pane capture: before prompt
+│   ├── obs_ai_responded.png        # Screenshot: after AI responded
+│   ├── obs_stage_complete.png      # Screenshot: after EDA finished
+│   └── obs_stage_complete_eda.log  # Pane capture: after EDA finished
 │
 ├── stage_05_cts/
 │   ├── claude_pane.log
 │   ├── eda_pane.log
 │   ├── mcp_calls.jsonl             # Shows: no MCP calls made
 │   ├── generated.tcl               # Empty or wrong Tcl
-│   ├── screenshot.png
-│   ├── failure_classification.json # Category + root cause
-│   └── qor_snapshot.json           # null/empty
+│   ├── qor_snapshot.json           # null/empty
+│   ├── obs_stage_start.png
+│   ├── obs_ai_responded.png        # Shows what Claude actually said
+│   ├── obs_on_error.png            # Screenshot at error detection
+│   ├── obs_on_error_eda.log        # EDA pane at error moment
+│   ├── obs_stage_complete.png      # Final state
+│   └── failure_classification.json # Category + root cause
 │
-└── video.mp4                       # Full session recording
+├── video.mp4                       # Full session recording
+└── video_timestamps.json           # Video offset for each observation point
 ```
+
+**Key principle:** The evidence bundle must be **self-contained**. An observer who receives only this directory (no access to the test framework, no ability to re-run) should be able to fully reconstruct what happened and form their own judgment.
 
 ---
 
@@ -260,9 +284,232 @@ One JSON object per line (JSONL):
 
 ---
 
-## 6. Flow Stage Definitions
+## 6. Observer Review Protocol
 
-### RTL-to-GDS Flow (Ibex Design)
+The programmatic scoring system (Sections 3-4) catches what it's programmed to look for. The observer review catches **everything else** — context, intent, quality of reasoning, subtle failures, near-misses, and unexpected successes.
+
+### 6.1 The Three-View Model
+
+Every test produces three independent streams of evidence. An observer (human or AI) reviews all three and forms a judgment that is **separate from and independent of** the programmatic score.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Three-View Correlation                     │
+│                                                               │
+│  ┌─────────────┐  ┌──────────────┐  ┌────────────────────┐  │
+│  │  VIEW 1:     │  │  VIEW 2:      │  │  VIEW 3:            │  │
+│  │  Logs        │  │  Screenshots  │  │  Video              │  │
+│  │              │  │               │  │                      │  │
+│  │  What the    │  │  What the     │  │  What actually       │  │
+│  │  system      │  │  screen       │  │  happened over       │  │
+│  │  recorded    │  │  showed at    │  │  time, including     │  │
+│  │              │  │  key moments  │  │  things no log       │  │
+│  │  • pane logs │  │               │  │  captures            │  │
+│  │  • MCP logs  │  │  • stage      │  │                      │  │
+│  │  • EDA logs  │  │    transitions│  │  • AI hesitation     │  │
+│  │  • Tcl files │  │  • error      │  │  • error recovery    │  │
+│  │              │  │    states     │  │  • decision flow     │  │
+│  │              │  │  • final      │  │  • timing of actions │  │
+│  │              │  │    result     │  │  • unexpected events │  │
+│  └──────┬──────┘  └──────┬───────┘  └──────────┬───────────┘  │
+│         │                │                      │               │
+│         └────────────────┼──────────────────────┘               │
+│                          │                                       │
+│                   ┌──────▼───────┐                               │
+│                   │  CORRELATION  │                               │
+│                   │              │                               │
+│                   │  Do all three │                               │
+│                   │  views tell   │                               │
+│                   │  the same     │                               │
+│                   │  story?       │                               │
+│                   └──────┬───────┘                               │
+│                          │                                       │
+│                   ┌──────▼───────┐                               │
+│                   │  OBSERVER     │                               │
+│                   │  VERDICT      │                               │
+│                   └──────────────┘                               │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 6.2 Timeline Synchronization
+
+All three views MUST be aligned on a shared timeline so the observer can correlate events across them.
+
+**Rule:** Every artifact MUST carry a timestamp that can be mapped to the test session clock.
+
+| Artifact | Timestamp Method |
+|----------|-----------------|
+| Pane captures | Captured at defined **observation points** (see 6.3); filename includes timestamp |
+| MCP call logs | Each log line has ISO 8601 `ts` field |
+| EDA tool logs | Innovus/ICC2 log files have built-in timestamps |
+| Screenshots | Captured at observation points; filename includes timestamp |
+| Video | Continuous; ffmpeg embeds wall-clock time; observation points are annotated with frame offsets |
+| Generated Tcl | Saved at generation time with timestamp in filename |
+
+**Correlation example:**
+```
+Timeline    View 1 (Log)                View 2 (Screenshot)     View 3 (Video)
+──────────  ─────────────────────────── ─────────────────────── ──────────────────
+10:23:45    MCP: eda.generate_tcl       -                       Claude typing...
+            args: {op: "run_cts"}
+10:23:46    MCP: result OK              -                       Tcl block appears
+            template: innovus_cts.tcl                           in Claude's output
+10:23:47    MCP: eda.send_to_terminal   screenshot_stage5.png   Command appears
+            tcl: "source /tmp/..."      [shows Innovus pane]    in EDA pane
+10:24:15    MCP: wait_for_prompt        -                       Innovus still
+            status: timeout                                     processing...
+10:25:15    -                           screenshot_stage5_err   ERROR visible in
+                                        [shows error message]   EDA pane
+10:25:20    Pane capture: "**ERROR:     -                       Claude reads
+            No clock tree spec found"                           the error output
+```
+
+With this timeline, the observer can see the full story: the MCP tools were used correctly (L3 = 1.0 programmatically), but the underlying Tcl failed because the design state was wrong. The video shows Claude noticed the error and attempted recovery — something the programmatic score might miss entirely.
+
+### 6.3 Observation Points
+
+An **observation point** is a defined moment during the test where all three views are captured simultaneously. This creates a "snapshot in time" that the observer can review.
+
+**Mandatory observation points:**
+
+| Observation Point | When | What to Capture |
+|------------------|------|-----------------|
+| `STAGE_START` | Before sending the stage prompt to Claude | Screenshot, pane captures (both panes), note video timestamp |
+| `PROMPT_SENT` | Immediately after the prompt is delivered | Screenshot showing prompt in Claude's input |
+| `AI_RESPONDED` | When Claude finishes its response | Screenshot, pane captures, save any generated Tcl |
+| `EDA_EXECUTING` | While the EDA tool is processing | Screenshot showing EDA pane activity |
+| `STAGE_COMPLETE` | After EDA execution finishes (or times out) | Screenshot, pane captures (both panes), QoR snapshot, note video timestamp |
+| `ON_ERROR` | Whenever an error is detected in any pane | Screenshot, pane captures, note video timestamp |
+
+**Implementation:** At each observation point, the test framework records:
+```json
+{
+  "observation": "STAGE_COMPLETE",
+  "stage": "placement",
+  "timestamp": "2026-02-25T10:30:15.000Z",
+  "video_offset_s": 423.5,
+  "artifacts": {
+    "screenshot": "stage_04_placement/obs_stage_complete.png",
+    "claude_pane": "stage_04_placement/obs_stage_complete_claude.log",
+    "eda_pane": "stage_04_placement/obs_stage_complete_eda.log"
+  },
+  "notes": "Placement finished, Innovus prompt returned"
+}
+```
+
+### 6.4 Observer Review Questions
+
+At each stage, the observer answers these questions by examining the three views. These are **not** automated checks — they require contextual judgment.
+
+**Per-Stage Observer Questions:**
+
+| # | Question | What to Look At | Answer Format |
+|---|----------|----------------|---------------|
+| Q1 | Did the AI understand what this stage requires? | Claude pane: read AI's response text for reasoning | Yes / Partially / No + explanation |
+| Q2 | Did the AI's approach make engineering sense? | Claude pane + generated Tcl: is this how an engineer would do it? | Yes / Partially / No + explanation |
+| Q3 | Did the AI use the right tools? | MCP logs + video: did it use MCP or bypass with direct commands? | MCP only / Mixed / Direct only |
+| Q4 | Was the generated Tcl correct for this design and stage? | Generated Tcl file: review actual content, not just "was a template used" | Correct / Minor issues / Major issues / Wrong |
+| Q5 | Did the EDA tool execute successfully? | EDA pane + EDA logs + screenshot: look for actual completion, not just prompt return | Clean / Warnings / Errors / Crash |
+| Q6 | Did the AI handle the result appropriately? | Video + Claude pane: did AI acknowledge success/failure? Did it adapt? | Appropriate / Missed issues / Wrong conclusion |
+| Q7 | Does the QoR make sense for this stage? | QoR snapshot + EDA reports: are the numbers reasonable? | Reasonable / Suspicious / Wrong |
+| Q8 | Was there anything the programmatic score missed? | Compare all views against programmatic scorecard | Free-form observation |
+
+**Overall Flow Observer Questions (asked once after all stages):**
+
+| # | Question | Answer Format |
+|---|----------|---------------|
+| F1 | Did the AI drive the flow autonomously, or did it need hand-holding? | Autonomous / Mostly autonomous / Needed guidance / Failed |
+| F2 | Did the AI make reasonable decisions at transition points between stages? | Yes / Mostly / No |
+| F3 | When errors occurred, did the AI recover gracefully? | Recovered / Partial recovery / No recovery / No errors |
+| F4 | Would a junior engineer watching this video trust the AI's work? | Yes / With reservations / No |
+| F5 | What is the single biggest improvement that would advance the flow further? | Free-form |
+
+### 6.5 Observer Verdict
+
+The observer produces a separate verdict for each stage and for the overall flow. This verdict exists alongside (not replacing) the programmatic score.
+
+```
+═══════════════════════════════════════════════════
+  Observer Review: Ibex RTL-to-GDS Flow
+  Reviewer: [Human / AI Model Name]
+  Date: 2026-02-25
+═══════════════════════════════════════════════════
+
+  Stage        Programmatic  Observer   Alignment
+  ───────────  ────────────  ─────────  ─────────
+  Init         5.0/5 PASS    PASS       ✅ Agree
+  Floorplan    5.0/5 PASS    PASS       ✅ Agree
+  Power        5.0/5 PASS    PARTIAL    ⚠️ Disagree
+               (grep found     (video shows Claude
+                keywords)       hesitated, tried wrong
+                                command first, then
+                                recovered)
+  Placement    4.0/5 PARTIAL PASS       ⚠️ Disagree
+               (TNS not         (observer: TNS was
+                reported)        reported verbally in
+                                 Claude's response,
+                                 just not in expected
+                                 format)
+  CTS          1.5/5 FAIL    FAIL       ✅ Agree
+
+  Overall Flow:
+    Programmatic: 4/10 stages (40%)
+    Observer:     3.5/10 stages (35%)
+    Note: Observer downgraded Power from PASS to PARTIAL
+          because the video showed non-confident AI behavior
+          that the grep-based checks missed.
+
+  Key Observer Finding:
+    "The AI successfully drives stages 1-3 but lacks confidence
+     in power planning (tried 3 approaches before succeeding).
+     CTS failure is an environment issue (physical-only mode),
+     not an AI capability issue. Fixing init to include MMMC
+     would likely advance the flow to stage 7+."
+```
+
+### 6.6 Disagreement Resolution
+
+When the programmatic score and observer verdict disagree:
+
+| Scenario | Resolution | Rationale |
+|----------|-----------|-----------|
+| Programmatic PASS, Observer FAIL | **Use Observer** | Programmatic test has a false positive (grep matched but outcome was wrong) |
+| Programmatic FAIL, Observer PASS | **Use Observer** | Programmatic test has a false negative (keyword missing but task succeeded) |
+| Programmatic PARTIAL, Observer PASS | **Use Observer** | Programmatic test was too strict |
+| Programmatic PARTIAL, Observer FAIL | **Use Observer** | Programmatic test was too lenient |
+
+**Rule:** The observer verdict is the **source of truth** for the final report. The programmatic score is a useful first-pass filter, but the observer has the final word.
+
+**Action on disagreement:** When a disagreement is found, the test framework SHOULD log it as a **test quality issue** — the programmatic check needs to be improved to match what the observer sees.
+
+```json
+{
+  "type": "test_quality_issue",
+  "stage": "power",
+  "programmatic_score": 5.0,
+  "observer_verdict": "PARTIAL",
+  "reason": "Programmatic check only verified keywords; missed that AI tried 3 wrong approaches before succeeding",
+  "action": "Add check for retry count or time-to-success in power stage verifier"
+}
+```
+
+### 6.7 Who is the Observer?
+
+The observer can be:
+
+**Human engineer** — Reviews artifacts after the test run. Best for nuanced judgment, worst for scalability.
+
+**AI model with vision** — Analyzes screenshots and video frames, reads logs, answers the observer questions. Good for scalability, requires careful prompting. The observer AI MUST be a different invocation than the AI being tested (Claude Code driving the flow). It reviews artifacts after the fact, not during execution.
+
+**Both** — AI does first-pass review, human validates disagreements. Best balance of scalability and accuracy.
+
+**Rule:** Regardless of who the observer is, they MUST answer the same structured questions (Section 6.4) and produce the same verdict format (Section 6.5). This ensures consistency across reviews.
+
+---
+
+## 7. Flow Stage Definitions
+
+### 7.1 RTL-to-GDS Flow (Ibex Design)
 
 The reference flow for certification testing. Each stage has defined entry criteria, expected actions, and exit criteria.
 
@@ -304,7 +551,7 @@ Metrics that are not available at a given stage (e.g., clock skew before CTS) SH
 
 ---
 
-## 7. Test Report Format
+## 8. Test Report Format
 
 ### FLOW_REPORT.md
 
@@ -450,7 +697,7 @@ Machine-readable version for trend tracking:
 
 ---
 
-## 8. Test Rules Checklist
+## 9. Test Rules Checklist
 
 ### Rules for Test Authors
 
@@ -462,15 +709,28 @@ Machine-readable version for trend tracking:
 6. **MUST NOT** stop the test at the first failure if subsequent stages could still be attempted.
 7. **MUST NOT** use bare `assert(passed >= N)` as the final verdict. Use the scoring system.
 8. **SHOULD** compare results against the previous run to show improvement or regression.
-9. **SHOULD** include a video recording of the full test session.
+9. **MUST** include a video recording of the full test session.
+10. **MUST** capture screenshots at every mandatory observation point (Section 6.3).
 
 ### Rules for Evidence Collection
 
 1. **Pane captures** MUST include at least 300 lines of scrollback from both Claude and EDA panes.
 2. **MCP call logs** MUST be enabled via `HIPILOT_TEST_LOG` for every E2E test run.
 3. **Generated Tcl** MUST be copied to the evidence directory (not just referenced by temp path).
-4. **Screenshots** SHOULD be captured at stage transitions and at any failure point.
+4. **Screenshots** MUST be captured at every mandatory observation point (STAGE_START, PROMPT_SENT, AI_RESPONDED, EDA_EXECUTING, STAGE_COMPLETE, ON_ERROR).
 5. **QoR snapshots** MUST use a consistent JSON schema across all stages and test runs.
+6. **Video** MUST run for the full test duration. Video timestamps for each observation point MUST be recorded in `video_timestamps.json`.
+7. **Observation points** MUST be logged to `observation_points.jsonl` with timestamp, video offset, and artifact paths.
+8. The evidence bundle MUST be **self-contained** — an observer with only the evidence directory and no access to the test framework MUST be able to fully reconstruct what happened.
+
+### Rules for Observer Review
+
+1. Every flow certification test MUST be reviewed by an observer (human, AI, or both).
+2. The observer MUST answer all per-stage questions (Section 6.4) and all overall flow questions.
+3. The observer MUST produce an `OBSERVER_REVIEW.md` that is saved in the evidence bundle.
+4. The observer's verdict is the **source of truth**. When it disagrees with the programmatic score, the observer wins.
+5. Disagreements between programmatic score and observer verdict MUST be logged as test quality issues with an action item to improve the programmatic check.
+6. The observer MUST NOT have access to the programmatic scorecard until after completing their own review (to avoid anchoring bias).
 
 ### Rules for Scoring
 
@@ -479,10 +739,11 @@ Machine-readable version for trend tracking:
 3. Stage status thresholds: `PASS` ≥ 4.0, `PARTIAL` ≥ 2.0, `FAIL` < 2.0.
 4. Flow progress is the count of stages with status `PASS` or `PARTIAL`.
 5. The overall test result is expressed as **progress fraction** (e.g., "4/10 stages, 40%") and **total score** (e.g., "20.5/50"), never just "PASS" or "FAIL".
+6. The **final reported result** uses the observer verdict where it disagrees with programmatic scoring. The programmatic score is included for reference but is not the final word.
 
 ---
 
-## 9. Improvement Tracking
+## 10. Improvement Tracking
 
 ### The Progress Dashboard
 
@@ -513,7 +774,7 @@ The RTL-to-GDS Flow Certification is considered **passed** when:
 
 ---
 
-## 10. Relationship to Existing Tests
+## 11. Relationship to Existing Tests
 
 ### How current tests map to this framework
 
@@ -593,17 +854,23 @@ L5  QoR Assessment      0.0  Not reached
 ### Phase 1: MCP Call Logging
 Add `HIPILOT_TEST_LOG` support to all three MCP servers. This is the foundation for L3 evidence.
 
-### Phase 2: Stage Verifier
-Create a `StageVerifier` class that collects evidence at all 5 layers for a single stage and produces a scorecard.
+### Phase 2: Observation Point Infrastructure
+Add the observation point capture system to E2ETestRunner: synchronized screenshot + pane capture + video timestamp at each mandatory observation point. Output `observation_points.jsonl` and `video_timestamps.json`.
 
-### Phase 3: Flow Certification Test
+### Phase 3: Stage Verifier
+Create a `StageVerifier` class that collects evidence at all 5 layers for a single stage, captures observation points, and produces a scorecard.
+
+### Phase 4: Flow Certification Test
 Refactor `RTL2GDSFlowTest` to use `StageVerifier` for each stage, produce `FLOW_REPORT.md`, and save the full evidence bundle.
 
-### Phase 4: Failure Classifier
+### Phase 5: Failure Classifier
 Implement automatic failure classification based on the evidence patterns described in Section 4.
 
-### Phase 5: Progress Dashboard
-Build a simple tool that reads `flow_progress.json` files across runs and produces the improvement trend table.
+### Phase 6: Observer Review Tool
+Build a tool that takes an evidence bundle and guides the observer (human or AI) through the review questions (Section 6.4). For AI observers, this sends screenshots + logs to a vision model and collects structured answers. Outputs `OBSERVER_REVIEW.md`.
+
+### Phase 7: Progress Dashboard
+Build a simple tool that reads `flow_progress.json` files across runs and produces the improvement trend table. Include both programmatic and observer verdicts in the trend.
 
 ---
 
