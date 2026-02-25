@@ -1035,6 +1035,40 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ['tcl'],
         },
       },
+      {
+        name: 'eda.execute_and_verify',
+        description: 'Complete execution pipeline: send Tcl to EDA tool, wait for completion, capture output, detect errors, extract QoR metrics. Returns structured result with status, errors, warnings, and QoR. Respects execution mode (manual/auto) and risk analysis. USE THIS instead of calling send_to_terminal + wait_for_prompt + capture_and_analyze separately.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tcl: {
+              type: 'string',
+              description: 'Tcl script or command to execute',
+            },
+            timeout: {
+              type: 'number',
+              description: 'Timeout in seconds waiting for EDA prompt to return (default: 120)',
+              default: 120,
+            },
+            description: {
+              type: 'string',
+              description: 'Human-readable description of what this command does (e.g., "CTS stage of RTL-to-GDS flow")',
+            },
+            extract_qor: {
+              type: 'boolean',
+              description: 'Whether to extract QoR metrics from output (default: true)',
+              default: true,
+            },
+            pane: {
+              type: 'string',
+              description: 'Target pane (default: eda)',
+              enum: ['eda', 'chat', '0', '1'],
+              default: 'eda',
+            },
+          },
+          required: ['tcl'],
+        },
+      },
       // === PHASE 1.2: SESSION STATE TOOLS ===
       {
         name: 'session.save_checkpoint',
@@ -2486,6 +2520,241 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
           content: [{ type: 'text', text: `⏱ Command timed out after ${timeout}s` }],
           isError: true,
           _metadata: { success: false, elapsed_ms: timeoutMs }
+        };
+      }
+
+      case 'eda.execute_and_verify': {
+        const { tcl, timeout = 120, description = '', extract_qor: shouldExtractQor = true, pane = 'eda' } = args;
+        const startTime = Date.now();
+        const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
+        const target = `${TMUX_SESSION}:0.${paneIdx}`;
+
+        // Step 1: Risk analysis
+        const riskAnalysis = analyzeRisk(tcl);
+        const sideEffects = analyzeSideEffects(tcl);
+
+        // Step 2: Mode check — queue if manual or dangerous
+        const mode = getMode();
+        if (mode === MODES.MANUAL || (mode === MODES.AUTO && riskAnalysis.category >= 2)) {
+          queuePending(tcl, {
+            risk_analysis: riskAnalysis,
+            side_effects: sideEffects,
+            description,
+            queued_at: new Date().toISOString(),
+          });
+          const modeLabel = mode === MODES.MANUAL ? 'manual' : 'auto_blocked';
+          return {
+            content: [{
+              type: 'text',
+              text: `⏳ **Pending Approval**\n\n`
+                + `**Description:** ${description || 'Tcl execution'}\n`
+                + `**Mode:** ${modeLabel}\n`
+                + `**Risk:** ${riskAnalysis.label} (category ${riskAnalysis.category})\n\n`
+                + `Approve with \`eda.approve_pending\` or tmux prefix+y`,
+            }],
+            _metadata: {
+              status: 'pending_approval',
+              mode: modeLabel,
+              risk_category: riskAnalysis.category,
+              risk_label: riskAnalysis.label,
+              description,
+              elapsed_ms: Date.now() - startTime,
+            },
+          };
+        }
+
+        // Step 3: Execute — write temp file and send via tmux
+        const tclFile = `${hipilotPaths.execDir}/hipilot_exec_${Date.now()}.tcl`;
+        writeFileSync(tclFile, tcl);
+
+        try {
+          if (!existsSync(HISTORY_DIR)) mkdirSync(HISTORY_DIR, { recursive: true });
+          const histFile = join(HISTORY_DIR, `${new Date().toISOString().replace(/[:.]/g, '-')}.tcl`);
+          writeFileSync(histFile, `# ${description || 'execute_and_verify'}\n# Sent at: ${new Date().toISOString()}\n\n${tcl}`);
+        } catch {}
+
+        try {
+          execSync(
+            `tmux -L ${TMUX_SESSION} send-keys -t ${target} "source ${tclFile}" Enter`,
+            { encoding: 'utf-8', stdio: 'pipe' }
+          );
+        } catch (e) {
+          return {
+            content: [{ type: 'text', text: `❌ Failed to send Tcl to EDA pane: ${e.message}` }],
+            isError: true,
+            _metadata: { status: 'send_failed', error: e.message, elapsed_ms: Date.now() - startTime },
+          };
+        }
+
+        // Step 4: Wait for EDA prompt to return
+        await new Promise(r => setTimeout(r, 1000));
+
+        const timeoutMs = timeout * 1000;
+        const promptPatterns = [
+          /innovus\s*\d+>/i,
+          /icc2_shell>/i,
+          /icc2>/i,
+          /pt_shell>/i,
+          /tempus\s*\d*>/i,
+        ];
+
+        let promptDetected = false;
+        let capturedOutput = '';
+
+        while (Date.now() - startTime < timeoutMs) {
+          try {
+            capturedOutput = execSync(
+              `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -200 2>/dev/null || echo ""`,
+              { encoding: 'utf-8', timeout: 5000 }
+            );
+            const lastLine = capturedOutput.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
+            for (const pattern of promptPatterns) {
+              if (pattern.test(lastLine)) {
+                promptDetected = true;
+                break;
+              }
+            }
+            if (promptDetected) break;
+          } catch {}
+          await new Promise(r => setTimeout(r, 1000));
+        }
+
+        const elapsedMs = Date.now() - startTime;
+        const elapsedS = (elapsedMs / 1000).toFixed(1);
+
+        // Handle timeout
+        if (!promptDetected) {
+          try { unlinkSync(tclFile); } catch {}
+          return {
+            content: [{
+              type: 'text',
+              text: `⏱ **Execution Timed Out** (${timeout}s)\n\n`
+                + `**Description:** ${description || 'Tcl execution'}\n\n`
+                + `The EDA tool prompt did not return within ${timeout}s. The command may still be running.\n\n`
+                + `**Last output:**\n\`\`\`\n${capturedOutput.slice(-500)}\n\`\`\``,
+            }],
+            isError: true,
+            _metadata: {
+              status: 'timeout',
+              elapsed_ms: elapsedMs,
+              description,
+              captured_lines: capturedOutput.split('\n').length,
+            },
+          };
+        }
+
+        // Step 5: Detect errors and warnings in output
+        const errorPatterns = [
+          /^\*\*ERROR/m, /^Error:/m, /ERROR:/i, /FATAL/i,
+          /failed/i, /cannot/i, /unknown\s+command/i, /syntax\s+error/i,
+          /invalid/i, /no\s+such/i,
+        ];
+        const warningPatterns = [
+          /^\*\*WARN/m, /WARNING:/i, /WARN-/i, /deprecated/i,
+        ];
+
+        const errors = [];
+        const warnings = [];
+        const outputLines = capturedOutput.split('\n');
+        for (const line of outputLines) {
+          const trimmed = line.trim();
+          if (!trimmed) continue;
+          for (const pat of errorPatterns) {
+            if (pat.test(trimmed)) {
+              errors.push(trimmed);
+              break;
+            }
+          }
+          for (const pat of warningPatterns) {
+            if (pat.test(trimmed)) {
+              warnings.push(trimmed);
+              break;
+            }
+          }
+        }
+
+        // Deduplicate
+        const uniqueErrors = [...new Set(errors)].slice(0, 20);
+        const uniqueWarnings = [...new Set(warnings)].slice(0, 20);
+
+        // Step 6: Extract QoR metrics if requested
+        let qor = null;
+        if (shouldExtractQor) {
+          qor = extractQoR(capturedOutput);
+        }
+
+        // Step 7: Build result
+        const hasErrors = uniqueErrors.length > 0;
+        const status = hasErrors ? 'error' : 'success';
+
+        let text = '';
+        if (status === 'success') {
+          text += `✅ **Execution Successful** (${elapsedS}s)\n\n`;
+        } else {
+          text += `❌ **Execution Completed with Errors** (${elapsedS}s)\n\n`;
+        }
+
+        if (description) {
+          text += `**Description:** ${description}\n`;
+        }
+        text += `**Risk:** ${riskAnalysis.label}\n`;
+        text += `**Duration:** ${elapsedS}s\n`;
+        text += `**Output Lines:** ${outputLines.length}\n\n`;
+
+        if (uniqueErrors.length > 0) {
+          text += `### Errors Detected (${uniqueErrors.length})\n\n`;
+          for (const err of uniqueErrors.slice(0, 10)) {
+            text += `- \`${err.slice(0, 120)}\`\n`;
+          }
+          text += '\n';
+        }
+
+        if (uniqueWarnings.length > 0) {
+          text += `### Warnings (${uniqueWarnings.length})\n\n`;
+          for (const w of uniqueWarnings.slice(0, 5)) {
+            text += `- \`${w.slice(0, 120)}\`\n`;
+          }
+          text += '\n';
+        }
+
+        if (qor && (qor.wns !== null || qor.tns !== null || qor.drc_violations > 0)) {
+          text += `### QoR Metrics\n\n`;
+          text += `| Metric | Value |\n|--------|-------|\n`;
+          if (qor.wns !== null) text += `| WNS | ${qor.wns} ns |\n`;
+          if (qor.tns !== null) text += `| TNS | ${qor.tns} ns |\n`;
+          if (qor.setup_violations) text += `| Setup Violations | ${qor.setup_violations} |\n`;
+          if (qor.hold_violations) text += `| Hold Violations | ${qor.hold_violations} |\n`;
+          if (qor.drc_violations) text += `| DRC Violations | ${qor.drc_violations} |\n`;
+          if (qor.area) text += `| Area | ${qor.area} |\n`;
+          if (qor.utilization) text += `| Utilization | ${qor.utilization} |\n`;
+          text += '\n';
+        }
+
+        if (sideEffects.has_side_effects) {
+          text += `### Side Effect Warnings\n\n`;
+          text += sideEffects.summary + '\n\n';
+        }
+
+        text += `### Output (last 30 lines)\n\n\`\`\`\n${outputLines.slice(-30).join('\n')}\n\`\`\`\n`;
+
+        try { unlinkSync(tclFile); } catch {}
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: {
+            status,
+            elapsed_ms: elapsedMs,
+            description,
+            risk_category: riskAnalysis.category,
+            risk_label: riskAnalysis.label,
+            errors_detected: uniqueErrors,
+            warnings_detected: uniqueWarnings,
+            error_count: uniqueErrors.length,
+            warning_count: uniqueWarnings.length,
+            output_lines: outputLines.length,
+            ...(qor && { qor }),
+            ...(sideEffects.has_side_effects && { side_effects: sideEffects.summary }),
+          },
         };
       }
 
