@@ -83,8 +83,7 @@ hipilot/
 │   └── lib/                # Utilities (mode, risk, paths)
 ├── data/                   # Command reference (JSON)
 ├── test/                   # Unit tests (vitest)
-├── docs/                   # Documentation (see below)
-└── archive/                # Superseded docs (for reference only)
+└── docs/                   # Documentation (see below)
 ```
 
 ---

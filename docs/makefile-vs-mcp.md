@@ -172,7 +172,7 @@ Both approaches produce identical physical design outputs, but differ significan
 │                     MCP Layer                                │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
 │  │   EDA MCP   │  │  Tmux MCP   │  │Knowledge MCP│         │
-│  │  (20 tools) │  │  (7 tools)  │  │  (4 tools)  │         │
+│  │  (48 tools) │  │  (8 tools)  │  │  (7 tools)  │         │
 │  └─────────────┘  └─────────────┘  └─────────────┘         │
 └─────────────────────────────────────────────────────────────┘
                               │

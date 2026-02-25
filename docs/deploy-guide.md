@@ -395,7 +395,7 @@ EOF
 mkdir -p ~/.hipilot/templates/cadence
 
 # Add template
-cat > ~/.hipilot/templates/cadence/my_template.tcl.j2 << 'EOF'
+cat > ~/.hipilot/templates/cadence/my_template.tcl << 'EOF'
 # My Template
 report_timing -max_paths {{ max_paths }}
 EOF

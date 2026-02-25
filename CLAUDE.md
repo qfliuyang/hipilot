@@ -266,22 +266,11 @@ Tier 3: Templates + Documentation
 
 **Remove:** Complex report parsers (let AI read raw output)
 
-**EDA MCP Server:**
-- `eda.generate_tcl` - Generate from template OR doc-based
-- `eda.send_to_terminal` - Send to EDA pane via tmux
-- `eda.detect_tool` - What's running in EDA pane?
-- `eda.get_qor` - Quick QoR extraction (minimal parsing)
+**EDA MCP Server (48 tools):** Tcl generation, EDA tool control, mode management, session/context tracking, QoR snapshots, workflow automation, smart suggestions. See `docs/mcp-servers.md` for full API.
 
-**Tmux MCP Server:**
-- `tmux.send_keys` - Send to panes
-- `tmux.capture_pane` - Read pane output
-- `tmux.setup_layout` - Create HiPilot session
-- `tmux.update_status` - Status bar
+**Tmux MCP Server (8 tools):** Pane control (`send_keys`, `capture_pane`), workspace setup (`setup_layout`), status bar management. See `docs/mcp-servers.md`.
 
-**Knowledge MCP Server:**
-- `knowledge.search_docs` - Search EDA manuals
-- `knowledge.get_command_ref` - Exact command lookup
-- `knowledge.get_methodology` - Flow-specific guidance
+**Knowledge MCP Server (7 tools):** Skill lookup (`list_skills`, `get_skill`, `match_skill`), doc search (`search_docs`, `search_commands`), command reference (`get_command_ref`), methodology guides (`get_methodology`). See `docs/mcp-servers.md`.
 
 #### Skill System (Enhanced)
 
@@ -301,7 +290,7 @@ description: Fix setup timing violations
 hipilot:
   vendor: [synopsys, cadence]
   has_template: true
-  template_path: templates/fix_setup_timing.tcl.j2
+  template_path: templates/synopsys/icc2_fix_setup_timing.tcl
   auto_generated: false  # true if AI-created
   source_doc: "From email: Re: PCIe timing fix"
   flexible: true  # AI can adapt workflow
@@ -434,7 +423,7 @@ node test_parser.js /tmp/timing_test.rpt
 
 ### 9. Test Stand - Automated Testing via tmux + Claude Code
 
-**READ THIS FIRST when testing HiPilot.** Full details in `docs/TEST_STAND.md`.
+**READ THIS FIRST when testing HiPilot.** Full details in `docs/testing/test-stand.md`.
 
 We can remotely control Claude Code on the EDA server via `tmux send-keys`. This is the official way to test HiPilot end-to-end.
 
@@ -555,9 +544,9 @@ When starting a new development session:
 - **Runtime:** Node.js v20.x
 - **Language:** JavaScript (ES2022+, ES Modules)
 - **Template Engine:** Nunjucks (Jinja2-compatible)
-- **Database:** SQLite with FTS5
+- **Storage:** Filesystem-based (skills as .md files, command ref as JSON)
 - **Terminal:** tmux 1.8+
-- **UI Libraries:** chalk, blessed, cli-table3, ora
+- **UI Libraries:** chalk, cli-table3, ora, ink (React TUI)
 
 ## Success Metrics (from PRD)
 
