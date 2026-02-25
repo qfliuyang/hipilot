@@ -32,6 +32,5 @@ All MCP servers communicate over stdio (JSON-RPC), not HTTP. No databases, Docke
 
 ### Documentation structure
 
-- `docs/` — Active documentation (guides, specs, testing)
-- `archive/` — Superseded docs, old plans, evidence (reference only)
+- `docs/` — All documentation (guides, specs, testing)
 - See `README.md` for the documentation index.

@@ -662,7 +662,7 @@ scp EDA@192.168.112.163:~/hipilot_test/recordings/*.mp4 .
 
 **REQUIREMENT:** Each major feature completion MUST include a screen recording video demonstrating it working on the EDA server (CentOS 7). This ensures HiPilot actually works on the target platform.
 
-See `archive/legacy-docs/SCREEN_RECORDING_SETUP.md` for complete guide.
+See git history for the original `SCREEN_RECORDING_SETUP.md` guide.
 
 ### Environment on EDA Server
 
