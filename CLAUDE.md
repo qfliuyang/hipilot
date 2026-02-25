@@ -81,6 +81,8 @@ When executing multi-stage flows:
 | Diagnose EDA errors | `eda.diagnose_error` |
 | Save QoR snapshot | `qor.snapshot` |
 | Compare QoR snapshots | `qor.compare` |
+| Run a multi-step workflow | `workflow.run` |
+| List available workflows | `workflow.list` |
 | List available skills | `knowledge.list_skills` |
 | Read pane content | `tmux.capture_pane` |
 
