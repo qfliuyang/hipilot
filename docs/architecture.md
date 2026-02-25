@@ -29,7 +29,7 @@ HiPilot extends Claude Code with specialized capabilities for VLSI physical desi
 │   │  │   EDA MCP   │  │  Tmux MCP   │  │Knowledge MCP│            │   │
 │   │  │   Server    │  │   Server    │  │   Server    │            │   │
 │   │  │             │  │             │  │             │            │   │
-│   │  │ 48 Tools:   │  │ 8 Tools:    │  │ 7 Tools:    │            │   │
+│   │  │ 49 Tools:   │  │ 8 Tools:    │  │ 7 Tools:    │            │   │
 │   │  │ - generate  │  │ - send_keys │  │ - search    │            │   │
 │   │  │ - send_tcl  │  │ - capture   │  │ - list      │            │   │
 │   │  │ - extract   │  │ - status    │  │ - get       │            │   │
@@ -88,14 +88,14 @@ HiPilot extends Claude Code with specialized capabilities for VLSI physical desi
 
 ### 2. MCP Server Layer
 
-#### EDA MCP Server (`servers/eda/index.js`) — 48 tools
+#### EDA MCP Server (`servers/eda/index.js`) — 49 tools
 
 **Purpose:** EDA tool integration, Tcl generation, QoR tracking, workflow automation
 
 | Category | Tools |
 |----------|-------|
 | **Tcl Generation** | `generate_tcl`, `send_to_terminal`, `quick`, `save_tcl`, `edit_tcl`, `validate_tcl`, `list_templates`, `run_skill` |
-| **EDA Interaction** | `detect_tool`, `capture_and_analyze`, `capture_and_wait`, `wait_for_prompt`, `wait_for_pattern`, `get_last_result`, `extract_qor`, `get_job_status`, `analyze_report`, `get_analysis_cache`, `diagnose_error` |
+| **EDA Interaction** | `detect_tool`, `execute_and_verify`, `capture_and_analyze`, `capture_and_wait`, `wait_for_prompt`, `wait_for_pattern`, `get_last_result`, `extract_qor`, `get_job_status`, `analyze_report`, `get_analysis_cache`, `diagnose_error` |
 | **Mode Control** | `get_mode`, `set_mode`, `toggle_mode`, `get_pending`, `approve_pending`, `reject_pending`, `get_risk_analysis`, `confirm_dangerous`, `get_status` |
 | **Session** | `session.save_checkpoint`, `session.list_checkpoints`, `session.restore_checkpoint`, `session.get_history`, `session.get_context` |
 | **Context** | `context.detect`, `context.get_stage`, `context.suggest_next` |
@@ -269,7 +269,7 @@ hipilot/
 │   └── setup.sh             # Installation wizard
 │
 ├── servers/                 # MCP servers (JSON-RPC over stdio)
-│   ├── eda/index.js         # EDA MCP (48 tools)
+│   ├── eda/index.js         # EDA MCP (49 tools)
 │   ├── tmux/index.js        # Tmux MCP (8 tools)
 │   └── knowledge/index.js   # Knowledge MCP (7 tools)
 │
@@ -278,9 +278,9 @@ hipilot/
 ├── src/
 │   ├── cli.js               # TUI dashboard (React/Ink)
 │   ├── index.js             # Main CLI entry point
-│   ├── lib/                 # Utilities (16 modules)
+│   ├── lib/                 # Utilities (17 modules)
 │   ├── tui/                 # React/Ink TUI components
-│   └── hitestbot/           # E2E test framework (12 tests)
+│   └── hitestbot/           # E2E test framework (14 tests, v2 core)
 │
 ├── data/
 │   └── command-reference.json  # EDA command reference

@@ -2,9 +2,11 @@
 
 **Goal:** Close the gap between current implementation and the ultimate goal — Claude Code autonomously driving a complete RTL-to-GDS flow using MCP tools and skills.
 
-**Current state (v0.5.0):** 3 MCP servers (63 tools), 35 skills, 20 templates, but the core pipeline (Claude → MCP → EDA → feedback → next step) doesn't work reliably because of missing infrastructure.
+**Current state (v0.5.0 → v0.6.0-dev):** 3 MCP servers (64 tools), 35 skills, 20 templates. Phases 1-4 implemented, HiTestBot v2 built.
 
 **Target state (v0.6.0):** Claude Code can reliably execute a multi-stage EDA flow, with proper system context, debuggable MCP logging, a working feedback loop, and real workflow execution.
+
+> **Implementation Status:** Phases 1-4 are COMPLETE. HiTestBot v2 is COMPLETE. Pending: real EDA server validation.
 
 ---
 

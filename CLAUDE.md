@@ -92,7 +92,7 @@ When executing multi-stage flows:
 
 HiPilot is a VLSI Physical Design copilot system — three specialized MCP servers that extend Claude Code with EDA tool integration, Tcl generation, and physical design workflow skills.
 
-**Current State (v0.5.0):** 3 MCP servers (48+8+7 tools), 35 skills, 20 Tcl templates, HiTestBot E2E test framework, TUI dashboard. Tested on real EDA server with Cadence Innovus and Claude Code communicating through tmux.
+**Current State (v0.5.0):** 3 MCP servers (49+8+7 tools), 35 skills, 20 Tcl templates, HiTestBot v2 test framework, TUI dashboard. Tested on real EDA server with Cadence Innovus and Claude Code communicating through tmux.
 
 ## Breakthrough: AI + EDA Tool Feedback Loop via tmux
 
@@ -352,7 +352,7 @@ Tier 3: Templates + Documentation
 
 **Remove:** Complex report parsers (let AI read raw output)
 
-**EDA MCP Server (48 tools):** Tcl generation, EDA tool control, mode management, session/context tracking, QoR snapshots, workflow automation, smart suggestions. See `docs/mcp-servers.md` for full API.
+**EDA MCP Server (49 tools):** Tcl generation, EDA tool control, mode management, session/context tracking, QoR snapshots, workflow automation, smart suggestions. See `docs/mcp-servers.md` for full API.
 
 **Tmux MCP Server (8 tools):** Pane control (`send_keys`, `capture_pane`), workspace setup (`setup_layout`), status bar management. See `docs/mcp-servers.md`.
 

@@ -2,29 +2,48 @@
 
 All notable changes to HiPilot will be documented in this file.
 
+## [0.6.0-dev] - 2026-02-25
+
+### Added — v0.6.0 Infrastructure (Phases 1-4)
+- **System prompt & MCP config** (Phase 1) — `.claude/settings.json` with MCP server registration; `CLAUDE.md` operating instructions with 6 rules for AI behavior
+- **MCP call logging** (Phase 2) — `src/lib/mcp-logger.js` with `HIPILOT_TEST_LOG` env var; all 3 servers log tool calls to JSONL with zero overhead when disabled
+- **`eda.execute_and_verify`** (Phase 3) — Single MCP call that sends Tcl, waits for EDA prompt, detects errors/warnings, extracts QoR. Replaces fragile 4-step pattern.
+- **Real `workflow.run`** (Phase 4) — Sequential step execution with error handling (`stop`/`skip`), QoR tracking per step, structured progress reports. Built-in workflows: `fix_setup_timing`, `fix_hold_timing`, `run_cts_flow`, `rtl2gds`
+
+### Added — HiTestBot v2
+- `core/McpLogCollector.js` — Parse JSONL logs, query by tool/time/server
+- `core/ObservationPoint.js` — Synchronized multi-view evidence capture
+- `core/StageVerifier.js` — 5-layer scoring (L1-L5) with failure classification
+- `core/FlowCertifier.js` — Flow certification orchestrator
+- `core/FlowReporter.js` — FLOW_REPORT.md and flow_progress.json generation
+- `core/ProgressTracker.js` — Cross-run improvement tracking and graduation criteria
+- `tests/FlowCertificationTest.js` — Main flow certification test
+- `tests/McpInfraTest.js` — 12 MCP infrastructure checks
+
+### Changed
+- HiTestBot restructured: `infra/` (v1 preserved), `core/` (v2 new), `tests/`
+- 80+ junk files deleted (old scripts, evidence, temp files)
+
+### Stats
+- 49 EDA MCP tools, 8 Tmux MCP tools, 7 Knowledge MCP tools
+- 35 skills, 20 Tcl templates
+- 118 unit tests + 12 MCP infra tests passing
+
 ## [0.5.0] - 2026-02-25
 
 ### Changed
 - **Documentation restructured** — Consolidated ~40 docs into clean hierarchy
-  - `docs/` now has 7 guides + `testing/` + `specs/` subdirs
-  - Old plans, evidence, and superseded docs moved to `archive/`
-  - `docs_latest/` removed (content promoted into `docs/`)
-  - `README.md` rewritten for v0.5.0
-- **Testing philosophy** — Added `docs/testing/TESTING_RULES.md` with layered evidence framework, observer review protocol, and flow certification approach
+- **Testing philosophy** — Added `docs/testing/TESTING_RULES.md`
 - **AGENTS.md** — Added Cursor Cloud specific development instructions
+- 80+ junk files cleaned up, `archive/` and `docs_latest/` removed
 
 ### Added
 - 8 new RTL-to-GDS flow skills (synthesis through verification)
 - HiTestBot E2E test framework (`src/hitestbot/`) with 12 test files
 - TUI dashboard with React/Ink (`src/cli.js`)
-- Session management tools (checkpoint, history, context)
-- Workflow automation tools (define, run, cancel)
-- QoR tracking tools (snapshot, compare, trend)
-- Error diagnosis and Tcl validation tools
-- Report analysis with caching
+- Session management, workflow, QoR tracking, error diagnosis tools
 
 ### Stats
-- 48 EDA MCP tools, 8 Tmux MCP tools, 7 Knowledge MCP tools
 - 35 skills, 20 Tcl templates
 - 118 unit tests passing
 
