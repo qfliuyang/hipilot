@@ -422,7 +422,7 @@ Additional layout modes may be added in future phases:
 ### CentOS 7 (glibc 2.17)
 
 - **tmux:** 1.8+ (available on CentOS 7)
-- **Node.js:** v16.20.2 (last compatible version)
+- **Node.js:** v20.18.3 (glibc-217 build for CentOS 7)
 - **Xvfb:** For screen recording
 - **ffmpeg:** 2.8.15 (available on CentOS 7)
 
@@ -430,7 +430,7 @@ Additional layout modes may be added in future phases:
 
 | Package | Version | Notes |
 |---------|---------|-------|
-| Node.js | v16.20.2 | CentOS 7 compatible |
+| Node.js | v20.18.3 | CentOS 7 compatible (glibc-217 build) |
 | TypeScript | 5.x | Development |
 | tmux | 1.8+ | Terminal multiplexer |
 
@@ -444,7 +444,7 @@ Additional layout modes may be added in future phases:
 |------|-------|
 | **Server** | 192.168.112.163 |
 | **OS** | CentOS 7.9.2009 (glibc 2.17) |
-| **Node.js** | v16.20.2 |
+| **Node.js** | v20.18.3 |
 | **tmux** | 1.8 |
 
 ### Test Cases

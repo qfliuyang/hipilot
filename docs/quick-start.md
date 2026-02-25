@@ -186,16 +186,14 @@ HiPilot will:
 
 ## Next Steps
 
-- Read [SKILLS_GUIDE.md](SKILLS_GUIDE.md) for detailed skill documentation
-- Read [RTL2GDS_FLOW.md](RTL2GDS_FLOW.md) for complete flow guide
-- Check [e2e_evidence/](../e2e_evidence/) for real execution examples
+- Read [skills-guide.md](skills-guide.md) for detailed skill documentation
+- Read [rtl2gds-flow.md](rtl2gds-flow.md) for complete flow guide
 
 ---
 
 ## Getting Help
 
-- Check `docs_latest/` for detailed documentation
-- Review `e2e_evidence/` for real-world examples
+- Check other docs in this directory for detailed documentation
 - Open an issue on GitHub
 
 ---

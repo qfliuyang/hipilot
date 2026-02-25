@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 HiPilot is a VLSI Physical Design copilot system - a lightweight fork of Claude Code with three specialized MCP (Model Context Protocol) servers. It provides physical design engineers with an AI-powered assistant that generates vendor-specific Tcl scripts, parses EDA reports, and manages a tmux-based workspace.
 
-**Current State (v0.2.0):** Working implementation with 3 MCP servers, 10 skills, 20 Tcl templates, tested on real EDA server with Cadence Innovus and Claude Code communicating through tmux.
+**Current State (v0.5.0):** Working implementation with 3 MCP servers (48+8+7 tools), 35 skills, 20 Tcl templates, HiTestBot E2E test framework, TUI dashboard. Tested on real EDA server with Cadence Innovus and Claude Code communicating through tmux.
 
 ## Breakthrough: AI + EDA Tool Feedback Loop via tmux
 
@@ -34,7 +34,7 @@ Claude Code (Pane 0)              Innovus/ICC2 (Pane 1)
 - MCP servers registered in `~/.claude/settings.json` with absolute paths (NOT project-level)
 - Claude Code started with `--dangerously-skip-permissions` for automation
 
-See `docs/TEST_STAND.md` for the complete test stand documentation with 10 lessons learned.
+See `docs/testing/test-stand.md` for the complete test stand documentation with 10 lessons learned.
 
 ## Critical Context from Architecture Discussion
 
@@ -479,18 +479,15 @@ $SSH 'DISPLAY=:0 ffmpeg -y -f x11grab -framerate 25 -video_size 2560x1558 -i :0 
 
 The following sections from the original architecture docs remain accurate and should be referenced:
 
-### MCP Server Specifications
-- `docs/specs/eda-mcp-server-spec.md` - Tool APIs
-- `docs/specs/tmux-mcp-server-spec.md` - Tmux operations
-- `docs/specs/knowledge-mcp-server-spec.md` - Knowledge system
-
-### Product Requirements
-- `docs/prd.md` - Problem statement, success metrics
-- `docs/roadmap.md` - Development phases
-
-### UX Patterns
-- `docs/specs/ux-specification.md` - Interaction design
-- `docs/guides/skill-authoring-guide.md` - How to write skills
+### Active Documentation (in `docs/`)
+- `docs/architecture.md` - System design and components
+- `docs/mcp-servers.md` - MCP integration reference
+- `docs/skills-guide.md` - All 35 skills documented
+- `docs/rtl2gds-flow.md` - Complete RTL-to-GDS flow guide
+- `docs/specs/eda-mcp-spec.md` - EDA MCP server spec
+- `docs/specs/tmux-mcp-spec.md` - Tmux MCP server spec
+- `docs/specs/knowledge-mcp-spec.md` - Knowledge MCP server spec
+- `docs/testing/TESTING_RULES.md` - Testing philosophy and rules
 
 ### Configuration System
 
@@ -556,7 +553,7 @@ When starting a new development session:
 - **Base:** Claude Code (light fork)
 - **MCP Protocol:** Model Context Protocol
 - **Runtime:** Node.js v20.x
-- **Language:** TypeScript 5+
+- **Language:** JavaScript (ES2022+, ES Modules)
 - **Template Engine:** Nunjucks (Jinja2-compatible)
 - **Database:** SQLite with FTS5
 - **Terminal:** tmux 1.8+
@@ -665,13 +662,13 @@ scp EDA@192.168.112.163:~/hipilot_test/recordings/*.mp4 .
 
 **REQUIREMENT:** Each major feature completion MUST include a screen recording video demonstrating it working on the EDA server (CentOS 7). This ensures HiPilot actually works on the target platform.
 
-See `docs/SCREEN_RECORDING_SETUP.md` for complete guide.
+See `archive/legacy-docs/SCREEN_RECORDING_SETUP.md` for complete guide.
 
 ### Environment on EDA Server
 
 **Installed:**
 - Node.js v20.18.3 (at `/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/`)
-- npm 8.19.4
+- npm 10.8.2
 - Python 3.6.8, 2.7.5
 - tmux 1.8
 - ffmpeg 2.8.15 (with x11grab for screen recording)

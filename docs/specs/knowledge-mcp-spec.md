@@ -503,7 +503,7 @@ Output Skill: fix-hold-timing
 
 ### CentOS 7 (glibc 2.17)
 
-- **Node.js:** v16.20.2 (last compatible version)
+- **Node.js:** v20.18.3 (glibc-217 build for CentOS 7)
 - **SQLite:** 3.35+ (FTS5 support)
 - **Testing:** All features tested on EDA server
 
@@ -511,7 +511,7 @@ Output Skill: fix-hold-timing
 
 | Package | Version | Notes |
 |---------|---------|-------|
-| Node.js | v16.20.2 | CentOS 7 compatible |
+| Node.js | v20.18.3 | CentOS 7 compatible (glibc-217 build) |
 | TypeScript | 5.x | Development |
 | better-sqlite3 | 9.x | SQLite binding |
 | pdf-parse | 1.x | PDF parsing |
@@ -528,7 +528,7 @@ Output Skill: fix-hold-timing
 |------|-------|
 | **Server** | 192.168.112.163 |
 | **OS** | CentOS 7.9.2009 (glibc 2.17) |
-| **Node.js** | v16.20.2 |
+| **Node.js** | v20.18.3 |
 
 ### Test Cases
 

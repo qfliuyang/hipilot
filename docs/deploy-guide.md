@@ -481,7 +481,7 @@ wget https://nodejs.org/dist/v20.18.3/node-v20.18.3-linux-x64-glibc-217.tar.xz
 ## Support
 
 - **GitHub Issues:** https://github.com/qfliuyang/hipilot/issues
-- **Documentation:** See `docs_latest/` directory
+- **Documentation:** See `docs/` directory
 
 ---
 
