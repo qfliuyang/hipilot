@@ -76,6 +76,7 @@
     "skills/",
     "scripts/",
     "templates/",
+    "data/",
     "docs/",
     "README.md",
     "LICENSE",

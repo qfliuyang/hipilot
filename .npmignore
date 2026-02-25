@@ -2,11 +2,10 @@
 .git/
 .github/
 .gitignore
+.claude/
 
 # Test files
 test/
-*.test.js
-*.spec.js
 vitest.config.js
 vitest.e2e.config.js
 coverage/
@@ -14,52 +13,13 @@ coverage/
 # IDE files
 .idea/
 .vscode/
-*.swp
-*.swo
-*~
 
 # OS files
 .DS_Store
 Thumbs.db
 
-# Build artifacts
-node_modules/
-*.log
-npm-debug.log*
-
-# Temporary files
-tmp/
-temp/
-.tmp/
-
-# Evidence and test data
+# Test evidence
 e2e_evidence/
-.eslintcache
 
-# Claude Code files
-.claude/
-.hipilot/
-.omc/
-.sisyphus/
-
-# Documentation (old versions)
-docs/
-IMPROVEMENT_PLAN*.md
-IMPROVE_PLAN*.md
-E2E_TEST_REPORT.md
-MCPTEST
-EOFSCRIPT
-
-# Demo and test scripts
-*.exp
-demo*.sh
-run_*.sh
-setup-*.sh
-cleanup_*.sh
-download_*.sh
-*_e2e*.sh
-visual_demo.exp
-
-# Test files
-test-risk-analyzer.js
-test_real.sh
+# Logs
+*.log
