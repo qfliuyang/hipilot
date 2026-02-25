@@ -35,8 +35,9 @@ async function main() {
 
   console.log('Running flow certification...');
   console.log('');
-
-  const result = await certifier.certifyWorkflow(WORKFLOW);
+  // Use prompt-driven mode to test actual Claude Code behavior
+  // This sends a prompt to Claude in pane 0.0 and observes the response
+  const result = await certifier.certifyWorkflowPrompt(WORKFLOW, `/rtl2gds`, { waitMs: 180000 });
 
   // Print summary
   const progress = result.progress;
