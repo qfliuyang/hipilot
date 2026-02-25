@@ -30,7 +30,22 @@ All MCP servers communicate over stdio (JSON-RPC), not HTTP. No databases, Docke
 - EDA tools (ICC2, Innovus, PrimeTime) are commercial software not available in cloud VMs. HiPilot works without them for Tcl generation, skill browsing, and template management.
 - tmux is required for workspace layout features but not for unit tests or MCP server testing.
 
+### Identity Separation (IMPORTANT)
+
+This project has two AI identities that must NOT be confused:
+
+1. **Developer AI** (you, right now) — reads root `CLAUDE.md`, helps write code. Does NOT have MCP servers connected. Does NOT follow HiPilot operating rules.
+2. **HiPilot AI** (Claude Code on EDA server) — reads `deploy/eda-server/CLAUDE.md`, follows operating rules, has MCP servers connected, drives EDA tools.
+
+The EDA-server-specific config is in `deploy/eda-server/`:
+- `deploy/eda-server/CLAUDE.md` — operational instructions ("You are HiPilot")
+- `deploy/eda-server/.claude/settings.json` — MCP server registration (absolute paths)
+- `deploy/eda-server/.claude/commands/` — slash commands (/timing, /drc, etc.)
+
+HiTestBot deploys these to the EDA server during E2E testing. They are NOT used in the development environment.
+
 ### Documentation structure
 
 - `docs/` — All documentation (guides, specs, testing)
+- `deploy/eda-server/` — EDA server deployment config
 - See `README.md` for the documentation index.

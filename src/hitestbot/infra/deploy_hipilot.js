@@ -74,15 +74,15 @@ async function deploy() {
   `);
   console.log('   Swap complete');
   
-  // Step 6: Configure MCP (MERGE with existing settings!)
-  console.log('[6/6] Configuring MCP servers...');
+  // Step 6: Configure MCP (MERGE with existing settings — preserves API keys!)
+  console.log('[6/7] Configuring MCP servers...');
   const hipilotDir = `${REMOTE_DIR}/current`;
   
   let existingSettings = {};
   try {
     const existingJson = ssh(`cat ~/.claude/settings.json 2>/dev/null || echo '{}'`);
     existingSettings = JSON.parse(existingJson);
-    console.log('   Found existing settings, will merge...');
+    console.log('   Found existing settings, will merge (preserving API keys)...');
   } catch (e) {
     console.log('   No existing settings, creating new...');
   }
@@ -116,13 +116,46 @@ ${JSON.stringify(mergedSettings, null, 2)}
 EOFSETTINGS`);
   console.log('   MCP configured (settings merged)');
   
+  // Step 7: Deploy CLAUDE.md and slash commands for HiPilot identity
+  console.log('[7/7] Deploying HiPilot identity (CLAUDE.md + commands)...');
+  
+  // Copy EDA-server CLAUDE.md to the deployed project directory
+  const deployClaude = join(PROJECT_ROOT, '..', 'deploy', 'eda-server', 'CLAUDE.md');
+  if (existsSync(deployClaude)) {
+    scp(deployClaude, `${hipilotDir}/CLAUDE.md`);
+    console.log('   CLAUDE.md deployed (HiPilot identity)');
+  } else {
+    // Fallback: use the one in the deploy directory relative to project
+    const altPath = join(PROJECT_ROOT, 'deploy', 'eda-server', 'CLAUDE.md');
+    if (existsSync(altPath)) {
+      scp(altPath, `${hipilotDir}/CLAUDE.md`);
+      console.log('   CLAUDE.md deployed (HiPilot identity)');
+    } else {
+      console.log('   WARNING: deploy/eda-server/CLAUDE.md not found');
+    }
+  }
+  
+  // Copy slash commands
+  const cmdDir = join(PROJECT_ROOT, 'deploy', 'eda-server', '.claude', 'commands');
+  if (existsSync(cmdDir)) {
+    ssh(`mkdir -p ${hipilotDir}/.claude/commands`);
+    for (const file of execSync(`ls ${cmdDir}`, { encoding: 'utf-8' }).trim().split('\n')) {
+      if (file.endsWith('.md')) {
+        scp(join(cmdDir, file), `${hipilotDir}/.claude/commands/${file}`);
+      }
+    }
+    console.log('   Slash commands deployed (8 commands)');
+  }
+  
   // Cleanup
   unlinkSync(tarFile);
   
   console.log('\n=== Deployment Complete ===');
   console.log(`HiPilot installed at: ${hipilotDir}`);
-  console.log(`MCP servers configured in: ~/.claude/settings.json`);
-  console.log('\nTests can now run without code upload.');
+  console.log(`Identity: deploy/eda-server/CLAUDE.md → ${hipilotDir}/CLAUDE.md`);
+  console.log(`MCP servers: ~/.claude/settings.json (merged, API keys preserved)`);
+  console.log(`Commands: ${hipilotDir}/.claude/commands/ (8 slash commands)`);
+  console.log('\nClaude Code on EDA server will now identify as HiPilot.');
 }
 
 deploy().catch(err => {
