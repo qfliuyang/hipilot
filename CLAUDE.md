@@ -26,9 +26,8 @@ For every EDA operation, follow this pattern:
 1. **Check status first:** Call `eda.get_status` to understand current mode, tool, and state
 2. **Find the right skill:** Call `knowledge.match_skill` with the user's intent
 3. **Generate Tcl:** Call `eda.generate_tcl` with the matched operation
-4. **Execute and verify:** Call `eda.capture_and_wait` (preferred) or `eda.send_to_terminal` + `eda.wait_for_prompt`
-5. **Capture results:** Call `eda.capture_and_analyze` to extract QoR metrics
-6. **Report to user:** Present results with WNS/TNS/violations and recommendations
+4. **Execute and verify:** Call `eda.execute_and_verify` — this single tool sends Tcl, waits for completion, detects errors, and extracts QoR metrics. It replaces the need to call `send_to_terminal` + `wait_for_prompt` + `capture_and_analyze` separately.
+5. **Report to user:** Present results with WNS/TNS/violations and recommendations
 
 ### Rule 3: Respect the mode system
 
@@ -73,6 +72,7 @@ When executing multi-stage flows:
 | Check system state | `eda.get_status` |
 | Find a skill for a task | `knowledge.match_skill` |
 | Generate Tcl | `eda.generate_tcl` |
+| **Execute + verify (preferred)** | **`eda.execute_and_verify`** |
 | Send + wait + get result | `eda.capture_and_wait` |
 | Send Tcl (mode-aware) | `eda.send_to_terminal` |
 | Wait for EDA prompt | `eda.wait_for_prompt` |
