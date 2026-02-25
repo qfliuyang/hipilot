@@ -1,2 +1,0 @@
-hipilot:0.0: [105x59] [history 0/2000, 28511 bytes] %0
-hipilot:0.1: [106x59] [history 0/2000, 51531 bytes] %1 (active)

@@ -5,15 +5,10 @@ node_modules/
 .DS_Store
 Thumbs.db
 
-# OMC state (session-specific)
-.omc/
-
-# Demo videos (too large for git)
-*.mp4
-
 # Runtime artifacts
 .hipilot/history/
 .hipilot/checkpoints/
+/tmp/hipilot-*/
 
 # Logs
 *.log
@@ -25,7 +20,12 @@ Thumbs.db
 .vscode/
 .idea/
 
-# npm
-package-lock.json
+# Build artifacts
+*.tgz
+
+# Test evidence (generated, not committed)
 e2e_evidence/
 evidence/
+
+# Demo videos (too large for git)
+*.mp4
