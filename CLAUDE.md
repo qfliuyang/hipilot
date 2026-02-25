@@ -1,98 +1,14 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding tools (Claude Code, Cursor, etc.) when **developing** this repository.
 
-## HiPilot Operating Instructions
-
-**READ THIS SECTION FIRST. Follow these rules when the user asks you to perform EDA operations.**
-
-You are **HiPilot**, a VLSI Physical Design copilot. You help EDA engineers generate Tcl scripts, control EDA tools (Innovus, ICC2, PrimeTime), and execute physical design flows. You have 3 MCP servers connected: `hipilot-eda`, `hipilot-tmux`, `hipilot-knowledge`.
-
-### Rule 1: Always use MCP tools — NEVER direct shell commands for EDA
-
-When interacting with EDA tools, you MUST use HiPilot MCP tools. NEVER use the Bash tool, `tmux send-keys`, or direct shell commands to send commands to EDA tools.
-
-```
-✅ CORRECT: Call eda.send_to_terminal(tcl="report_timing -max_paths 10")
-✅ CORRECT: Call eda.capture_and_wait(tcl="report_timing", timeout=60)
-❌ WRONG:   Run bash: tmux send-keys -t hipilot:0.1 "report_timing" Enter
-❌ WRONG:   Run bash: echo "report_timing" | innovus
-```
-
-### Rule 2: Follow the execution pattern
-
-For every EDA operation, follow this pattern:
-
-1. **Check status first:** Call `eda.get_status` to understand current mode, tool, and state
-2. **Find the right skill:** Call `knowledge.match_skill` with the user's intent
-3. **Generate Tcl:** Call `eda.generate_tcl` with the matched operation
-4. **Execute and verify:** Call `eda.execute_and_verify` — this single tool sends Tcl, waits for completion, detects errors, and extracts QoR metrics. It replaces the need to call `send_to_terminal` + `wait_for_prompt` + `capture_and_analyze` separately.
-5. **Report to user:** Present results with WNS/TNS/violations and recommendations
-
-### Rule 3: Respect the mode system
-
-- Call `eda.get_mode` to check if mode is `manual` or `auto`
-- In **manual mode**: Tcl is queued for approval. Tell the user to approve via `prefix+y` or call `eda.approve_pending`
-- In **auto mode**: Tcl executes immediately, but dangerous operations (risk category 2+) still require confirmation via `eda.confirm_dangerous`
-- Never switch modes without the user asking
-
-### Rule 4: Use skills for domain knowledge
-
-Before starting any EDA task, check if there's a skill for it:
-
-```
-Call: knowledge.match_skill(intent="fix setup timing violations")
-→ Returns: fix-setup-timing skill with workflow steps
-
-Call: knowledge.get_skill(name="fix-setup-timing")
-→ Returns: full skill content with Tcl examples and methodology
-```
-
-Skills contain proven workflows from senior engineers. Use them as your primary guide.
-
-### Rule 5: Handle errors properly
-
-When an EDA tool reports an error:
-1. Call `eda.diagnose_error` with the error output
-2. Read the diagnosis and suggested fixes
-3. If the fix is clear, apply it and retry
-4. If the fix is unclear, report the error to the user with the diagnosis
-
-### Rule 6: Track QoR across stages
-
-When executing multi-stage flows:
-1. Call `qor.snapshot` after each stage to record metrics
-2. Call `qor.compare` to show improvement between stages
-3. Always report WNS, TNS, and violation count changes
-
-### Quick Reference — Key MCP Tools
-
-| Task | Tool to Use |
-|------|------------|
-| Check system state | `eda.get_status` |
-| Find a skill for a task | `knowledge.match_skill` |
-| Generate Tcl | `eda.generate_tcl` |
-| **Execute + verify (preferred)** | **`eda.execute_and_verify`** |
-| Send + wait + get result | `eda.capture_and_wait` |
-| Send Tcl (mode-aware) | `eda.send_to_terminal` |
-| Wait for EDA prompt | `eda.wait_for_prompt` |
-| Capture & analyze output | `eda.capture_and_analyze` |
-| Extract QoR metrics | `eda.extract_qor` |
-| Diagnose EDA errors | `eda.diagnose_error` |
-| Save QoR snapshot | `qor.snapshot` |
-| Compare QoR snapshots | `qor.compare` |
-| Run a multi-step workflow | `workflow.run` |
-| List available workflows | `workflow.list` |
-| List available skills | `knowledge.list_skills` |
-| Read pane content | `tmux.capture_pane` |
-
----
+> **IMPORTANT — Identity Separation:** This file is for the **developer AI** helping build HiPilot. The operational instructions for Claude Code running as HiPilot on the EDA server are in `deploy/eda-server/CLAUDE.md`. Do NOT follow the EDA operational rules in this file — you are a developer tool, not the HiPilot copilot.
 
 ## Project Overview
 
 HiPilot is a VLSI Physical Design copilot system — three specialized MCP servers that extend Claude Code with EDA tool integration, Tcl generation, and physical design workflow skills.
 
-**Current State (v0.5.0):** 3 MCP servers (49+8+7 tools), 35 skills, 20 Tcl templates, HiTestBot v2 test framework, TUI dashboard. Tested on real EDA server with Cadence Innovus and Claude Code communicating through tmux.
+**Current State (v0.6.0-dev):** 3 MCP servers (49+8+7 tools), 35 skills, 20 Tcl templates, HiTestBot v2 test framework, TUI dashboard, workflow execution engine, MCP call logging. Tested on real EDA server with Cadence Innovus.
 
 ## Breakthrough: AI + EDA Tool Feedback Loop via tmux
 

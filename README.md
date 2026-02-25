@@ -83,6 +83,7 @@ hipilot/
 │   └── lib/                # Utilities (mode, risk, paths)
 ├── data/                   # Command reference (JSON)
 ├── test/                   # Unit tests (vitest)
+├── deploy/eda-server/      # EDA server deployment config
 └── docs/                   # Documentation (see below)
 ```
 
