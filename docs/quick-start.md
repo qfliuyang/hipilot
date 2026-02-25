@@ -160,7 +160,7 @@ HiPilot will:
 | Fix setup violations | `"/fix-setup-timing"` |
 | Run CTS | `"/cts"` |
 | Save checkpoint | `"/save-design"` |
-| Run full flow | `"/ibex-rtl2gds-flow"` |
+| Run full flow | `"/rtl2gds"` |
 
 ---
 

@@ -249,13 +249,27 @@ function listTemplates() {
 
 /**
  * Resolve vendor/tool to template directory and prefix
+ *
+ * Supported tool values:
+ * - 'icc2' / 'synopsys'   → Synopsys ICC2 templates (prefix: icc2)
+ * - 'innovus' / 'cadence' → Cadence Innovus templates (prefix: innovus)
+ * - 'dc_shell' / 'dc'     → Synopsys DC templates (prefix: dc)
+ * - 'pt_shell' / 'pt'     → Synopsys PrimeTime templates (prefix: pt)
+ * - 'auto' or undefined   → Detect running tool (ICC2 vs Innovus)
  */
 function resolveVendor(tool) {
   if (!tool || tool === 'auto') {
     const detected = detectTool();
-    if (detected) return { dir: detected.vendor, prefix: detected.tool === 'ICC2' ? 'icc2' : 'innovus' };
+    if (detected) {
+      if (detected.tool === 'ICC2') return { dir: detected.vendor, prefix: 'icc2' };
+      if (detected.tool === 'Innovus') return { dir: detected.vendor, prefix: 'innovus' };
+      if (detected.tool === 'PrimeTime') return { dir: 'synopsys', prefix: 'pt' };
+    }
     return { dir: 'synopsys', prefix: 'icc2' }; // default
   }
+
+  if (tool === 'dc_shell' || tool === 'dc') return { dir: 'synopsys', prefix: 'dc' };
+  if (tool === 'pt_shell' || tool === 'pt') return { dir: 'synopsys', prefix: 'pt' };
   if (tool === 'icc2' || tool === 'synopsys') return { dir: 'synopsys', prefix: 'icc2' };
   if (tool === 'innovus' || tool === 'cadence') return { dir: 'cadence', prefix: 'innovus' };
   return { dir: 'synopsys', prefix: 'icc2' };
@@ -620,8 +634,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             tool: {
               type: 'string',
-              description: 'EDA tool vendor (icc2/synopsys or innovus/cadence, or auto to detect)',
-              enum: ['icc2', 'innovus', 'synopsys', 'cadence', 'auto'],
+              description: 'EDA tool / vendor (icc2/synopsys, innovus/cadence, dc_shell, pt_shell, or auto to detect for P&R tools)',
+              enum: ['icc2', 'innovus', 'synopsys', 'cadence', 'dc_shell', 'pt_shell', 'auto'],
             },
             operation: {
               type: 'string',
@@ -631,6 +645,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 'report_timing', 'report_power', 'report_area',
                 'check_drc', 'run_cts', 'optimize_design',
                 'read_design', 'save_design', 'compare_qor',
+                'synthesis', 'signoff_timing',
               ],
             },
             targets: {
@@ -695,6 +710,36 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         inputSchema: {
           type: 'object',
           properties: {},
+        },
+      },
+      {
+        name: 'eda.start_tool',
+        description: 'Start an EDA tool in the right pane via tmux. Sends the launch command, waits for the prompt, and returns when ready. Use this before running workflows so the user does not need to start the tool manually. If a tool is already running, returns immediately.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tool: {
+              type: 'string',
+              description: 'EDA tool to start: innovus (default), icc2_shell, pt_shell',
+              enum: ['innovus', 'icc2_shell', 'pt_shell'],
+              default: 'innovus',
+            },
+            design_dir: {
+              type: 'string',
+              description: 'Optional: change to this directory before starting (e.g. /home/EDA/hipilot_test/ibex_work_upload for Ibex)',
+            },
+            pane: {
+              type: 'string',
+              description: 'Target pane (default: eda)',
+              enum: ['eda', 'chat', '0', '1'],
+              default: 'eda',
+            },
+            timeout: {
+              type: 'number',
+              description: 'Timeout in seconds waiting for tool prompt (default: 90 for innovus, 60 for others)',
+              default: 90,
+            },
+          },
         },
       },
       {
@@ -1316,6 +1361,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
+        name: 'rtl2gds.run_full_flow',
+        description: 'Run the built-in rtl2gds workflow end-to-end for a given design. Thin wrapper over workflow.run(name=\"rtl2gds\").',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            design: {
+              type: 'string',
+              description: 'Logical design identifier (e.g., \"ibex\"). Used by skills/config to resolve paths.',
+            },
+            params: {
+              type: 'object',
+              description: 'Additional parameters forwarded to the rtl2gds workflow (e.g., custom timeouts).',
+            },
+          },
+        },
+      },
+      {
+        name: 'rtl2gds.run_stage',
+        description: 'Run a single stage of the built-in rtl2gds workflow (e.g., floorplan, placement, routing) for a given design.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            stage: {
+              type: 'string',
+              description: 'Stage name to run (e.g., \"design_init\", \"floorplan\", \"placement\", \"cts\", \"post_cts_opt\", \"routing\", \"chip_finish\").',
+            },
+            design: {
+              type: 'string',
+              description: 'Logical design identifier (e.g., \"ibex\"). Used by skills/config to resolve paths.',
+            },
+            params: {
+              type: 'object',
+              description: 'Additional parameters forwarded to the rtl2gds workflow.',
+            },
+          },
+          required: ['stage'],
+        },
+      },
+      {
         name: 'workflow.get_status',
         description: 'Get status of a running or completed workflow.',
         inputSchema: {
@@ -1563,6 +1647,82 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
               ? `Detected EDA Tool: ${detected.tool} ${detected.version} (${detected.vendor})`
               : 'No EDA tool detected running. Start icc2_shell, innovus, or pt_shell in the EDA pane.',
           }],
+        };
+      }
+
+      case 'eda.start_tool': {
+        const { tool = 'innovus', design_dir, pane = 'eda', timeout } = args;
+        const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
+        const target = `${TMUX_SESSION}:0.${paneIdx}`;
+
+        // If tool already running, return success
+        const detected = detectTool();
+        const toolMap = { innovus: 'Innovus', icc2_shell: 'ICC2', pt_shell: 'PrimeTime' };
+        if (detected && detected.tool === toolMap[tool]) {
+          return {
+            content: [{
+              type: 'text',
+              text: `✓ ${detected.tool} is already running. Ready for commands.`,
+            }],
+          };
+        }
+
+        const launchCmd = tool === 'innovus'
+          ? 'innovus -no_gui'
+          : tool === 'icc2_shell'
+            ? 'icc2_shell'
+            : 'pt_shell';
+        const waitSeconds = timeout ?? (tool === 'innovus' ? 90 : 60);
+
+        try {
+          if (design_dir) {
+            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} "cd ${design_dir}" Enter`, { encoding: 'utf-8' });
+            await new Promise(r => setTimeout(r, 800));
+          }
+          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} "${launchCmd}" Enter`, { encoding: 'utf-8' });
+        } catch (e) {
+          return {
+            content: [{ type: 'text', text: `❌ Failed to send start command: ${e.message}` }],
+            isError: true,
+          };
+        }
+
+        // Wait for EDA prompt (reuse wait_for_prompt logic)
+        const startTime = Date.now();
+        const timeoutMs = waitSeconds * 1000;
+        const promptPatterns = [
+          /innovus\s*\d+>/i,
+          /icc2_shell>/i,
+          /icc2>/i,
+          /pt_shell>/i,
+          /tempus\s*\d*>/i,
+          /\]\s*$/m,
+        ];
+
+        while (Date.now() - startTime < timeoutMs) {
+          try {
+            const output = execSync(
+              `tmux capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
+              { encoding: 'utf-8', timeout: 5000 }
+            );
+            const lastLine = output.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
+            for (const pattern of promptPatterns) {
+              if (pattern.test(lastLine)) {
+                return {
+                  content: [{
+                    type: 'text',
+                    text: `✓ ${toolMap[tool] || tool} started and ready after ${((Date.now() - startTime) / 1000).toFixed(1)}s\n\nPrompt: ${lastLine.trim()}`,
+                  }],
+                };
+              }
+            }
+          } catch {}
+          await new Promise(r => setTimeout(r, 500));
+        }
+
+        return {
+          content: [{ type: 'text', text: `⏱ Timeout waiting for ${tool} prompt after ${waitSeconds}s. The tool may still be starting.` }],
+          isError: true,
         };
       }
 
@@ -3318,8 +3478,31 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         return { content: [{ type: 'text', text }], _metadata: { workflows } };
       }
 
+      case 'rtl2gds.run_stage': {
+        const { stage, design = 'ibex', params = {} } = args;
+        if (!stage) {
+          return { content: [{ type: 'text', text: '❌ Missing required parameter: stage' }], isError: true };
+        }
+        // Re-map to workflow.run with rtl2gds name and stage filter in params
+        args = {
+          name: 'rtl2gds',
+          params: { ...params, design, stage },
+        };
+        // fall through to workflow.run
+      }
+
+      case 'rtl2gds.run_full_flow': {
+        const { design = 'ibex', params = {} } = args;
+        // Re-map to workflow.run without stage filter for full-flow execution
+        args = {
+          name: 'rtl2gds',
+          params: { ...params, design },
+        };
+        // fall through to workflow.run
+      }
+
       case 'workflow.run': {
-        const { name, params = {} } = args;
+        const { name: workflowName, params = {} } = args;
         const workflowsDir = join(hipilotPaths.hipilotDir, 'workflows');
         const runsDir = join(hipilotPaths.hipilotDir, 'workflow_runs');
         mkdirSync(runsDir, { recursive: true });
@@ -3357,31 +3540,59 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
             name: 'rtl2gds',
             description: 'Complete RTL-to-GDS flow: init → floorplan → placement → CTS → routing → chip finish',
             steps: [
-              { name: 'Design init', operation: 'read_design', timeout: 180, on_failure: 'stop' },
-              { name: 'Floorplan', tcl: 'floorPlan -site unithd -su 1 0.4 1 1 1 1', timeout: 120, on_failure: 'stop' },
-              { name: 'Placement', tcl: 'place_opt_design', timeout: 300, on_failure: 'stop' },
-              { name: 'CTS', operation: 'run_cts', timeout: 300, on_failure: 'stop' },
-              { name: 'Post-CTS optimization', operation: 'optimize_design', timeout: 300, on_failure: 'stop' },
-              { name: 'Routing', operation: 'route_design', timeout: 600, on_failure: 'stop' },
-              { name: 'Timing report', operation: 'report_timing', timeout: 120, on_failure: 'skip' },
-              { name: 'Chip finish', operation: 'save_design', timeout: 120, on_failure: 'stop' },
+              { name: 'design_init', operation: 'read_design', timeout: 180, on_failure: 'stop' },
+              { name: 'floorplan', tcl: 'floorPlan -site unithd -su 1 0.4 1 1 1 1', timeout: 120, on_failure: 'stop' },
+              { name: 'placement', tcl: 'place_opt_design', timeout: 300, on_failure: 'stop' },
+              { name: 'cts', operation: 'run_cts', timeout: 300, on_failure: 'stop' },
+              { name: 'post_cts_opt', operation: 'optimize_design', timeout: 300, on_failure: 'stop' },
+              { name: 'routing', operation: 'route_design', timeout: 600, on_failure: 'stop' },
+              { name: 'timing_report', operation: 'report_timing', timeout: 120, on_failure: 'skip' },
+              { name: 'chip_finish', operation: 'save_design', timeout: 120, on_failure: 'stop' },
             ],
           },
         };
 
         // Resolve workflow
         let workflow = null;
-        if (builtinWorkflows[name]) {
-          workflow = builtinWorkflows[name];
+        if (builtinWorkflows[workflowName]) {
+          workflow = builtinWorkflows[workflowName];
         } else {
-          const workflowPath = join(workflowsDir, `${name}.json`);
+          const workflowPath = join(workflowsDir, `${workflowName}.json`);
           if (existsSync(workflowPath)) {
             workflow = JSON.parse(readFileSync(workflowPath, 'utf-8'));
           }
         }
 
         if (!workflow) {
-          return { content: [{ type: 'text', text: `❌ Workflow not found: ${name}\n\nAvailable: ${Object.keys(builtinWorkflows).join(', ')}` }], isError: true };
+          return {
+            content: [{
+              type: 'text',
+              text: `❌ Workflow not found: ${workflowName}\n\nAvailable: ${Object.keys(builtinWorkflows).join(', ')}`
+            }],
+            isError: true,
+          };
+        }
+
+        // Optional stage filter (used by rtl2gds.run_stage)
+        const stageFilter = typeof params.stage === 'string'
+          ? params.stage.toLowerCase()
+          : null;
+
+        const normalizeStageName = (stepName) =>
+          String(stepName || '').toLowerCase().replace(/\s+/g, '_');
+
+        const stepsToRun = stageFilter
+          ? workflow.steps.filter(s => normalizeStageName(s.name).includes(stageFilter))
+          : workflow.steps;
+
+        if (stageFilter && stepsToRun.length === 0) {
+          return {
+            content: [{
+              type: 'text',
+              text: `❌ Stage "${params.stage}" not found in workflow ${workflowName}. Available steps: ${workflow.steps.map(s => s.name).join(', ')}`
+            }],
+            isError: true,
+          };
         }
 
         // Initialize run
@@ -3389,10 +3600,10 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         const runFile = join(runsDir, `${runId}.json`);
         const run = {
           run_id: runId,
-          workflow_name: name,
+          workflow_name: workflowName,
           status: 'running',
           current_step: 0,
-          total_steps: workflow.steps.length,
+          total_steps: stepsToRun.length,
           started_at: new Date().toISOString(),
           params,
           step_results: [],
@@ -3405,8 +3616,8 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         const toolVendor = detectedTool.vendor === 'cadence' ? 'innovus' : 'icc2';
 
         // Execute steps sequentially
-        for (let i = 0; i < workflow.steps.length; i++) {
-          const step = workflow.steps[i];
+        for (let i = 0; i < stepsToRun.length; i++) {
+          const step = stepsToRun[i];
           const stepNum = i + 1;
           run.current_step = stepNum;
           writeFileSync(runFile, JSON.stringify(run, null, 2));

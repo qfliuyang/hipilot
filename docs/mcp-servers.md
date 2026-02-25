@@ -103,6 +103,7 @@ Tools are organized by category. Required parameters are marked with `*`.
 | Tool | Description | Parameters |
 |------|-------------|-----------|
 | `detect_tool` | Detect running EDA tool (ICC2, Innovus, PrimeTime, Tempus) | (none) |
+| `start_tool` | Start EDA tool in the right pane via tmux (innovus, icc2_shell, pt_shell). Use before workflows so user does not launch manually. | `tool`, `design_dir`, `pane`, `timeout` |
 | `execute_and_verify` | **Complete pipeline: send Tcl, wait for completion, detect errors, extract QoR. Preferred over separate send+wait+capture calls.** | `tcl*`, `timeout`, `description`, `extract_qor`, `pane` |
 | `capture_and_analyze` | Capture EDA pane output and extract QoR metrics | `pane`, `lines`, `report_type` |
 | `capture_and_wait` | Send Tcl, wait for prompt, return output with result analysis | `tcl*`, `timeout`, `pane` |

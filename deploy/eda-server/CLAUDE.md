@@ -72,11 +72,23 @@ For multi-stage flows:
 2. `qor.compare(snapshot1="baseline", snapshot2="after_fix")` to show improvement
 3. Always report WNS, TNS, and violation count changes
 
-### 7. Workflows
+### 7. Start the EDA tool before workflows
+
+Before running any flow (e.g. `/rtl2gds`), ensure the EDA tool is running in the right pane. If not, start it via MCP:
+
+1. `eda.detect_tool` — check if Innovus/ICC2/PT is already running
+2. If none detected → `eda.start_tool` to launch the tool in the EDA pane
+3. For Ibex RTL2GDS: `eda.start_tool({"tool":"innovus","design_dir":"/home/EDA/hipilot_test/ibex_work_upload"})`
+4. Then run the workflow
+
+This lets the user run `bin/hipilot` and type `/rtl2gds` without manually starting Innovus.
+
+### 8. Workflows
 
 For complete multi-stage flows, use workflow execution:
 - `workflow.list` — see available workflows
-- `workflow.run(name="rtl2gds")` — executes all stages sequentially with error handling and QoR tracking
+- `workflow.run(name="rtl2gds")` — executes all Innovus stages sequentially with error handling and QoR tracking
+- `eda.rtl2gds.run_full_flow({"design":"ibex"})` — convenience wrapper for the builtin `rtl2gds` workflow
 
 ## MCP Tool Reference
 
@@ -85,6 +97,7 @@ For complete multi-stage flows, use workflow execution:
 | Task | Tool |
 |------|------|
 | Check system state | `eda.get_status` |
+| **Start EDA tool** | **`eda.start_tool`** |
 | Find skill for task | `knowledge.match_skill` |
 | Generate Tcl | `eda.generate_tcl` |
 | **Execute + verify (preferred)** | **`eda.execute_and_verify`** |
@@ -99,7 +112,7 @@ For complete multi-stage flows, use workflow execution:
 |----------|-------|
 | **Tcl** | `generate_tcl`, `send_to_terminal`, `quick`, `save_tcl`, `edit_tcl`, `validate_tcl`, `list_templates`, `run_skill` |
 | **Execution** | `execute_and_verify`, `capture_and_wait`, `wait_for_prompt`, `wait_for_pattern`, `get_last_result` |
-| **Analysis** | `detect_tool`, `capture_and_analyze`, `extract_qor`, `analyze_report`, `diagnose_error` |
+| **Analysis** | `detect_tool`, `start_tool`, `capture_and_analyze`, `extract_qor`, `analyze_report`, `diagnose_error` |
 | **Mode** | `get_mode`, `set_mode`, `toggle_mode`, `get_pending`, `approve_pending`, `reject_pending`, `get_risk_analysis`, `confirm_dangerous`, `get_status` |
 | **Session** | `session.save_checkpoint`, `session.list_checkpoints`, `session.restore_checkpoint`, `session.get_history`, `session.get_context` |
 | **Context** | `context.detect`, `context.get_stage`, `context.suggest_next` |

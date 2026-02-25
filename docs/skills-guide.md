@@ -262,7 +262,7 @@ calibre -lvs -hier rules/lvs.rules
 
 **Triggers:** "run rtl2gds", "ibex flow", "complete flow"
 
-**Description:** Complete RTL2GDS flow for Ibex design using MCP commands. Replicates the original Makefile-based flow.
+**Description:** Complete RTL2GDS flow for Ibex design using MCP commands and the builtin `rtl2gds` workflow. Preferred entrypoint for running the Innovus implementation flow via `/rtl2gds`.
 
 **Flow Stages:**
 1. Design Initialization
