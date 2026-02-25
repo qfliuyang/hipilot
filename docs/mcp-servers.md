@@ -14,7 +14,7 @@ HiPilot uses three MCP (Model Context Protocol) servers to extend Claude Code's 
 │                                                                  │
 │   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │
 │   │   EDA MCP   │  │  Tmux MCP   │  │Knowledge MCP│            │
-│   │  (48 tools) │  │  (8 tools)  │  │  (7 tools)  │            │
+│   │  (49 tools) │  │  (8 tools)  │  │  (7 tools)  │            │
 │   └─────────────┘  └─────────────┘  └─────────────┘            │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
@@ -69,7 +69,7 @@ Add to `~/.claude/settings.json`:
 
 **Purpose:** EDA tool integration, Tcl generation, QoR extraction
 
-### Tools (48 total)
+### Tools (49 total)
 
 Tools are organized by category. Required parameters are marked with `*`.
 
@@ -103,6 +103,7 @@ Tools are organized by category. Required parameters are marked with `*`.
 | Tool | Description | Parameters |
 |------|-------------|-----------|
 | `detect_tool` | Detect running EDA tool (ICC2, Innovus, PrimeTime, Tempus) | (none) |
+| `execute_and_verify` | **Complete pipeline: send Tcl, wait for completion, detect errors, extract QoR. Preferred over separate send+wait+capture calls.** | `tcl*`, `timeout`, `description`, `extract_qor`, `pane` |
 | `capture_and_analyze` | Capture EDA pane output and extract QoR metrics | `pane`, `lines`, `report_type` |
 | `capture_and_wait` | Send Tcl, wait for prompt, return output with result analysis | `tcl*`, `timeout`, `pane` |
 | `wait_for_prompt` | Wait for EDA tool prompt (auto-detected per tool) | `timeout`, `pane` |

@@ -322,8 +322,8 @@ src/hitestbot/
 │
 ├── tests/                    # Test implementations
 │   ├── FlowCertificationTest.js   # Main: RTL-to-GDS flow certification
-│   ├── McpInfraTest.js            # Mode 3: MCP-direct infrastructure test
-│   └── ComponentTests.js          # Quick regression tests for individual tools
+│   ├── McpInfraTest.js            # Mode 3: MCP-direct infrastructure test (12 checks)
+│   └── (12 legacy v1 tests)       # Preserved, still functional
 │
 └── README.md                 # Updated documentation
 ```
