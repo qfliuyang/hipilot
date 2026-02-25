@@ -23,6 +23,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { homedir } from 'os';
 import { VERSION } from '../../src/lib/version.js';
+import { createMcpLogger } from '../../src/lib/mcp-logger.js';
 
 // Auto-detect project root from server location
 const __filename = fileURLToPath(import.meta.url);
@@ -487,7 +488,9 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 /**
  * Handle tool calls
  */
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
+const mcpLog = createMcpLogger('knowledge');
+
+server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (request) => {
   const { name, arguments: args } = request.params;
 
   try {
@@ -699,7 +702,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       isError: true,
     };
   }
-});
+}));
 
 /**
  * Start server

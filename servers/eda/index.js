@@ -25,6 +25,7 @@ import { fileURLToPath } from 'url';
 import nunjucks from 'nunjucks';
 import { VERSION } from '../../src/lib/version.js';
 import { getHipilotPaths } from '../../src/lib/paths.js';
+import { createMcpLogger } from '../../src/lib/mcp-logger.js';
 import {
   getMode,
   setMode,
@@ -1364,7 +1365,9 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 /**
  * Handle tool calls
  */
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
+const mcpLog = createMcpLogger('eda');
+
+server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (request) => {
   const { name, arguments: args } = request.params;
 
   try {
@@ -3283,7 +3286,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       isError: true,
     };
   }
-});
+}));
 
 /**
  * Start server

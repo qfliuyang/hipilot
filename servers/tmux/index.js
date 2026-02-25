@@ -15,6 +15,7 @@ import {
 import { execSync } from 'child_process';
 import { VERSION } from '../../src/lib/version.js';
 import { shellEscape, validateInt } from '../../src/lib/shell-escape.js';
+import { createMcpLogger } from '../../src/lib/mcp-logger.js';
 
 const HIPILOT_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
 // Use -L <socket> only if HIPILOT_TMUX_SOCKET is explicitly set.
@@ -180,7 +181,9 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   };
 });
 
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
+const mcpLog = createMcpLogger('tmux');
+
+server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (request) => {
   const { name, arguments: args } = request.params;
 
   try {
@@ -330,7 +333,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       isError: true,
     };
   }
-});
+}));
 
 async function main() {
   const transport = new StdioServerTransport();
