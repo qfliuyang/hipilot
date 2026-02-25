@@ -1,7 +1,7 @@
 # HiPilot E2E Testing Guide
 
-**Version:** 1.1
-**Date:** 2026-02-20
+**Version:** 1.2
+**Date:** 2026-02-25
 **Status:** Complete Testing Reference
 
 ---
@@ -9,16 +9,17 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Environment Setup](#environment-setup)
-3. [Development Workflow](#development-workflow)
-4. [SSH Connection Guide](#ssh-connection-guide)
-5. [Code Upload with sshpass](#code-upload-with-sshpass)
-6. [Screen Recording](#screen-recording)
-7. [Video Transfer](#video-transfer)
-8. [Pre-Test Cleanup](#pre-test-cleanup)
-9. [Problems Encountered](#problems-encountered)
-10. [Standard E2E Test Procedure](#standard-e2e-test-procedure)
-11. [Quick Reference](#quick-reference)
+2. [HiTestBot Execution Model](#hitestbot-execution-model)
+3. [Environment Setup](#environment-setup)
+4. [Development Workflow](#development-workflow)
+5. [SSH Connection Guide](#ssh-connection-guide)
+6. [Code Upload with sshpass](#code-upload-with-sshpass)
+7. [Screen Recording](#screen-recording)
+8. [Video Transfer](#video-transfer)
+9. [Pre-Test Cleanup](#pre-test-cleanup)
+10. [Problems Encountered](#problems-encountered)
+11. [Standard E2E Test Procedure](#standard-e2e-test-procedure)
+12. [Quick Reference](#quick-reference)
 
 ---
 
@@ -29,6 +30,47 @@ This document provides a complete guide for E2E testing of HiPilot on the EDA se
 - SSH connection and file transfer
 - Screen recording on real desktop
 - Cleanup procedures for clean test recordings
+
+### HiTestBot Execution Model
+
+**HiTestBot runs ONLY on the EDA server** ("test like real human"). That's where humans run HiPilot. Each test run creates its own timestamped directory; tests never reference old runs. HiPilot is deployed as a **tool** on the EDA server (e.g. `/home/EDA/hipilot/current/`); do not upload source code for each test — it would fill Claude Code context.
+
+| Principle | Meaning |
+|-----------|---------|
+| EDA-only execution | HiTestBot executes on EDA server; dev machine triggers via `bin/hitestbot-eda` (SSH) |
+| Per-run isolation | Each run creates `/tmp/hipilot-test-evidence/{timestamp}/` or `sessions/{name}_{timestamp}/` — no reuse of prior runs |
+| HiPilot as tool | Deploy HiPilot once to EDA server; use `bin/hitestbot-push` for small updates (test_plan, skills, deploy config), not full source |
+| Sync for feedback | `bin/hitestbot-pull` downloads evidence to dev machine; `bin/hitestbot-push` uploads test plan/config |
+
+**From dev machine:**
+```bash
+bin/hitestbot-eda rtl2gds    # SSH + run HiTestBot on EDA server
+bin/hitestbot-pull           # Download evidence to e2e_evidence/
+bin/hitestbot-push skills/   # Upload test plan or config (not full source)
+```
+
+**On EDA server directly:**
+```bash
+cd /home/EDA/hipilot/current
+node src/hitestbot/tests/FlowCertificationTest.js rtl2gds
+```
+
+See [docs/HITESTBOT_V2_PLAN.md](../HITESTBOT_V2_PLAN.md) for HiTestBot v2 design; [docs/testing/TESTING_RULES.md](TESTING_RULES.md) for testing philosophy.
+
+### Verbose Logging and Evidence-Only Debugging
+
+**The EDA server has no source code.** All debugging information must come from the evidence package retrieved to the dev machine via `bin/hitestbot-pull`. HiPilot and HiTestBot logs are therefore **deliberately verbose**.
+
+| Artifact | Purpose |
+|----------|---------|
+| `run_log.txt` | Timestamped test steps, observations, MCP calls, parse results |
+| `mcp_calls.jsonl` | Full MCP call log with `result_preview`, `error`, `args` (verbose when `HIPILOT_TEST_LOG` or `HIPILOT_VERBOSE_LOG=1`) |
+| `FLOW_REPORT.md` | Includes **Diagnostic Summary** (MCP breakdown, error excerpts, pane previews) |
+| `stage_*/scorecard.json` | Per-stage evidence and failure classification |
+
+Set `HIPILOT_TEST_LOG=/path/to/mcp_calls.jsonl` and optionally `HIPILOT_VERBOSE_LOG=1` when running HiPilot on the EDA server to enable full result previews and error text in MCP logs.
+
+---
 
 ### Target Environment
 

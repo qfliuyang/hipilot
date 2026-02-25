@@ -180,6 +180,8 @@ docker run -it --rm -v ~/.hipilot:/root/.hipilot hipilot:latest
 
 ## Method 4: EDA Server Deployment
 
+HiPilot is deployed **as a tool** on the EDA server (e.g. `/home/EDA/hipilot/current/`). Do not upload full source for each test — use `bin/hitestbot-push` for small updates (skills, test_plan, deploy config). See [docs/testing/hitestbot-guide.md](testing/hitestbot-guide.md) for HiTestBot execution model and sync scripts.
+
 ### Environment Requirements
 
 | Requirement | Value |

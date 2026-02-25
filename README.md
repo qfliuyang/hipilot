@@ -101,6 +101,10 @@ hipilot/
 | [docs/deploy-guide.md](docs/deploy-guide.md) | Installation and deployment |
 | [docs/eda-server-setup.md](docs/eda-server-setup.md) | EDA server configuration |
 | [docs/testing/TESTING_RULES.md](docs/testing/TESTING_RULES.md) | Testing philosophy and rules |
+| [docs/testing/hitestbot-guide.md](docs/testing/hitestbot-guide.md) | HiTestBot E2E guide (EDA-only, sync scripts) |
+| [docs/HITESTBOT_V2_PLAN.md](docs/HITESTBOT_V2_PLAN.md) | HiTestBot v2 architecture and components |
+| [docs/DEVELOPMENT_PLAN_v060.md](docs/DEVELOPMENT_PLAN_v060.md) | v0.6.0 development roadmap and gaps |
+| [docs/self-improving-loop.md](docs/self-improving-loop.md) | Self-improving loop for ralph-loop (metrics + progress) |
 
 **For developers:** Also read [CLAUDE.md](CLAUDE.md) (architecture context) and [AGENTS.md](AGENTS.md) (cloud dev instructions).
 

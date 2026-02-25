@@ -2,6 +2,8 @@
 
 **Goal:** HiTestBot v2 tests HiPilot like a human engineer would — by correlating logs, screenshots, and video, and producing diagnostic reports that expose problems and track improvement, not just say PASS/FAIL.
 
+**Execution model:** HiTestBot runs **only on the EDA server** ("test like real human"). Each run creates a timestamped evidence dir; no reuse of prior runs. HiPilot is deployed as a tool on EDA server; do not upload full source per test. Use `bin/hitestbot-eda`, `bin/hitestbot-pull`, `bin/hitestbot-push` for run and sync. See [docs/testing/hitestbot-guide.md](testing/hitestbot-guide.md).
+
 ---
 
 ## What's Wrong with HiTestBot v1

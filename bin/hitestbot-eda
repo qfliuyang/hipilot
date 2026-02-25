@@ -1,0 +1,50 @@
+#!/bin/bash
+# HiTestBot — Run on EDA server ("test like real human")
+#
+# HiTestBot runs ONLY on the EDA server. From dev machine, this script SSHs
+# and runs HiTestBot there. Use bin/hitestbot-pull to download results.
+#
+# Usage:
+#   bin/hitestbot-eda                    # Run FlowCertificationTest (default: rtl2gds)
+#   bin/hitestbot-eda rtl2gds            # Run flow cert for rtl2gds
+#
+# On EDA server directly:
+#   cd /home/EDA/hipilot/current
+#   node src/hitestbot/tests/FlowCertificationTest.js rtl2gds
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+SSH_HOST="${HIPILOT_SSH_HOST:-EDA@192.168.112.163}"
+SSH_PASS="${HIPILOT_SSH_PASS:-eda2020}"
+DEPLOYED_HIPILOT="${HIPILOT_DEPLOY_DIR:-/home/EDA/hipilot/current}"
+NODE_PATH="${HIPILOT_NODE_PATH:-/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin}"
+
+# If already on EDA server, run locally
+if [ -n "$HIPILOT_EDA_SERVER" ]; then
+  export PATH="${NODE_PATH}:$PATH"
+  export HIPILOT_SESSION="${HIPILOT_SESSION:-hipilot}"
+  WORKFLOW="${1:-rtl2gds}"
+  echo "HiTestBot — Running on EDA server"
+  echo "Workflow: $WORKFLOW"
+  echo ""
+  node "$PROJECT_DIR/src/hitestbot/tests/FlowCertificationTest.js" "$WORKFLOW"
+  exit $?
+fi
+
+# From dev machine: SSH and run on EDA server
+WORKFLOW="${1:-rtl2gds}"
+echo "HiTestBot — Running on EDA server (SSH)"
+echo "Host: $SSH_HOST | Workflow: $WORKFLOW"
+echo "Use: bin/hitestbot-pull    # Download results to dev machine"
+echo ""
+
+sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_HOST" "
+  export HIPILOT_EDA_SERVER=1
+  export PATH=${NODE_PATH}:\$PATH
+  export HIPILOT_SESSION=\${HIPILOT_SESSION:-hipilot}
+  cd $DEPLOYED_HIPILOT
+  node src/hitestbot/tests/FlowCertificationTest.js $WORKFLOW
+"

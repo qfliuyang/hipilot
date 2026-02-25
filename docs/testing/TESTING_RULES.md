@@ -16,6 +16,8 @@ This document defines the testing philosophy, rules, and report format for HiPil
 
 Every test exists to measure progress toward this goal.
 
+HiTestBot runs **only on the EDA server** ("test like real human"). Each run creates a timestamped evidence dir. Use `bin/hitestbot-eda`, `bin/hitestbot-pull`, `bin/hitestbot-push` for run and sync. See [hitestbot-guide.md](hitestbot-guide.md) for execution model and sync scripts.
+
 ---
 
 ## 2. Core Principles
@@ -166,6 +168,11 @@ evidence/20260225_103045/
 ```
 
 **Key principle:** The evidence bundle must be **self-contained**. An observer who receives only this directory (no access to the test framework, no ability to re-run) should be able to fully reconstruct what happened and form their own judgment.
+
+**Evidence-only debugging:** The EDA server has no source code. All diagnostic information must come from the evidence package pulled to the dev machine. Therefore HiPilot and HiTestBot logs are **deliberately verbose**:
+- `run_log.txt` — timestamped steps, observations, MCP calls, parse results
+- `mcp_calls.jsonl` — full MCP log with `result_preview`, `error`, `args` when `HIPILOT_TEST_LOG` is set
+- `FLOW_REPORT.md` — includes **Diagnostic Summary** (MCP breakdown, error excerpts, pane previews)
 
 ---
 
