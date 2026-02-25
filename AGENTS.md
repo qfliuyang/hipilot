@@ -19,6 +19,7 @@ All MCP servers communicate over stdio (JSON-RPC), not HTTP. No databases, Docke
 - Unit tests: `npm test` (runs `vitest run` — 9 test files, 118 tests)
 - E2E tests: `npm run test:e2e` (requires tmux session; see `vitest.e2e.config.js`)
 - Coverage: `npm run test:coverage`
+- Testing philosophy: see `docs/testing/TESTING_RULES.md`
 
 ### Key gotchas
 
@@ -28,3 +29,9 @@ All MCP servers communicate over stdio (JSON-RPC), not HTTP. No databases, Docke
 - The TUI (Ink/React) renders to terminal; in CI-like environments, set `CI=true` to prevent interactive TTY issues.
 - EDA tools (ICC2, Innovus, PrimeTime) are commercial software not available in cloud VMs. HiPilot works without them for Tcl generation, skill browsing, and template management.
 - tmux is required for workspace layout features but not for unit tests or MCP server testing.
+
+### Documentation structure
+
+- `docs/` — Active documentation (guides, specs, testing)
+- `archive/` — Superseded docs, old plans, evidence (reference only)
+- See `README.md` for the documentation index.

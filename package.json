@@ -76,14 +76,14 @@
     "skills/",
     "scripts/",
     "templates/",
-    "docs_latest/",
+    "docs/",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
   ],
   "directories": {
     "bin": "./bin",
-    "doc": "./docs_latest",
+    "doc": "./docs",
     "lib": "./src"
   },
   "repository": {
