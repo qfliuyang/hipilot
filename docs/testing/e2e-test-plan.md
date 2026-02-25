@@ -1,7 +1,7 @@
 # HiPilot E2E Test Plan
 
 **Date:** 2026-02-21
-**Version:** v0.4.1
+**Version:** v0.5.0
 **Test Framework:** HiTestBot
 
 ---
@@ -260,13 +260,13 @@ hipilot
 ```
 ╔════════════════════════════════════════════════════════╗
 ║         HiPilot - VLSI Physical Design Copilot         ║
-║                    v0.4.1                              ║
+║                    v0.5.0                              ║
 ╚════════════════════════════════════════════════════════╝
 
   ✓ Dependencies: installed
   ✓ MCP servers: hipilot-eda, hipilot-tmux, hipilot-knowledge
-  ✓ Skills: 18 loaded
-  ✓ Templates: 24 available
+  ✓ Skills: 35 loaded
+  ✓ Templates: 20 available
   ✓ Command reference: 50 commands
   ✓ Quick commands: 8 available
 

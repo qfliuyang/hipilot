@@ -29,7 +29,7 @@ HiPilot extends Claude Code with specialized capabilities for VLSI physical desi
 │   │  │   EDA MCP   │  │  Tmux MCP   │  │Knowledge MCP│            │   │
 │   │  │   Server    │  │   Server    │  │   Server    │            │   │
 │   │  │             │  │             │  │             │            │   │
-│   │  │ 11 Tools:   │  │ 7 Tools:    │  │ 4 Tools:    │            │   │
+│   │  │ 48 Tools:   │  │ 8 Tools:    │  │ 7 Tools:    │            │   │
 │   │  │ - generate  │  │ - send_keys │  │ - search    │            │   │
 │   │  │ - send_tcl  │  │ - capture   │  │ - list      │            │   │
 │   │  │ - extract   │  │ - status    │  │ - get       │            │   │
@@ -313,17 +313,16 @@ hipilot/
 │   ├── synopsys/
 │   └── cadence/
 │
-├── docs_latest/             # Current documentation
-│   ├── README.md
-│   ├── QUICK_START.md
-│   ├── ARCHITECTURE.md
-│   ├── SKILLS_GUIDE.md
-│   ├── MCP_SERVERS.md
-│   ├── RTL2GDS_FLOW.md
-│   └── EDA_SERVER_SETUP.md
+├── docs/                    # Documentation
+│   ├── architecture.md
+│   ├── quick-start.md
+│   ├── skills-guide.md
+│   ├── mcp-servers.md
+│   ├── rtl2gds-flow.md
+│   ├── specs/
+│   └── testing/
 │
-└── e2e_evidence/            # Test evidence
-    └── 20260223_complete_rtl2gds/
+└── archive/                 # Superseded docs (reference only)
 ```
 
 ---

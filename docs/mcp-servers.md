@@ -14,7 +14,7 @@ HiPilot uses three MCP (Model Context Protocol) servers to extend Claude Code's 
 │                                                                  │
 │   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │
 │   │   EDA MCP   │  │  Tmux MCP   │  │Knowledge MCP│            │
-│   │  (11 tools) │  │  (7 tools)  │  │  (4 tools)  │            │
+│   │  (48 tools) │  │  (8 tools)  │  │  (7 tools)  │            │
 │   └─────────────┘  └─────────────┘  └─────────────┘            │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
@@ -567,7 +567,7 @@ tmux -V  # Should be 1.8+ or 3.4+
 
 ## API Reference Summary
 
-### EDA MCP (20 Tools)
+### EDA MCP (48 Tools)
 | Tool | Purpose |
 |------|---------|
 | generate_tcl | Create Tcl from intent |
@@ -590,7 +590,7 @@ tmux -V  # Should be 1.8+ or 3.4+
 | run_skill | Execute a skill |
 | edit_tcl | Edit Tcl template |
 
-### Tmux MCP (7 Tools)
+### Tmux MCP (8 Tools)
 | Tool | Purpose |
 |------|---------|
 | send_keys | Send commands |
@@ -601,7 +601,7 @@ tmux -V  # Should be 1.8+ or 3.4+
 | list_panes | List panes |
 | resize_pane | Resize |
 
-### Knowledge MCP (4 Tools)
+### Knowledge MCP (7 Tools)
 | Tool | Purpose |
 |------|---------|
 | search_docs | Search docs |

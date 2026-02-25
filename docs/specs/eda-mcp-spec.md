@@ -539,7 +539,7 @@ All features tested on Ibex core design:
 
 ### CentOS 7 (glibc 2.17)
 
-- **Node.js:** v16.20.2 (last compatible version)
+- **Node.js:** v20.18.3 (glibc-217 build for CentOS 7)
 - **Testing:** All features tested on EDA server
 - **Validation:** Screen recordings on CentOS 7
 
@@ -547,7 +547,7 @@ All features tested on Ibex core design:
 
 | Package | Version | Notes |
 |---------|---------|-------|
-| Node.js | v16.20.2 | CentOS 7 compatible |
+| Node.js | v20.18.3 | CentOS 7 compatible (glibc-217 build) |
 | TypeScript | 5.x | Development |
 | nunjucks | 3.x | Template rendering |
 | better-sqlite3 | 9.x | Database (for future features) |
