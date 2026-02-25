@@ -34,6 +34,37 @@ This skill executes the complete Ibex RTL2GDS flow using ONLY:
 
 All Tcl scripts are generated inline with hardcoded absolute paths.
 
+## Recommended HiPilot usage (MCP + skills only)
+
+When running on the EDA server with HiPilot (Claude Code + MCP), prefer the **builtin rtl2gds workflow tools** instead of SSH shell scripts:
+
+- **Stage 0: Start EDA tool (if not running)** — Before any flow, ensure Innovus is running in the right pane:
+  - Call `eda.detect_tool`. If no tool detected → `eda.start_tool({"tool":"innovus","design_dir":"/home/EDA/hipilot_test/ibex_work_upload"})`
+  - This lets the user run `bin/hipilot` and type `/rtl2gds` without manually starting Innovus.
+
+- **Full P&R flow (Innovus) from the current design context:**
+
+```bash
+# Convenience RTL2GDS tool (ensures Innovus is running first)
+eda.rtl2gds.run_full_flow {"design":"ibex"}
+
+# Equivalent generic workflow API
+eda.workflow.run {"name":"rtl2gds","params":{"design":"ibex"}}
+```
+
+- **Single-stage reruns (for debug / incremental improvement):**
+
+```bash
+eda.rtl2gds.run_stage {"stage":"design_init","design":"ibex"}
+eda.rtl2gds.run_stage {"stage":"floorplan","design":"ibex"}
+eda.rtl2gds.run_stage {"stage":"placement","design":"ibex"}
+eda.rtl2gds.run_stage {"stage":"cts","design":"ibex"}
+eda.rtl2gds.run_stage {"stage":"routing","design":"ibex"}
+eda.rtl2gds.run_stage {"stage":"chip_finish","design":"ibex"}
+```
+
+HiPilot should use this skill as the **methodology reference** for how to structure each stage, but execute commands via the MCP tools above (`workflow.run`, `rtl2gds.run_full_flow`, and `rtl2gds.run_stage`), not by sourcing monolithic flow scripts.
+
 ## Workspace
 
 ```
@@ -44,7 +75,7 @@ Design: ibex_core (RISC-V CPU)
 Technology: Skywater 130nm HD
 ```
 
-## Quick Start
+## Quick Start (legacy standalone shell flow)
 
 Run the complete flow with a single command sequence:
 
