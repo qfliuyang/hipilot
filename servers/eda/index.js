@@ -3540,8 +3540,8 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
             name: 'rtl2gds',
             description: 'Complete RTL-to-GDS flow: init → floorplan → placement → CTS → routing → chip finish',
             steps: [
-              { name: 'design_init', operation: 'read_design', timeout: 180, on_failure: 'stop' },
-              { name: 'floorplan', tcl: 'floorPlan -site unithd -su 1 0.4 1 1 1 1', timeout: 120, on_failure: 'stop' },
+              { name: 'design_init', operation: 'read_design', timeout: 180, on_failure: 'stop', variables: { load_mode: 'def', def_file: '/home/EDA/ibex_work_upload/designs/sky130hd/ibex/floorplan_ibex.def', lef_files: '/home/EDA/ibex_work_upload/designs/sky130hd/pdk/lef/sky130_fd_sc_hd.tlef /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lef/sky130_fd_sc_hd_merged.lef' } },
+              { name: 'floorplan', tcl: 'if { [llength [dbget top.fPlan.rows]] == 0 } { floorPlan -site unithd -su 1 0.4 1 1 1 1 } else { puts "INFO: Floorplan already exists, skipping floorPlan command" }', timeout: 120, on_failure: 'stop' },
               { name: 'placement', tcl: 'place_opt_design', timeout: 300, on_failure: 'stop' },
               { name: 'cts', operation: 'run_cts', timeout: 300, on_failure: 'stop' },
               { name: 'post_cts_opt', operation: 'optimize_design', timeout: 300, on_failure: 'stop' },
@@ -3613,6 +3613,15 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
 
         // Detect tool for Tcl generation
         const detectedTool = detectTool();
+        if (!detectedTool) {
+          return {
+            content: [{
+              type: 'text',
+              text: '❌ No EDA tool detected. Start Innovus or ICC2 before running workflows.\n\nUse: eda.start_tool or manually start a tool in the EDA pane.'
+            }],
+            isError: true,
+          };
+        }
         const toolVendor = detectedTool.vendor === 'cadence' ? 'innovus' : 'icc2';
 
         // Execute steps sequentially
@@ -3633,7 +3642,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
             } else if (step.operation) {
               const genResult = generateTcl(
                 step.name,
-                { tool: toolVendor, operation: step.operation, ...params }
+                { tool: toolVendor, operation: step.operation, variables: step.variables || {}, ...params }
               );
               tcl = genResult.tcl;
               stepResult.template = genResult.template || null;
