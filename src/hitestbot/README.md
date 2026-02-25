@@ -1,284 +1,108 @@
-# HiTestBot - HiPilot Testing Framework
+# HiTestBot v2 — Evidence-Based Testing Framework
 
-General-purpose test framework with handy tools for E2E testing, skills testing, UI testing, and more.
+Tests HiPilot like a human engineer: correlates MCP logs, screenshots, and video to produce diagnostic reports with 5-layer scoring, failure classification, and improvement tracking.
 
 ## Quick Start
 
 ```bash
-# Run default E2E test
-npm run hitestbot
+# MCP infrastructure test (no EDA server needed)
+node src/hitestbot/tests/McpInfraTest.js
 
-# Or run directly
-node src/hitestbot/index.js
+# Flow certification test (requires tmux session)
+node src/hitestbot/tests/FlowCertificationTest.js rtl2gds
 ```
 
 ## Architecture
 
 ```
-HiTestBot/
-├── TestRunner.js          # Base class for all test runners
-├── E2ETestRunner.js       # HiPilot E2E test implementation
-├── TmuxController.js      # Standardized tmux operations
-├── VideoRecorder.js       # Reliable ffmpeg recording
-├── TestReporter.js        # Report generation
-├── TestUtils.js           # Handy test utilities
-└── index.js               # CLI entry & exports
+src/hitestbot/
+├── core/                        # v2 evidence-based framework
+│   ├── McpLogCollector.js       # Parse MCP JSONL logs
+│   ├── ObservationPoint.js      # Synchronized multi-view capture
+│   ├── StageVerifier.js         # 5-layer scoring (L1-L5)
+│   ├── FlowCertifier.js         # Flow test orchestrator
+│   ├── FlowReporter.js          # FLOW_REPORT.md generation
+│   └── ProgressTracker.js       # Cross-run improvement tracking
+│
+├── infra/                       # v1 infrastructure (preserved)
+│   ├── TestRunner.js            # Base test class
+│   ├── E2ETestRunner.js         # E2E test with SSH/video
+│   ├── TmuxController.js        # tmux operations
+│   ├── VideoRecorder.js         # ffmpeg recording
+│   ├── TestReporter.js          # Simple reports
+│   └── TestUtils.js             # Assertions, waits, file ops
+│
+└── tests/                       # Test implementations
+    ├── FlowCertificationTest.js # RTL-to-GDS flow certification
+    ├── McpInfraTest.js          # MCP server infrastructure
+    └── (12 v1 tests)            # Legacy tests (still work)
 ```
 
-## Usage Patterns
+## 5-Layer Scoring
 
-### 1. Run Default E2E Test
+Each stage is scored across 5 evidence layers (0.0-1.0 each, max 5.0):
 
-Tests HiPilot on the EDA server with full video evidence:
+| Layer | What It Measures |
+|-------|-----------------|
+| L1 Prompt Delivery | Did the AI receive and respond? |
+| L2 Intent Recognition | Did it pick the right skill/operation? |
+| L3 MCP Tool Usage | Did it use MCP tools (not direct tmux)? |
+| L4 EDA Execution | Did the EDA tool execute without errors? |
+| L5 QoR Assessment | Were QoR metrics captured and reported? |
 
-```bash
-npm run hitestbot
-```
+Status: **PASS** (≥4.0) / **PARTIAL** (≥2.0) / **FAIL** (<2.0)
 
-**What it does:**
-1. Cleanup - Kills all existing sessions
-2. Video Recording - Starts ffmpeg with nohup
-3. Code Upload - Uploads HiPilot to EDA server
-4. Dependencies - Runs npm install
-5. MCP Config - Updates MCP server paths
-6. Tmux Setup - Creates split-pane workspace
-7. Innovus - Starts Innovus in right pane
-8. Terminal - Opens windowed gnome-terminal
-9. Claude Code - Starts Claude Code in left pane
-10. HiPilot Test - Sends "list all HiPilot skills"
-11. EDA Test - Executes Innovus commands
-12. Evidence - Captures screenshots and logs
-13. Download - Downloads all evidence
-14. Report - Generates HITESTBOT_REPORT.md
+## Failure Classification
 
-### 2. Extend for Custom Tests
+When a stage fails, the system classifies the root cause:
 
-Create your own test runner by extending `TestRunner`:
+| Category | Meaning | Example |
+|----------|---------|---------|
+| `HIPILOT_BUG` | HiPilot code is broken | Template produces bad Tcl |
+| `AI_BEHAVIOR` | AI made wrong decision | Claude used bash instead of MCP |
+| `ENVIRONMENT` | Setup issue | No design loaded, missing libraries |
 
-```javascript
-import { TestRunner, TestUtils } from './hitestbot/index.js';
+## Evidence Bundle
 
-class SkillsTestRunner extends TestRunner {
-  constructor(options) {
-    super({
-      testName: 'Skills Validation Test',
-      ...options
-    });
-  }
-
-  async execute() {
-    // Define your test flow
-    await this.step('Load Skills', () => this.loadSkills());
-    await this.step('Validate Templates', () => this.validateTemplates());
-    await this.step('Check Parameters', () => this.checkParameters());
-
-    // Generate report automatically
-    await this.generateReport();
-  }
-
-  async loadSkills() {
-    // Test implementation
-    const skills = await this.loadSkillFiles();
-    TestUtils.assert(skills.length > 0, 'No skills found');
-    return skills;
-  }
-}
-
-// Run it
-const runner = new SkillsTestRunner();
-runner.run();
-```
-
-### 3. UI Element Testing
-
-```javascript
-import { TestUtils } from './hitestbot/index.js';
-
-// Take screenshot
-await TestUtils.captureScreenshot('/tmp/before.png', ':0');
-
-// Perform action
-await clickButton('#submit');
-
-// Take another screenshot
-await TestUtils.captureScreenshot('/tmp/after.png', ':0');
-
-// Compare
-const result = await TestUtils.compareImages(
-  '/tmp/before.png',
-  '/tmp/after.png',
-  '/tmp/diff.png'
-);
-
-TestUtils.assert(result.similar, 'UI did not change as expected');
-```
-
-### 4. Use Individual Tools
-
-```javascript
-import { TmuxController, VideoRecorder, TestUtils } from './hitestbot/index.js';
-
-// Control tmux
-const tmux = new TmuxController({ sessionName: 'mytest' });
-await tmux.createSession(sshFn);
-await tmux.sendKeys('mytest:0.0', 'my command', true, 'C-m');
-
-// Record video
-const recorder = new VideoRecorder({
-  testDir: '/tmp/mytest',
-  display: ':0'
-});
-await recorder.start(sshFn);
-// ... run tests ...
-await recorder.stop(sshFn);
-
-// Utilities
-await TestUtils.waitFor(() => fileExists('/tmp/output.txt'), 30000);
-TestUtils.assertContains(fileContent, 'SUCCESS');
-```
-
-## TestUtils API
-
-### Timing & Waits
-- `sleep(ms)` - Promise-based delay
-- `waitFor(condition, timeout, interval)` - Wait for condition
-- `waitForFile(path, timeout)` - Wait for file to exist
-- `time(fn)` - Time an operation
-
-### Assertions
-- `assert(condition, message)` - Assert condition is true
-- `assertEquals(actual, expected, message)` - Assert equality
-- `assertContains(text, substring, message)` - Assert text contains substring
-
-### File Operations
-- `fileContains(path, pattern)` - Check if file contains pattern
-- `getFileSize(path)` - Get human-readable file size
-- `readLastLines(path, n)` - Read last N lines from file
-- `grepFile(path, pattern)` - Search file for pattern
-- `createTestDir(baseDir, testName)` - Create timestamped test directory
-- `cleanDirectory(path)` - Remove all contents from directory
-
-### Image Comparison
-- `captureScreenshot(path, display)` - Capture screen using ImageMagick
-- `compareImages(img1, img2, diffOutput, threshold)` - Compare two images
-
-### Utilities
-- `retry(fn, retries, delay)` - Retry an async operation
-- `formatDuration(ms)` - Format milliseconds as human-readable string
-- `randomString(length)` - Generate random string
-
-## Key Features
-
-### Uses C-m (Ctrl+M) for Claude Code
-
-```javascript
-// CORRECT - HiTestBot uses C-m
-await tmux.sendKeys('hipilot:0.0', 'list all HiPilot skills', true, 'C-m');
-
-// WRONG - Don't use Enter for Claude Code
-await tmux.sendKeys('hipilot:0.0', 'list all HiPilot skills', true, 'Enter');
-```
-
-### Windowed Terminal
-
-Terminal is opened centered on desktop (not fullscreen):
-- Geometry: 160x45
-- Position: +560+419 (centered on 2560x1558)
-- Desktop visible around window (prevents cheating)
-
-### Reliable Video Recording
-
-Uses `nohup` with stdin redirected to `/dev/null`:
-```bash
-nohup ffmpeg -f x11grab ... < /dev/null > /tmp/ffmpeg.log 2>&1 &
-```
-
-This ensures recording continues even if SSH disconnects.
-
-## Evidence Structure
+Each test produces a self-contained evidence directory:
 
 ```
-e2e_evidence/YYYYMMDD_HHMMSS/
-├── *.mp4          Video recording (full desktop)
-├── *.png          Screenshots
-├── *_pane.log     Tmux pane captures
-└── HITESTBOT_REPORT.md  Test report
+evidence/20260225_103045/
+├── FLOW_REPORT.md            # Human-readable report
+├── flow_progress.json        # Machine-readable progress
+├── mcp_calls.jsonl           # Full MCP call log
+├── stage_scorecards.json     # All stage scores
+├── observation_points.json   # Timeline bookmarks
+└── stage_01_init/            # Per-stage evidence
+    ├── obs_stage_start.png
+    ├── obs_stage_complete.png
+    ├── obs_stage_complete_claude.log
+    ├── obs_stage_complete_eda.log
+    └── scorecard.json
 ```
 
-## Test Report Format
+## Test Modes
 
-```markdown
-# HiTestBot - Skills Validation Test Report
+| Mode | What It Tests | AI Involved? |
+|------|--------------|-------------|
+| **Workflow-driven** | Full pipeline via workflow.run | Yes (Claude calls it) |
+| **MCP-direct** | MCP infrastructure only | No |
+| **Prompt-driven** | AI behavior per stage | Yes (one prompt per stage) |
 
-**Timestamp:** 20260221_120000
-**Result:** ✅ PASSED
+## Progress Tracking
 
-## Summary
-
-| Metric | Value |
-|--------|-------|
-| Total Steps | 3 |
-| Passed | 3 ✅ |
-| Failed | 0 |
-
-## Execution Log
-
-| # | Step | Status | Duration |
-|---|------|--------|----------|
-| 1 | Load Skills | ✅ | 0.5s |
-| 2 | Validate Templates | ✅ | 1.2s |
-| 3 | Check Parameters | ✅ | 0.3s |
+```
+Date        Progress   Score    Blocking Stage   Category
+──────────  ─────────  ──────── ───────────────  ────────────
+2026-02-25  4/10 (40%) 20.5/50  CTS              AI_BEHAVIOR
+2026-02-26  6/10 (60%) 30.0/50  Routing          ENVIRONMENT
+2026-02-27  8/10 (80%) 38.0/50  Signoff          HIPILOT_BUG
 ```
 
-## Requirements
+## Key Rules (from TESTING_RULES.md)
 
-- EDA server access (for E2E tests)
-- sshpass for non-interactive SSH
-- ImageMagick (for screenshots)
-- ffmpeg (for video recording)
-
-## Extending HiTestBot
-
-Create new test types by extending `TestRunner`:
-
-1. **Create your runner class:**
-```javascript
-import { TestRunner } from './TestRunner.js';
-
-class MyCustomTest extends TestRunner {
-  async execute() {
-    // Define test steps
-  }
-}
-```
-
-2. **Use TestUtils for common operations:**
-```javascript
-import { TestUtils } from './TestUtils.js';
-
-await TestUtils.waitFor(() => checkCondition());
-TestUtils.assert(result, 'Test failed');
-```
-
-3. **Use infrastructure classes:**
-```javascript
-import { TmuxController, VideoRecorder } from './index.js';
-```
-
-4. **Generate reports:**
-```javascript
-await this.generateReport();
-```
-
-## No Manual Mistakes
-
-HiTestBot avoids common errors:
-- ✅ Uses C-m for Claude Code commands
-- ✅ Uses nohup for video recording
-- ✅ Opens windowed terminal (not fullscreen)
-- ✅ Preserves API key when updating MCP config
-- ✅ Waits appropriate times for initialization
-- ✅ Captures evidence systematically
-
----
-*Part of HiPilot v0.4.0*
+1. **Progress over pass/fail** — report how far, not just whether
+2. **Evidence at every layer** — MCP log is ground truth
+3. **Three-view correlation** — logs + screenshots + video must agree
+4. **Classify failures** — different categories need different fixes
+5. **Self-contained bundles** — reviewable without re-running
