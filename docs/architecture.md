@@ -88,56 +88,51 @@ HiPilot extends Claude Code with specialized capabilities for VLSI physical desi
 
 ### 2. MCP Server Layer
 
-#### EDA MCP Server (`servers/eda/index.js`)
+#### EDA MCP Server (`servers/eda/index.js`) — 48 tools
 
-**Purpose:** EDA tool integration
+**Purpose:** EDA tool integration, Tcl generation, QoR tracking, workflow automation
 
-| Tool | Description | Input | Output |
-|------|-------------|-------|--------|
-| `generate_tcl` | Create Tcl from intent | Natural language | Tcl script |
-| `send_to_terminal` | Execute Tcl in EDA | Tcl string | Execution result |
-| `extract_qor` | Parse QoR metrics | Report text | WNS, TNS, violations |
-| `detect_tool` | Identify running tool | None | Tool name |
-| `get_mode` | Get execution mode | None | manual/auto |
-| `set_mode` | Set execution mode | mode string | Success/fail |
-| `toggle_mode` | Toggle mode | None | New mode |
-| `get_pending` | Get queued Tcl | None | Pending Tcl |
-| `approve_pending` | Execute pending | None | Execution result |
-| `reject_pending` | Cancel pending | None | Success |
-| `list_templates` | List Tcl templates | None | Template list |
-| `get_job_status` | Check job status | Job ID | Status |
-| `get_risk_analysis` | Analyze risk | Tcl string | Risk level |
-| `confirm_dangerous` | Confirm operation | Confirmation | Success |
-| `get_status` | Get overall status | None | Status object |
-| `quick` | Quick execution | Command | Result |
-| `capture_and_analyze` | Capture output | None | Analysis |
-| `run_skill` | Execute skill | Skill name | Result |
-| `edit_tcl` | Edit template | Template | Updated Tcl |
+| Category | Tools |
+|----------|-------|
+| **Tcl Generation** | `generate_tcl`, `send_to_terminal`, `quick`, `save_tcl`, `edit_tcl`, `validate_tcl`, `list_templates`, `run_skill` |
+| **EDA Interaction** | `detect_tool`, `capture_and_analyze`, `capture_and_wait`, `wait_for_prompt`, `wait_for_pattern`, `get_last_result`, `extract_qor`, `get_job_status`, `analyze_report`, `get_analysis_cache`, `diagnose_error` |
+| **Mode Control** | `get_mode`, `set_mode`, `toggle_mode`, `get_pending`, `approve_pending`, `reject_pending`, `get_risk_analysis`, `confirm_dangerous`, `get_status` |
+| **Session** | `session.save_checkpoint`, `session.list_checkpoints`, `session.restore_checkpoint`, `session.get_history`, `session.get_context` |
+| **Context** | `context.detect`, `context.get_stage`, `context.suggest_next` |
+| **QoR** | `qor.snapshot`, `qor.list_snapshots`, `qor.compare`, `qor.get_trend` |
+| **Workflow** | `workflow.define`, `workflow.list`, `workflow.run`, `workflow.get_status`, `workflow.cancel` |
+| **Suggestions** | `suggest.analyze`, `suggest.for_violation`, `suggest.next_optimization` |
 
-#### Tmux MCP Server (`servers/tmux/index.js`)
+See [mcp-servers.md](mcp-servers.md) for full parameter schemas.
 
-**Purpose:** Workspace management
+#### Tmux MCP Server (`servers/tmux/index.js`) — 8 tools
+
+**Purpose:** Workspace management, pane control
 
 | Tool | Description |
 |------|-------------|
 | `send_keys` | Send keystrokes to pane |
 | `capture_pane` | Read pane content |
-| `get_pane_output` | Get last N lines |
-| `update_status` | Update status bar |
+| `get_pane_output` | Get last N lines from scrollback |
+| `setup_layout` | Create or attach to 50/50 workspace |
+| `update_status` | Update status bar with context |
 | `set_mode_status` | Update mode indicator |
 | `list_panes` | List all panes |
 | `resize_pane` | Resize pane |
 
-#### Knowledge MCP Server (`servers/knowledge/index.js`)
+#### Knowledge MCP Server (`servers/knowledge/index.js`) — 7 tools
 
 **Purpose:** Skill and documentation management
 
 | Tool | Description |
 |------|-------------|
-| `search_docs` | Search documentation |
+| `search_docs` | Full-text search across docs |
 | `get_command_ref` | Get EDA command reference |
-| `list_skills` | List all skills |
-| `get_skill` | Get skill content |
+| `search_commands` | Search commands by keyword/category |
+| `list_skills` | List all skills (project > user > built-in) |
+| `get_skill` | Get full skill content |
+| `match_skill` | Match intent to best skill |
+| `get_methodology` | Flow stage methodology guide |
 
 ### 3. Skills System
 
@@ -270,57 +265,41 @@ templates/
 ```
 hipilot/
 ├── bin/
-│   ├── hipilot              # Main launcher
-│   ├── setup.sh             # Installation
-│   └── e2e-test.sh          # Testing
+│   ├── hipilot              # Main launcher (tmux workspace)
+│   └── setup.sh             # Installation wizard
 │
-├── servers/
-│   ├── eda/
-│   │   ├── index.js         # Main server (3300+ lines)
-│   │   └── package.json
-│   ├── tmux/
-│   │   ├── index.js         # Tmux control
-│   │   └── package.json
-│   └── knowledge/
-│       ├── index.js         # Knowledge retrieval
-│       └── package.json
+├── servers/                 # MCP servers (JSON-RPC over stdio)
+│   ├── eda/index.js         # EDA MCP (48 tools)
+│   ├── tmux/index.js        # Tmux MCP (8 tools)
+│   └── knowledge/index.js   # Knowledge MCP (7 tools)
 │
-├── skills/                  # 35 skill files
-│   ├── ibex-rtl2gds-flow.md # Master flow
-│   ├── synthesis.md
-│   ├── floorplan.md
-│   ├── cts.md
-│   ├── routing-opt.md
-│   ├── chip-finish.md
-│   ├── sta.md
-│   ├── verification.md
-│   └── ... (27 more)
+├── skills/                  # 35 skill definitions (.md)
 │
 ├── src/
-│   ├── lib/
-│   │   ├── paths.js         # Path resolution
-│   │   ├── mode.js          # Execution mode
-│   │   ├── risk-analyzer.js # Risk assessment
-│   │   └── report-analyzer.js
-│   ├── tui/                 # Terminal UI
-│   ├── cli.js               # CLI entry
-│   └── index.js             # Main entry
+│   ├── cli.js               # TUI dashboard (React/Ink)
+│   ├── index.js             # Main CLI entry point
+│   ├── lib/                 # Utilities (16 modules)
+│   ├── tui/                 # React/Ink TUI components
+│   └── hitestbot/           # E2E test framework (12 tests)
+│
+├── data/
+│   └── command-reference.json  # EDA command reference
+│
+├── templates/               # 20 Tcl templates
+│   ├── synopsys/            # 10 ICC2 templates
+│   └── cadence/             # 10 Innovus templates
+│
+├── test/                    # Unit tests (vitest, 118 tests)
 │
 ├── scripts/
-│   └── mcp_wrapper.sh       # JSON-RPC wrapper
+│   ├── mcp_wrapper.sh       # JSON-RPC wrapper for shell
+│   └── postinstall.js       # Post-install setup
 │
-├── templates/               # Tcl templates
-│   ├── synopsys/
-│   └── cadence/
-│
-├── docs/                    # Documentation
-│   ├── architecture.md
-│   ├── quick-start.md
-│   ├── skills-guide.md
-│   ├── mcp-servers.md
-│   ├── rtl2gds-flow.md
-│   ├── specs/
-│   └── testing/
+├── docs/                    # Active documentation
+│   ├── architecture.md, quick-start.md, skills-guide.md
+│   ├── mcp-servers.md, rtl2gds-flow.md, deploy-guide.md
+│   ├── specs/               # MCP server specifications
+│   └── testing/             # Testing rules and guides
 │
 └── archive/                 # Superseded docs (reference only)
 ```
@@ -413,4 +392,4 @@ Before executing Tcl, HiPilot analyzes:
 
 ---
 
-**Last Updated:** 2026-02-24
+**Last Updated:** 2026-02-25

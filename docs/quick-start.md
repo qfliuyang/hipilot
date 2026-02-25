@@ -40,15 +40,17 @@ Add to `~/.claude/settings.json`:
 ```json
 {
   "mcpServers": {
-    "eda": {
+    "hipilot-eda": {
       "command": "node",
-      "args": ["/path/to/hipilot/servers/eda/index.js"]
+      "args": ["/path/to/hipilot/servers/eda/index.js"],
+      "env": { "HIPILOT_SESSION": "hipilot" }
     },
-    "tmux": {
+    "hipilot-tmux": {
       "command": "node",
-      "args": ["/path/to/hipilot/servers/tmux/index.js"]
+      "args": ["/path/to/hipilot/servers/tmux/index.js"],
+      "env": { "HIPILOT_SESSION": "hipilot" }
     },
-    "knowledge": {
+    "hipilot-knowledge": {
       "command": "node",
       "args": ["/path/to/hipilot/servers/knowledge/index.js"]
     }
@@ -56,7 +58,7 @@ Add to `~/.claude/settings.json`:
 }
 ```
 
-**IMPORTANT:** Replace `/path/to/hipilot/` with your actual path.
+**IMPORTANT:** Replace `/path/to/hipilot/` with your actual absolute path. On CentOS 7 (EDA server), use the full node binary path instead of just `node`.
 
 ---
 
