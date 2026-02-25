@@ -10,7 +10,29 @@ node src/hitestbot/tests/McpInfraTest.js
 
 # Flow certification test (requires tmux session)
 node src/hitestbot/tests/FlowCertificationTest.js rtl2gds
+
+# Run on EDA server (from Mac via SSH, or directly on EDA server)
+bin/hitestbot-eda rtl2gds
 ```
+
+## EDA Server Only ("Test Like Real Human")
+
+**HiTestBot runs ONLY on the EDA server.** That's where humans run HiPilot. Commands (tmux, ffmpeg, MCP) run locally there.
+
+**From dev machine:**
+```bash
+bin/hitestbot-eda rtl2gds    # SSH + run on EDA server
+bin/hitestbot-pull           # Download evidence to dev machine
+bin/hitestbot-push skills/   # Upload test plan/config to EDA server
+```
+
+**On EDA server directly:**
+```bash
+cd /home/EDA/hipilot/current
+node src/hitestbot/tests/FlowCertificationTest.js rtl2gds
+```
+
+See [docs/testing/hitestbot-guide.md](../../docs/testing/hitestbot-guide.md) for execution model, sync workflow, and env vars.
 
 ## Architecture
 

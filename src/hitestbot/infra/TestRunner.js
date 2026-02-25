@@ -1,11 +1,12 @@
 /**
  * TestRunner - Base class for all HiTestBot test runners
  *
- * Provides common infrastructure: step tracking, reporting, SSH, timing.
- * Extend this class to create specific test types (E2E, Skills, UI, etc.)
+ * HiTestBot runs ONLY on the EDA server ("test like real human").
+ * Commands (tmux, ffmpeg, MCP) run locally. Use bin/hitestbot-pull to download
+ * evidence to dev machine and bin/hitestbot-push for test plan upload.
  */
 
-import { spawn } from 'child_process';
+import { execSync, spawn } from 'child_process';
 import path from 'path';
 import fs from 'fs';
 import { TestReporter } from './TestReporter.js';
@@ -27,12 +28,36 @@ class TestRunner {
       localDir: this.localDir,
       timestamp: this.timestamp
     });
+    this._runLogLines = [];
+  }
+
+  _runLog(msg) {
+    if (!this._runLogLines) this._runLogLines = [];
+    const ts = new Date().toISOString();
+    this._runLogLines.push(`[${ts}] ${msg}`);
+  }
+
+  _writeRunLog(evidenceDir) {
+    if (!this._runLogLines?.length) return;
+    try {
+      const p = path.join(evidenceDir, 'run_log.txt');
+      fs.mkdirSync(path.dirname(p) || '.', { recursive: true });
+      fs.writeFileSync(p, this._runLogLines.join('\n'));
+    } catch {}
   }
 
   /**
    * Main test execution - override in subclasses
    */
   async run() {
+    const evidenceDir = path.join(this.localDir || process.cwd(), 'e2e_evidence', this.timestamp);
+    try {
+      require('fs').mkdirSync(evidenceDir, { recursive: true });
+    } catch {}
+    this._runLog(`HiTestBot - ${this.testName}`);
+    this._runLog(`Timestamp: ${this.timestamp}`);
+    this._runLog(`Evidence dir: ${evidenceDir}`);
+
     console.log(`HiTestBot - ${this.testName}`);
     console.log(`Timestamp: ${this.timestamp}`);
     console.log('');
@@ -42,11 +67,17 @@ class TestRunner {
 
       console.log('');
       console.log('All tests passed!');
-      console.log(`Evidence: e2e_evidence/${this.timestamp}/`);
+      const evidencePath = `${this.localDir || process.cwd()}/e2e_evidence/${this.timestamp}/`;
+      console.log(`Evidence: ${evidencePath}`);
+      this._runLog('All tests passed');
+      this._writeRunLog(evidencePath);
 
       return true;
     } catch (err) {
       console.error('Test failed:', err.message);
+      this._runLog(`FAILED: ${err.message}`);
+      this._runLog(err.stack || '');
+      this._writeRunLog(path.join(this.localDir || process.cwd(), 'e2e_evidence', this.timestamp));
       await this.onFailure();
       throw err;
     }
@@ -78,10 +109,12 @@ class TestRunner {
       const result = await fn();
       const duration = ((Date.now() - start) / 1000).toFixed(1);
       console.log(`✓ (${duration}s)`);
+      this._runLog(`[${stepNum}] ${name} PASS (${duration}s)`);
       this.steps.push({ name, status: 'passed', duration, result });
       return result;
     } catch (err) {
       console.log(`✗ ${err.message}`);
+      this._runLog(`[${stepNum}] ${name} FAIL: ${err.message}`);
       this.steps.push({ name, status: 'failed', error: err.message });
       if (!options.continueOnError) {
         throw err;
@@ -90,44 +123,20 @@ class TestRunner {
   }
 
   /**
-   * SSH command execution
+   * Execute command locally (HiTestBot runs only on EDA server).
    */
   async ssh(command, timeout = 30000, returnOutput = false) {
-    return new Promise((resolve, reject) => {
-      const sshpass = spawn('sshpass', [
-        '-p', this.config.sshPass,
-        'ssh',
-        '-o', 'StrictHostKeyChecking=no',
-        this.config.sshHost,
-        command
-      ]);
-
-      let output = '';
-      let error = '';
-
-      sshpass.stdout.on('data', (data) => {
-        output += data.toString();
+    try {
+      const result = execSync(command, {
+        encoding: 'utf-8',
+        timeout: Math.min(timeout, 600000),
+        maxBuffer: 10 * 1024 * 1024,
       });
-
-      sshpass.stderr.on('data', (data) => {
-        error += data.toString();
-      });
-
-      sshpass.on('close', (code) => {
-        // Exit code 255 typically means SSH connection issue, not command failure
-        // For cleanup commands (|| true), we should be more tolerant
-        if (code !== 0 && code !== 255 && !returnOutput) {
-          reject(new Error(`SSH failed: ${error || 'exit code ' + code}`));
-        } else {
-          resolve(returnOutput ? output : true);
-        }
-      });
-
-      setTimeout(() => {
-        sshpass.kill();
-        reject(new Error('SSH timeout'));
-      }, timeout);
-    });
+      return returnOutput ? (result || '') : true;
+    } catch (err) {
+      if (returnOutput) return (err.stdout || err.stderr || err.message || '');
+      throw new Error(err.stderr || err.message || 'Command failed');
+    }
   }
 
   /**
@@ -159,27 +168,24 @@ class TestRunner {
   }
 
   /**
-   * SCP download
+   * Copy evidence from test dir to local dir (HiTestBot runs on EDA server).
+   * remotePath format: "host:path" — host is stripped, path is used for local copy.
    */
   async scpFrom(remotePath, localDir) {
-    return new Promise((resolve) => {
-      const scp = spawn('sshpass', [
-        '-p', this.config.sshPass,
-        'scp',
-        '-o', 'StrictHostKeyChecking=no',
-        remotePath,
-        localDir
-      ]);
-
-      scp.on('close', () => {
-        resolve(true);
-      });
-
-      setTimeout(() => {
-        scp.kill();
-        resolve(true);
-      }, 120000);
-    });
+    try {
+      const { cpSync, mkdirSync, existsSync, readdirSync } = await import('fs');
+      mkdirSync(localDir, { recursive: true });
+      const srcPath = remotePath.replace(/^[\w@.]+:/, '').replace(/\/\*$/, '');
+      if (existsSync(srcPath)) {
+        const entries = readdirSync(srcPath);
+        for (const e of entries) {
+          cpSync(path.join(srcPath, e), path.join(localDir, e), { recursive: true });
+        }
+      }
+      return true;
+    } catch {
+      return true;
+    }
   }
 
   /**

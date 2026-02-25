@@ -473,16 +473,14 @@ verifyConnectivity -type all
 
 ## Evidence Files
 
-Flow execution evidence is stored on the EDA server at:
-```
-/home/EDA/hipilot_test/sessions/<test_name>/evidence/
-├── innovus_main.log      # Full EDA log
-├── claude_pane.log       # Claude interaction
-└── eda_pane.log          # EDA pane capture
-```
+Flow execution evidence is stored on the EDA server (timestamp dir per run):
+- FlowCertifier: `/tmp/hipilot-test-evidence/{timestamp}/` (FLOW_REPORT.md, mcp_calls.jsonl, stage_*/)
+- E2ETestRunner: `/home/EDA/hipilot_test/sessions/{name}_{timestamp}/evidence/`
+
+Use `bin/hitestbot-pull` from dev machine to download evidence. See [docs/testing/hitestbot-guide.md](testing/hitestbot-guide.md).
 
 ---
 
-**Last Updated:** 2026-02-24
+**Last Updated:** 2026-02-25
 **Tested Design:** Ibex RISC-V CPU
 **Technology:** Skywater 130nm HD

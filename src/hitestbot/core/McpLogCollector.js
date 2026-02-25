@@ -112,6 +112,25 @@ export class McpLogCollector {
     };
   }
 
+  /** Get diagnostic summary for evidence package (EDA server has no source; all debug from evidence) */
+  getDiagnostics() {
+    const byTool = {};
+    const errorExcerpts = [];
+    for (const c of this.calls) {
+      byTool[c.tool] = byTool[c.tool] || { count: 0, errors: 0 };
+      byTool[c.tool].count++;
+      if (c.status === 'error') {
+        byTool[c.tool].errors++;
+        errorExcerpts.push({
+          tool: c.tool,
+          ts: c.ts,
+          excerpt: (c.error || c.result_preview || 'No details').slice(0, 400),
+        });
+      }
+    }
+    return { byTool, errorExcerpts };
+  }
+
   /** Check if Claude bypassed MCP and used direct tmux/bash */
   detectDirectTmuxUsage(claudePaneOutput) {
     const directPatterns = [

@@ -14,8 +14,9 @@ export class FlowReporter {
    * @param {number} data.totalElapsedMs
    * @param {object[]} data.stageResults - StageVerifier results
    * @param {object} data.mcpStats - MCP call statistics
+   * @param {object} [data.mcpDiagnostics] - { byTool, errorExcerpts } for diagnostic summary
    * @param {object} data.workflowResult - workflow.run metadata
-   * @param {object[]} data.observations - ObservationPoint results
+   * @param {object[]} [data.observations] - ObservationPoint results (pane previews)
    */
   generate(data) {
     return {
@@ -25,7 +26,7 @@ export class FlowReporter {
   }
 
   generateMarkdown(data) {
-    const { workflowName, timestamp, totalElapsedMs, stageResults, mcpStats, workflowResult } = data;
+    const { workflowName, timestamp, totalElapsedMs, stageResults, mcpStats, mcpDiagnostics, workflowResult, observations } = data;
     const totalS = (totalElapsedMs / 1000).toFixed(1);
     const totalStages = workflowResult?.total_steps || stageResults.length;
 
@@ -41,11 +42,21 @@ export class FlowReporter {
     const blockingStage = stageResults.find(s => s.status === 'fail');
 
     let md = `# HiPilot Flow Certification Report\n\n`;
-    md += `**Test:** ${workflowName}\n`;
-    md += `**Date:** ${timestamp}\n`;
-    md += `**Duration:** ${totalS}s\n`;
-    md += `**Framework:** HiTestBot v2.0\n\n`;
-    md += `---\n\n`;
+    md += `## Executive Summary\n\n`;
+    const overallStatus = failedStages === 0
+      ? (partialStages > 0 ? 'PARTIAL PASS' : 'PASS')
+      : 'FAIL';
+    md += `| Metric | Value |\n`;
+    md += `|--------|-------|\n`;
+    md += `| **Overall** | ${overallStatus} |\n`;
+    md += `| Workflow | ${workflowName} |\n`;
+    md += `| Progress | ${completedStages}/${totalStages} stages (${progressPct}%) |\n`;
+    md += `| Score | ${totalScore.toFixed(1)}/${maxScore} |\n`;
+    md += `| Duration | ${totalS}s |\n`;
+    if (blockingStage) {
+      md += `| Blocking Stage | ${blockingStage.stage} (${blockingStage.failure_classification?.category || 'N/A'}) |\n`;
+    }
+    md += `\n---\n\n`;
 
     // Flow Progress
     md += `## Flow Progress\n\n`;
@@ -56,9 +67,7 @@ export class FlowReporter {
       const icon = sr.status === 'pass' ? '✅' : sr.status === 'partial' ? '⚠️' : '❌';
       const notes = sr.failure_classification
         ? `${sr.failure_classification.category}: ${sr.failure_classification.summary.slice(0, 60)}`
-        : sr.scores.L5_qor_assessment.detail.includes('WNS')
-          ? sr.scores.L5_qor_assessment.detail
-          : '';
+        : (sr.scores?.L5_qor_assessment?.detail || '').slice(0, 80);
       md += `| ${sr.stage} | ${sr.stage} | ${sr.total_score.toFixed(1)}/5.0 | ${icon} ${sr.status.toUpperCase()} | ${notes} |\n`;
     }
 
@@ -120,6 +129,60 @@ export class FlowReporter {
       md += '\n';
     }
 
+    // Diagnostic Summary (verbose for evidence-only debug; EDA server has no source)
+    md += `---\n\n## Diagnostic Summary\n\n`;
+    md += `*All debug information comes from the evidence package. EDA server has no source code.*\n\n`;
+    if (mcpDiagnostics?.byTool && Object.keys(mcpDiagnostics.byTool).length > 0) {
+      md += `### MCP Call Breakdown\n\n`;
+      md += `| Tool | Calls | Errors |\n`;
+      md += `|------|-------|--------|\n`;
+      for (const [tool, info] of Object.entries(mcpDiagnostics.byTool)) {
+        md += `| ${tool} | ${info.count} | ${info.errors || 0} |\n`;
+      }
+      md += '\n';
+    }
+    if (mcpDiagnostics?.errorExcerpts?.length) {
+      md += `### Error Excerpts\n\n`;
+      for (let i = 0; i < mcpDiagnostics.errorExcerpts.length; i++) {
+        const ex = mcpDiagnostics.errorExcerpts[i];
+        md += `**${i + 1}. ${ex.tool}** (${ex.ts})\n`;
+        md += '```\n' + (ex.excerpt || 'No details') + '\n```\n\n';
+      }
+    }
+    const lastObs = observations?.length ? observations[observations.length - 1] : null;
+    if (lastObs?.content) {
+      md += `### Pane Previews (last observation)\n\n`;
+      if (lastObs.content.claude_pane_last50) {
+        md += `**Claude pane (last 50 lines):**\n\`\`\`\n${lastObs.content.claude_pane_last50}\n\`\`\`\n\n`;
+      }
+      if (lastObs.content.eda_pane_last50) {
+        md += `**EDA pane (last 50 lines):**\n\`\`\`\n${lastObs.content.eda_pane_last50}\n\`\`\`\n\n`;
+      }
+    }
+    md += `See \`run_log.txt\`, \`mcp_calls.jsonl\`, \`stage_*/scorecard.json\` for full evidence.\n\n`;
+
+    // Recommendations
+    md += `---\n\n## Recommendations\n\n`;
+    if (blockingStage) {
+      const cat = blockingStage.failure_classification?.category || 'UNKNOWN';
+      md += `- **Focus:** Resolve blocking stage \`${blockingStage.stage}\` (${cat})\n`;
+      if (blockingStage.failure_classification?.action) {
+        md += `- **Action:** ${blockingStage.failure_classification.action}\n`;
+      }
+      if (cat === 'AI_BEHAVIOR') {
+        md += `- Review Claude prompts and skill matching; consider improving stage skill or MCP tool usage.\n`;
+      } else if (cat === 'ENVIRONMENT') {
+        md += `- Check EDA tool availability, paths, and licenses on the server.\n`;
+      } else if (cat === 'HIPILOT_BUG') {
+        md += `- Inspect MCP logs and template output for tool or Tcl generation bugs.\n`;
+      }
+    } else if (partialStages > 0) {
+      md += `- Some stages passed with warnings; review partial scorecards for improvement.\n`;
+    } else {
+      md += `- All stages passed. Consider running full RTL2GDS to validate end-to-end.\n`;
+    }
+    md += `- **Evidence:** See \`stage_*/\` directories for per-stage artifacts and scorecards.\n`;
+    md += `- **Video:** See \`video.mp4\` with timestamps in \`video_timestamps.json\` for observation offsets.\n\n`;
     md += `---\n\n*Generated by HiTestBot v2 at ${new Date().toISOString()}*\n`;
 
     return md;

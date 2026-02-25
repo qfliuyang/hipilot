@@ -100,7 +100,7 @@ node src/hitestbot/tests/McpInfraTest.js          # MCP infrastructure (12 check
 node src/hitestbot/tests/FlowCertificationTest.js  # Flow certification
 ```
 
-HiTestBot deploys HiPilot to the EDA server, runs tests via SSH, and produces evidence-based reports with 5-layer scoring. See `docs/testing/TESTING_RULES.md` for the testing philosophy.
+HiTestBot runs only on the EDA server ("test like real human"); use `bin/hitestbot-eda` to trigger via SSH and `bin/hitestbot-pull` to download evidence. Produces 5-layer evidence reports. See `docs/testing/TESTING_RULES.md` for philosophy; `docs/testing/hitestbot-guide.md` for execution model and sync.
 
 ### MCP call logging (for debugging)
 
@@ -146,5 +146,7 @@ HIPILOT_TEST_LOG=/tmp/mcp.jsonl node servers/eda/index.js
 | `docs/skills-guide.md` | 35 skills reference |
 | `docs/rtl2gds-flow.md` | RTL-to-GDS flow guide |
 | `docs/testing/TESTING_RULES.md` | Testing philosophy |
+| `docs/testing/hitestbot-guide.md` | HiTestBot E2E guide (EDA-only, sync) |
 | `docs/DEVELOPMENT_PLAN_v060.md` | v0.6.0 development plan |
 | `docs/HITESTBOT_V2_PLAN.md` | HiTestBot v2 design |
+| `docs/self-improving-loop.md` | ralph-loop guide (test–analyze–improve with metrics) |
