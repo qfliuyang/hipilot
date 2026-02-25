@@ -1,0 +1,42 @@
+[
+  {
+    "stage": "prompt_driven",
+    "scores": {
+      "L1_prompt_delivery": {
+        "score": 1,
+        "detail": "Claude responded to prompt"
+      },
+      "L2_intent_recognition": {
+        "score": 1,
+        "detail": "No specific operation expected"
+      },
+      "L3_mcp_tool_usage": {
+        "score": 0,
+        "detail": "No MCP tools called during this stage"
+      },
+      "L4_eda_execution": {
+        "score": 1,
+        "detail": "No errors detected in EDA output"
+      },
+      "L5_qor_assessment": {
+        "score": 0,
+        "detail": "No QoR assessment performed"
+      }
+    },
+    "total_score": 3,
+    "max_score": 5,
+    "status": "partial",
+    "failure_classification": {
+      "category": "AI_BEHAVIOR",
+      "summary": "Claude did not call any MCP tools for this stage",
+      "action": "Check if Claude understood the task and has access to MCP tools"
+    },
+    "mcp_calls_count": 0,
+    "evidence_summary": {
+      "mcp_tools_called": [],
+      "mcp_errors": [],
+      "eda_output_lines": 58,
+      "claude_output_lines": 161
+    }
+  }
+]
