@@ -1,0 +1,159 @@
+/**
+ * FlowReporter - Generate FLOW_REPORT.md and flow_progress.json
+ *
+ * Produces the human-readable report and machine-readable progress data
+ * per TESTING_RULES.md Section 8.
+ */
+
+export class FlowReporter {
+  /**
+   * Generate all report formats.
+   * @param {object} data
+   * @param {string} data.workflowName
+   * @param {string} data.timestamp
+   * @param {number} data.totalElapsedMs
+   * @param {object[]} data.stageResults - StageVerifier results
+   * @param {object} data.mcpStats - MCP call statistics
+   * @param {object} data.workflowResult - workflow.run metadata
+   * @param {object[]} data.observations - ObservationPoint results
+   */
+  generate(data) {
+    return {
+      markdown: this.generateMarkdown(data),
+      json: this.generateJson(data),
+    };
+  }
+
+  generateMarkdown(data) {
+    const { workflowName, timestamp, totalElapsedMs, stageResults, mcpStats, workflowResult } = data;
+    const totalS = (totalElapsedMs / 1000).toFixed(1);
+    const totalStages = workflowResult?.total_steps || stageResults.length;
+
+    const passedStages = stageResults.filter(s => s.status === 'pass').length;
+    const partialStages = stageResults.filter(s => s.status === 'partial').length;
+    const failedStages = stageResults.filter(s => s.status === 'fail').length;
+    const completedStages = passedStages + partialStages;
+    const progressPct = totalStages > 0 ? Math.round((completedStages / totalStages) * 100) : 0;
+    const totalScore = stageResults.reduce((s, r) => s + r.total_score, 0);
+    const maxScore = totalStages * 5;
+
+    // Find blocking stage
+    const blockingStage = stageResults.find(s => s.status === 'fail');
+
+    let md = `# HiPilot Flow Certification Report\n\n`;
+    md += `**Test:** ${workflowName}\n`;
+    md += `**Date:** ${timestamp}\n`;
+    md += `**Duration:** ${totalS}s\n`;
+    md += `**Framework:** HiTestBot v2.0\n\n`;
+    md += `---\n\n`;
+
+    // Flow Progress
+    md += `## Flow Progress\n\n`;
+    md += `| # | Stage | Score | Status | Notes |\n`;
+    md += `|---|-------|-------|--------|-------|\n`;
+
+    for (const sr of stageResults) {
+      const icon = sr.status === 'pass' ? '✅' : sr.status === 'partial' ? '⚠️' : '❌';
+      const notes = sr.failure_classification
+        ? `${sr.failure_classification.category}: ${sr.failure_classification.summary.slice(0, 60)}`
+        : sr.scores.L5_qor_assessment.detail.includes('WNS')
+          ? sr.scores.L5_qor_assessment.detail
+          : '';
+      md += `| ${sr.stage} | ${sr.stage} | ${sr.total_score.toFixed(1)}/5.0 | ${icon} ${sr.status.toUpperCase()} | ${notes} |\n`;
+    }
+
+    // Add unreached stages
+    const reachedCount = stageResults.length;
+    if (reachedCount < totalStages) {
+      for (let i = reachedCount; i < totalStages; i++) {
+        const stepName = workflowResult?.step_results?.[i]?.name || `Stage ${i + 1}`;
+        md += `| ${i + 1} | ${stepName} | - | ⏭ SKIP | Not reached |\n`;
+      }
+    }
+
+    md += `\n**Progress: ${completedStages}/${totalStages} stages (${progressPct}%)**\n`;
+    md += `**Total Score: ${totalScore.toFixed(1)}/${maxScore}**\n\n`;
+
+    // Blocking Issue
+    if (blockingStage) {
+      md += `---\n\n## Blocking Issue\n\n`;
+      md += `**Stage:** ${blockingStage.stage}\n`;
+      if (blockingStage.failure_classification) {
+        md += `**Category:** ${blockingStage.failure_classification.category}\n`;
+        md += `**Summary:** ${blockingStage.failure_classification.summary}\n`;
+        md += `**Action:** ${blockingStage.failure_classification.action}\n`;
+      }
+      md += '\n';
+    }
+
+    // Stage Scorecards (detailed)
+    md += `---\n\n## Stage Scorecards\n\n`;
+    for (const sr of stageResults) {
+      const icon = sr.status === 'pass' ? '✅' : sr.status === 'partial' ? '⚠️' : '❌';
+      md += `### ${sr.stage} (${sr.total_score.toFixed(1)}/5.0) ${icon}\n\n`;
+      md += `| Layer | Score | Detail |\n`;
+      md += `|-------|-------|--------|\n`;
+      for (const [key, val] of Object.entries(sr.scores)) {
+        const layerName = key.replace('_', ' ');
+        md += `| ${layerName} | ${val.score.toFixed(1)} | ${val.detail} |\n`;
+      }
+      md += '\n';
+
+      if (sr.failure_classification) {
+        md += `**Failure:** ${sr.failure_classification.category} — ${sr.failure_classification.summary}\n`;
+        md += `**Action:** ${sr.failure_classification.action}\n\n`;
+      }
+    }
+
+    // MCP Statistics
+    if (mcpStats) {
+      md += `---\n\n## MCP Statistics\n\n`;
+      md += `| Metric | Value |\n`;
+      md += `|--------|-------|\n`;
+      md += `| Total Calls | ${mcpStats.total_calls} |\n`;
+      md += `| Successful | ${mcpStats.by_status?.ok || 0} |\n`;
+      md += `| Errors | ${mcpStats.errors || 0} |\n`;
+      md += `| Total Duration | ${mcpStats.total_duration_ms}ms |\n`;
+      for (const [server, count] of Object.entries(mcpStats.by_server || {})) {
+        md += `| ${server} calls | ${count} |\n`;
+      }
+      md += '\n';
+    }
+
+    md += `---\n\n*Generated by HiTestBot v2 at ${new Date().toISOString()}*\n`;
+
+    return md;
+  }
+
+  generateJson(data) {
+    const { workflowName, timestamp, totalElapsedMs, stageResults, workflowResult } = data;
+    const totalStages = workflowResult?.total_steps || stageResults.length;
+    const passedStages = stageResults.filter(s => s.status === 'pass').length;
+    const partialStages = stageResults.filter(s => s.status === 'partial').length;
+    const completedStages = passedStages + partialStages;
+    const totalScore = stageResults.reduce((s, r) => s + r.total_score, 0);
+    const blockingStage = stageResults.find(s => s.status === 'fail');
+
+    return {
+      test_name: workflowName,
+      timestamp,
+      duration_s: Math.round(totalElapsedMs / 1000),
+      total_stages: totalStages,
+      completed_stages: completedStages,
+      progress_pct: totalStages > 0 ? Math.round((completedStages / totalStages) * 100) : 0,
+      total_score: totalScore,
+      max_score: totalStages * 5,
+      blocking_stage: blockingStage?.stage || null,
+      blocking_category: blockingStage?.failure_classification?.category || null,
+      stages: stageResults.map(sr => ({
+        name: sr.stage,
+        score: sr.total_score,
+        status: sr.status,
+        failure_category: sr.failure_classification?.category || null,
+        scores: Object.fromEntries(
+          Object.entries(sr.scores).map(([k, v]) => [k, v.score])
+        ),
+      })),
+    };
+  }
+}

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { E2ETestRunner } from '../E2ETestRunner.js';
-import * as TestUtils from '../TestUtils.js';
+import { E2ETestRunner } from '../infra/E2ETestRunner.js';
+import * as TestUtils from '../infra/TestUtils.js';
 
 class SkillsImprovementTest extends E2ETestRunner {
   constructor(options) {
