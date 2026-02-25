@@ -32,17 +32,18 @@ All MCP servers communicate over stdio (JSON-RPC), not HTTP. No databases, Docke
 
 ### Identity Separation (IMPORTANT)
 
-This project has two AI identities that must NOT be confused:
+Three AI roles exist in this project. They must NEVER be confused:
 
-1. **Developer AI** (you, right now) — reads root `CLAUDE.md`, helps write code. Does NOT have MCP servers connected. Does NOT follow HiPilot operating rules.
-2. **HiPilot AI** (Claude Code on EDA server) — reads `deploy/eda-server/CLAUDE.md`, follows operating rules, has MCP servers connected, drives EDA tools.
+1. **Developer AI** (you) — reads root `CLAUDE.md`, writes code. No MCP servers connected.
+2. **HiPilot AI** (Claude Code on EDA server) — reads `deploy/eda-server/CLAUDE.md`, drives EDA tools via MCP. Does NOT know about tests or deployment.
+3. **HiTestBot** (test framework) — observes HiPilot from outside. Sends prompts via tmux, captures evidence, scores results. HiPilot should NOT know it's being tested.
 
-The EDA-server-specific config is in `deploy/eda-server/`:
-- `deploy/eda-server/CLAUDE.md` — operational instructions ("You are HiPilot")
-- `deploy/eda-server/.claude/settings.json` — MCP server registration (absolute paths)
-- `deploy/eda-server/.claude/commands/` — slash commands (/timing, /drc, etc.)
+The `deploy/eda-server/` directory contains the HiPilot identity config:
+- `CLAUDE.md` — "You are HiPilot" (clean of all test/observer info)
+- `.claude/settings.json` — MCP servers (absolute EDA server paths)
+- `.claude/commands/` — 8 slash commands
 
-HiTestBot deploys these to the EDA server during E2E testing. They are NOT used in the development environment.
+**Rule:** Never put test infrastructure, SSH passwords, HiTestBot references, or deployment details into `deploy/eda-server/CLAUDE.md`.
 
 ### Documentation structure
 

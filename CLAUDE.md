@@ -1,677 +1,150 @@
-# CLAUDE.md
+# CLAUDE.md — HiPilot Developer Guide
 
-This file provides guidance to AI coding tools (Claude Code, Cursor, etc.) when **developing** this repository.
+> **You are a developer tool** helping build the HiPilot project. You are NOT HiPilot itself. Do not follow EDA operational rules or try to use MCP tools to control EDA software.
 
-> **IMPORTANT — Identity Separation:** This file is for the **developer AI** helping build HiPilot. The operational instructions for Claude Code running as HiPilot on the EDA server are in `deploy/eda-server/CLAUDE.md`. Do NOT follow the EDA operational rules in this file — you are a developer tool, not the HiPilot copilot.
+## What is HiPilot?
 
-## Project Overview
-
-HiPilot is a VLSI Physical Design copilot system — three specialized MCP servers that extend Claude Code with EDA tool integration, Tcl generation, and physical design workflow skills.
-
-**Current State (v0.6.0-dev):** 3 MCP servers (49+8+7 tools), 35 skills, 20 Tcl templates, HiTestBot v2 test framework, TUI dashboard, workflow execution engine, MCP call logging. Tested on real EDA server with Cadence Innovus.
-
-## Breakthrough: AI + EDA Tool Feedback Loop via tmux
-
-**This is the most important section. Read this first.**
-
-Claude Code and EDA tools (Innovus, ICC2) run in adjacent tmux panes and communicate through tmux itself. This creates a real-time feedback loop that was **proven working on Feb 19, 2026**:
+HiPilot is an AI-powered VLSI Physical Design copilot. It makes Claude Code (running on an EDA server) into the "brain" that drives EDA tools (Innovus, ICC2, PrimeTime) through tmux, using MCP servers, skills, and Tcl templates.
 
 ```
-Claude Code (Pane 0)              Innovus/ICC2 (Pane 1)
-─────────────────────────────────────────────────────────
-1. Generate Tcl from template  →  2. Execute Tcl
-4. Analyze results (capture)   ←  3. Produce output
-5. Fix issues if needed        →  6. Re-execute
+┌─── EDA Server ────────────────────────────────────────────┐
+│                                                            │
+│  Claude Code ("HiPilot's brain")    EDA Tool (Innovus)     │
+│  ┌──────────────────────┐    ┌──────────────────────┐     │
+│  │  Reads CLAUDE.md     │    │  Executes Tcl        │     │
+│  │  Uses MCP tools      │───▶│  Produces reports    │     │
+│  │  Follows skills      │◀───│  Returns results     │     │
+│  └──────────────────────┘    └──────────────────────┘     │
+│         tmux pane 0              tmux pane 1              │
+│                                                            │
+│  3 MCP Servers (JSON-RPC over stdio):                     │
+│    hipilot-eda (49 tools) — Tcl gen, execution, QoR       │
+│    hipilot-tmux (8 tools) — pane control                  │
+│    hipilot-knowledge (7 tools) — skills, docs, commands   │
+│                                                            │
+└────────────────────────────────────────────────────────────┘
 ```
 
-**What happened during live testing:**
-- Claude Code generated timing Tcl from a template and sent it to Innovus
-- Innovus reported a Tcl quoting error
-- Claude Code captured the error, diagnosed the root cause, **fixed the template source code**, and re-ran successfully
-- This was autonomous - Claude Code detected, diagnosed, fixed, and verified without human intervention
+**The key insight:** Claude Code doesn't need to know EDA commands. Skills encode the workflows, templates encode the Tcl, MCP tools handle execution. Claude Code is the orchestrator.
 
-**Key mechanisms:**
-- `tmux send-keys -t hipilot:0.1 "source /tmp/script.tcl" Enter` - send commands to EDA
-- `tmux capture-pane -t hipilot:0.1 -p -S -200` - read EDA output back
-- MCP servers registered in `~/.claude/settings.json` with absolute paths (NOT project-level)
-- Claude Code started with `--dangerously-skip-permissions` for automation
-
-See `docs/testing/test-stand.md` for the complete test stand documentation with 10 lessons learned.
-
-## Critical Context from Architecture Discussion
-
-This section captures the key insights, decisions, and concerns that emerged during the architecture design process. **Read this first before making any changes.**
-
-### 1. Why HiPilot Exists (The Core Problem)
-
-**Skills are the primary value proposition**, not AI automation.
-
-The problem HiPilot solves: **Knowledge capture and sharing**, not just faster Tcl generation.
+## Project Structure
 
 ```
-Without HiPilot:
-Senior engineer solves complex timing issue → Knowledge stays in their head
-→ Junior engineers make same mistakes → Team repeats work
-→ When senior leaves, expertise leaves
-
-With HiPilot:
-Senior engineer documents solution (email/wiki/post)
-→ AI turns it into a reusable skill
-→ Anyone can execute: "fix my post-CTS setup violations"
-→ Team builds library of proven solutions
+hipilot/
+├── servers/              # 3 MCP servers (the core product)
+│   ├── eda/index.js      # 49 tools: Tcl gen, execute_and_verify, workflows, QoR
+│   ├── tmux/index.js     # 8 tools: pane control, status bar
+│   └── knowledge/index.js # 7 tools: skills, docs, command reference
+│
+├── skills/               # 35 skill definitions (.md with YAML frontmatter)
+├── templates/            # 20 Tcl templates (synopsys/ + cadence/)
+├── data/                 # Command reference JSON
+│
+├── src/
+│   ├── cli.js            # TUI dashboard (React/Ink)
+│   ├── index.js          # CLI entry point
+│   ├── lib/              # 17 utility modules (mode, risk, logger, etc.)
+│   └── hitestbot/        # HiTestBot v2 test framework
+│       ├── core/         # Evidence-based testing (6 components)
+│       ├── infra/        # Test infrastructure (SSH, tmux, video)
+│       └── tests/        # 14 test implementations
+│
+├── deploy/eda-server/    # EDA server deployment config (see below)
+├── docs/                 # Documentation
+├── test/                 # Unit tests (vitest, 118 tests)
+└── bin/                  # Launcher scripts
 ```
 
-**Key insight:** The value is in **skills encoding team expertise**, making senior-level workflows executable by junior engineers.
+## Identity Separation
 
-### 2. The Architecture Discussion: Key Decisions
+This project has TWO AI roles. They must NEVER be confused:
 
-#### Decision 1: Pure Terminal UI (No Browser)
+| | Developer AI (you) | HiPilot AI (on EDA server) |
+|-|-------------------|---------------------------|
+| **Where** | MacOS dev machine | EDA server (CentOS 7) |
+| **CLAUDE.md** | This file (root) | `deploy/eda-server/CLAUDE.md` |
+| **Role** | Write code, run tests | Drive EDA tools via MCP |
+| **MCP tools** | Not connected | Connected (49+8+7) |
+| **Knows about** | Everything (code, tests, deploy) | Only MCP tools and skills |
 
-**Decision:** Stay with pure terminal-based implementation.
+The `deploy/eda-server/` directory contains everything HiTestBot deploys to the EDA server:
+- `CLAUDE.md` — tells Claude Code "you are HiPilot's brain"
+- `.claude/settings.json` — MCP server registration (absolute paths)
+- `.claude/commands/` — 8 slash commands (/timing, /drc, /fix-setup, etc.)
 
-**Rationale:**
-- EDA engineers work on remote Linux servers via SSH
-- Firefox on Linux is "a disaster"
-- Modern terminal UIs (Claude Code, Cursor, Windsurf) prove beautiful CLI is possible
-- Target users are already comfortable in terminals
+**Rule:** Never put test infrastructure, deployment details, or developer context into `deploy/eda-server/CLAUDE.md`. Claude Code on the EDA server should not know it's being tested.
 
-**Implementation:**
-- Use TUI libraries: blessed, ink, chalk, cli-table3
-- Modern color schemes (Dracula, Nord, Catppuccin)
-- Box drawing, syntax highlighting, progress indicators
-- Keyboard shortcuts prominently displayed
-
-#### Decision 2: Mode 2 Layout (Side-by-Side Split)
-
-**Decision:** Fixed 50/50 split layout, not adaptive.
-
-**Layout:**
-```
-┌──────────────────────┬──────────────────────┐
-│      Chat            │      EDA Terminal    │
-│      (50%)           │      (50%)           │
-│                      │                      │
-│  Claude Code /       │  icc2_shell /        │
-│  HiPilot running     │  innovus /           │
-│  here                │  pt_shell            │
-└──────────────────────┴──────────────────────┘
-```
-
-**Rationale:**
-- See both AI and EDA output simultaneously
-- Watch EDA tool execute in real-time
-- Chat pane has room for long responses
-- Alt+S can toggle between focus/split modes if needed
-
-**What's in each pane:**
-- **Chat Pane (Left):** Claude Code with HiPilot system prompt, MCP servers connected
-- **EDA Pane (Right):** Whatever EDA tool the engineer started (icc2_shell, innovus, etc.)
-
-#### Decision 3: AI Reads Raw EDA Output (No Parsers)
-
-**Critical insight:** Building parsers makes the AI feel "dumb" not intelligent.
-
-**The Problem:**
-```
-When you have 50 regex parsers extracting data:
-- User thinks: "This is just text processing, not AI"
-- Maintaining parsers = nightmare (tool versions, custom formats)
-- LLMs are GOOD at reading messy text - why not use that?
-```
-
-**The Solution:**
-```
-AI directly reads EDA reports:
-1. Capture raw EDA output (tmux.capture_pane)
-2. Show to Claude: "Analyze this timing report"
-3. Claude comprehends patterns, identifies issues
-4. Claude suggests solutions based on documentation
-5. Claude generates Tcl (with attribution to docs/skills)
-```
-
-**What we still parse:**
-- Minimal structured extraction for QoR tracking (WNS, TNS, violation counts)
-- Let AI do the heavy lifting of comprehension
-
-#### Decision 4: Skills Must Be Auto-Generated
-
-**The Friction Problem:** Manual skill authoring is too demanding.
-
-```
-To write ONE skill manually:
-- YAML frontmatter with 10+ fields
-- Parameter types and validation rules
-- 3-5 few-shot examples
-- Workflow documentation
-- Jinja2 template
-- Testing and refinement
-
-Senior engineers won't do this. They just want to share what worked.
-```
-
-**The Solution: AI-Generated Skills**
-
-```
-Input (any format):
-Email, wiki post, runbook, or even verbal description:
-  "I fixed the PCIe timing by sizing up clk_buf_2 from X2 to X8.
-   Don't use buffer insertion on clocks - it creates hold violations."
-
-Output (complete skill):
-- YAML frontmatter with metadata
-- Parameters extracted automatically
-- Few-shot examples generated from context
-- Tcl template extracted from code blocks
-- Workflow steps identified
-- Lessons learned captured
-
-Command: /skill-gen "turn this into a skill: [paste text]"
-```
-
-**Use Claude Code's native skill format** - don't reinvent. HiPilot extends it with EDA-specific fields.
-
-#### Decision 5: Trust Through Transparency, Not Badges
-
-**Revised trust model:**
-
-```
-Old thinking:
-[✓ Template] = trusted (hardcoded)
-[⚠ Unverified] = scary (AI guessed)
-
-Better approach:
-Show the reasoning, not just the badge:
-  "I analyzed your timing report and found 47 violations.
-   34 share undersized clock buffer clk_buf_2.
-   Based on Synopsys CTS methodology doc (section 4.3),
-   sizing up clock buffers before data path optimization
-   prevents hold violations. Here's the Tcl: [...]
-
-The user trusts it because they can VERIFY the reasoning,
-not because of a badge."
-```
-
-**Trust badges still exist** but indicate source:
-- `[✓ Template]` - From team skill (tested)
-- `[📖 Doc-based]` - From EDA manual (show source)
-- `[⚠ AI-generated]` - No skill/doc found (explain why)
-
-### 3. Technical Realities Discovered
-
-#### EDA Server Environment (Verified)
-
-**Connection:** `ssh EDA@192.168.112.163` (private build, not production)
-
-**System:**
-- OS: CentOS 7.9.2009 (glibc 2.17)
-- Node.js v20.18.3 installed (glibc-217 compatible build at `/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/`)
-
-**EDA Tools Available:**
-- Synopsys ICC2: T-2022.03
-- Synopsys PrimeTime: T-2022.03
-- Cadence Innovus: v20.10-p004_1
-- Plus: StarRC, SpyGlass, Calibre, Tempus
-
-**Development Tools:**
-- Node.js: v20.18.3 (glibc-217 build)
-- npm: 10.8.2
-- Python: 3.6.8, 2.7.5
-- tmux: 1.8
-- git, gcc, g++: Available
-
-**Workspace:** `/home/EDA/hipilot_test/`
-
-#### Real EDA Tool Behavior (Important for Parsing)
-
-**ICC2:**
-- Requires a loaded design before most commands work
-- Output format: Text-based, structured sections
-- Commands: `report_timing`, `report_constraint`, `help [command]`
-
-**Innovus:**
-- Can start without design (limited commands)
-- Extensive help system: `help report_timing` shows full syntax
-- Output format: Similar to ICC2 but different column names and structure
-
-**Key finding:** Machine-readable options exist:
-- ICC2: Some commands support `-machine_readable` or `-tcl_list`
-- Innovus: `-collection` flag returns structured data
-- **Use these when available** instead of text parsing
-
-### 4. Architecture Refinements
-
-#### Three-Tier Model (Clarified)
-
-```
-Tier 1: LLM (Claude)
-  Role: Intent recognition, parameter extraction, reading reports,
-        generating Tcl, explaining reasoning
-  Does NOT: Generate Tcl from memory (always grounded in docs/skills)
-
-Tier 2: Skills (PD engineer-authored OR AI-generated)
-  Role: Workflow definitions, parameter schemas, templates,
-        proven patterns, team knowledge
-  Format: Claude Code skill format + EDA extensions
-
-Tier 3: Templates + Documentation
-  Role: Vendor-specific Tcl, command reference, methodology guides
-  Format: Jinja2 templates + indexed EDA manuals
-```
-
-**Why this works without EDA-trained LLM:**
-- LLM reads/comprehends (what it's good at)
-- Skills provide workflows (what engineers know)
-- Templates provide correct Tcl (what vendors specify)
-- Docs provide ground truth (no hallucination)
-
-#### MCP Server Architecture (Simplified)
-
-**Remove:** Complex report parsers (let AI read raw output)
-
-**EDA MCP Server (49 tools):** Tcl generation, EDA tool control, mode management, session/context tracking, QoR snapshots, workflow automation, smart suggestions. See `docs/mcp-servers.md` for full API.
-
-**Tmux MCP Server (8 tools):** Pane control (`send_keys`, `capture_pane`), workspace setup (`setup_layout`), status bar management. See `docs/mcp-servers.md`.
-
-**Knowledge MCP Server (7 tools):** Skill lookup (`list_skills`, `get_skill`, `match_skill`), doc search (`search_docs`, `search_commands`), command reference (`get_command_ref`), methodology guides (`get_methodology`). See `docs/mcp-servers.md`.
-
-#### Skill System (Enhanced)
-
-**Use Claude Code skills as base:**
-- Markdown + YAML frontmatter
-- `/skills` commands work natively
-- Compatible with Claude Code ecosystem
-
-**HiPilot extensions:**
-```yaml
----
-# Claude Code fields
-name: fix-setup-timing
-description: Fix setup timing violations
-
-# HiPilot extensions
-hipilot:
-  vendor: [synopsys, cadence]
-  has_template: true
-  template_path: templates/synopsys/icc2_fix_setup_timing.tcl
-  auto_generated: false  # true if AI-created
-  source_doc: "From email: Re: PCIe timing fix"
-  flexible: true  # AI can adapt workflow
----
-
-## Parameters (same as Claude Code)
-## Workflow (same as Claude Code)
-
-## HiPilot additions
-### Core Principles
-- Size clock buffers before data paths
-- Incremental sizing (X2 → X4 → X8)
-
-### What AI Can Adapt
-- If violation pattern doesn't match, explain why
-- If results unexpected, suggest alternative
-- Learn from execution and improve
-```
-
-### 5. Development Priorities (Reordered)
-
-**Given the above insights:**
-
-1. **P0: Terminal UI Enhancement**
-   - Beautiful, modern TUI (colors, boxes, syntax)
-   - Status bar with QoR context
-   - Keyboard shortcuts
-   - Progress indicators
-
-2. **P0: Tmux Integration**
-   - Send-to-EDA bridge
-   - Pane capture
-   - Layout setup
-   - Status bar updates
-
-3. **P0: Basic Tcl Generation**
-   - Template engine (Nunjucks)
-   - 3-5 basic templates
-   - Doc-based Tcl generation (when no template)
-
-4. **P1: AI Reads Reports**
-   - Capture raw output
-   - AI comprehends and explains
-   - Pattern identification
-   - QoR extraction (minimal)
-
-5. **P1: Skill System**
-   - Skill loader (Claude Code format)
-   - Skill matching
-   - **Manual authoring first**
-   - Auto-generation (later)
-
-6. **P2: Knowledge System**
-   - Document indexing
-   - Command reference
-   - Doc search
-
-7. **P2: Report Parsers**
-   - Only for QoR metrics (WNS, TNS, counts)
-   - Let AI do full comprehension
-
-### 6. Important Constraints
-
-#### Claude Code Fork Reality
-
-**Can do:**
-- System prompt customization
-- UI enhancements (TUI)
-- MCP server configuration
-- Keybindings (Ctrl+Enter for Tcl)
-
-**Cannot easily do:**
-- Major architecture changes
-- Breaking from Claude Code updates
-- Custom skill format (use native)
-
-**Strategy:** Keep fork minimal (10% changes), leverage MCP for 90% of functionality.
-
-#### Node.js Version
-
-- Node.js v20.x installed on EDA server (v20.18.3, glibc-217 build)
-- HiPilot and Claude Code share the same Node version
-- `package.json` specifies: `"engines": { "node": ">=20.0.0" }`
-
-#### EDA Tool Limitations
-
-**No design = no testing:** Most EDA commands require loaded design
-
-**Workarounds:**
-- Use `help` commands to learn syntax
-- Use sample designs if available
-- Create minimal test designs
-- Test parsers on sample outputs in docs
-
-### 7. What NOT to Do (Learned from Discussion)
-
-❌ **Don't build complex report parsers** - Let AI read raw text
-❌ **Don't create custom skill format** - Use Claude Code's native skills
-❌ **Don't make rigid workflows** - Skills should be flexible, AI can adapt
-❌ **Don't rely on trust badges alone** - Show reasoning and sources
-❌ **Don't use web UI** - Stay pure terminal
-❌ **Don't use incompatible Node.js** - v20.x glibc-217 build is required for CentOS 7
-❌ **Don't hide AI's work** - Transparency is non-negotiable
-
-### 8. Development Workflow (with EDA Server Access)
-
-**When implementing features:**
+## Development Commands
 
 ```bash
-# 1. SSH to EDA server
-ssh EDA@192.168.112.163
-
-# 2. Set up environment
-export PATH=/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin:$PATH
-cd /home/EDA/hipilot_test
-
-# 3. Test against real tools
-icc2_shell  # or innovus, pt_shell
-
-# 4. Generate sample outputs
-report_timing -max_paths 10 > /tmp/timing_test.rpt
-
-# 5. Test parsers/code against real data
-node test_parser.js /tmp/timing_test.rpt
-
-# 6. Iterate based on actual tool behavior
+npm run install:all          # Install all deps (root + 3 servers)
+npm test                     # Unit tests (vitest, 118 tests)
+npm run setup                # Setup wizard
+node src/cli.js              # TUI dashboard
+node src/cli.js skills       # List 35 skills
+node src/cli.js templates    # List 20 templates
 ```
 
-**Key advantage:** Can validate everything against real EDA tools, not theoretical specs.
+### Testing MCP servers locally
 
-### 9. Test Stand - Automated Testing via tmux + Claude Code
-
-**READ THIS FIRST when testing HiPilot.** Full details in `docs/testing/test-stand.md`.
-
-We can remotely control Claude Code on the EDA server via `tmux send-keys`. This is the official way to test HiPilot end-to-end.
-
-**Quick reference:**
 ```bash
-# From local machine - use sshpass for non-interactive SSH
-SSH="sshpass -p 'eda2020' ssh -o StrictHostKeyChecking=no EDA@192.168.112.163"
-
-# Kill old tmux servers first (prevents protocol version mismatch)
-$SSH 'pkill -u EDA tmux'
-
-# Set up workspace: tmux split with Claude Code + Innovus
-$SSH 'export PATH=/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin:$PATH
-tmux new-session -d -s hipilot -x 240 -y 60
-tmux split-window -h -t hipilot:0
-tmux send-keys -t hipilot:0.1 "innovus -nowin" Enter
-sleep 3
-tmux send-keys -t hipilot:0.0 "cd /home/EDA/hipilot_test/hipilot-v0.1.0 && claude --dangerously-skip-permissions" Enter
-sleep 15'
-
-# Send a prompt to Claude Code
-$SSH 'tmux send-keys -t hipilot:0.0 "list all hipilot skills" Enter'
-sleep 40
-
-# Read Claude Code's response
-$SSH 'tmux capture-pane -t hipilot:0.0 -e -p -S -200 | strings | grep -v "^$" | tail -50'
-
-# Record the real desktop (:0, NOT Xvfb)
-$SSH 'DISPLAY=:0 ffmpeg -y -f x11grab -framerate 25 -video_size 2560x1558 -i :0 \
-  -c:v libx264 -preset fast -crf 23 -pix_fmt yuv420p /tmp/demo.mp4 &'
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/eda/index.js
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/tmux/index.js
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/knowledge/index.js
 ```
 
-**Critical gotchas:**
-- MCP servers must be in `~/.claude/settings.json` (user-level) with **absolute paths** for both node binary and server scripts
-- Always `pkill -u EDA tmux` before starting (prevents protocol version mismatch between tmux 1.8 and 3.4)
-- Wait 30-60 seconds between prompts (Claude Code needs time to respond)
-- Use `--dangerously-skip-permissions` to avoid permission prompts blocking automation
-- Record from `:0` (real desktop), not `:99` (Xvfb)
-- Use `gnome-terminal` (not xterm) for proper tmux rendering
+### HiTestBot v2
 
-## Original Documentation (Still Relevant)
-
-The following sections from the original architecture docs remain accurate and should be referenced:
-
-### Active Documentation (in `docs/`)
-- `docs/architecture.md` - System design and components
-- `docs/mcp-servers.md` - MCP integration reference
-- `docs/skills-guide.md` - All 35 skills documented
-- `docs/rtl2gds-flow.md` - Complete RTL-to-GDS flow guide
-- `docs/specs/eda-mcp-spec.md` - EDA MCP server spec
-- `docs/specs/tmux-mcp-spec.md` - Tmux MCP server spec
-- `docs/specs/knowledge-mcp-spec.md` - Knowledge MCP server spec
-- `docs/testing/TESTING_RULES.md` - Testing philosophy and rules
-
-### Configuration System
-
-**User Configuration (`~/.hipilot/config.yaml`):**
-```yaml
-tools:
-  synopsys:
-    icc2: /opt/synopsys/icc2_2022.03/T-2022.03/bin/icc2_shell
-    pt: /opt/synopsys/prime_2022.03/T-2022.03/bin/pt_shell
-  cadence:
-    innovus: /opt/cadence/INNOVUS20.10/tools.lnx86/bin/innovus
-
-scheduler:
-  type: lsf
-  queue: normal
-
-docs:
-  synopsys: /tools/synopsys/docs/
-  cadence: /tools/cadence/docs/
-  team: /proj/shared/pd_knowledge/
-
-layout:
-  mode: split  # focus | split
-  chat_width: 50
-  eda_width: 50
-```
-
-**Project Configuration (`{project}/.hipilot/config.yaml`):**
-```yaml
-design:
-  name: test_design
-  technology: tsmc7ff
-  corners:
-    - ss_0.72v_125c
-    - tt_0.80v_25c
-
-eda:
-  tool: synopsys  # synopsys | cadence
-  version: icc2_2022.03
-  flow_stage: post_route
-
-paths:
-  scripts: ./scripts/
-  reports: ./reports/
-  checkpoints: ./checkpoints/
-```
-
-## Quick Start for New Sessions
-
-When starting a new development session:
-
-1. **Read this section first** (Critical Context from Architecture Discussion)
-2. **Connect to EDA server** to test against real tools
-3. **Reference the MCP specs** for implementation details
-4. **Use Node.js v20.x** (glibc-217 build on CentOS 7)
-5. **Stay pure terminal** (no web UI)
-6. **Let AI read reports** (don't over-engineer parsers)
-7. **Focus on skills** (the core value proposition)
-8. **Make it beautiful** (modern terminal UI)
-
-## Technology Stack
-
-- **Base:** Claude Code (light fork)
-- **MCP Protocol:** Model Context Protocol
-- **Runtime:** Node.js v20.x
-- **Language:** JavaScript (ES2022+, ES Modules)
-- **Template Engine:** Nunjucks (Jinja2-compatible)
-- **Storage:** Filesystem-based (skills as .md files, command ref as JSON)
-- **Terminal:** tmux 1.8+
-- **UI Libraries:** chalk, cli-table3, ora, ink (React TUI)
-
-## Success Metrics (from PRD)
-
-| Metric | Target | How to Measure |
-|--------|--------|---------------|
-| **Tcl accuracy** | >95% of template-based scripts run without errors | Track `source` success/failure |
-| **Time savings** | 30% reduction in time from "intent" to "running Tcl" | User surveys + session timing |
-| **Adoption** | 80% of team uses HiPilot daily within 1 month | Usage logs |
-| **Skill creation** | 5+ team-authored skills per project within 3 months | Count skills in `.hipilot/skills/` |
-| **Trust** | Engineers approve >90% of generated Tcl on first presentation | Track approval vs edit vs reject |
-
----
-
-## EDA Server - Real Design Testing
-
-### Connection Details
-- **Server:** 192.168.112.163
-- **User:** EDA
-- **Password:** eda2020
-- **Root Password:** 2020
-- **Workspace:** `/home/EDA/hipilot_test/`
-
-### Real Design Available: Ibex Core
-
-**Design:** Ibex - 32-bit RISC-V CPU (RV32IMC)
-**Technology:** Skywater 130nm HD (sky130hd)
-**Location:** `/home/EDA/hipilot_test/ibex_work_upload/`
-
-This is a COMPLETE RTL-to-GDS flow including:
-- Real RTL source (~20 Verilog files for Ibex CPU)
-- Synthesis scripts (Design Compiler)
-- Place & Route scripts (Innovus) - init, floorplan, placement, CTS, routing, optimization
-- STA scripts (PrimeTime)
-- Physical Verification (Calibre DRC/LVS)
-- Power Analysis (Voltus)
-- Parasitic Extraction (StarRC)
-
-**Use this for testing:**
-- Tcl template generation (real production scripts)
-- Report parsing (real timing/DRC/power/area reports)
-- Skill workflows (complete flow stages from synthesis to signoff)
-- Integration testing (end-to-end workflows)
-
-### Quick Test Commands
-
-After SSH connection to EDA server:
 ```bash
-cd /home/EDA/hipilot_test/ibex_work_upload
-
-# Available flow stages:
-make syn          # Synthesis (Design Compiler)
-make init         # Initialize design in Innovus
-make floor_plan   # Floorplanning
-make place_io     # IO placement
-make power_plan   # Power network
-make placement    # Standard cell placement
-make cts          # Clock tree synthesis
-make post_cts_opt # Post-CTS optimization
-make routing      # Routing
-make routing_opt  # Routing optimization
-make chip_done    # Final outputs
-make run_pt       # PrimeTime timing analysis
-make drc          # Calibre DRC
-make lvs          # Calibre LVS
-make static_ir    # Voltus static IR analysis
+node src/hitestbot/tests/McpInfraTest.js          # MCP infrastructure (12 checks)
+node src/hitestbot/tests/FlowCertificationTest.js  # Flow certification
 ```
 
-### Screen Recording for Demos
+HiTestBot deploys HiPilot to the EDA server, runs tests via SSH, and produces evidence-based reports with 5-layer scoring. See `docs/testing/TESTING_RULES.md` for the testing philosophy.
 
-**Location:** `/home/EDA/hipilot_test/`
+### MCP call logging (for debugging)
 
-**Scripts Available:**
-- `screen_recording_setup.sh` - One-time setup (already run)
-- `start_recording.sh [desc]` - Start screen recording
-- `stop_recording.sh` - Stop and finalize recording
-
-**Workflow:**
 ```bash
-# On EDA server
-cd /home/EDA/hipilot_test
-
-# 1. Start recording
-./start_recording.sh "feature_description"
-
-# 2. Demonstrate your feature
-# (work in terminal, show HiPilot working)
-
-# 3. Stop recording
-./stop_recording.sh
-
-# 4. From local machine - transfer video
-scp EDA@192.168.112.163:~/hipilot_test/recordings/*.mp4 .
+HIPILOT_TEST_LOG=/tmp/mcp.jsonl node servers/eda/index.js
+# → logs every tool call with timestamp, args, status, duration
 ```
 
-**Recording Specs:**
-- Virtual Display: Xvfb on :99 (1920x1080)
-- Encoder: ffmpeg with H.264
-- Format: MP4
-- Framerate: 25 fps
-- Quality: CRF 23 (good quality, reasonable size)
-- Typical size: 5-50 MB for 1-5 minute demos
+## EDA Server
 
-**REQUIREMENT:** Each major feature completion MUST include a screen recording video demonstrating it working on the EDA server (CentOS 7). This ensures HiPilot actually works on the target platform.
+- **Host:** `ssh EDA@192.168.112.163` (password: `eda2020`, root: `eda2020`)
+- **OS:** CentOS 7.9 (glibc 2.17)
+- **Node.js:** v20.18.3 at `/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin/`
+- **EDA Tools:** Innovus v20.10, ICC2 T-2022.03, PrimeTime T-2022.03
+- **Demo Design:** Ibex RISC-V CPU at `/home/EDA/hipilot_test/ibex_work_upload/`
+- **Deployed HiPilot:** `/home/EDA/hipilot/current/`
 
-See git history for the original `SCREEN_RECORDING_SETUP.md` guide.
+## Key Architecture Decisions
 
-### Environment on EDA Server
+1. **Pure terminal** — No web UI. EDA engineers work via SSH on remote servers.
+2. **Skills are the product** — They encode senior engineer expertise into reusable workflows.
+3. **AI reads raw EDA output** — No complex parsers. LLMs are good at reading messy text.
+4. **Templates, not hallucination** — Tcl comes from templates (`[✓ Template]`), not AI memory.
+5. **Safety via mode system** — Manual mode requires approval. Risk analysis gates dangerous ops.
+6. **MCP for everything** — Claude Code talks to EDA tools only through MCP, never direct commands.
 
-**Installed:**
-- Node.js v20.18.3 (at `/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/`)
-- npm 10.8.2
-- Python 3.6.8, 2.7.5
-- tmux 1.8
-- ffmpeg 2.8.15 (with x11grab for screen recording)
-- Xvfb (virtual X server for headless recording)
+## Technology
 
-**EDA Tools:**
-- Synopsys ICC2 T-2022.03
-- Synopsys PrimeTime T-2022.03
-- Cadence Innovus v20.10-p004_1
-- Plus: StarRC, SpyGlass, Calibre, Voltus
+- **Runtime:** Node.js v20+ (ES Modules)
+- **Language:** JavaScript (no TypeScript)
+- **MCP:** `@modelcontextprotocol/sdk` ^1.0.4
+- **Templates:** Nunjucks (Jinja2-compatible)
+- **TUI:** React 19 + Ink 6
+- **Testing:** Vitest (unit), HiTestBot v2 (E2E)
+- **Storage:** Filesystem (skills as .md, state as JSON files)
 
-**PATH Setup (add to ~/.bashrc):**
-```bash
-export PATH=/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin:$PATH
-```
+## Documentation Index
+
+| Document | Purpose |
+|----------|---------|
+| `docs/architecture.md` | System design |
+| `docs/mcp-servers.md` | All 64 MCP tools with schemas |
+| `docs/skills-guide.md` | 35 skills reference |
+| `docs/rtl2gds-flow.md` | RTL-to-GDS flow guide |
+| `docs/testing/TESTING_RULES.md` | Testing philosophy |
+| `docs/DEVELOPMENT_PLAN_v060.md` | v0.6.0 development plan |
+| `docs/HITESTBOT_V2_PLAN.md` | HiTestBot v2 design |
