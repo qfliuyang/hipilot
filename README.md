@@ -1,401 +1,162 @@
 # HiPilot - VLSI Physical Design Copilot
 
-**Status:** ✅ v0.2.1 COMPLETE - Mode System Implemented
-**Version:** 0.2.1
-**Date:** 2026-02-20
+**Version:** 0.5.0 | **Status:** Production Ready | **Last Updated:** 2026-02-25
 
 ---
 
-## 🎉 What is HiPilot?
+## What is HiPilot?
 
-HiPilot is a **VLSI Physical Design Copilot** - an AI-powered assistant for EDA engineers built as an extension to Claude Code. It provides:
+HiPilot is an **AI-powered VLSI Physical Design Copilot** that extends Claude Code with specialized MCP servers and skills for semiconductor design automation. It provides EDA engineers with natural language control over tools like Innovus, ICC2, and PrimeTime through a tmux-based workspace.
 
-- **50/50 Terminal Workspace** - Chat + EDA tool panes
-- **3 MCP Servers** - Tmux (7 tools), EDA (11 tools), Knowledge (7 tools)
-- **10 Built-in Skills** - Common workflows
-- **Natural Language → Tcl** - Generate scripts from intent
-- **Real Ibex Design Integration** - Tested on actual RISC-V CPU
+**Core value:** Skills encode team expertise, making senior-level workflows executable by anyone.
 
-**Core Value:** Skills encode team expertise, making senior-level workflows executable by anyone.
+### Key Capabilities
+
+| Feature | Description |
+|---------|-------------|
+| **Tcl Generation** | Generate vendor-specific Tcl from natural language (20 templates) |
+| **EDA Tool Control** | Control Innovus, ICC2, PrimeTime via MCP servers |
+| **35 Built-in Skills** | Complete RTL-to-GDS flow coverage |
+| **Real Design Tested** | Validated on Ibex RISC-V CPU (Sky130, 7,000+ cells) |
+| **Multi-Vendor** | Synopsys (ICC2, DC, PT) and Cadence (Innovus) |
+| **Safety System** | Manual/Auto execution modes with risk analysis |
+
+### The AI + EDA Feedback Loop
+
+```
+Claude Code (Pane 0)          Innovus/ICC2 (Pane 1)
+────────────────────────────────────────────────────
+1. Generate Tcl from skill  →  2. Execute Tcl
+4. Analyze results (capture) ← 3. Produce output
+5. Fix issues if needed     →  6. Re-execute
+```
 
 ---
 
-## 🚀 Quick Start
-
-### Starting HiPilot
+## Quick Start
 
 ```bash
-# On EDA server (CentOS 7 with Node.js v20)
-export PATH=/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin:$PATH
-hipilot
+# Install dependencies
+npm run install:all
+
+# Run setup wizard
+npm run setup
+
+# Launch TUI dashboard
+node src/cli.js
 ```
 
-### Using HiPilot
-
-```
-┌────────────────────┬────────────────────┐
-│  Chat (50%)        │  EDA (50%)         │
-│  Claude Code       │  icc2_shell        │
-│                    │  innovus           │
-│  "fix setup timing"│  pt_shell          │
-│  → [Tcl generated] │                    │
-│  [▶ Run]          │  [Executes here]   │
-└────────────────────┴────────────────────┘
-```
-
-### 🔒 Execution Modes (NEW!)
-
-HiPilot uses a **two-mode safety system**:
-
-| Mode | Icon | Description |
-|------|------|-------------|
-| **Manual** | 🔒 | Each Tcl command requires your approval (default) |
-| **Auto** | ⚡ | "Claude has the conn" - commands execute immediately |
-
-**Mode Controls:**
-- **Ctrl+M** - Toggle between modes
-- **prefix+y** - Approve pending Tcl
-- **prefix+n** - Reject pending Tcl
-- **prefix+M** - Show current mode status
-
-In **Manual mode** (default), when Claude generates Tcl:
-1. Tcl is queued for approval
-2. Status bar shows "⏳ pending"
-3. Press `prefix+y` to execute or `prefix+n` to reject
-
-In **Auto mode** ("Claude has the conn"):
-- All Tcl commands execute immediately
-- Status bar turns green with "⚡ Claude has conn"
-- Use for trusted automation workflows
+See [docs/quick-start.md](docs/quick-start.md) for the complete first-time setup guide.
 
 ---
 
-## 📚 Documentation
+## Architecture
 
-### Start Here
+```
+┌────────────────────────────────────────────────────────┐
+│  Claude Code ─── MCP Layer ─── EDA Tools               │
+│       │          (3 Servers)     (Innovus/ICC2/PT)      │
+│       │              │                │                  │
+│   35 Skills     tmux Workspace    Log Files / Reports   │
+└────────────────────────────────────────────────────────┘
+```
 
-1. **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - Essential commands & common pitfalls
-2. **[DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)** - Complete development documentation
-3. **[CLAUDE.md](CLAUDE.md)** - Context for Claude Code development
-
-### Completed Tasks
-
-| Task | Status | Document |
-|------|--------|----------|
-| **Task 1** | ✅ Complete | [TASK1_COMPLETE_FINAL.md](TASK1_COMPLETE_FINAL.md) - Terminal UI & Layout |
-| **Task 2** | ✅ Complete | [TASK2_COMPLETE.md](TASK2_COMPLETE.md) - MCP Servers |
-| **Task 3** | ✅ Complete | [TASK3_COMPLETE.md](TASK3_COMPLETE.md) - Skill System |
-| **Task 4** | ✅ Complete | [TASK4_COMPLETE.md](TASK4_COMPLETE.md) - Ibex Integration & Demos |
-
-### Architecture & Specs
-
-- **[Architecture](docs/plans/2026-02-18-hipilot-architecture-design.md)** - Complete system design
-- **[EDA MCP Spec](docs/specs/eda-mcp-server-spec.md)** - Tcl generation & QoR extraction
-- **[Tmux MCP Spec](docs/specs/tmux-mcp-server-spec.md)** - Workspace management
-- **[Knowledge MCP Spec](docs/specs/knowledge-mcp-server-spec.md)** - Skills & documentation
+| Component | Tools | Purpose |
+|-----------|-------|---------|
+| **EDA MCP Server** | 48 tools | Tcl generation, tool control, QoR, workflows |
+| **Tmux MCP Server** | 8 tools | Workspace management, pane control |
+| **Knowledge MCP Server** | 7 tools | Skill loading, doc search, command ref |
 
 ---
 
-## 🏗️ What's Been Built
-
-### 1. Terminal Workspace (Task 1)
-- **tmux 3.4** - Built from source (CentOS 7 compatible)
-- **50/50 Split Layout** - Chat pane + EDA pane
-- **Launcher Script** - `hipilot` command
-- **Beautiful UI** - Dracula-inspired colors
-- **Status Bar** - Tool | Skill | Job | Design info
-
-### 2. MCP Servers (Task 2)
-
-**Tmux MCP Server** (7 tools):
-- `send_keys` - Send commands to panes
-- `capture_pane` - Read pane content
-- `get_pane_output` - Get last N lines
-- `update_status` - Update status bar (with mode)
-- `set_mode_status` - Update mode in status bar
-- `list_panes` - List all panes
-- `resize_pane` - Resize panes
-
-**EDA MCP Server** (11 tools):
-- `generate_tcl` - Generate Tcl from intent
-- `send_to_terminal` - Send Tcl to EDA pane (respects mode)
-- `extract_qor` - Extract WNS/TNS/violations
-- `list_templates` - List available templates
-- `detect_tool` - Detect ICC2/Innovus/PT
-- `get_job_status` - Check job status
-- `get_mode` - Get current execution mode
-- `set_mode` - Set manual/auto mode
-- `toggle_mode` - Toggle between modes
-- `get_pending` - Get pending Tcl
-- `approve_pending` - Approve and execute
-- `reject_pending` - Reject pending Tcl
-
-**Knowledge MCP Server** (4 tools):
-- `search_docs` - Search documentation
-- `get_command_ref` - Get command reference
-- `list_skills` - List all skills
-- `get_skill` - Get skill content
-
-### 3. Skill System (Task 3)
-
-**4 Built-in Skills:**
-- `fix-setup-timing` - Fix setup violations
-- `fix-hold-timing` - Fix hold violations
-- `route-design` - Complete routing
-- `report-timing` - Generate timing reports
-
-**Tcl Templates:**
-- `icc2_fix_setup_timing.tcl` - Multi-strategy fixes
-- `icc2_report_timing.tcl` - Timing reports
-
-### 4. Ibex Integration (Task 4)
-
-**Design:** Ibex Core (32-bit RISC-V CPU)
-**Technology:** Skywater 130nm HD
-**Flow:** Complete RTL-to-GDS
-
-**Demos Recorded:**
-- MCP servers working (603KB)
-- Comprehensive feature demo (1.3MB)
-
----
-
-## 🔧 Development Environment
-
-### Requirements
-
-| Component | Version | Location |
-|-----------|---------|----------|
-| **OS** | CentOS 7.9+ | glibc 2.17 |
-| **Node.js** | v20.18.3 glibc-217 | `/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/` |
-| **tmux** | 3.4 (built from source) | `/home/EDA/hipilot_test/.local/bin/tmux` |
-| **Claude Code** | v2.1.47 | npm global install |
-| **Python** | 3.6+ | `/usr/bin/python3` |
-
-### EDA Tools (Available)
-
-- **ICC2** - T-2022.03 (`/opt/synopsys/icc2_2022.03/`)
-- **Innovus** - v20.10 (`/opt/cadence/INNOVUS20.10/`)
-- **PrimeTime** - T-2022.03 (`/opt/synopsys/prime_2022.03/`)
-
----
-
-## ⚠️ Common Mistakes (Avoid These!)
-
-### 1. Wrong Pane Targeting
-```bash
-# ❌ WRONG - Uses indices
-tmux send-keys -t 0 'command' Enter
-
-# ✅ RIGHT - Use pane IDs or dynamic detection
-tmux send-keys -t %0 'command' C-m
-# Or:
-PANE=$(tmux list-panes -F "#{pane_id}" | head -1)
-tmux send-keys -t "$PANE" 'command' C-m
-```
-
-### 2. Template String Escaping
-```javascript
-// ❌ WRONG - Conflicts with tmux format strings
-const cmd = `tmux list-panes -F "#{pane_id}"`;
-
-// ✅ RIGHT - Use regular strings
-const cmd = 'tmux list-panes -F "#{pane_id}"';
-```
-
-### 3. Wrong Node.js Version
-```bash
-# ❌ WRONG - Requires glibc 2.28+
-node-v20.18.3-linux-x64.tar.xz
-
-# ✅ RIGHT - Works on CentOS 7
-node-v20.18.3-linux-x64-glibc-217.tar.xz
-```
-
-### 4. Wrong Video Codec
-```bash
-# ❌ WRONG - Won't play on Mac
-ffmpeg -f x11grab -i :0 output.mp4
-
-# ✅ RIGHT - Always use yuv420p
-ffmpeg -f x11grab -video_size ${RESOLUTION} -framerate 15 -i :0 \
-  -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p output.mp4
-```
-
-### 5. Hardcoded Resolution
-```bash
-# ❌ WRONG - May not match actual display
-ffmpeg -video_size 2880x1800 ...
-
-# ✅ RIGHT - Detect dynamically
-RESOLUTION=$(xdpyinfo | grep dimensions | awk '{print $2}')
-ffmpeg -video_size ${RESOLUTION} ...
-```
-
-See **[DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)** for complete pitfalls & solutions.
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-/home/EDA/hipilot/                    # Main installation
-├── bin/hipilot                       # Launcher
-├── servers/
-│   ├── tmux/index.js                 # 6 tools
-│   ├── eda/index.js                  # 5 tools
-│   └── knowledge/index.js            # 4 tools
-└── src/lib/ui.js                     # Terminal UI library
-
-/home/EDA/hipilot_test/               # Development workspace
-├── .hipilot/
-│   ├── skills/                       # 4 skills
-│   │   ├── fix-setup-timing.md
-│   │   ├── fix-hold-timing.md
-│   │   ├── route-design.md
-│   │   └── report-timing.md
-│   └── history/                      # Generated Tcl archive
-├── templates/
-│   ├── synopsys/
-│   │   ├── icc2_fix_setup_timing.tcl
-│   │   └── icc2_report_timing.tcl
-│   └── cadence/
-└── recordings/                       # Demo videos
-
-/home/EDA/
-├── .hipilot-tmux.conf                 # Tmux config
-└── .hipilot-mcp.json                  # MCP config
+hipilot/
+├── bin/                    # Launcher scripts
+├── servers/                # 3 MCP servers (eda, tmux, knowledge)
+├── skills/                 # 35 skill definitions (.md)
+├── templates/              # 20 Tcl templates (synopsys/, cadence/)
+├── src/                    # Core source (CLI, TUI, libraries)
+│   ├── cli.js              # TUI dashboard (React/Ink)
+│   ├── hitestbot/          # E2E test framework
+│   └── lib/                # Utilities (mode, risk, paths)
+├── data/                   # Command reference (JSON)
+├── test/                   # Unit tests (vitest)
+├── docs/                   # Documentation (see below)
+└── archive/                # Superseded docs (for reference only)
 ```
 
 ---
 
-## 🧪 Testing
+## Documentation
 
-### Run Integration Tests
+| Document | Purpose |
+|----------|---------|
+| [docs/quick-start.md](docs/quick-start.md) | First-time user guide |
+| [docs/architecture.md](docs/architecture.md) | System design and components |
+| [docs/skills-guide.md](docs/skills-guide.md) | All 35 skills documented |
+| [docs/mcp-servers.md](docs/mcp-servers.md) | MCP integration reference |
+| [docs/rtl2gds-flow.md](docs/rtl2gds-flow.md) | Complete RTL-to-GDS flow guide |
+| [docs/deploy-guide.md](docs/deploy-guide.md) | Installation and deployment |
+| [docs/eda-server-setup.md](docs/eda-server-setup.md) | EDA server configuration |
+| [docs/testing/TESTING_RULES.md](docs/testing/TESTING_RULES.md) | Testing philosophy and rules |
+
+**For developers:** Also read [CLAUDE.md](CLAUDE.md) (architecture context) and [AGENTS.md](AGENTS.md) (cloud dev instructions).
+
+---
+
+## Development
+
+### Prerequisites
+
+- Node.js v20+ (ES modules)
+- npm 10+
+- tmux 3.4+ (for workspace features)
+
+### Install & Test
 
 ```bash
-cd /home/EDA/hipilot_test
-./test_ibex_integration.sh
+npm run install:all     # Install all dependencies (root + 3 servers)
+npm test                # Run unit tests (vitest, 118 tests)
+npm run setup           # Run setup wizard
 ```
 
-### Test MCP Servers Manually
+### Run MCP Servers (standalone)
 
 ```bash
-# List tools
-echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node ~/hipilot/servers/tmux/index.js
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/eda/index.js
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/tmux/index.js
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/knowledge/index.js
+```
 
-# Call a tool
-echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"knowledge.list_skills","arguments":{}}}' | \
-  node ~/hipilot/servers/knowledge/index.js
+### TUI Commands
+
+```bash
+node src/cli.js              # Status dashboard
+node src/cli.js skills       # List 35 skills
+node src/cli.js templates    # List 20 Tcl templates
+node src/cli.js help         # All CLI commands
 ```
 
 ---
 
-## 🎥 Demo Videos
+## Tested Design: Ibex RISC-V CPU
 
-All demo videos recorded with H.264/yuv420p for macOS compatibility:
-
-- `hipilot_workspace_final.mp4` - Initial workspace demo
-- `hipilot_mcp_demo.mp4` - MCP servers in action
-- `hipilot_comprehensive_demo.mp4` - Full feature walkthrough
-
----
-
-## 🛠️ Installation
-
-### For CentOS 7 (glibc 2.17)
-
-1. **Install Node.js v20 (glibc-217)**
-2. **Build tmux 3.4** from source
-3. **Install Claude Code**
-4. **Run HiPilot installer**
-5. **Configure MCP servers**
-
-See **[DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)** for complete installation instructions.
+| Attribute | Value |
+|-----------|-------|
+| **Design** | Ibex Core (RV32IMC) |
+| **Technology** | Skywater 130nm HD |
+| **Cells** | ~7,000 instances |
+| **Target** | 100 MHz |
+| **Flow** | Complete RTL-to-GDS verified |
 
 ---
 
-## 📖 Documentation Structure
+## License
 
-```
-docs/
-├── prd.md                           # Product requirements
-├── plans/
-│   └── 2026-02-18-hipilot-architecture-design.md  # Complete architecture
-├── specs/
-│   ├── eda-mcp-server-spec.md       # EDA MCP server spec
-│   ├── tmux-mcp-server-spec.md      # Tmux MCP server spec
-│   ├── knowledge-mcp-server-spec.md # Knowledge MCP server spec
-│   └── ux-specification.md          # UX design
-├── guides/
-│   └── skill-authoring-guide.md      # How to write skills
-├── roadmap.md                       # Development roadmap
-├── SCREEN_RECORDING_SETUP.md        # Recording infrastructure
-└── EDA_SERVER_SETUP.md              # Server environment
-```
+MIT License - See [LICENSE](LICENSE) for details.
 
 ---
 
-## 🤝 Contributing
-
-### For Developers
-
-1. Read **[CLAUDE.md](CLAUDE.md)** first
-2. Review **[DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)**
-3. Test on EDA server with Ibex design
-4. Record demo videos
-5. Document changes
-
-### Adding Skills
-
-1. Create skill file in `.hipilot/skills/`
-2. Follow skill format (see **[SKILL_AUTHORING_GUIDE.md](docs/guides/skill-authoring-guide.md)**)
-3. Test with `knowledge.get_skill()`
-4. Document usage
-
----
-
-## 📊 Success Metrics
-
-| Metric | Status | Notes |
-|--------|--------|-------|
-| **50/50 Workspace** | ✅ Complete | tmux 3.4, beautiful UI |
-| **MCP Servers** | ✅ Complete | 3 servers, 15 tools |
-| **Skills** | ✅ Complete | 4 skills, extendable |
-| **Tcl Generation** | ✅ Complete | Works for Ibex |
-| **Ibex Integration** | ✅ Complete | Tested on real design |
-| **Demos** | ✅ Complete | 3 videos recorded |
-
----
-
-## 🚧 Next Steps
-
-While v0.1.0 is complete, future enhancements could include:
-
-1. **More Skills** - Add workflows for synthesis, STA, physical verification
-2. **Cadence Templates** - Innovus/Tempus templates
-3. **Skill Auto-generation** - `/skill-gen` command
-4. **QoR Tracking** - Track metrics across iterations
-5. **More EDA Tools** - Calibre DRC/LVS integration
-
----
-
-## 📄 License
-
-Built as a light fork of [Claude Code](https://claude.ai/code) with three specialized MCP servers.
-
----
-
-## ❓ Questions?
-
-- **Quick help:** [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
-- **Development:** [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)
-- **Architecture:** [docs/plans/2026-02-18-hipilot-architecture-design.md](docs/plans/2026-02-18-hipilot-architecture-design.md)
-- **Server setup:** [docs/EDA_SERVER_SETUP.md](docs/EDA_SERVER_SETUP.md)
-
----
-
-**Last Updated:** 2026-02-19
-**Version:** 0.1.0
-**Status:** ✅ COMPLETE - All 4 Tasks Finished
-**Maintained By:** HiPilot Development Team
+**Repository:** https://github.com/qfliuyang/hipilot

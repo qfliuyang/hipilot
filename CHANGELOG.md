@@ -2,6 +2,43 @@
 
 All notable changes to HiPilot will be documented in this file.
 
+## [0.5.0] - 2026-02-25
+
+### Changed
+- **Documentation restructured** — Consolidated ~40 docs into clean hierarchy
+  - `docs/` now has 7 guides + `testing/` + `specs/` subdirs
+  - Old plans, evidence, and superseded docs moved to `archive/`
+  - `docs_latest/` removed (content promoted into `docs/`)
+  - `README.md` rewritten for v0.5.0
+- **Testing philosophy** — Added `docs/testing/TESTING_RULES.md` with layered evidence framework, observer review protocol, and flow certification approach
+- **AGENTS.md** — Added Cursor Cloud specific development instructions
+
+### Added
+- 8 new RTL-to-GDS flow skills (synthesis through verification)
+- HiTestBot E2E test framework (`src/hitestbot/`) with 12 test files
+- TUI dashboard with React/Ink (`src/cli.js`)
+- Session management tools (checkpoint, history, context)
+- Workflow automation tools (define, run, cancel)
+- QoR tracking tools (snapshot, compare, trend)
+- Error diagnosis and Tcl validation tools
+- Report analysis with caching
+
+### Stats
+- 48 EDA MCP tools, 8 Tmux MCP tools, 7 Knowledge MCP tools
+- 35 skills, 20 Tcl templates
+- 118 unit tests passing
+
+## [0.4.0] - 2026-02-23
+
+### Added
+- Complete RTL-to-GDS flow execution on Ibex design
+- MCP wrapper script for JSON-RPC testing
+- 15 new MCP tools (capture_and_wait, wait_for_prompt, run_skill, etc.)
+- Quick commands system (8 slash commands)
+- Auto-analysis for EDA reports
+- Side-effect warnings for Tcl operations
+- Evidence-based output format with trust badges
+
 ## [0.3.0] - 2026-02-20
 
 ### Added
