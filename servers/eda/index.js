@@ -3290,10 +3290,10 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         const workflows = [];
         
         const builtinWorkflows = [
-          { id: 'wf_builtin_fix_setup', name: 'fix_setup_timing', description: 'Analyze → Generate fixes → Apply → Verify', steps: 4, is_builtin: true },
-          { id: 'wf_builtin_fix_hold', name: 'fix_hold_timing', description: 'Analyze → Generate fixes → Apply → Verify', steps: 4, is_builtin: true },
-          { id: 'wf_builtin_cts', name: 'run_cts_flow', description: 'Build CTS → Optimize → Verify', steps: 3, is_builtin: true },
-          { id: 'wf_builtin_eco', name: 'eco_flow', description: 'Analyze changes → Apply ECO → Verify', steps: 3, is_builtin: true },
+          { id: 'wf_builtin_fix_setup', name: 'fix_setup_timing', description: 'Report timing → Generate fixes → Verify', steps: 3, is_builtin: true },
+          { id: 'wf_builtin_fix_hold', name: 'fix_hold_timing', description: 'Report hold → Generate fixes → Verify', steps: 3, is_builtin: true },
+          { id: 'wf_builtin_cts', name: 'run_cts_flow', description: 'Build clock tree → Optimize → Verify timing', steps: 3, is_builtin: true },
+          { id: 'wf_builtin_rtl2gds', name: 'rtl2gds', description: 'Init → Floorplan → Place → CTS → Route → Finish (8 steps)', steps: 8, is_builtin: true },
         ];
         
         workflows.push(...builtinWorkflows);
@@ -3323,15 +3323,54 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         const workflowsDir = join(hipilotPaths.hipilotDir, 'workflows');
         const runsDir = join(hipilotPaths.hipilotDir, 'workflow_runs');
         mkdirSync(runsDir, { recursive: true });
-        
-        let workflow = null;
+
+        // Built-in workflows with executable step definitions
         const builtinWorkflows = {
-          'fix_setup_timing': { name: 'fix_setup_timing', steps: [{ name: 'Analyze timing' }, { name: 'Generate fixes' }, { name: 'Apply fixes' }, { name: 'Verify' }] },
-          'fix_hold_timing': { name: 'fix_hold_timing', steps: [{ name: 'Analyze timing' }, { name: 'Generate fixes' }, { name: 'Apply fixes' }, { name: 'Verify' }] },
-          'run_cts_flow': { name: 'run_cts_flow', steps: [{ name: 'Build CTS' }, { name: 'Optimize' }, { name: 'Verify' }] },
-          'eco_flow': { name: 'eco_flow', steps: [{ name: 'Analyze changes' }, { name: 'Apply ECO' }, { name: 'Verify' }] },
+          'fix_setup_timing': {
+            name: 'fix_setup_timing',
+            description: 'Analyze timing → Generate fixes → Apply → Verify',
+            steps: [
+              { name: 'Report timing', operation: 'report_timing', timeout: 120, on_failure: 'stop' },
+              { name: 'Generate fix Tcl', operation: 'fix_setup_timing', timeout: 30, on_failure: 'stop' },
+              { name: 'Verify improvement', operation: 'report_timing', timeout: 120, on_failure: 'stop' },
+            ],
+          },
+          'fix_hold_timing': {
+            name: 'fix_hold_timing',
+            description: 'Analyze hold → Generate fixes → Verify',
+            steps: [
+              { name: 'Report hold timing', operation: 'report_timing', timeout: 120, on_failure: 'stop' },
+              { name: 'Generate hold fix Tcl', operation: 'fix_hold_timing', timeout: 30, on_failure: 'stop' },
+              { name: 'Verify hold improvement', operation: 'report_timing', timeout: 120, on_failure: 'stop' },
+            ],
+          },
+          'run_cts_flow': {
+            name: 'run_cts_flow',
+            description: 'Build clock tree → Optimize → Verify timing',
+            steps: [
+              { name: 'Build clock tree', operation: 'run_cts', timeout: 300, on_failure: 'stop' },
+              { name: 'Optimize post-CTS', operation: 'optimize_design', timeout: 300, on_failure: 'stop' },
+              { name: 'Verify timing', operation: 'report_timing', timeout: 120, on_failure: 'stop' },
+            ],
+          },
+          'rtl2gds': {
+            name: 'rtl2gds',
+            description: 'Complete RTL-to-GDS flow: init → floorplan → placement → CTS → routing → chip finish',
+            steps: [
+              { name: 'Design init', operation: 'read_design', timeout: 180, on_failure: 'stop' },
+              { name: 'Floorplan', tcl: 'floorPlan -site unithd -su 1 0.4 1 1 1 1', timeout: 120, on_failure: 'stop' },
+              { name: 'Placement', tcl: 'place_opt_design', timeout: 300, on_failure: 'stop' },
+              { name: 'CTS', operation: 'run_cts', timeout: 300, on_failure: 'stop' },
+              { name: 'Post-CTS optimization', operation: 'optimize_design', timeout: 300, on_failure: 'stop' },
+              { name: 'Routing', operation: 'route_design', timeout: 600, on_failure: 'stop' },
+              { name: 'Timing report', operation: 'report_timing', timeout: 120, on_failure: 'skip' },
+              { name: 'Chip finish', operation: 'save_design', timeout: 120, on_failure: 'stop' },
+            ],
+          },
         };
-        
+
+        // Resolve workflow
+        let workflow = null;
         if (builtinWorkflows[name]) {
           workflow = builtinWorkflows[name];
         } else {
@@ -3340,32 +3379,246 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
             workflow = JSON.parse(readFileSync(workflowPath, 'utf-8'));
           }
         }
-        
+
         if (!workflow) {
-          return { content: [{ type: 'text', text: `❌ Workflow not found: ${name}` }], isError: true };
+          return { content: [{ type: 'text', text: `❌ Workflow not found: ${name}\n\nAvailable: ${Object.keys(builtinWorkflows).join(', ')}` }], isError: true };
         }
-        
+
+        // Initialize run
         const runId = `run_${Date.now()}`;
+        const runFile = join(runsDir, `${runId}.json`);
         const run = {
           run_id: runId,
           workflow_name: name,
           status: 'running',
-          current_step: 1,
+          current_step: 0,
           total_steps: workflow.steps.length,
           started_at: new Date().toISOString(),
           params,
-          results: [],
+          step_results: [],
+          qor_snapshots: [],
         };
-        
-        writeFileSync(join(runsDir, `${runId}.json`), JSON.stringify(run, null, 2));
-        
-        let text = `🚀 **Workflow Started**\n\n`;
+        writeFileSync(runFile, JSON.stringify(run, null, 2));
+
+        // Detect tool for Tcl generation
+        const detectedTool = detectTool();
+        const toolVendor = detectedTool.vendor === 'cadence' ? 'innovus' : 'icc2';
+
+        // Execute steps sequentially
+        for (let i = 0; i < workflow.steps.length; i++) {
+          const step = workflow.steps[i];
+          const stepNum = i + 1;
+          run.current_step = stepNum;
+          writeFileSync(runFile, JSON.stringify(run, null, 2));
+
+          const stepStart = Date.now();
+          let stepResult = { step: stepNum, name: step.name, status: 'running' };
+
+          try {
+            // Resolve Tcl for this step
+            let tcl;
+            if (step.tcl) {
+              tcl = step.tcl;
+            } else if (step.operation) {
+              const genResult = generateTcl(
+                step.name,
+                { tool: toolVendor, operation: step.operation, ...params }
+              );
+              tcl = genResult.tcl;
+              stepResult.template = genResult.template || null;
+              stepResult.badge = genResult.badge || null;
+            } else {
+              stepResult.status = 'skipped';
+              stepResult.reason = 'No tcl or operation specified';
+              run.step_results.push(stepResult);
+              continue;
+            }
+
+            // Execute via tmux (auto mode forced for workflow steps)
+            const paneIdx = '1';
+            const target = `${TMUX_SESSION}:0.${paneIdx}`;
+            const tclFile = `${hipilotPaths.execDir}/wf_${runId}_step${stepNum}_${Date.now()}.tcl`;
+            writeFileSync(tclFile, tcl);
+
+            try {
+              if (!existsSync(HISTORY_DIR)) mkdirSync(HISTORY_DIR, { recursive: true });
+              const histFile = join(HISTORY_DIR, `wf_${name}_step${stepNum}_${new Date().toISOString().replace(/[:.]/g, '-')}.tcl`);
+              writeFileSync(histFile, `# Workflow: ${name} Step ${stepNum}: ${step.name}\n\n${tcl}`);
+            } catch {}
+
+            try {
+              execSync(
+                `tmux -L ${TMUX_SESSION} send-keys -t ${target} "source ${tclFile}" Enter`,
+                { encoding: 'utf-8', stdio: 'pipe' }
+              );
+            } catch (e) {
+              stepResult.status = 'failed';
+              stepResult.error = `Send failed: ${e.message}`;
+              stepResult.elapsed_ms = Date.now() - stepStart;
+              run.step_results.push(stepResult);
+              if (step.on_failure !== 'skip') {
+                run.status = 'failed';
+                run.failed_at_step = stepNum;
+                run.failure_reason = stepResult.error;
+                break;
+              }
+              continue;
+            }
+
+            // Wait for prompt
+            await new Promise(r => setTimeout(r, 1500));
+            const timeoutMs = (step.timeout || 120) * 1000;
+            const promptPatterns = [/innovus\s*\d+>/i, /icc2_shell>/i, /icc2>/i, /pt_shell>/i, /tempus\s*\d*>/i];
+            let promptDetected = false;
+            let capturedOutput = '';
+            const waitStart = Date.now();
+
+            while (Date.now() - waitStart < timeoutMs) {
+              try {
+                capturedOutput = execSync(
+                  `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -200 2>/dev/null || echo ""`,
+                  { encoding: 'utf-8', timeout: 5000 }
+                );
+                const lastLine = capturedOutput.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
+                for (const pat of promptPatterns) {
+                  if (pat.test(lastLine)) { promptDetected = true; break; }
+                }
+                if (promptDetected) break;
+              } catch {}
+              await new Promise(r => setTimeout(r, 1000));
+            }
+
+            stepResult.elapsed_ms = Date.now() - stepStart;
+
+            if (!promptDetected) {
+              stepResult.status = 'timeout';
+              stepResult.error = `Timeout after ${step.timeout || 120}s`;
+              run.step_results.push(stepResult);
+              if (step.on_failure !== 'skip') {
+                run.status = 'failed';
+                run.failed_at_step = stepNum;
+                run.failure_reason = `Step "${step.name}" timed out`;
+                break;
+              }
+              continue;
+            }
+
+            // Detect errors
+            const errorPatterns = [/^\*\*ERROR/m, /^Error:/m, /ERROR:/i, /FATAL/i, /unknown\s+command/i, /syntax\s+error/i];
+            const errors = [];
+            for (const line of capturedOutput.split('\n')) {
+              const trimmed = line.trim();
+              if (!trimmed) continue;
+              for (const pat of errorPatterns) {
+                if (pat.test(trimmed)) { errors.push(trimmed); break; }
+              }
+            }
+            const uniqueErrors = [...new Set(errors)].slice(0, 10);
+
+            // Extract QoR
+            const qor = extractQoR(capturedOutput);
+            if (qor.wns !== null || qor.tns !== null) {
+              run.qor_snapshots.push({ step: stepNum, name: step.name, qor, timestamp: new Date().toISOString() });
+            }
+
+            // Determine step status
+            if (uniqueErrors.length > 0) {
+              stepResult.status = 'error';
+              stepResult.errors = uniqueErrors;
+            } else {
+              stepResult.status = 'completed';
+            }
+            stepResult.qor = qor;
+            stepResult.output_lines = capturedOutput.split('\n').length;
+            run.step_results.push(stepResult);
+
+            try { unlinkSync(tclFile); } catch {}
+
+            // Handle step failure
+            if (stepResult.status === 'error' && step.on_failure !== 'skip') {
+              if (step.on_failure === 'retry') {
+                // TODO: implement retry logic in future
+                run.status = 'failed';
+                run.failed_at_step = stepNum;
+                run.failure_reason = `Step "${step.name}" errored: ${uniqueErrors[0]}`;
+                break;
+              } else {
+                run.status = 'failed';
+                run.failed_at_step = stepNum;
+                run.failure_reason = `Step "${step.name}" errored: ${uniqueErrors[0]}`;
+                break;
+              }
+            }
+
+          } catch (err) {
+            stepResult.status = 'error';
+            stepResult.error = err.message;
+            stepResult.elapsed_ms = Date.now() - stepStart;
+            run.step_results.push(stepResult);
+            run.status = 'failed';
+            run.failed_at_step = stepNum;
+            run.failure_reason = err.message;
+            break;
+          }
+        }
+
+        // Finalize run
+        if (run.status === 'running') {
+          run.status = 'completed';
+        }
+        run.completed_at = new Date().toISOString();
+        run.total_elapsed_ms = Date.now() - new Date(run.started_at).getTime();
+        writeFileSync(runFile, JSON.stringify(run, null, 2));
+
+        // Build report
+        const completedSteps = run.step_results.filter(r => r.status === 'completed').length;
+        const failedSteps = run.step_results.filter(r => r.status === 'error' || r.status === 'failed').length;
+        const skippedSteps = run.step_results.filter(r => r.status === 'skipped' || r.status === 'timeout').length;
+        const totalElapsed = (run.total_elapsed_ms / 1000).toFixed(1);
+
+        let text = '';
+        if (run.status === 'completed') {
+          text += `✅ **Workflow Completed**\n\n`;
+        } else {
+          text += `❌ **Workflow Failed**\n\n`;
+        }
+
         text += `**Workflow:** ${name}\n`;
         text += `**Run ID:** ${runId}\n`;
-        text += `**Status:** Running\n`;
-        text += `**Steps:** ${run.total_steps}\n`;
-        text += `\nUse \`workflow.get_status\` to check progress.`;
-        
+        text += `**Duration:** ${totalElapsed}s\n`;
+        text += `**Progress:** ${completedSteps}/${run.total_steps} steps completed`;
+        if (failedSteps > 0) text += `, ${failedSteps} failed`;
+        if (skippedSteps > 0) text += `, ${skippedSteps} skipped`;
+        text += '\n\n';
+
+        text += `### Step Results\n\n`;
+        text += `| # | Step | Status | Duration | Notes |\n`;
+        text += `|---|------|--------|----------|-------|\n`;
+        for (const sr of run.step_results) {
+          const icon = sr.status === 'completed' ? '✅' : sr.status === 'error' || sr.status === 'failed' ? '❌' : sr.status === 'timeout' ? '⏱' : '⏭';
+          const dur = sr.elapsed_ms ? `${(sr.elapsed_ms / 1000).toFixed(1)}s` : '-';
+          const notes = sr.error ? sr.error.slice(0, 60) : sr.qor?.wns !== null ? `WNS: ${sr.qor.wns}` : '';
+          text += `| ${sr.step} | ${sr.name} | ${icon} ${sr.status} | ${dur} | ${notes} |\n`;
+        }
+
+        // Remaining steps not attempted
+        for (let i = run.step_results.length; i < workflow.steps.length; i++) {
+          text += `| ${i + 1} | ${workflow.steps[i].name} | ⏭ not reached | - | |\n`;
+        }
+        text += '\n';
+
+        if (run.qor_snapshots.length > 0) {
+          text += `### QoR Tracking\n\n`;
+          for (const snap of run.qor_snapshots) {
+            text += `**${snap.name}:** WNS=${snap.qor.wns ?? 'N/A'}, TNS=${snap.qor.tns ?? 'N/A'}\n`;
+          }
+          text += '\n';
+        }
+
+        if (run.failure_reason) {
+          text += `### Failure\n\n**Reason:** ${run.failure_reason}\n`;
+        }
+
         return { content: [{ type: 'text', text }], _metadata: run };
       }
 

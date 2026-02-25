@@ -368,12 +368,12 @@ tmux -V  # Should be 1.8+ or 3.4+
 
 ## API Reference Summary
 
-### EDA MCP (48 Tools)
+### EDA MCP (49 Tools)
 
 | Category | Tools |
 |----------|-------|
 | **Tcl Generation** | `generate_tcl`, `send_to_terminal`, `quick`, `save_tcl`, `edit_tcl`, `validate_tcl`, `list_templates`, `run_skill` |
-| **EDA Interaction** | `detect_tool`, `capture_and_analyze`, `capture_and_wait`, `wait_for_prompt`, `wait_for_pattern`, `get_last_result`, `extract_qor`, `get_job_status`, `analyze_report`, `get_analysis_cache`, `diagnose_error` |
+| **EDA Interaction** | `detect_tool`, `execute_and_verify`, `capture_and_analyze`, `capture_and_wait`, `wait_for_prompt`, `wait_for_pattern`, `get_last_result`, `extract_qor`, `get_job_status`, `analyze_report`, `get_analysis_cache`, `diagnose_error` |
 | **Mode Control** | `get_mode`, `set_mode`, `toggle_mode`, `get_pending`, `approve_pending`, `reject_pending`, `get_risk_analysis`, `confirm_dangerous`, `get_status` |
 | **Session** | `session.save_checkpoint`, `session.list_checkpoints`, `session.restore_checkpoint`, `session.get_history`, `session.get_context` |
 | **Context** | `context.detect`, `context.get_stage`, `context.suggest_next` |

@@ -63,7 +63,7 @@ See [docs/quick-start.md](docs/quick-start.md) for the complete first-time setup
 
 | Component | Tools | Purpose |
 |-----------|-------|---------|
-| **EDA MCP Server** | 48 tools | Tcl generation, tool control, QoR, workflows |
+| **EDA MCP Server** | 49 tools | Tcl generation, tool control, QoR, workflows |
 | **Tmux MCP Server** | 8 tools | Workspace management, pane control |
 | **Knowledge MCP Server** | 7 tools | Skill loading, doc search, command ref |
 
