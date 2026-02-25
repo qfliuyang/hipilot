@@ -1,0 +1,29 @@
+clear
+claude --dangerously-skip-permissions
+[EDA@EDA2035 current]$ clear
+[EDA@EDA2035 current]$ claude --dangero
+usly-skip-permissions
+╭─ Claude Code ───────────────────────╮
+│                                     │
+│            Welcome back!            │
+│                                     │
+│                                     │
+│                                     │
+│               ▐▛███▜▌               │
+│              ▝▜█████▛▘              │
+│                ▘▘ ▝▝                │
+│                                     │
+│              Opus 4.6               │
+│          API Usage Billing          │
+│          ~/hipilot/current          │
+│                                     │
+╰─────────────────────────────────────╯
+
+  Welcome to Opus 4.6
+
+───────────────────────────────────────
+❯ Try "fix lint errors"
+───────────────────────────────────────
+  ⏵⏵ bypass permissions on (shift+ta…
+  Claude Code has switched from npm …
+
