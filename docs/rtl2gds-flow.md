@@ -473,12 +473,12 @@ verifyConnectivity -type all
 
 ## Evidence Files
 
-All flow execution evidence is stored in:
+Flow execution evidence is stored on the EDA server at:
 ```
-e2e_evidence/20260223_complete_rtl2gds/
-├── innovus_main.cmd      # Command log
-├── innovus_main.log      # Full log
-└── claude_code_pane.log  # Claude interaction
+/home/EDA/hipilot_test/sessions/<test_name>/evidence/
+├── innovus_main.log      # Full EDA log
+├── claude_pane.log       # Claude interaction
+└── eda_pane.log          # EDA pane capture
 ```
 
 ---

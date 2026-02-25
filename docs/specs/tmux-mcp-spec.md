@@ -1,7 +1,9 @@
 # Tmux MCP Server - Technical Specification
 
+> **Note:** This is the original Phase 1 design specification. The actual implementation has evolved (8 tools, JavaScript instead of TypeScript). See [../mcp-servers.md](../mcp-servers.md) for the current API reference.
+
 **Component:** `@hipilot/tmux-mcp-server`
-**Version:** Phase 1
+**Version:** Phase 1 (original design)
 **Date:** 2026-02-19
 
 ---

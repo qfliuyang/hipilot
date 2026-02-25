@@ -295,13 +295,11 @@ hipilot/
 │   ├── mcp_wrapper.sh       # JSON-RPC wrapper for shell
 │   └── postinstall.js       # Post-install setup
 │
-├── docs/                    # Active documentation
-│   ├── architecture.md, quick-start.md, skills-guide.md
-│   ├── mcp-servers.md, rtl2gds-flow.md, deploy-guide.md
-│   ├── specs/               # MCP server specifications
-│   └── testing/             # Testing rules and guides
-│
-└── archive/                 # Superseded docs (reference only)
+└── docs/                    # Documentation
+    ├── architecture.md, quick-start.md, skills-guide.md
+    ├── mcp-servers.md, rtl2gds-flow.md, deploy-guide.md
+    ├── specs/               # MCP server specifications
+    └── testing/             # Testing rules and guides
 ```
 
 ---
@@ -361,8 +359,8 @@ Before executing Tcl, HiPilot analyzes:
 
 ### Adding New Templates
 
-1. Create `templates/vendor/template.tcl.j2`
-2. Use Jinja2 syntax
+1. Create `templates/vendor/tool_operation.tcl`
+2. Use Nunjucks/Jinja2 syntax
 3. Register in EDA MCP server
 
 ### Adding New MCP Tools
