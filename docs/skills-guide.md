@@ -403,6 +403,12 @@ calibre -lvs -hier rules/lvs.rules
 
 **Description:** Automatic timing violation fixing.
 
+### fix-setup-timing-v2
+
+**Triggers:** "fix setup", "setup timing"
+
+**Description:** Enhanced setup timing fix workflow with iterative optimization and QoR tracking.
+
 ### run-eco-flow
 
 **Triggers:** "eco flow", "run eco"
