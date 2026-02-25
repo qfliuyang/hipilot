@@ -158,17 +158,20 @@ export class StageVerifier {
   scoreL4(completeObs, errorObs, workflowStepResult) {
     // L4: Did the EDA tool execute successfully?
     if (workflowStepResult) {
-      if (workflowStepResult.status === 'completed') {
-        const hasWarnings = workflowStepResult.warnings?.length > 0;
+      if (workflowStepResult.status === 'completed' || workflowStepResult.status === 'success') {
+        const warnings = workflowStepResult.warnings || workflowStepResult.warnings_detected || [];
+        const hasWarnings = warnings.length > 0;
         return hasWarnings
-          ? { score: 0.5, detail: `Completed with ${workflowStepResult.warnings.length} warnings` }
+          ? { score: 0.5, detail: `Completed with ${warnings.length} warnings` }
           : { score: 1.0, detail: 'EDA execution completed successfully' };
       }
       if (workflowStepResult.status === 'timeout') {
         return { score: 0.0, detail: `Timed out: ${workflowStepResult.error}` };
       }
       if (workflowStepResult.status === 'error' || workflowStepResult.status === 'failed') {
-        return { score: 0.0, detail: `EDA error: ${(workflowStepResult.errors || [workflowStepResult.error])[0] || 'unknown'}` };
+        const errors = workflowStepResult.errors || workflowStepResult.errors_detected || [];
+        const firstError = errors[0] || workflowStepResult.error || 'unknown';
+        return { score: 0.0, detail: `EDA error: ${firstError}` };
       }
     }
 

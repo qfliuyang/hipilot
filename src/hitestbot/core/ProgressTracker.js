@@ -31,7 +31,11 @@ export class ProgressTracker {
         this.addRunFromFile(progressFile);
       }
     }
-    this.runs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    this.runs.sort((a, b) => {
+      const tsA = a.timestamp || '';
+      const tsB = b.timestamp || '';
+      return tsA.localeCompare(tsB);
+    });
   }
 
   /** Get the improvement trend */
