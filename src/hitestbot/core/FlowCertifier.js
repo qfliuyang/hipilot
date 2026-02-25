@@ -316,9 +316,13 @@ export class FlowCertifier {
    */
   sendPromptToHiPilot(prompt) {
     const target = `${this.session}:0.0`;
-    const tmuxCmd = `tmux -L ${this.socket} send-keys -t ${target} '${prompt.replace(/'/g, "'\\''")}' Enter`;
+    // Send prompt text and Enter key separately to ensure proper submission
+    const escapedPrompt = prompt.replace(/'/g, "'\\''");
+    const textCmd = `tmux -L ${this.socket} send-keys -t ${target} '${escapedPrompt}'`;
+    const enterCmd = `tmux -L ${this.socket} send-keys -t ${target} C-m`;
     try {
-      execSync(tmuxCmd, { encoding: 'utf-8', timeout: 5000 });
+      execSync(textCmd, { encoding: 'utf-8', timeout: 5000 });
+      execSync(enterCmd, { encoding: 'utf-8', timeout: 5000 });
       return true;
     } catch (e) {
       return false;
