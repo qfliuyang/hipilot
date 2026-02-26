@@ -1,0 +1,11 @@
+{"timestamp":"2026-02-26T19:35:47.886Z","elapsed_s":35.6,"video_offset_s":35.631,"label":"after_launch","claude_lines":2,"eda_lines":2,"claude_last10":"","eda_last10":""}
+{"timestamp":"2026-02-26T19:37:49.266Z","elapsed_s":157,"video_offset_s":157.011,"label":"claude_ready","claude_lines":2,"eda_lines":2,"claude_last10":"","eda_last10":""}
+{"timestamp":"2026-02-26T19:37:51.390Z","elapsed_s":159.1,"video_offset_s":159.135,"label":"after_type","claude_lines":2,"eda_lines":2,"claude_last10":"","eda_last10":""}
+{"timestamp":"2026-02-26T19:37:56.408Z","elapsed_s":164.1,"video_offset_s":164.155,"label":"poll_1","claude_lines":2,"eda_lines":2,"claude_last10":"","eda_last10":""}
+{"timestamp":"2026-02-26T19:38:01.425Z","elapsed_s":169.2,"video_offset_s":169.17,"label":"poll_2","claude_lines":2,"eda_lines":2,"claude_last10":"","eda_last10":""}
+{"timestamp":"2026-02-26T19:38:06.443Z","elapsed_s":174.2,"video_offset_s":174.189,"label":"poll_3","claude_lines":2,"eda_lines":2,"claude_last10":"","eda_last10":""}
+{"timestamp":"2026-02-26T19:38:11.462Z","elapsed_s":179.2,"video_offset_s":179.206,"label":"poll_4","claude_lines":2,"eda_lines":2,"claude_last10":"","eda_last10":""}
+{"timestamp":"2026-02-26T19:38:16.479Z","elapsed_s":184.2,"video_offset_s":184.225,"label":"poll_5","claude_lines":2,"eda_lines":2,"claude_last10":"","eda_last10":""}
+{"timestamp":"2026-02-26T19:38:21.498Z","elapsed_s":189.2,"video_offset_s":189.243,"label":"poll_6","claude_lines":2,"eda_lines":2,"claude_last10":"","eda_last10":""}
+{"timestamp":"2026-02-26T19:38:27.548Z","elapsed_s":195.3,"video_offset_s":195.295,"label":"poll_7","claude_lines":2,"eda_lines":2,"claude_last10":"","eda_last10":""}
+{"timestamp":"2026-02-26T19:38:28.627Z","elapsed_s":196.4,"video_offset_s":196.372,"label":"after_flow","claude_lines":2,"eda_lines":2,"claude_last10":"","eda_last10":""}

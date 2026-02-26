@@ -1,0 +1,25 @@
+module sky130_fd_sc_hd__clkbuf_1 (
+    X   ,
+    A   ,
+    VPWR,
+    VGND,
+    VPB ,
+    VNB
+);
+
+    output X   ;
+    input  A   ;
+    input  VPWR;
+    input  VGND;
+    input  VPB ;
+    input  VNB ;
+    sky130_fd_sc_hd__clkbuf base (
+        .X(X),
+        .A(A),
+        .VPWR(VPWR),
+        .VGND(VGND),
+        .VPB(VPB),
+        .VNB(VNB)
+    );
+
+endmodule

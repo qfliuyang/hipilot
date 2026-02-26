@@ -1,0 +1,28 @@
+module sky130_fd_sc_hd__dlxtn_4 (
+    Q     ,
+    D     ,
+    GATE_N,
+    VPWR  ,
+    VGND  ,
+    VPB   ,
+    VNB
+);
+
+    output Q     ;
+    input  D     ;
+    input  GATE_N;
+    input  VPWR  ;
+    input  VGND  ;
+    input  VPB   ;
+    input  VNB   ;
+    sky130_fd_sc_hd__dlxtn base (
+        .Q(Q),
+        .D(D),
+        .GATE_N(GATE_N),
+        .VPWR(VPWR),
+        .VGND(VGND),
+        .VPB(VPB),
+        .VNB(VNB)
+    );
+
+endmodule

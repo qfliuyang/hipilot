@@ -1,0 +1,34 @@
+module sky130_fd_sc_hd__and4b_4 (
+    X   ,
+    A_N ,
+    B   ,
+    C   ,
+    D   ,
+    VPWR,
+    VGND,
+    VPB ,
+    VNB
+);
+
+    output X   ;
+    input  A_N ;
+    input  B   ;
+    input  C   ;
+    input  D   ;
+    input  VPWR;
+    input  VGND;
+    input  VPB ;
+    input  VNB ;
+    sky130_fd_sc_hd__and4b base (
+        .X(X),
+        .A_N(A_N),
+        .B(B),
+        .C(C),
+        .D(D),
+        .VPWR(VPWR),
+        .VGND(VGND),
+        .VPB(VPB),
+        .VNB(VNB)
+    );
+
+endmodule

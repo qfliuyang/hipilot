@@ -1,0 +1,34 @@
+module sky130_fd_sc_hd__fahcon_1 (
+    COUT_N,
+    SUM   ,
+    A     ,
+    B     ,
+    CI    ,
+    VPWR  ,
+    VGND  ,
+    VPB   ,
+    VNB
+);
+
+    output COUT_N;
+    output SUM   ;
+    input  A     ;
+    input  B     ;
+    input  CI    ;
+    input  VPWR  ;
+    input  VGND  ;
+    input  VPB   ;
+    input  VNB   ;
+    sky130_fd_sc_hd__fahcon base (
+        .COUT_N(COUT_N),
+        .SUM(SUM),
+        .A(A),
+        .B(B),
+        .CI(CI),
+        .VPWR(VPWR),
+        .VGND(VGND),
+        .VPB(VPB),
+        .VNB(VNB)
+    );
+
+endmodule

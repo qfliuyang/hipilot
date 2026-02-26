@@ -1,0 +1,22 @@
+module sky130_fd_sc_hd__lpflow_bleeder_1 (
+    SHORT,
+    VPWR ,
+    VGND ,
+    VPB  ,
+    VNB
+);
+
+    input SHORT;
+    inout VPWR ;
+    input VGND ;
+    input VPB  ;
+    input VNB  ;
+    sky130_fd_sc_hd__lpflow_bleeder base (
+        .SHORT(SHORT),
+        .VPWR(VPWR),
+        .VGND(VGND),
+        .VPB(VPB),
+        .VNB(VNB)
+    );
+
+endmodule

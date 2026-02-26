@@ -1,0 +1,22 @@
+module sky130_fd_sc_hd__lpflow_decapkapwr_4 (
+    VPWR ,
+    KAPWR,
+    VGND ,
+    VPB  ,
+    VNB
+);
+
+    input VPWR ;
+    input KAPWR;
+    input VGND ;
+    input VPB  ;
+    input VNB  ;
+    sky130_fd_sc_hd__lpflow_decapkapwr base (
+        .VPWR(VPWR),
+        .KAPWR(KAPWR),
+        .VGND(VGND),
+        .VPB(VPB),
+        .VNB(VNB)
+    );
+
+endmodule

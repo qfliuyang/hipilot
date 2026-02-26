@@ -1,0 +1,34 @@
+module sky130_fd_sc_hd__fa_4 (
+    COUT,
+    SUM ,
+    A   ,
+    B   ,
+    CIN ,
+    VPWR,
+    VGND,
+    VPB ,
+    VNB
+);
+
+    output COUT;
+    output SUM ;
+    input  A   ;
+    input  B   ;
+    input  CIN ;
+    input  VPWR;
+    input  VGND;
+    input  VPB ;
+    input  VNB ;
+    sky130_fd_sc_hd__fa base (
+        .COUT(COUT),
+        .SUM(SUM),
+        .A(A),
+        .B(B),
+        .CIN(CIN),
+        .VPWR(VPWR),
+        .VGND(VGND),
+        .VPB(VPB),
+        .VNB(VNB)
+    );
+
+endmodule

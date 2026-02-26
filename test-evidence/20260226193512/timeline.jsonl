@@ -1,0 +1,52 @@
+{"timestamp":"2026-02-26T19:35:12.269Z","elapsed_s":0.001,"video_offset_s":0.001,"source":"hitestbot","event":"Test ID: 20260226193512, purpose: /rtl2gds"}
+{"timestamp":"2026-02-26T19:35:12.269Z","elapsed_s":0.001,"video_offset_s":0.001,"source":"hitestbot","event":"Pre-flight checks..."}
+{"timestamp":"2026-02-26T19:35:12.297Z","elapsed_s":0.029,"video_offset_s":0.029,"source":"hitestbot","event":"  ✅ tmux: tmux 3.6a"}
+{"timestamp":"2026-02-26T19:35:12.297Z","elapsed_s":0.029,"video_offset_s":0.029,"source":"hitestbot","event":"  ✅ display: :0"}
+{"timestamp":"2026-02-26T19:35:12.297Z","elapsed_s":0.029,"video_offset_s":0.029,"source":"hitestbot","event":"  ✅ ffmpeg: installed"}
+{"timestamp":"2026-02-26T19:35:12.297Z","elapsed_s":0.029,"video_offset_s":0.029,"source":"hitestbot","event":"  ✅ gnome-terminal: installed"}
+{"timestamp":"2026-02-26T19:35:12.297Z","elapsed_s":0.029,"video_offset_s":0.029,"source":"hitestbot","event":"  ✅ bin/hipilot: /home/EDA/hipilot/current/bin/hipilot"}
+{"timestamp":"2026-02-26T19:35:12.298Z","elapsed_s":0.03,"video_offset_s":0.03,"source":"hitestbot","event":"Phase 1: Launching HiPilot..."}
+{"timestamp":"2026-02-26T19:35:12.298Z","elapsed_s":0.03,"video_offset_s":0.03,"source":"hitestbot","event":"Cleaning stale processes..."}
+{"timestamp":"2026-02-26T19:35:12.578Z","elapsed_s":0.31,"video_offset_s":0.31,"source":"hitestbot","event":"Stale processes cleaned"}
+{"timestamp":"2026-02-26T19:35:39.602Z","elapsed_s":27.334,"video_offset_s":27.334,"source":"hitestbot","event":"tmux session verified"}
+{"timestamp":"2026-02-26T19:35:39.900Z","elapsed_s":27.632,"video_offset_s":27.632,"source":"hitestbot","event":"Opened gnome-terminal on :0"}
+{"timestamp":"2026-02-26T19:35:41.931Z","elapsed_s":29.663,"video_offset_s":29.663,"source":"hitestbot","event":"wmctrl resize failed: Command failed: DISPLAY=:0 wmctrl -r HiPilot -b remove,maximized_vert,maximize"}
+{"timestamp":"2026-02-26T19:35:46.951Z","elapsed_s":34.683,"video_offset_s":34.683,"source":"hitestbot","event":"Video recording started: PID=1330, resolution=2560x1542"}
+{"timestamp":"2026-02-26T19:35:47.886Z","elapsed_s":35.6,"video_offset_s":35.631,"source":"pane_capture","event":"after_launch","detail":{"claude_lines":2,"eda_lines":2,"claude_last_line":"","eda_last_line":""}}
+{"timestamp":"2026-02-26T19:35:47.886Z","elapsed_s":35.618,"video_offset_s":35.618,"source":"hitestbot","event":"Screenshot: screenshot_workspace_visible.png"}
+{"timestamp":"2026-02-26T19:35:47.899Z","elapsed_s":35.631,"video_offset_s":35.631,"source":"hitestbot","event":"Phase 2: Waiting for Claude Code to be ready..."}
+{"timestamp":"2026-02-26T19:37:48.295Z","elapsed_s":156.027,"video_offset_s":156.027,"source":"hitestbot","event":"Claude Code not ready after 120s"}
+{"timestamp":"2026-02-26T19:37:48.295Z","elapsed_s":156.027,"video_offset_s":156.027,"source":"hitestbot","event":"Claude Code not ready — will still attempt the command"}
+{"timestamp":"2026-02-26T19:37:49.266Z","elapsed_s":157,"video_offset_s":157.011,"source":"pane_capture","event":"claude_ready","detail":{"claude_lines":2,"eda_lines":2,"claude_last_line":"","eda_last_line":""}}
+{"timestamp":"2026-02-26T19:37:49.266Z","elapsed_s":156.998,"video_offset_s":156.998,"source":"hitestbot","event":"Screenshot: screenshot_claude_ready.png"}
+{"timestamp":"2026-02-26T19:37:49.279Z","elapsed_s":157.011,"video_offset_s":157.011,"source":"observation","event":"BEFORE_COMMAND","detail":{"command":"/rtl2gds","claude_ready":false},"artifacts":{"claude_pane":"obs_before_command_claude.log","eda_pane":"obs_before_command_eda.log","screenshot":"obs_before_command.png"}}
+{"timestamp":"2026-02-26T19:37:50.261Z","elapsed_s":157.993,"video_offset_s":157.993,"source":"hitestbot","event":"Typed: \"/rtl2gds\""}
+{"timestamp":"2026-02-26T19:37:51.390Z","elapsed_s":159.1,"video_offset_s":159.135,"source":"pane_capture","event":"after_type","detail":{"claude_lines":2,"eda_lines":2,"claude_last_line":"","eda_last_line":""}}
+{"timestamp":"2026-02-26T19:37:51.390Z","elapsed_s":159.122,"video_offset_s":159.122,"source":"hitestbot","event":"Screenshot: screenshot_after_type.png"}
+{"timestamp":"2026-02-26T19:37:51.403Z","elapsed_s":159.135,"video_offset_s":159.135,"source":"hitestbot","event":"Phase 4: Watching flow (max 300s)..."}
+{"timestamp":"2026-02-26T19:37:56.408Z","elapsed_s":164.1,"video_offset_s":164.155,"source":"pane_capture","event":"poll_1","detail":{"claude_lines":2,"eda_lines":2,"claude_last_line":"","eda_last_line":""}}
+{"timestamp":"2026-02-26T19:38:01.425Z","elapsed_s":169.2,"video_offset_s":169.17,"source":"pane_capture","event":"poll_2","detail":{"claude_lines":2,"eda_lines":2,"claude_last_line":"","eda_last_line":""}}
+{"timestamp":"2026-02-26T19:38:01.438Z","elapsed_s":169.17,"video_offset_s":169.17,"source":"hitestbot","event":"State: working → idle"}
+{"timestamp":"2026-02-26T19:38:06.443Z","elapsed_s":174.2,"video_offset_s":174.189,"source":"pane_capture","event":"poll_3","detail":{"claude_lines":2,"eda_lines":2,"claude_last_line":"","eda_last_line":""}}
+{"timestamp":"2026-02-26T19:38:06.457Z","elapsed_s":174.189,"video_offset_s":174.189,"source":"hitestbot","event":"Poll 3: 15s, state=idle, claude_idle=10s, eda_idle=10s, approvals=0, questions=0"}
+{"timestamp":"2026-02-26T19:38:11.462Z","elapsed_s":179.2,"video_offset_s":179.206,"source":"pane_capture","event":"poll_4","detail":{"claude_lines":2,"eda_lines":2,"claude_last_line":"","eda_last_line":""}}
+{"timestamp":"2026-02-26T19:38:16.479Z","elapsed_s":184.2,"video_offset_s":184.225,"source":"pane_capture","event":"poll_5","detail":{"claude_lines":2,"eda_lines":2,"claude_last_line":"","eda_last_line":""}}
+{"timestamp":"2026-02-26T19:38:21.498Z","elapsed_s":189.2,"video_offset_s":189.243,"source":"pane_capture","event":"poll_6","detail":{"claude_lines":2,"eda_lines":2,"claude_last_line":"","eda_last_line":""}}
+{"timestamp":"2026-02-26T19:38:21.511Z","elapsed_s":189.243,"video_offset_s":189.243,"source":"observation","event":"PROGRESS_6","detail":{"poll":6,"state":"idle","elapsed_s":30},"artifacts":{"claude_pane":"obs_progress_6_claude.log","eda_pane":"obs_progress_6_eda.log","screenshot":"obs_progress_6.png"}}
+{"timestamp":"2026-02-26T19:38:22.543Z","elapsed_s":190.275,"video_offset_s":190.275,"source":"hitestbot","event":"Poll 6: 31s, state=idle, claude_idle=26s, eda_idle=26s, approvals=0, questions=0"}
+{"timestamp":"2026-02-26T19:38:27.548Z","elapsed_s":195.3,"video_offset_s":195.295,"source":"pane_capture","event":"poll_7","detail":{"claude_lines":2,"eda_lines":2,"claude_last_line":"","eda_last_line":""}}
+{"timestamp":"2026-02-26T19:38:27.563Z","elapsed_s":195.295,"video_offset_s":195.295,"source":"hitestbot","event":"Both panes idle for 31s — flow appears complete"}
+{"timestamp":"2026-02-26T19:38:27.563Z","elapsed_s":195.295,"video_offset_s":195.295,"source":"hitestbot","event":"Watch complete: 36.2s, 0 approvals, 0 questions answered"}
+{"timestamp":"2026-02-26T19:38:28.627Z","elapsed_s":196.4,"video_offset_s":196.372,"source":"pane_capture","event":"after_flow","detail":{"claude_lines":2,"eda_lines":2,"claude_last_line":"","eda_last_line":""}}
+{"timestamp":"2026-02-26T19:38:28.627Z","elapsed_s":196.359,"video_offset_s":196.359,"source":"hitestbot","event":"Screenshot: screenshot_after_flow.png"}
+{"timestamp":"2026-02-26T19:38:28.640Z","elapsed_s":196.372,"video_offset_s":196.372,"source":"observation","event":"AFTER_FLOW","detail":{"elapsed_ms":36160,"approvals":0},"artifacts":{"claude_pane":"obs_after_flow_claude.log","eda_pane":"obs_after_flow_eda.log","screenshot":"obs_after_flow.png"}}
+{"timestamp":"2026-02-26T19:38:29.687Z","elapsed_s":197.419,"video_offset_s":197.419,"source":"hitestbot","event":"Sent SIGINT to ffmpeg PID=1330"}
+{"timestamp":"2026-02-26T19:38:32.699Z","elapsed_s":200.431,"video_offset_s":200.431,"source":"hitestbot","event":"Video saved: /tmp/hipilot-test-evidence/20260226193512/recordings/test_recording.mp4 (1.8M)"}
+{"timestamp":"2026-02-26T19:38:32.699Z","elapsed_s":200.431,"video_offset_s":200.431,"source":"hitestbot","event":"Collecting post-test logs..."}
+{"timestamp":"2026-02-26T19:38:32.706Z","elapsed_s":200.438,"video_offset_s":200.438,"source":"hitestbot","event":"Pane dump: claude_full.log (2 lines)"}
+{"timestamp":"2026-02-26T19:38:32.714Z","elapsed_s":200.446,"video_offset_s":200.446,"source":"hitestbot","event":"Pane dump: eda_full.log (2 lines)"}
+{"timestamp":"2026-02-26T19:38:32.714Z","elapsed_s":200.446,"video_offset_s":200.446,"source":"hitestbot","event":"No MCP log found (HIPILOT_TEST_LOG may not be set)"}
+{"timestamp":"2026-02-26T19:38:32.715Z","elapsed_s":200.447,"video_offset_s":200.447,"source":"hitestbot","event":"EDA logs collected: 0 files"}
+{"timestamp":"2026-02-26T19:38:32.715Z","elapsed_s":200.447,"video_offset_s":200.447,"source":"hitestbot","event":"History collected: 1 files"}
+{"timestamp":"2026-02-26T19:38:32.715Z","elapsed_s":200.447,"video_offset_s":200.447,"source":"hitestbot","event":"Pane log saved: 11 entries"}
+{"timestamp":"2026-02-26T19:38:32.715Z","elapsed_s":200.447,"video_offset_s":200.447,"source":"hitestbot","event":"Building correlated evidence timeline..."}

@@ -1,0 +1,28 @@
+module sky130_fd_sc_hd__lpflow_lsbuf_lh_isowell_4 (
+    X       ,
+    A       ,
+    LOWLVPWR,
+    VPWR    ,
+    VGND    ,
+    VPB     ,
+    VNB
+);
+
+    output X       ;
+    input  A       ;
+    input  LOWLVPWR;
+    input  VPWR    ;
+    input  VGND    ;
+    input  VPB     ;
+    input  VNB     ;
+    sky130_fd_sc_hd__lpflow_lsbuf_lh_isowell base (
+        .X(X),
+        .A(A),
+        .LOWLVPWR(LOWLVPWR),
+        .VPWR(VPWR),
+        .VGND(VGND),
+        .VPB(VPB),
+        .VNB(VNB)
+    );
+
+endmodule

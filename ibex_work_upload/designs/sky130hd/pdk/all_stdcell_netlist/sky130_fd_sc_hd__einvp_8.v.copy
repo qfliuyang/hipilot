@@ -1,0 +1,28 @@
+module sky130_fd_sc_hd__einvp_8 (
+    Z   ,
+    A   ,
+    TE  ,
+    VPWR,
+    VGND,
+    VPB ,
+    VNB
+);
+
+    output Z   ;
+    input  A   ;
+    input  TE  ;
+    input  VPWR;
+    input  VGND;
+    input  VPB ;
+    input  VNB ;
+    sky130_fd_sc_hd__einvp base (
+        .Z(Z),
+        .A(A),
+        .TE(TE),
+        .VPWR(VPWR),
+        .VGND(VGND),
+        .VPB(VPB),
+        .VNB(VNB)
+    );
+
+endmodule

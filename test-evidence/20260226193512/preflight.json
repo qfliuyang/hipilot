@@ -1,0 +1,27 @@
+[
+  {
+    "name": "tmux",
+    "ok": true,
+    "detail": "tmux 3.6a"
+  },
+  {
+    "name": "display",
+    "ok": true,
+    "detail": ":0"
+  },
+  {
+    "name": "ffmpeg",
+    "ok": true,
+    "detail": "installed"
+  },
+  {
+    "name": "gnome-terminal",
+    "ok": true,
+    "detail": "installed"
+  },
+  {
+    "name": "bin/hipilot",
+    "ok": true,
+    "detail": "/home/EDA/hipilot/current/bin/hipilot"
+  }
+]

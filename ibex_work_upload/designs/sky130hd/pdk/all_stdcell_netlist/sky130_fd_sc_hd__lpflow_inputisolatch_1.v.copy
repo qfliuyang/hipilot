@@ -1,0 +1,28 @@
+module sky130_fd_sc_hd__lpflow_inputisolatch_1 (
+    Q      ,
+    D      ,
+    SLEEP_B,
+    VPWR   ,
+    VGND   ,
+    VPB    ,
+    VNB
+);
+
+    output Q      ;
+    input  D      ;
+    input  SLEEP_B;
+    input  VPWR   ;
+    input  VGND   ;
+    input  VPB    ;
+    input  VNB    ;
+    sky130_fd_sc_hd__lpflow_inputisolatch base (
+        .Q(Q),
+        .D(D),
+        .SLEEP_B(SLEEP_B),
+        .VPWR(VPWR),
+        .VGND(VGND),
+        .VPB(VPB),
+        .VNB(VNB)
+    );
+
+endmodule
