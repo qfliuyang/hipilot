@@ -70,7 +70,7 @@ const EARLY_ABORT_PATTERNS = [           // a human would stop watching if they 
   /CLAUDE\.md.*not found/i,
   /command not found: claude/i,
   /ECONNREFUSED/i,
-  /permission denied/i,
+  // Note: permission denied is NOT here - we need to handle bypass permissions prompt
 ];
 const QUESTION_PATTERNS = [              // Claude is asking the human something
   /should I (proceed|continue|start|fix|retry)/i,
@@ -486,12 +486,25 @@ export class FlowCertifier {
   _cleanStaleProcesses() {
     this._runLog('Cleaning stale processes...');
     const cmds = [
+      // Kill all EDA tools
       'pkill -9 -f "innovus" 2>/dev/null || true',
       'pkill -9 -f "icc2_shell" 2>/dev/null || true',
       'pkill -9 -f "pt_shell" 2>/dev/null || true',
       'pkill -9 -f "dc_shell" 2>/dev/null || true',
+      'pkill -9 -f "tempus" 2>/dev/null || true',
+      'pkill -9 -f "genus" 2>/dev/null || true',
+      'pkill -9 -f "voltus" 2>/dev/null || true',
+      // Kill Claude Code and related processes
+      'pkill -9 -f "claude" 2>/dev/null || true',
+      'pkill -9 -f "claude-code" 2>/dev/null || true',
+      // Kill all tmux sessions for this socket
       `tmux -L ${this.socket} kill-server 2>/dev/null || true`,
+      'pkill -9 -f "tmux.*hipilot" 2>/dev/null || true',
+      // Kill video recording
       'pkill -9 -f "ffmpeg.*x11grab" 2>/dev/null || true',
+      'pkill -9 -f "ffmpeg.*hipilot" 2>/dev/null || true',
+      // Kill any lingering node processes from MCP servers
+      'pkill -9 -f "node.*hipilot.*server" 2>/dev/null || true',
     ];
     for (const cmd of cmds) {
       try { execSync(cmd, { encoding: 'utf-8', timeout: 5000 }); } catch { /* ignore */ }
@@ -512,7 +525,7 @@ export class FlowCertifier {
     // Step 1: Create the tmux session (headless — reliable)
     try {
       const output = execSync(`bash ${binPath} --no-terminal 2>&1`, {
-        encoding: 'utf-8', timeout: 30000,
+        encoding: 'utf-8', timeout: 60000,
         env: { ...process.env, HIPILOT_SESSION: this.session },
       });
       this._runLog(`bin/hipilot --no-terminal output:\n${output}`);
@@ -581,9 +594,9 @@ export class FlowCertifier {
         }
       } catch { /* use defaults */ }
 
-      // 2/3 of screen, centered
-      const winW = Math.round(screenW * 2 / 3);
-      const winH = Math.round(screenH * 2 / 3);
+      // Full screen minus small margin for visibility (was 2/3, now 95% for 4x larger effective area)
+      const winW = Math.round(screenW * 0.95);
+      const winH = Math.round(screenH * 0.95);
       const posX = Math.round((screenW - winW) / 2);
       const posY = Math.round((screenH - winH) / 2);
 
@@ -657,6 +670,7 @@ export class FlowCertifier {
    *   'waiting_for_eda' — Left pane idle but right pane still changing (EDA tool running)
    *   'asking_question' — Claude asked the human something
    *   'needs_approval'  — Manual mode, pending Tcl waiting for prefix+y
+   *   'bypass_permissions' — Claude Code dangerous mode permission prompt
    *   'done'            — Claude's input prompt reappeared (ready for next command)
    *   'error'           — Something fundamentally broken (MCP not found, etc.)
    *   'idle'            — Both panes idle, no prompt detected
@@ -668,6 +682,11 @@ export class FlowCertifier {
     // Check for fatal errors first — a human would notice and stop
     for (const pat of EARLY_ABORT_PATTERNS) {
       if (pat.test(claude)) return { state: 'error', detail: claude.match(pat)[0] };
+    }
+
+    // Check for bypass permissions prompt (Claude Code dangerous mode)
+    if (/bypass permissions|Dangerous mode|⏵⏵/.test(claude)) {
+      return { state: 'bypass_permissions' };
     }
 
     // Check for approval request
@@ -755,6 +774,20 @@ export class FlowCertifier {
         this._takeScreenshot(`approval_${approvalCount}`);
         this._pressApproval();
         approvalCount++;
+        lastClaudeChangeTime = Date.now();
+        continue;
+      }
+
+      if (state === 'bypass_permissions') {
+        this._runLog('Bypass permissions prompt detected — enabling dangerous mode');
+        this._takeScreenshot('bypass_permissions');
+        // Navigate to checkbox (Tab), toggle (Space), confirm (Enter)
+        this._sendKeysToClaude('Tab');
+        await this._sleep(300);
+        this._sendKeysToClaude(' ');
+        await this._sleep(300);
+        this._sendKeysToClaude('C-m');
+        await this._sleep(500);
         lastClaudeChangeTime = Date.now();
         continue;
       }

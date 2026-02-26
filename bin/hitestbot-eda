@@ -8,7 +8,7 @@
 #
 # On EDA server directly:
 #   cd /home/EDA/hipilot/current
-#   node src/hitestbot/tests/FlowCertificationTest.js /rtl2gds
+#   node hitestbot/tests/FlowCertificationTest.js /rtl2gds
 
 set -e
 
@@ -56,5 +56,5 @@ sshpass -e ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=15 -o ServerAl
   export HIPILOT_SESSION=\${HIPILOT_SESSION:-hipilot}
   export DISPLAY=:0
   cd $DEPLOYED_HIPILOT
-  node src/hitestbot/tests/FlowCertificationTest.js '$COMMAND'
+  node src/hitestbot/tests/FlowCertificationTest.js \"$COMMAND\"
 "
