@@ -33,12 +33,13 @@ async function deploy() {
   
   const timestamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
   
-  // Step 1: Create tarball
-  console.log('[1/6] Creating tarball...');
+  // Step 1: Create self-contained tarball (WITH node_modules, no npm install on EDA)
+  // HiPilot and HiTestBot are deployed as tools, not source code to build.
+  console.log('[1/6] Creating self-contained tarball...');
   const tarFile = `/tmp/hipilot_deploy_${timestamp}.tar.gz`;
-  const tarCmd = `tar czf ${tarFile} -C "${PROJECT_ROOT}" --exclude='node_modules' --exclude='.git' --exclude='e2e_evidence' --exclude='*.mp4' --exclude='*.log' .`;
+  const tarCmd = `tar czf ${tarFile} -C "${PROJECT_ROOT}" --exclude='.git' --exclude='e2e_evidence' --exclude='*.mp4' --exclude='*.log' .`;
   execSync(tarCmd, { encoding: 'utf-8' });
-  console.log(`   Created: ${tarFile}`);
+  console.log(`   Created: ${tarFile} (includes node_modules — no npm install needed on EDA)`);
   
   // Step 2: Create remote directory
   console.log('[2/6] Creating remote directory...');
@@ -52,16 +53,14 @@ async function deploy() {
   scp(tarFile, `${REMOTE_DIR}/_deploy_temp/`);
   console.log('   Upload complete');
   
-  // Step 4: Extract and install
-  console.log('[4/6] Extracting and installing dependencies...');
+  // Step 4: Extract (no npm install — node_modules included in tarball)
+  console.log('[4/6] Extracting self-contained package...');
   ssh(`
     cd ${REMOTE_DIR}/_deploy_temp
     tar xzf hipilot_deploy_${timestamp}.tar.gz
     rm hipilot_deploy_${timestamp}.tar.gz
-    export PATH=${NODE_PATH}:$PATH
-    npm install --production > /tmp/npm_deploy.log 2>&1
   `, 180000);
-  console.log('   npm install complete');
+  console.log('   Extraction complete (self-contained, no npm install needed)');
   
   // Step 5: Atomic swap
   console.log('[5/6] Swapping deployment...');
@@ -74,7 +73,8 @@ async function deploy() {
   `);
   console.log('   Swap complete');
   
-  // Step 6: Configure MCP (MERGE with existing settings — preserves API keys!)
+  // Step 6: Configure MCP — ONLY update command/args, NEVER touch env.
+  // The env section in settings.json stores API keys and must not be modified.
   console.log('[6/7] Configuring MCP servers...');
   const hipilotDir = `${REMOTE_DIR}/current`;
   
@@ -82,30 +82,31 @@ async function deploy() {
   try {
     const existingJson = ssh(`cat ~/.claude/settings.json 2>/dev/null || echo '{}'`);
     existingSettings = JSON.parse(existingJson);
-    console.log('   Found existing settings, will merge (preserving API keys)...');
+    console.log('   Found existing settings, will preserve env sections...');
   } catch (e) {
     console.log('   No existing settings, creating new...');
+  }
+  
+  const existingMcp = existingSettings.mcpServers || {};
+  
+  // Deep-merge: update only command/args for HiPilot servers, preserve all env keys
+  function mergeServer(serverName, newCommand, newArgs, defaultEnv) {
+    const existing = existingMcp[serverName] || {};
+    const existingEnv = existing.env || {};
+    return {
+      command: newCommand,
+      args: newArgs,
+      env: { ...defaultEnv, ...existingEnv },
+    };
   }
   
   const mergedSettings = {
     ...existingSettings,
     mcpServers: {
-      ...(existingSettings.mcpServers || {}),
-      'hipilot-eda': {
-        command: `${NODE_PATH}/node`,
-        args: [`${hipilotDir}/servers/eda/index.js`],
-        env: { HIPILOT_SESSION: 'hipilot' }
-      },
-      'hipilot-tmux': {
-        command: `${NODE_PATH}/node`,
-        args: [`${hipilotDir}/servers/tmux/index.js`],
-        env: { HIPILOT_SESSION: 'hipilot' }
-      },
-      'hipilot-knowledge': {
-        command: `${NODE_PATH}/node`,
-        args: [`${hipilotDir}/servers/knowledge/index.js`],
-        env: {}
-      }
+      ...existingMcp,
+      'hipilot-eda': mergeServer('hipilot-eda', `${NODE_PATH}/node`, [`${hipilotDir}/servers/eda/index.js`], { HIPILOT_SESSION: 'hipilot' }),
+      'hipilot-tmux': mergeServer('hipilot-tmux', `${NODE_PATH}/node`, [`${hipilotDir}/servers/tmux/index.js`], { HIPILOT_SESSION: 'hipilot' }),
+      'hipilot-knowledge': mergeServer('hipilot-knowledge', `${NODE_PATH}/node`, [`${hipilotDir}/servers/knowledge/index.js`], {}),
     },
     skipDangerousModePermissionPrompt: true
   };
@@ -114,7 +115,7 @@ async function deploy() {
   ssh(`cat > ~/.claude/settings.json << 'EOFSETTINGS'
 ${JSON.stringify(mergedSettings, null, 2)}
 EOFSETTINGS`);
-  console.log('   MCP configured (settings merged)');
+  console.log('   MCP configured (command/args updated, env preserved)');
   
   // Step 7: Deploy CLAUDE.md and slash commands for HiPilot identity
   console.log('[7/7] Deploying HiPilot identity (CLAUDE.md + commands)...');
