@@ -430,9 +430,19 @@ export class FlowCertifier {
   //  PHASES (same as before, now with recording/screenshots/logging)
   // ═══════════════════════════════════════════════════════════════════
 
+  /**
+   * Launch HiPilot the way a human does:
+   *   1. Open a terminal on the desktop (display :0)
+   *   2. Run bin/hipilot inside it
+   *   3. The tmux workspace appears on screen — visible to ffmpeg
+   *
+   * A human opens a terminal, types "bin/hipilot", and the layout pops up.
+   * HiTestBot does the same thing with xterm on display :0.
+   */
   async launchHiPilot() {
     this._runLog('Phase 1: Launching HiPilot...');
 
+    // Kill old session (clean slate)
     try {
       execSync(`tmux -L ${this.socket} kill-server 2>/dev/null || true`, {
         encoding: 'utf-8', timeout: 5000,
@@ -442,17 +452,21 @@ export class FlowCertifier {
     } catch { /* ignore */ }
 
     const binPath = this.hipilotBin || join(this._projectRoot(), 'bin', 'hipilot');
+    const projectDir = this._projectRoot();
+
+    // Step 1: Create the tmux session (headless — reliable)
     try {
       const output = execSync(`bash ${binPath} --no-terminal 2>&1`, {
         encoding: 'utf-8', timeout: 30000,
         env: { ...process.env, HIPILOT_SESSION: this.session },
       });
-      this._runLog(`bin/hipilot output:\n${output}`);
+      this._runLog(`bin/hipilot --no-terminal output:\n${output}`);
     } catch (e) {
       this._runLog(`bin/hipilot failed: ${e.message}`);
       throw new Error(`Failed to launch HiPilot: ${e.message}`);
     }
 
+    // Step 2: Verify session exists
     try {
       execSync(`tmux -L ${this.socket} has-session -t ${this.session}`, {
         encoding: 'utf-8', timeout: 5000,
@@ -462,7 +476,48 @@ export class FlowCertifier {
       throw new Error('HiPilot tmux session not found after launch');
     }
 
+    // Step 3: Open a terminal window on the desktop that attaches to the session.
+    // This is what makes HiPilot VISIBLE on screen — just like a human would see it.
+    // The terminal shows the two-pane tmux layout. ffmpeg records it.
+    // HiTestBot still interacts via tmux send-keys (works regardless of the terminal).
+    this._openTerminalOnDesktop();
+
     return true;
+  }
+
+  /**
+   * Open a terminal window on display :0 and attach to the HiPilot tmux session.
+   * This makes the workspace visible on the EDA server's desktop.
+   * A human would see the same layout pop up in their terminal.
+   */
+  _openTerminalOnDesktop() {
+    const attachCmd = `tmux -L ${this.socket} attach-session -t ${this.session}`;
+
+    // Try terminal emulators in order of preference
+    const terminals = [
+      { name: 'xterm', cmd: `DISPLAY=${this.display} xterm -maximized -title HiPilot -fa Monospace -fs 11 -e '${attachCmd}' &` },
+      { name: 'xfce4-terminal', cmd: `DISPLAY=${this.display} xfce4-terminal --maximize --title=HiPilot -e '${attachCmd}' &` },
+      { name: 'gnome-terminal', cmd: `DISPLAY=${this.display} gnome-terminal --maximize --title=HiPilot -- ${attachCmd} &` },
+    ];
+
+    for (const term of terminals) {
+      try {
+        execSync(`which ${term.name} 2>/dev/null`, { encoding: 'utf-8', timeout: 2000 });
+        execSync(term.cmd, {
+          encoding: 'utf-8', timeout: 5000,
+          env: { ...process.env, DISPLAY: this.display },
+          shell: true,
+        });
+        this._runLog(`Opened ${term.name} on ${this.display} — HiPilot workspace is now visible on desktop`);
+        // Give the terminal a moment to render
+        return;
+      } catch {
+        continue;
+      }
+    }
+
+    // Fallback: no terminal emulator found — workspace is still functional but not visible
+    this._runLog(`WARNING: No terminal emulator found (tried xterm, xfce4-terminal, gnome-terminal). HiPilot workspace created but not visible on ${this.display}. Video recording will show blank desktop.`);
   }
 
   async waitForClaudeReady() {
@@ -794,13 +849,15 @@ export class FlowCertifier {
     mkdirSync(this.evidenceDir, { recursive: true });
     this.recordingStartTime = Date.now();
 
-    // Start video recording
-    this._startVideoRecording();
-    this._takeScreenshot('before_launch');
-
-    // Phase 1: Launch HiPilot
+    // Phase 1: Launch HiPilot (creates session + opens terminal on desktop)
     await this.launchHiPilot();
-    this._takeScreenshot('after_launch');
+
+    // Give the terminal window time to open and render
+    await this._sleep(3000);
+
+    // Start video recording AFTER the terminal is visible
+    this._startVideoRecording();
+    this._takeScreenshot('workspace_visible');
     this._logPanes('after_launch');
 
     // Phase 2: Wait for Claude Code
