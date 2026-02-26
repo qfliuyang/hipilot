@@ -104,7 +104,7 @@ Expected response should list tools from:
 "List all available skills"
 ```
 
-Expected: 35 skills covering RTL-to-GDS flow.
+Expected: 36 skills covering RTL-to-GDS flow.
 
 ---
 

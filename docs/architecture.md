@@ -292,7 +292,6 @@ hipilot/
 ├── test/                    # Unit tests (vitest, 118 tests)
 │
 ├── scripts/
-│   ├── mcp_wrapper.sh       # JSON-RPC wrapper for shell
 │   └── postinstall.js       # Post-install setup
 │
 └── docs/                    # Documentation

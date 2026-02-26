@@ -353,33 +353,6 @@ make lvs
 
 ---
 
-## MCP Wrapper Script
-
-### Location
-
-`/home/EDA/hipilot_test/hipilot/scripts/mcp_wrapper.sh`
-
-### Usage
-
-```bash
-# Set execution mode
-bash /home/EDA/hipilot/current/scripts/mcp_wrapper.sh eda set_mode '{"mode":"auto"}'
-
-# Send Tcl command
-bash /home/EDA/hipilot/current/scripts/mcp_wrapper.sh eda send_to_terminal '{
-  "tcl": "report_timing -max_paths 10"
-}'
-
-# Get mode
-bash /home/EDA/hipilot/current/scripts/mcp_wrapper.sh eda get_mode '{}'
-```
-
-### When to Use
-
-- When Claude Code's MCP feature gate is disabled
-- For automation scripts
-- For direct command-line testing
-
 ---
 
 ## Screen Recording

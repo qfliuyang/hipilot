@@ -220,7 +220,7 @@ EOFSETTINGS`);
   console.log(`HiPilot installed at: ${hipilotDir}`);
   console.log(`Identity: deploy/eda-server/CLAUDE.md → ${hipilotDir}/CLAUDE.md`);
   console.log(`MCP servers: ~/.claude/settings.json (merged, API keys preserved)`);
-  console.log(`Commands: ${hipilotDir}/.claude/commands/ (8 slash commands)`);
+  console.log(`Commands: ${hipilotDir}/.claude/commands/ (10 slash commands)`);
   console.log('\nClaude Code on EDA server will now identify as HiPilot.');
 }
 

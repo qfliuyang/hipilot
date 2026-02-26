@@ -490,14 +490,6 @@ hipilot:
 /chip-finish
 ```
 
-### Method 3: MCP Direct
-
-```bash
-bash /home/EDA/hipilot/current/scripts/mcp_wrapper.sh eda send_to_terminal '{
-  "tcl": "report_timing -max_paths 10"
-}'
-```
-
 ---
 
 ## Creating Custom Skills

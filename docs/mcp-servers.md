@@ -269,34 +269,6 @@ tmux session: hipilot
 
 ---
 
-## MCP Wrapper Script
-
-For environments where MCP feature gate is disabled, use the wrapper:
-
-**Location:** `scripts/mcp_wrapper.sh`
-
-**Usage:**
-```bash
-# Set mode to auto
-bash /home/EDA/hipilot/current/scripts/mcp_wrapper.sh eda set_mode '{"mode":"auto"}'
-
-# Send Tcl command
-bash /home/EDA/hipilot/current/scripts/mcp_wrapper.sh eda send_to_terminal '{
-  "tcl": "report_timing -max_paths 10"
-}'
-
-# Get current mode
-bash /home/EDA/hipilot/current/scripts/mcp_wrapper.sh eda get_mode '{}'
-```
-
-**How it works:**
-1. Accepts server name, tool name, and JSON arguments
-2. Formats as JSON-RPC request
-3. Sends to MCP server via stdin
-4. Returns response via stdout
-
----
-
 ## Direct Tool Usage from Claude Code
 
 When Claude Code is running, use these patterns:

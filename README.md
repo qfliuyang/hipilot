@@ -76,11 +76,11 @@ echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/knowledge/i
 
 | Document | Purpose |
 |----------|---------|
-| [CLAUDE.md](CLAUDE.md) | Developer guide — how the project works, rules, infrastructure |
+| [CLAUDE.md](CLAUDE.md) | Developer constitution — how everything works, all rules |
 | [docs/architecture.md](docs/architecture.md) | System design |
+| [docs/mcp-servers.md](docs/mcp-servers.md) | MCP tool reference (52 + 8 + 7 tools) |
 | [docs/skills-guide.md](docs/skills-guide.md) | All 36 skills |
-| [docs/mcp-servers.md](docs/mcp-servers.md) | MCP tool reference |
-| [docs/rtl2gds-flow.md](docs/rtl2gds-flow.md) | RTL-to-GDS flow guide |
+| [docs/deploy-guide.md](docs/deploy-guide.md) | Deployment to EDA server |
 | [docs/testing/TESTING_RULES.md](docs/testing/TESTING_RULES.md) | Testing philosophy |
 
 ## Technology
