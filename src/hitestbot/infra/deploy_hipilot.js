@@ -5,7 +5,6 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const SSH_HOST = process.env.HIPILOT_SSH_HOST || 'EDA@192.168.112.163';
-const SSH_PASS = process.env.HIPILOT_SSH_PASS || 'eda2020';
 const REMOTE_DIR = process.env.HIPILOT_DEPLOY_DIR || '/home/EDA/hipilot';
 const NODE_PATH = process.env.HIPILOT_NODE_PATH || '/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin';
 
@@ -13,23 +12,27 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const PROJECT_ROOT = join(__dirname, '..', '..');
 
-// SSH options for CentOS 7 compatibility and reliability:
-// -o ConnectTimeout=10: fail fast on unreachable host (don't hang for minutes)
-// -o ServerAliveInterval=15: send keepalive every 15s (prevents dropped connections)
-// -o ServerAliveCountMax=3: disconnect after 3 missed keepalives (45s)
-// -o StrictHostKeyChecking=no: don't prompt for host key confirmation
+// SSH uses SSHPASS env var (-e flag) instead of -p flag.
+// -e is more reliable than -p on CentOS 7 (avoids shell quoting issues).
 const SSH_OPTS = '-o StrictHostKeyChecking=no -o ConnectTimeout=10 -o ServerAliveInterval=15 -o ServerAliveCountMax=3';
 
+function ensureSshpass() {
+  if (!process.env.SSHPASS) {
+    process.env.SSHPASS = process.env.HIPILOT_SSH_PASS || 'eda2020';
+  }
+}
+
 function ssh(cmd, timeout = 60000) {
+  ensureSshpass();
   const escaped = cmd.replace(/'/g, "'\\''");
-  const fullCmd = `sshpass -p '${SSH_PASS}' ssh ${SSH_OPTS} ${SSH_HOST} '${escaped}'`;
+  const fullCmd = `sshpass -e ssh ${SSH_OPTS} ${SSH_HOST} '${escaped}'`;
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       return execSync(fullCmd, { encoding: 'utf-8', timeout, stdio: ['pipe', 'pipe', 'pipe'] });
     } catch (err) {
-      if (attempt < 3 && (err.message.includes('Connection') || err.message.includes('timed out'))) {
-        console.error(`   SSH attempt ${attempt}/3 failed, retrying in ${attempt * 2}s...`);
-        execSync(`sleep ${attempt * 2}`);
+      if (attempt < 3 && (err.message.includes('Connection') || err.message.includes('timed out') || err.message.includes('ssh_exchange'))) {
+        console.error(`   SSH attempt ${attempt}/3 failed, retrying in ${attempt * 3}s...`);
+        execSync(`sleep ${attempt * 3}`);
         continue;
       }
       console.error(`SSH command failed (attempt ${attempt}): ${cmd.slice(0, 100)}`);
@@ -39,15 +42,16 @@ function ssh(cmd, timeout = 60000) {
 }
 
 function scp(localPath, remotePath) {
-  const cmd = `sshpass -p '${SSH_PASS}' scp ${SSH_OPTS} ${localPath} ${SSH_HOST}:${remotePath}`;
+  ensureSshpass();
+  const cmd = `sshpass -e scp ${SSH_OPTS} ${localPath} ${SSH_HOST}:${remotePath}`;
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       execSync(cmd, { encoding: 'utf-8', timeout: 300000 });
       return;
     } catch (err) {
-      if (attempt < 3 && (err.message.includes('Connection') || err.message.includes('timed out'))) {
-        console.error(`   SCP attempt ${attempt}/3 failed, retrying in ${attempt * 2}s...`);
-        execSync(`sleep ${attempt * 2}`);
+      if (attempt < 3 && (err.message.includes('Connection') || err.message.includes('timed out') || err.message.includes('ssh_exchange'))) {
+        console.error(`   SCP attempt ${attempt}/3 failed, retrying in ${attempt * 3}s...`);
+        execSync(`sleep ${attempt * 3}`);
         continue;
       }
       throw err;
@@ -61,12 +65,29 @@ async function deploy() {
   const timestamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
   
   // Step 1: Create self-contained tarball (WITH node_modules, no npm install on EDA)
-  // HiPilot and HiTestBot are deployed as tools, not source code to build.
-  console.log('[1/6] Creating self-contained tarball...');
+  // --minimal flag excludes test/, docs/, src/hitestbot/ (deploy only runtime tools)
+  const isMinimal = process.argv.includes('--minimal');
+  console.log(`[1/6] Creating ${isMinimal ? 'minimal ' : ''}self-contained tarball...`);
   const tarFile = `/tmp/hipilot_deploy_${timestamp}.tar.gz`;
-  const tarCmd = `tar czf ${tarFile} -C "${PROJECT_ROOT}" --exclude='.git' --exclude='e2e_evidence' --exclude='*.mp4' --exclude='*.log' .`;
+  const excludes = [
+    '--exclude=.git',
+    '--exclude=e2e_evidence',
+    '--exclude=*.mp4',
+    '--exclude=*.log',
+    '--exclude=test-evidence',
+  ];
+  if (isMinimal) {
+    excludes.push(
+      '--exclude=test',
+      '--exclude=docs',
+      '--exclude=src/hitestbot',
+      '--exclude=src/tui',
+      '--exclude=20*',
+    );
+  }
+  const tarCmd = `tar czf ${tarFile} -C "${PROJECT_ROOT}" ${excludes.join(' ')} .`;
   execSync(tarCmd, { encoding: 'utf-8' });
-  console.log(`   Created: ${tarFile} (includes node_modules — no npm install needed on EDA)`);
+  console.log(`   Created: ${tarFile}${isMinimal ? ' (minimal — runtime tools only)' : ' (full — includes node_modules)'}`);
   
   // Step 2: Create remote directory
   console.log('[2/6] Creating remote directory...');

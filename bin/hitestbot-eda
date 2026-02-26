@@ -1,16 +1,14 @@
 #!/bin/bash
 # HiTestBot — Run on EDA server ("test like real human")
 #
-# HiTestBot runs ONLY on the EDA server. From dev machine, this script SSHs
-# and runs HiTestBot there. Use bin/hitestbot-pull to download results.
-#
 # Usage:
-#   bin/hitestbot-eda                    # Run FlowCertificationTest (default: rtl2gds)
-#   bin/hitestbot-eda rtl2gds            # Run flow cert for rtl2gds
+#   bin/hitestbot-eda                       # Run default test (/rtl2gds)
+#   bin/hitestbot-eda /rtl2gds              # Run specific command
+#   bin/hitestbot-eda "start innovus"       # Run any command
 #
 # On EDA server directly:
 #   cd /home/EDA/hipilot/current
-#   node src/hitestbot/tests/FlowCertificationTest.js rtl2gds
+#   node src/hitestbot/tests/FlowCertificationTest.js /rtl2gds
 
 set -e
 
@@ -18,33 +16,45 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 SSH_HOST="${HIPILOT_SSH_HOST:-EDA@192.168.112.163}"
-SSH_PASS="${HIPILOT_SSH_PASS:-eda2020}"
 DEPLOYED_HIPILOT="${HIPILOT_DEPLOY_DIR:-/home/EDA/hipilot/current}"
 NODE_PATH="${HIPILOT_NODE_PATH:-/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin}"
+
+# Use SSHPASS env var (more reliable than -p flag on CentOS 7)
+export SSHPASS="${SSHPASS:-${HIPILOT_SSH_PASS:-eda2020}}"
 
 # If already on EDA server, run locally
 if [ -n "$HIPILOT_EDA_SERVER" ]; then
   export PATH="${NODE_PATH}:$PATH"
   export HIPILOT_SESSION="${HIPILOT_SESSION:-hipilot}"
-  WORKFLOW="${1:-rtl2gds}"
+  COMMAND="${1:-/rtl2gds}"
   echo "HiTestBot — Running on EDA server"
-  echo "Workflow: $WORKFLOW"
+  echo "Command: $COMMAND"
   echo ""
-  node "$PROJECT_DIR/src/hitestbot/tests/FlowCertificationTest.js" "$WORKFLOW"
+  node "$PROJECT_DIR/src/hitestbot/tests/FlowCertificationTest.js" "$COMMAND"
   exit $?
 fi
 
 # From dev machine: SSH and run on EDA server
-WORKFLOW="${1:-rtl2gds}"
+COMMAND="${1:-/rtl2gds}"
 echo "HiTestBot — Running on EDA server (SSH)"
-echo "Host: $SSH_HOST | Workflow: $WORKFLOW"
+echo "Host: $SSH_HOST | Command: $COMMAND"
 echo "Use: bin/hitestbot-pull    # Download results to dev machine"
 echo ""
 
-sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_HOST" "
+# Retry SSH connection up to 5 times
+for i in 1 2 3 4 5; do
+  sshpass -e ssh -o ConnectTimeout=15 -o StrictHostKeyChecking=no \
+    "$SSH_HOST" "echo connected" 2>/dev/null && break
+  echo "SSH attempt $i/5 failed, retrying in $((i * 5))s..."
+  sleep $((i * 5))
+done
+
+sshpass -e ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=15 -o ServerAliveCountMax=3 \
+  "$SSH_HOST" "
   export HIPILOT_EDA_SERVER=1
   export PATH=${NODE_PATH}:\$PATH
   export HIPILOT_SESSION=\${HIPILOT_SESSION:-hipilot}
+  export DISPLAY=:0
   cd $DEPLOYED_HIPILOT
-  node src/hitestbot/tests/FlowCertificationTest.js $WORKFLOW
+  node src/hitestbot/tests/FlowCertificationTest.js '$COMMAND'
 "

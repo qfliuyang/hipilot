@@ -26,6 +26,7 @@ Thumbs.db
 # Test evidence (generated, not committed)
 e2e_evidence/
 evidence/
+test-evidence/
 
 # Demo videos (too large for git)
 *.mp4

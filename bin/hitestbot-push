@@ -1,13 +1,10 @@
 #!/bin/bash
-# HiTestBot Push — Upload test plan or config from dev machine to EDA server
+# HiTestBot Push — Upload files from dev machine to EDA server
 #
 # Usage:
-#   bin/hitestbot-push                    # Push test plan (test_plan.json if exists)
-#   bin/hitestbot-push test_plan.json     # Push specific test plan
 #   bin/hitestbot-push skills/            # Push skills dir for quick iteration
 #   bin/hitestbot-push deploy/eda-server/ # Push deploy config
-#
-# Env: HIPILOT_SSH_HOST, HIPILOT_SSH_PASS, HIPILOT_DEPLOY_DIR
+#   bin/hitestbot-push test_plan.json     # Push specific file
 
 set -e
 
@@ -15,47 +12,28 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 SSH_HOST="${HIPILOT_SSH_HOST:-EDA@192.168.112.163}"
-SSH_PASS="${HIPILOT_SSH_PASS:-eda2020}"
+export SSHPASS="${SSHPASS:-${HIPILOT_SSH_PASS:-eda2020}}"
 REMOTE_DIR="${HIPILOT_DEPLOY_DIR:-/home/EDA/hipilot/current}"
+SSH_OPTS="-o StrictHostKeyChecking=no -o ConnectTimeout=10"
 
 SRC="${1:-}"
 
 if [ -z "$SRC" ]; then
-  if [ -f "$PROJECT_DIR/test_plan.json" ]; then
-    SRC="test_plan.json"
-    echo "Pushing test_plan.json to $SSH_HOST:$REMOTE_DIR/ ..."
-    sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no \
-      "$PROJECT_DIR/test_plan.json" "$SSH_HOST:$REMOTE_DIR/"
-    echo "Done."
-  else
-    echo "HiTestBot Push — Upload to EDA server"
-    echo ""
-    echo "Usage:"
-    echo "  bin/hitestbot-push                    Push test_plan.json (if exists)"
-    echo "  bin/hitestbot-push test_plan.json     Push specific file"
-    echo "  bin/hitestbot-push skills/            Push skills dir"
-    echo "  bin/hitestbot-push deploy/eda-server/ Push deploy config"
-    echo ""
-    echo "Target: $SSH_HOST:$REMOTE_DIR/"
-    exit 0
-  fi
-else
-  if [ ! -e "$PROJECT_DIR/$SRC" ]; then
-    SRC_ABS="$SRC"
-  else
-    SRC_ABS="$PROJECT_DIR/$SRC"
-  fi
-  if [ ! -e "$SRC_ABS" ]; then
-    echo "Not found: $SRC"
-    exit 1
-  fi
-  echo "Pushing $SRC to $SSH_HOST:$REMOTE_DIR/ ..."
-  if [ -d "$SRC_ABS" ]; then
-    sshpass -p "$SSH_PASS" scp -r -o StrictHostKeyChecking=no \
-      "$SRC_ABS" "$SSH_HOST:$REMOTE_DIR/"
-  else
-    sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no \
-      "$SRC_ABS" "$SSH_HOST:$REMOTE_DIR/"
-  fi
-  echo "Done."
+  echo "Usage: bin/hitestbot-push <file-or-dir>"
+  echo "  bin/hitestbot-push skills/            Push skills"
+  echo "  bin/hitestbot-push deploy/eda-server/ Push deploy config"
+  echo "Target: $SSH_HOST:$REMOTE_DIR/"
+  exit 0
 fi
+
+SRC_ABS="$PROJECT_DIR/$SRC"
+[ ! -e "$SRC_ABS" ] && SRC_ABS="$SRC"
+[ ! -e "$SRC_ABS" ] && echo "Not found: $SRC" && exit 1
+
+echo "Pushing $SRC to $SSH_HOST:$REMOTE_DIR/ ..."
+if [ -d "$SRC_ABS" ]; then
+  sshpass -e scp -r $SSH_OPTS "$SRC_ABS" "$SSH_HOST:$REMOTE_DIR/"
+else
+  sshpass -e scp $SSH_OPTS "$SRC_ABS" "$SSH_HOST:$REMOTE_DIR/"
+fi
+echo "Done."

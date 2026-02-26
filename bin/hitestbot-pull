@@ -1,51 +1,45 @@
 #!/bin/bash
-# HiTestBot Pull — Download test results and evidence from EDA server to dev machine
+# HiTestBot Pull — Download test evidence from EDA server to dev machine
 #
 # Usage:
-#   bin/hitestbot-pull                    # Pull latest evidence run
-#   bin/hitestbot-pull 20260225_143022    # Pull specific timestamp
-#   bin/hitestbot-pull --all              # Pull all evidence dirs
-#
-# Output: e2e_evidence/ (or specified target dir)
+#   bin/hitestbot-pull                    # Pull latest evidence
+#   bin/hitestbot-pull 20260226013000     # Pull specific timestamp
+#   bin/hitestbot-pull --all              # Pull all evidence
 
 set -e
 
 SSH_HOST="${HIPILOT_SSH_HOST:-EDA@192.168.112.163}"
-SSH_PASS="${HIPILOT_SSH_PASS:-eda2020}"
+export SSHPASS="${SSHPASS:-${HIPILOT_SSH_PASS:-eda2020}}"
 REMOTE_EVIDENCE="${HIPILOT_EVIDENCE_DIR:-/tmp/hipilot-test-evidence}"
-LOCAL_EVIDENCE="${HITESTBOT_LOCAL_EVIDENCE:-e2e_evidence}"
+LOCAL_EVIDENCE="${HITESTBOT_LOCAL_EVIDENCE:-test-evidence}"
 
 TS="$1"
-
 mkdir -p "$LOCAL_EVIDENCE"
+
+SSH_OPTS="-o StrictHostKeyChecking=no -o ConnectTimeout=10"
 
 if [ "$TS" = "--all" ]; then
   echo "Pulling all evidence from $SSH_HOST:$REMOTE_EVIDENCE/ ..."
-  sshpass -p "$SSH_PASS" scp -r -o StrictHostKeyChecking=no \
-    "$SSH_HOST:$REMOTE_EVIDENCE/" "$LOCAL_EVIDENCE/"
+  sshpass -e scp -r $SSH_OPTS "$SSH_HOST:$REMOTE_EVIDENCE/" "$LOCAL_EVIDENCE/"
   echo "Done. Evidence in $LOCAL_EVIDENCE/"
 elif [ -n "$TS" ]; then
   echo "Pulling $TS from $SSH_HOST ..."
-  sshpass -p "$SSH_PASS" scp -r -o StrictHostKeyChecking=no \
-    "$SSH_HOST:$REMOTE_EVIDENCE/$TS" "$LOCAL_EVIDENCE/" 2>/dev/null || \
-  sshpass -p "$SSH_PASS" scp -r -o StrictHostKeyChecking=no \
-    "$SSH_HOST:/home/EDA/hipilot_test/evidence/$TS" "$LOCAL_EVIDENCE/" 2>/dev/null || {
-    echo "Run not found. Listing available:"
-    sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_HOST" \
-      "ls -la $REMOTE_EVIDENCE/ 2>/dev/null || ls -la /tmp/hipilot-test-evidence/ 2>/dev/null || echo 'No evidence dir found'"
+  sshpass -e scp -r $SSH_OPTS "$SSH_HOST:$REMOTE_EVIDENCE/$TS" "$LOCAL_EVIDENCE/" || {
+    echo "Not found at $REMOTE_EVIDENCE/$TS. Listing available:"
+    sshpass -e ssh $SSH_OPTS "$SSH_HOST" "ls -la $REMOTE_EVIDENCE/ 2>/dev/null || echo 'No evidence dir'"
     exit 1
   }
   echo "Done. Evidence in $LOCAL_EVIDENCE/$TS/"
 else
   echo "Pulling latest from $SSH_HOST ..."
-  LATEST=$(sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_HOST" \
-    "ls -t $REMOTE_EVIDENCE/ 2>/dev/null | head -1 || ls -t /tmp/hipilot-test-evidence/ 2>/dev/null | head -1")
+  LATEST=$(sshpass -e ssh $SSH_OPTS "$SSH_HOST" "ls -t $REMOTE_EVIDENCE/ 2>/dev/null | head -1")
   if [ -z "$LATEST" ]; then
     echo "No evidence found. Run HiTestBot on EDA server first."
     exit 1
   fi
   echo "Latest: $LATEST"
-  sshpass -p "$SSH_PASS" scp -r -o StrictHostKeyChecking=no \
-    "$SSH_HOST:$REMOTE_EVIDENCE/$LATEST" "$LOCAL_EVIDENCE/"
-  echo "Done. Evidence in $LOCAL_EVIDENCE/$LATEST/"
+  sshpass -e scp -r $SSH_OPTS "$SSH_HOST:$REMOTE_EVIDENCE/$LATEST" "$LOCAL_EVIDENCE/"
+  # Create symlink to latest
+  ln -sfn "$LATEST" "$LOCAL_EVIDENCE/latest"
+  echo "Done. Evidence in $LOCAL_EVIDENCE/$LATEST/ (symlinked to $LOCAL_EVIDENCE/latest)"
 fi

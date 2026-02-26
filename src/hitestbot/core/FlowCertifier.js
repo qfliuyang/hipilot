@@ -478,17 +478,33 @@ export class FlowCertifier {
    * A human opens a terminal, types "bin/hipilot", and the layout pops up.
    * HiTestBot does the same thing with xterm on display :0.
    */
+  /**
+   * Kill all stale processes from previous test runs.
+   * Stale EDA tools lock database files. Stale tmux sessions confuse the workspace.
+   * Stale ffmpeg processes hold display :0. Must clean thoroughly.
+   */
+  _cleanStaleProcesses() {
+    this._runLog('Cleaning stale processes...');
+    const cmds = [
+      'pkill -9 -f "innovus" 2>/dev/null || true',
+      'pkill -9 -f "icc2_shell" 2>/dev/null || true',
+      'pkill -9 -f "pt_shell" 2>/dev/null || true',
+      'pkill -9 -f "dc_shell" 2>/dev/null || true',
+      `tmux -L ${this.socket} kill-server 2>/dev/null || true`,
+      'pkill -9 -f "ffmpeg.*x11grab" 2>/dev/null || true',
+    ];
+    for (const cmd of cmds) {
+      try { execSync(cmd, { encoding: 'utf-8', timeout: 5000 }); } catch { /* ignore */ }
+    }
+    this._runLog('Stale processes cleaned');
+  }
+
   async launchHiPilot() {
     this._runLog('Phase 1: Launching HiPilot...');
 
-    // Kill old session (clean slate)
-    try {
-      execSync(`tmux -L ${this.socket} kill-server 2>/dev/null || true`, {
-        encoding: 'utf-8', timeout: 5000,
-      });
-      this._runLog('Killed old tmux session');
-      await this._sleep(2000);
-    } catch { /* ignore */ }
+    // Kill ALL stale processes (EDA tools, tmux, ffmpeg) — critical for clean test
+    this._cleanStaleProcesses();
+    await this._sleep(2000);
 
     const binPath = this.hipilotBin || join(this._projectRoot(), 'bin', 'hipilot');
     const projectDir = this._projectRoot();
@@ -972,8 +988,30 @@ export class FlowCertifier {
 
   async runTest(command, options = {}) {
     const maxWaitMs = options.maxWaitMs || 300000;
+    const phase = options.phase ?? null;
+    const purpose = options.purpose || command;
     mkdirSync(this.evidenceDir, { recursive: true });
     this.recordingStartTime = Date.now();
+
+    // Write test metadata (unique ID, purpose, timestamps — for tracking)
+    const metadata = {
+      test_id: this.timestamp,
+      timestamp: new Date().toISOString(),
+      phase,
+      purpose,
+      command,
+      evidence_dir: this.evidenceDir,
+      session: this.session,
+      display: this.display,
+      hostname: process.env.HOSTNAME || 'unknown',
+      user: process.env.USER || 'unknown',
+      status: 'running',
+      started_at: new Date().toISOString(),
+      completed_at: null,
+      result: null,
+    };
+    writeFileSync(join(this.evidenceDir, 'test_metadata.json'), JSON.stringify(metadata, null, 2));
+    this._runLog(`Test ID: ${this.timestamp}, purpose: ${purpose}`);
 
     // Pre-flight checks
     await this.preflight();
@@ -1066,6 +1104,13 @@ export class FlowCertifier {
     writeFileSync(join(this.evidenceDir, 'stage_scorecards.json'), JSON.stringify(this.stageResults, null, 2));
     writeFileSync(join(this.evidenceDir, 'observation_points.json'), JSON.stringify(this.observations, null, 2));
     writeFileSync(join(this.evidenceDir, 'run_log.txt'), this._runLogLines.join('\n'));
+
+    // Update test metadata with completion
+    metadata.completed_at = new Date().toISOString();
+    metadata.status = 'completed';
+    metadata.result = scorecard.status.toUpperCase();
+    metadata.total_score = scorecard.total_score;
+    writeFileSync(join(this.evidenceDir, 'test_metadata.json'), JSON.stringify(metadata, null, 2));
 
     return {
       evidenceDir: this.evidenceDir,
