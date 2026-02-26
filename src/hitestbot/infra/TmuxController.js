@@ -26,10 +26,12 @@ class TmuxController {
     const ssh = this.sshFn;
 
     if (text) {
-      await ssh(`${this.tmuxBin} -L ${this.socketName} send-keys -t ${target} '${this.escapeShell(text)}'`);
+      // Use -l for literal text so tmux doesn't interpret key names in the text
+      await ssh(`${this.tmuxBin} -L ${this.socketName} send-keys -t ${target} -l '${this.escapeShell(text)}'`);
     }
 
     if (sendKey) {
+      // Send key (e.g., C-m for Enter) as an unquoted tmux key name
       await ssh(`${this.tmuxBin} -L ${this.socketName} send-keys -t ${target} ${key}`);
     }
   }
