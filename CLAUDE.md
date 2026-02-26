@@ -235,7 +235,21 @@ bin/hitestbot-pull                             # Download evidence to dev machin
 
 ---
 
-## 9. Technology
+## 9. Rules for AI Coding CLIs Working on This Project
+
+These rules exist because previous AI coding sessions caused real problems.
+
+1. **Never use sed, perl, or awk to modify source code.** Use your editor/IDE tools. Unix text tools corrupt files (wrong encoding, missing newlines, broken escapes).
+2. **Never overwrite `~/.claude/settings.json` on the EDA server.** It contains API keys and base URLs. The deployment script (`deploy_hipilot.js`) patches only `command` and `args` fields. If you need to change settings, read the file first, modify in memory, validate, write back, verify.
+3. **Never fabricate evidence.** Screenshots must come from `import -window root` (X11). Video must come from ffmpeg recording display :0. Pane logs must come from `tmux capture-pane`. MCP logs must come from files HiPilot wrote. If evidence doesn't exist, report that it doesn't exist — don't create fake evidence.
+4. **Never give HiTestBot the ability to call MCP tools or control the EDA pane.** HiTestBot is a virtual human. Its only interface is typing in the left pane and reading the screen. If you add code that bypasses this, you've broken the testing model.
+5. **SSH to the EDA server is unreliable.** Always use `sshpass` with retry logic and timeouts. The deploy script has 3 retries with exponential backoff.
+6. **CentOS 7 is old.** glibc 2.17, no modern shell features. Test bash scripts for compatibility. Node.js v20 works because it's a static build.
+7. **Always run `npm test` before committing.** If tests fail, fix them before pushing.
+
+---
+
+## 10. Technology
 
 - **Runtime:** Node.js v20+ with ES Modules (`"type": "module"` in package.json)
 - **Language:** Plain JavaScript — no TypeScript, no build step
@@ -247,7 +261,7 @@ bin/hitestbot-pull                             # Download evidence to dev machin
 
 ---
 
-## 10. EDA Server
+## 11. EDA Server
 
 - **Host:** `ssh EDA@192.168.112.163` (password: `eda2020`)
 - **OS:** CentOS 7.9 with GNOME desktop

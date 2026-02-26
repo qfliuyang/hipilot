@@ -4,28 +4,55 @@ import { existsSync, mkdirSync, unlinkSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-const SSH_HOST = 'EDA@192.168.112.163';
-const SSH_PASS = 'eda2020';
-const REMOTE_DIR = '/home/EDA/hipilot';
-const NODE_PATH = '/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin';
+const SSH_HOST = process.env.HIPILOT_SSH_HOST || 'EDA@192.168.112.163';
+const SSH_PASS = process.env.HIPILOT_SSH_PASS || 'eda2020';
+const REMOTE_DIR = process.env.HIPILOT_DEPLOY_DIR || '/home/EDA/hipilot';
+const NODE_PATH = process.env.HIPILOT_NODE_PATH || '/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const PROJECT_ROOT = join(__dirname, '..', '..');
 
+// SSH options for CentOS 7 compatibility and reliability:
+// -o ConnectTimeout=10: fail fast on unreachable host (don't hang for minutes)
+// -o ServerAliveInterval=15: send keepalive every 15s (prevents dropped connections)
+// -o ServerAliveCountMax=3: disconnect after 3 missed keepalives (45s)
+// -o StrictHostKeyChecking=no: don't prompt for host key confirmation
+const SSH_OPTS = '-o StrictHostKeyChecking=no -o ConnectTimeout=10 -o ServerAliveInterval=15 -o ServerAliveCountMax=3';
+
 function ssh(cmd, timeout = 60000) {
-  const fullCmd = `sshpass -p '${SSH_PASS}' ssh -o StrictHostKeyChecking=no ${SSH_HOST} '${cmd.replace(/'/g, "'\\''")}'`;
-  try {
-    return execSync(fullCmd, { encoding: 'utf-8', timeout, stdio: ['pipe', 'pipe', 'pipe'] });
-  } catch (err) {
-    console.error(`SSH command failed: ${cmd}`);
-    throw err;
+  const escaped = cmd.replace(/'/g, "'\\''");
+  const fullCmd = `sshpass -p '${SSH_PASS}' ssh ${SSH_OPTS} ${SSH_HOST} '${escaped}'`;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      return execSync(fullCmd, { encoding: 'utf-8', timeout, stdio: ['pipe', 'pipe', 'pipe'] });
+    } catch (err) {
+      if (attempt < 3 && (err.message.includes('Connection') || err.message.includes('timed out'))) {
+        console.error(`   SSH attempt ${attempt}/3 failed, retrying in ${attempt * 2}s...`);
+        execSync(`sleep ${attempt * 2}`);
+        continue;
+      }
+      console.error(`SSH command failed (attempt ${attempt}): ${cmd.slice(0, 100)}`);
+      throw err;
+    }
   }
 }
 
 function scp(localPath, remotePath) {
-  const cmd = `sshpass -p '${SSH_PASS}' scp -o StrictHostKeyChecking=no ${localPath} ${SSH_HOST}:${remotePath}`;
-  execSync(cmd, { encoding: 'utf-8', timeout: 120000 });
+  const cmd = `sshpass -p '${SSH_PASS}' scp ${SSH_OPTS} ${localPath} ${SSH_HOST}:${remotePath}`;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      execSync(cmd, { encoding: 'utf-8', timeout: 300000 });
+      return;
+    } catch (err) {
+      if (attempt < 3 && (err.message.includes('Connection') || err.message.includes('timed out'))) {
+        console.error(`   SCP attempt ${attempt}/3 failed, retrying in ${attempt * 2}s...`);
+        execSync(`sleep ${attempt * 2}`);
+        continue;
+      }
+      throw err;
+    }
+  }
 }
 
 async function deploy() {
@@ -74,23 +101,35 @@ async function deploy() {
   console.log('   Swap complete');
   
   // Step 6: Configure MCP — ONLY update command/args, NEVER touch env.
-  // The env section in settings.json stores API keys and must not be modified.
+  // The env section in settings.json stores API keys (ANTHROPIC_API_KEY, base URL, etc.)
+  // If we corrupt env, Claude Code fails to start. This has happened before.
+  //
+  // Safety: read → backup → patch only command/args → validate → write
   console.log('[6/7] Configuring MCP servers...');
   const hipilotDir = `${REMOTE_DIR}/current`;
   
+  // Read existing settings
   let existingSettings = {};
+  let existingRaw = '';
   try {
-    const existingJson = ssh(`cat ~/.claude/settings.json 2>/dev/null || echo '{}'`);
-    existingSettings = JSON.parse(existingJson);
-    console.log('   Found existing settings, will preserve env sections...');
+    existingRaw = ssh(`cat ~/.claude/settings.json 2>/dev/null || echo '{}'`);
+    existingSettings = JSON.parse(existingRaw);
+    console.log('   Found existing settings.json');
   } catch (e) {
-    console.log('   No existing settings, creating new...');
+    console.log('   No existing settings or invalid JSON, creating new...');
+  }
+  
+  // Backup before modifying (so we can restore if something goes wrong)
+  if (existingRaw.trim() !== '{}' && existingRaw.trim() !== '') {
+    ssh(`cp ~/.claude/settings.json ~/.claude/settings.json.bak 2>/dev/null || true`);
+    console.log('   Backed up to settings.json.bak');
   }
   
   const existingMcp = existingSettings.mcpServers || {};
   
-  // Deep-merge: update only command/args for HiPilot servers, preserve all env keys
-  function mergeServer(serverName, newCommand, newArgs, defaultEnv) {
+  // Patch ONLY command and args for HiPilot servers.
+  // Existing env is spread LAST so it always wins (preserves API keys).
+  function patchServer(serverName, newCommand, newArgs, defaultEnv) {
     const existing = existingMcp[serverName] || {};
     const existingEnv = existing.env || {};
     return {
@@ -104,18 +143,44 @@ async function deploy() {
     ...existingSettings,
     mcpServers: {
       ...existingMcp,
-      'hipilot-eda': mergeServer('hipilot-eda', `${NODE_PATH}/node`, [`${hipilotDir}/servers/eda/index.js`], { HIPILOT_SESSION: 'hipilot' }),
-      'hipilot-tmux': mergeServer('hipilot-tmux', `${NODE_PATH}/node`, [`${hipilotDir}/servers/tmux/index.js`], { HIPILOT_SESSION: 'hipilot' }),
-      'hipilot-knowledge': mergeServer('hipilot-knowledge', `${NODE_PATH}/node`, [`${hipilotDir}/servers/knowledge/index.js`], {}),
+      'hipilot-eda': patchServer('hipilot-eda', `${NODE_PATH}/node`, [`${hipilotDir}/servers/eda/index.js`], { HIPILOT_SESSION: 'hipilot' }),
+      'hipilot-tmux': patchServer('hipilot-tmux', `${NODE_PATH}/node`, [`${hipilotDir}/servers/tmux/index.js`], { HIPILOT_SESSION: 'hipilot' }),
+      'hipilot-knowledge': patchServer('hipilot-knowledge', `${NODE_PATH}/node`, [`${hipilotDir}/servers/knowledge/index.js`], {}),
     },
     skipDangerousModePermissionPrompt: true
   };
   
+  // Validate: env keys must still be present after merge
+  const envKeysToValidate = ['ANTHROPIC_API_KEY', 'ANTHROPIC_BASE_URL'];
+  for (const key of envKeysToValidate) {
+    for (const [serverName, serverConfig] of Object.entries(existingMcp)) {
+      if (serverConfig.env && serverConfig.env[key]) {
+        const merged = mergedSettings.mcpServers[serverName];
+        if (!merged || !merged.env || !merged.env[key]) {
+          console.error(`   FATAL: Would lose ${key} from ${serverName}.env — aborting settings update`);
+          console.error('   Restoring from backup...');
+          ssh(`cp ~/.claude/settings.json.bak ~/.claude/settings.json 2>/dev/null || true`);
+          throw new Error(`Settings merge would lose ${key} — aborted`);
+        }
+      }
+    }
+  }
+  
   ssh(`mkdir -p ~/.claude`);
+  const settingsJson = JSON.stringify(mergedSettings, null, 2);
   ssh(`cat > ~/.claude/settings.json << 'EOFSETTINGS'
-${JSON.stringify(mergedSettings, null, 2)}
+${settingsJson}
 EOFSETTINGS`);
-  console.log('   MCP configured (command/args updated, env preserved)');
+  
+  // Verify the file is valid JSON after writing
+  try {
+    ssh(`node -e "JSON.parse(require('fs').readFileSync('/home/EDA/.claude/settings.json','utf8'))" 2>&1`);
+    console.log('   MCP configured (command/args updated, env preserved, JSON validated)');
+  } catch {
+    console.error('   WARNING: settings.json may be corrupted — restoring backup');
+    ssh(`cp ~/.claude/settings.json.bak ~/.claude/settings.json 2>/dev/null || true`);
+    throw new Error('settings.json validation failed after write — restored backup');
+  }
   
   // Step 7: Deploy CLAUDE.md and slash commands for HiPilot identity
   console.log('[7/7] Deploying HiPilot identity (CLAUDE.md + commands)...');
@@ -145,7 +210,7 @@ EOFSETTINGS`);
         scp(join(cmdDir, file), `${hipilotDir}/.claude/commands/${file}`);
       }
     }
-    console.log('   Slash commands deployed (8 commands)');
+    console.log('   Slash commands deployed (10 commands)');
   }
   
   // Cleanup

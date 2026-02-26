@@ -32,6 +32,33 @@ import { FlowReporter } from './FlowReporter.js';
 const POLL_INTERVAL_MS = 5000;
 const CLAUDE_READY_TIMEOUT_MS = 120000;
 
+// ═══════════════════════════════════════════════════════════════════
+//  ANTI-CHEAT RULES
+//
+//  HiTestBot is a virtual human. It must NEVER:
+//    1. Import or call any MCP server code
+//    2. Send tmux commands to pane 0.1 (the EDA pane)
+//    3. Write to any file that HiPilot reads (skills, templates, settings)
+//    4. Modify the tmux session layout or settings
+//    5. Read MCP logs DURING the test (only AFTER the test ends)
+//    6. Fabricate screenshots or evidence files
+//    7. Run EDA tool commands directly
+//
+//  All interaction with HiPilot is through:
+//    - tmux send-keys to pane 0.0 (type in Claude Code's input)
+//    - tmux capture-pane from both panes (read the screen)
+//    - import/imagemagick for screenshots (capture the desktop)
+//    - ffmpeg for video (record the desktop)
+//
+//  Evidence integrity:
+//    - Screenshots come from `import -window root` (X11 capture)
+//    - Video comes from ffmpeg recording display :0
+//    - Pane logs come from tmux capture-pane
+//    - All evidence is timestamped and cross-referenced in timeline.jsonl
+//    - MCP logs are collected AFTER the test from files HiPilot wrote
+//    - HiTestBot cannot create or modify MCP log entries
+// ═══════════════════════════════════════════════════════════════════
+
 // A human glances at both panes. They know Claude is done when the input prompt
 // reappears. They know the EDA tool is busy when new output is scrolling.
 // They answer Claude's questions. They don't stare at a frozen screen for 5 minutes.
@@ -86,40 +113,52 @@ export class FlowCertifier {
     mkdirSync(videoDir, { recursive: true });
     this._videoFile = join(videoDir, 'test_recording.mp4');
     const ffmpegLog = join(videoDir, 'ffmpeg.log');
+    const pidFile = join(videoDir, 'ffmpeg.pid');
 
     try {
-      // Detect resolution
+      // Detect resolution from display
       let resolution = '1920x1080';
       try {
-        const info = execSync(`xdpyinfo -display ${this.display} 2>/dev/null | grep dimensions | awk '{print $2}'`, {
-          encoding: 'utf-8', timeout: 5000,
+        const info = execSync(`DISPLAY=${this.display} xdpyinfo 2>/dev/null | grep dimensions | awk '{print $2}'`, {
+          encoding: 'utf-8', timeout: 5000, shell: true,
         }).trim();
-        if (info) resolution = info;
+        if (info && info.includes('x')) resolution = info;
       } catch { /* use default */ }
 
-      const ffmpegArgs = [
-        '-y', '-f', 'x11grab',
-        '-video_size', resolution,
-        '-framerate', '15',
-        '-i', this.display,
-        '-c:v', 'libx264', '-preset', 'fast', '-crf', '23', '-pix_fmt', 'yuv420p',
-        this._videoFile,
-      ];
+      // Use nohup + shell for CentOS 7 reliability.
+      // On CentOS 7, spawning ffmpeg directly from Node can fail due to glibc/TTY issues.
+      // nohup detaches the process so it survives even if the parent exits.
+      const ffmpegCmd = [
+        `DISPLAY=${this.display}`,
+        'nohup ffmpeg -y -f x11grab',
+        `-video_size ${resolution}`,
+        '-framerate 10',
+        `-i ${this.display}`,
+        '-c:v libx264 -preset fast -crf 25 -pix_fmt yuv420p',
+        `'${this._videoFile}'`,
+        `> '${ffmpegLog}' 2>&1 &`,
+        `echo $!`,
+      ].join(' ');
 
-      const proc = spawn('ffmpeg', ffmpegArgs, {
-        stdio: ['pipe', 'pipe', 'pipe'],
-        detached: true,
+      const pid = execSync(ffmpegCmd, {
+        encoding: 'utf-8', timeout: 10000, shell: true,
         env: { ...process.env, DISPLAY: this.display },
-      });
+      }).trim();
 
-      this._ffmpegPid = proc.pid;
-      proc.unref();
+      this._ffmpegPid = parseInt(pid, 10);
+      writeFileSync(pidFile, String(this._ffmpegPid));
 
-      const logStream = createWriteStream(ffmpegLog);
-      proc.stderr.pipe(logStream);
-
-      this._runLog(`Video recording started: PID=${proc.pid}, file=${this._videoFile}`);
-      return true;
+      // Verify ffmpeg started
+      execSync('sleep 2', { timeout: 5000 });
+      try {
+        process.kill(this._ffmpegPid, 0); // check if alive
+        this._runLog(`Video recording started: PID=${this._ffmpegPid}, resolution=${resolution}`);
+        return true;
+      } catch {
+        this._runLog(`ffmpeg process ${this._ffmpegPid} died immediately — check ${ffmpegLog}`);
+        this._ffmpegPid = null;
+        return false;
+      }
     } catch (e) {
       this._runLog(`Video recording failed to start: ${e.message}`);
       this._ffmpegPid = null;
@@ -867,10 +906,77 @@ export class FlowCertifier {
   //  MAIN ENTRY POINT
   // ═══════════════════════════════════════════════════════════════════
 
+  /**
+   * Pre-flight check: verify the EDA server environment before testing.
+   * A human would check: is tmux installed? is the display working? is ffmpeg available?
+   */
+  async preflight() {
+    this._runLog('Pre-flight checks...');
+    const checks = [];
+
+    // tmux available?
+    try {
+      const ver = execSync('tmux -V 2>/dev/null', { encoding: 'utf-8', timeout: 5000 }).trim();
+      checks.push({ name: 'tmux', ok: true, detail: ver });
+    } catch {
+      checks.push({ name: 'tmux', ok: false, detail: 'tmux not found in PATH' });
+    }
+
+    // Display :0 accessible?
+    try {
+      execSync(`xdpyinfo -display ${this.display} >/dev/null 2>&1`, { timeout: 5000 });
+      checks.push({ name: 'display', ok: true, detail: this.display });
+    } catch {
+      checks.push({ name: 'display', ok: false, detail: `display ${this.display} not accessible` });
+    }
+
+    // ffmpeg available?
+    try {
+      execSync('which ffmpeg >/dev/null 2>&1', { timeout: 5000 });
+      checks.push({ name: 'ffmpeg', ok: true, detail: 'installed' });
+    } catch {
+      checks.push({ name: 'ffmpeg', ok: false, detail: 'ffmpeg not found — video recording will fail' });
+    }
+
+    // gnome-terminal available?
+    try {
+      execSync('which gnome-terminal >/dev/null 2>&1', { timeout: 5000 });
+      checks.push({ name: 'gnome-terminal', ok: true, detail: 'installed' });
+    } catch {
+      checks.push({ name: 'gnome-terminal', ok: false, detail: 'gnome-terminal not found — workspace will not be visible' });
+    }
+
+    // bin/hipilot exists and is executable?
+    const binPath = this.hipilotBin || join(this._projectRoot(), 'bin', 'hipilot');
+    checks.push({
+      name: 'bin/hipilot',
+      ok: existsSync(binPath),
+      detail: existsSync(binPath) ? binPath : 'NOT FOUND',
+    });
+
+    // Log results
+    let allOk = true;
+    for (const c of checks) {
+      const icon = c.ok ? '✅' : '❌';
+      this._runLog(`  ${icon} ${c.name}: ${c.detail}`);
+      if (!c.ok) allOk = false;
+    }
+
+    if (!allOk) {
+      this._runLog('WARNING: Some pre-flight checks failed — test may not work correctly');
+    }
+
+    writeFileSync(join(this.evidenceDir, 'preflight.json'), JSON.stringify(checks, null, 2));
+    return { ok: allOk, checks };
+  }
+
   async runTest(command, options = {}) {
     const maxWaitMs = options.maxWaitMs || 300000;
     mkdirSync(this.evidenceDir, { recursive: true });
     this.recordingStartTime = Date.now();
+
+    // Pre-flight checks
+    await this.preflight();
 
     // Phase 1: Launch HiPilot (creates session + opens terminal on desktop)
     await this.launchHiPilot();
