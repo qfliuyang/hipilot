@@ -1,59 +1,78 @@
 ---
 name: /rtl2gds
 description: >
-  Run the complete Innovus RTL-to-GDS implementation flow for the active design.
-  You orchestrate each stage yourself using MCP tools, skills, and templates.
+  Run the complete Innovus RTL-to-GDS flow for the Ibex design.
+  You drive each stage yourself using MCP tools.
 ---
 
-# /rtl2gds — Full RTL-to-GDS Flow
+# /rtl2gds
 
-You will drive the place & route flow **stage by stage**, using your MCP tools and skills. Do NOT call `workflow.run` or `eda.rtl2gds.run_full_flow` — you must orchestrate each stage yourself so you can handle errors, adapt to results, and use your intelligence.
+The engineer wants you to run the complete place-and-route flow. You will execute 8 stages in sequence, handling errors and reporting progress at each stage.
 
-## Step 1: Preparation
+**Do NOT call `workflow.run` or `eda.rtl2gds.run_full_flow`.** You orchestrate every stage yourself. This is critical — those tools are batch executors that bypass your intelligence. If a stage fails, you need to diagnose and fix it, not just stop.
 
-1. Call `eda.detect_tool` to check if Innovus is running in the EDA pane.
-2. If not running, call `eda.start_tool({"tool":"innovus","design_dir":"/home/EDA/hipilot_test/ibex_work_upload"})`.
-3. Call `knowledge.get_skill({"name":"ibex-rtl2gds-flow"})` to load the design-specific flow guide.
-4. Read the skill carefully — it contains the exact Tcl commands, file paths, and methodology for each stage.
+## What to do
 
-## Step 2: Execute Stages
+### 1. Make sure Innovus is running
 
-For **each stage** below, follow this pattern:
+```
+eda.detect_tool({})
+```
 
-1. **Generate Tcl**: Call `eda.generate_tcl` with the operation and tool, OR use the Tcl from the skill directly.
-2. **Execute**: Call `eda.execute_and_verify` with the Tcl, a description, and an appropriate timeout.
-3. **Check result**: Read the response carefully. Look for errors, warnings, and QoR metrics.
-4. **Handle errors**: If there are errors, call `eda.diagnose_error` with the error text. Follow the diagnosis to fix the issue, then retry the stage.
-5. **Snapshot QoR**: Call `qor.snapshot` with a descriptive name (e.g., "after_placement").
-6. **Report progress**: Tell the user what happened and the current QoR (WNS/TNS/violations).
-7. **Proceed**: Move to the next stage only when the current one succeeds.
+If no tool is running:
 
-### The stages (in order):
+```
+eda.start_tool({tool: "innovus", design_dir: "/home/EDA/hipilot_test/ibex_work_upload"})
+```
 
-| # | Stage | Operation | Timeout | Notes |
-|---|-------|-----------|---------|-------|
-| 1 | Design Init | `read_design` | 180s | Load netlist, LEF, MMMC. See skill for paths. |
-| 2 | Floorplan | — | 120s | Use Tcl from skill. Check if floorplan exists first. |
-| 3 | Placement | — | 300s | `place_opt_design` for Innovus. |
-| 4 | CTS | `run_cts` | 300s | Needs clock definitions. Check timing after. |
-| 5 | Post-CTS Opt | `optimize_design` | 300s | Fix setup/hold violations from CTS. |
-| 6 | Routing | `route_design` | 600s | Global + detail routing. Longest stage. |
-| 7 | Timing Report | `report_timing` | 120s | Non-critical — skip if it fails. |
-| 8 | Chip Finish | `save_design` | 120s | Export final DEF, netlist. |
+Wait for Innovus to start (the tool returns when the Innovus prompt appears).
 
-## Step 3: Final Report
+### 2. Load the flow guide
 
-After all stages complete, summarize:
-- How many stages passed/failed
+```
+knowledge.get_skill({name: "ibex-rtl2gds-flow"})
+```
+
+Read the skill carefully. It contains the exact file paths (DEF, LEF, SDC), Tcl commands, and methodology for every stage. The Tcl in the skill is specific to the Ibex design on this server.
+
+### 3. Execute each stage
+
+For each stage, follow this exact pattern:
+
+1. **Generate Tcl:** Call `eda.generate_tcl` with the operation name, OR copy the Tcl directly from the skill.
+2. **Execute:** Call `eda.execute_and_verify` with the Tcl, a description, and a timeout in seconds. This sends the Tcl to Innovus in the right pane, waits for the Innovus prompt to reappear, checks for errors, and returns the result.
+3. **Check the result:** The response includes `status` (success/error), `errors` (list), `warnings` (list), and `qor` (WNS/TNS if available). Read them.
+4. **If errors:** Call `eda.diagnose_error` with the error text. Follow the diagnosis. Fix the issue and retry the stage.
+5. **If success:** Call `qor.snapshot` with a name like `"after_placement"`.
+6. **Report:** Tell the engineer: "Stage 3/8 Placement: done. WNS=-0.05ns, 0 violations."
+7. **Next stage:** Only proceed when the current stage succeeds.
+
+### The 8 stages
+
+| # | Stage | What to do | Timeout |
+|---|-------|-----------|---------|
+| 1 | Design Init | Load netlist + LEF + constraints. Use `eda.generate_tcl({operation: "read_design"})` or the Tcl from the skill. | 180s |
+| 2 | Floorplan | Define die area and rows. The skill has the exact Tcl. Check if a floorplan already exists before running. | 120s |
+| 3 | Placement | Place standard cells. For Innovus: `place_opt_design`. | 300s |
+| 4 | CTS | Build the clock tree. Use `eda.generate_tcl({operation: "run_cts"})`. Requires clock definitions in the design. | 300s |
+| 5 | Post-CTS Opt | Fix setup/hold violations that CTS introduced. Use `eda.generate_tcl({operation: "optimize_design"})`. | 300s |
+| 6 | Routing | Route all signal nets (global + detail). Use `eda.generate_tcl({operation: "route_design"})`. This is the longest stage. | 600s |
+| 7 | Timing Report | Generate a timing report. Use `eda.generate_tcl({operation: "report_timing"})`. If this fails, skip it — it is not critical. | 120s |
+| 8 | Chip Finish | Save the design (DEF, netlist). Use `eda.generate_tcl({operation: "save_design"})`. | 120s |
+
+### 4. Final summary
+
+After all stages, tell the engineer:
+- How many stages passed and failed
 - Final WNS and TNS (setup and hold)
-- DRC violation count if available
-- Any stages that required error recovery
-- Location of saved design files
+- DRC violation count (if you ran a DRC check)
+- Which stages needed error recovery
+- Where the saved design files are
 
-## Rules
+### Rules
 
-- **Never** call `workflow.run` or `eda.rtl2gds.run_full_flow`. You orchestrate each stage.
-- **Always** check for errors after each `execute_and_verify` call.
-- **Always** use `diagnose_error` when something fails — don't guess at fixes.
-- **Always** snapshot QoR after critical stages (placement, CTS, routing).
-- If a stage fails and you cannot fix it after 2 retries, stop and report to the user.
+- You drive each stage. Never hand off to a batch executor.
+- Always check for errors after `execute_and_verify`. Never assume success.
+- Always call `diagnose_error` when something fails. Do not guess at fixes.
+- Always call `qor.snapshot` after placement, CTS, and routing.
+- If a stage fails twice after diagnosis and retry, stop and tell the engineer.

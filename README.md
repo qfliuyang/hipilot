@@ -1,166 +1,92 @@
-# HiPilot - VLSI Physical Design Copilot
+# HiPilot — VLSI Physical Design Copilot
 
-**Version:** 0.5.0 | **Status:** Production Ready | **Last Updated:** 2026-02-25
+HiPilot is a command (`bin/hipilot`) that creates a two-pane tmux workspace on an EDA server. The left pane runs Claude Code (Anthropic's AI CLI). The right pane runs EDA tools (Innovus, ICC2, PrimeTime). Claude Code controls the EDA tool through MCP servers — the engineer only types in the left pane.
 
----
-
-## What is HiPilot?
-
-HiPilot is an **AI-powered VLSI Physical Design Copilot** that extends Claude Code with specialized MCP servers and skills for semiconductor design automation. It provides EDA engineers with natural language control over tools like Innovus, ICC2, and PrimeTime through a tmux-based workspace.
-
-**Core value:** Skills encode team expertise, making senior-level workflows executable by anyone.
-
-### Key Capabilities
-
-| Feature | Description |
-|---------|-------------|
-| **Tcl Generation** | Generate vendor-specific Tcl from natural language (22 templates) |
-| **EDA Tool Control** | Control Innovus, ICC2, PrimeTime via MCP servers |
-| **36 Built-in Skills** | Complete RTL-to-GDS flow coverage |
-| **Real Design Tested** | Validated on Ibex RISC-V CPU (Sky130, 7,000+ cells) |
-| **Multi-Vendor** | Synopsys (ICC2, DC, PT) and Cadence (Innovus) |
-| **Safety System** | Manual/Auto execution modes with risk analysis |
-
-### The AI + EDA Feedback Loop
-
-```
-Claude Code (Pane 0)          Innovus/ICC2 (Pane 1)
-────────────────────────────────────────────────────
-1. Generate Tcl from skill  →  2. Execute Tcl
-4. Analyze results (capture) ← 3. Produce output
-5. Fix issues if needed     →  6. Re-execute
-```
-
----
+**Core value:** 36 skills encode senior engineer expertise. Claude Code reads these skills and follows them to generate Tcl, execute it, check for errors, and report results. The engineer gets senior-level workflows without memorizing EDA tool commands.
 
 ## Quick Start
 
 ```bash
-# Install dependencies
+# Install dependencies (root + 3 MCP servers)
 npm run install:all
 
-# Launch HiPilot (tmux workspace)
+# Launch HiPilot (creates the tmux workspace)
 bin/hipilot
-
-# Or use TUI dashboard for status/skills/templates
-node src/cli.js status
 ```
 
-See [docs/quick-start.md](docs/quick-start.md) for the complete first-time setup guide.
+This opens a terminal with two panes. Claude Code starts in the left pane. Type `/rtl2gds` to run the full RTL-to-GDS flow, or `/timing` to check timing.
 
----
-
-## Architecture
+## How It Works
 
 ```
-┌────────────────────────────────────────────────────────┐
-│  Claude Code ─── MCP Layer ─── EDA Tools               │
-│       │          (3 Servers)     (Innovus/ICC2/PT)      │
-│       │              │                │                  │
-│   35 Skills     tmux Workspace    Log Files / Reports   │
-└────────────────────────────────────────────────────────┘
+┌─── Left Pane ────────────────┬─── Right Pane ───────────────┐
+│  Claude Code                  │  Innovus / ICC2 / PrimeTime  │
+│  (the engineer types here)    │  (Claude controls this pane)  │
+│                               │                               │
+│  1. Engineer types /rtl2gds   │                               │
+│  2. Claude loads skill        │                               │
+│  3. Claude generates Tcl   ──────▶ 4. EDA tool executes Tcl  │
+│  6. Claude reads result    ◀────── 5. EDA tool produces output│
+│  7. Claude reports to user    │                               │
+└───────────────────────────────┴───────────────────────────────┘
 ```
 
-| Component | Tools | Purpose |
-|-----------|-------|---------|
-| **EDA MCP Server** | 52 tools | Tcl generation, tool control, QoR, workflows |
-| **Tmux MCP Server** | 8 tools | Workspace management, pane control |
-| **Knowledge MCP Server** | 7 tools | Skill loading, doc search, command ref |
+Claude Code communicates with the right pane through 3 MCP servers (Node.js processes that Claude Code spawns automatically):
 
----
+| MCP Server | Tools | Purpose |
+|---|---|---|
+| `hipilot-eda` | 52 | Tcl generation, execution, error checking, timing metrics |
+| `hipilot-tmux` | 8 | Pane control, status bar |
+| `hipilot-knowledge` | 7 | Skill lookup, documentation search |
 
 ## Project Structure
 
 ```
 hipilot/
-├── bin/                    # Launcher scripts
-├── servers/                # 3 MCP servers (eda, tmux, knowledge)
-├── skills/                 # 35 skill definitions (.md)
-├── templates/              # 20 Tcl templates (synopsys/, cadence/)
-├── src/                    # Core source (CLI, TUI, libraries)
-│   ├── cli.js              # TUI dashboard (React/Ink)
-│   ├── hitestbot/          # E2E test framework
-│   └── lib/                # Utilities (mode, risk, paths)
-├── data/                   # Command reference (JSON)
-├── test/                   # Unit tests (vitest)
-├── deploy/eda-server/      # EDA server deployment config
-└── docs/                   # Documentation (see below)
+├── bin/hipilot              # The product: launches the tmux workspace
+├── servers/                 # 3 MCP servers (eda, tmux, knowledge)
+├── skills/                  # 36 expert workflow guides (.md files)
+├── templates/               # 22 Tcl templates (Synopsys + Cadence)
+├── src/                     # CLI entry point, TUI dashboard, utilities
+│   └── hitestbot/           # HiTestBot: tests HiPilot by using it like a human
+├── deploy/eda-server/       # HiPilot identity files for the EDA server
+├── test/                    # Unit tests (vitest, 118 tests)
+└── docs/                    # Reference documentation
 ```
-
----
-
-## Documentation
-
-| Document | Purpose |
-|----------|---------|
-| [docs/quick-start.md](docs/quick-start.md) | First-time user guide |
-| [docs/architecture.md](docs/architecture.md) | System design and components |
-| [docs/skills-guide.md](docs/skills-guide.md) | All 35 skills documented |
-| [docs/mcp-servers.md](docs/mcp-servers.md) | MCP integration reference |
-| [docs/rtl2gds-flow.md](docs/rtl2gds-flow.md) | Complete RTL-to-GDS flow guide |
-| [docs/deploy-guide.md](docs/deploy-guide.md) | Installation and deployment |
-| [docs/eda-server-setup.md](docs/eda-server-setup.md) | EDA server configuration |
-| [docs/testing/TESTING_RULES.md](docs/testing/TESTING_RULES.md) | Testing philosophy and rules |
-| [docs/testing/hitestbot-guide.md](docs/testing/hitestbot-guide.md) | HiTestBot E2E guide (EDA-only, sync scripts) |
-| [docs/HITESTBOT_V2_PLAN.md](docs/HITESTBOT_V2_PLAN.md) | HiTestBot v2 architecture and components |
-| [docs/DEVELOPMENT_PLAN_v060.md](docs/DEVELOPMENT_PLAN_v060.md) | v0.6.0 development roadmap and gaps |
-| [docs/self-improving-loop.md](docs/self-improving-loop.md) | Self-improving loop for ralph-loop (metrics + progress) |
-
-**For developers:** Also read [CLAUDE.md](CLAUDE.md) (architecture context) and [AGENTS.md](AGENTS.md) (cloud dev instructions).
-
----
 
 ## Development
 
-### Prerequisites
-
-- Node.js v20+ (ES modules)
-- npm 10+
-- tmux 3.4+ (for workspace features)
-
-### Install & Test
-
 ```bash
-npm run install:all     # Install all dependencies (root + 3 servers)
-npm test                # Run unit tests (vitest, 118 tests)
-bin/hipilot             # Launch HiPilot (the product)
+npm run install:all          # Install dependencies (root + 3 servers)
+npm test                     # Unit tests (118 tests)
+bin/hipilot                  # Launch workspace (the product)
+node src/cli.js status       # TUI status dashboard
+node src/cli.js skills       # List 36 skills
+node src/cli.js templates    # List 22 templates
 ```
 
-### Run MCP Servers (standalone)
-
+Test MCP servers locally:
 ```bash
 echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/eda/index.js
 echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/tmux/index.js
 echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/knowledge/index.js
 ```
 
-### TUI Commands
+## Documentation
 
-```bash
-node src/cli.js status       # Status dashboard
-node src/cli.js skills       # List 36 skills
-node src/cli.js templates    # List 22 Tcl templates
-node src/cli.js help         # All CLI commands
-```
+| Document | Purpose |
+|----------|---------|
+| [CLAUDE.md](CLAUDE.md) | Developer guide — how the project works, rules, infrastructure |
+| [docs/architecture.md](docs/architecture.md) | System design |
+| [docs/skills-guide.md](docs/skills-guide.md) | All 36 skills |
+| [docs/mcp-servers.md](docs/mcp-servers.md) | MCP tool reference |
+| [docs/rtl2gds-flow.md](docs/rtl2gds-flow.md) | RTL-to-GDS flow guide |
+| [docs/testing/TESTING_RULES.md](docs/testing/TESTING_RULES.md) | Testing philosophy |
 
----
+## Technology
 
-## Tested Design: Ibex RISC-V CPU
-
-| Attribute | Value |
-|-----------|-------|
-| **Design** | Ibex Core (RV32IMC) |
-| **Technology** | Skywater 130nm HD |
-| **Cells** | ~7,000 instances |
-| **Target** | 100 MHz |
-| **Flow** | Complete RTL-to-GDS verified |
-
----
+Node.js v20+ (ES Modules), plain JavaScript, MCP SDK, Nunjucks templates, React/Ink TUI, Vitest.
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) for details.
-
----
-
-**Repository:** https://github.com/qfliuyang/hipilot
+MIT — See [LICENSE](LICENSE).

@@ -1,114 +1,127 @@
-# HiTestBot v2 — Uses HiPilot Like a Human
+# HiTestBot — Tests HiPilot By Using It Like a Human
 
-HiTestBot is a virtual human that uses HiPilot exactly as a real engineer would. It launches HiPilot, types commands, watches Claude work, approves when asked, and judges the result by reading what's on screen.
+HiTestBot is a Node.js program that tests HiPilot the same way a human engineer would use it. It opens a terminal, launches HiPilot, types commands, watches Claude Code work, approves when asked, answers questions, and judges the result by reading what appeared on screen.
 
-## How It Works
+**Why this design:** If HiTestBot called MCP tools directly or sent commands to the EDA pane, it would bypass HiPilot's code and miss bugs that a real human would encounter. HiTestBot must use HiPilot as a black box — the only interface is the keyboard and the screen.
+
+## What HiTestBot Does (Step by Step)
 
 ```
-HiTestBot does exactly what a human does:
-
-  1. Run bin/hipilot         ← launches tmux workspace
-  2. Open gnome-terminal     ← workspace pops up on desktop (display :0)
-  3. Start video recording   ← ffmpeg captures the desktop
-  4. Wait for Claude Code    ← watches left pane for ready prompt
-  5. Type "/rtl2gds"         ← types into Claude Code's input
-  6. Watch Claude work       ← polls both panes every 5s, screenshots every 60s
-  7. Answer questions        ← types "yes" when Claude asks
-  8. Approve when asked      ← presses prefix+y for pending Tcl
-  9. Read the result         ← captures final state of both panes
- 10. Collect all logs        ← pane dumps, MCP log, EDA logs, Tcl history
- 11. Build timeline          ← correlates video ↔ panes ↔ MCP ↔ logs
- 12. Score the outcome       ← L1-L5 based on what's visible on screen
+ 1. Kill old tmux session           ← clean start, like opening a fresh terminal
+ 2. Run bin/hipilot --no-terminal   ← creates the tmux workspace (two panes)
+ 3. Open gnome-terminal on display :0 ← workspace appears on the EDA server's desktop
+ 4. Start ffmpeg recording          ← records the desktop video (what a human would see)
+ 5. Wait for Claude Code to be ready ← polls left pane for the input prompt
+ 6. Type "/rtl2gds"                 ← sends keystrokes to Claude Code's input
+ 7. Watch both panes every 5 seconds:
+    - If Claude is working (left pane changing) → keep watching
+    - If EDA tool is busy (right pane changing, left idle) → keep watching (patient)
+    - If Claude asks a question → type "yes"
+    - If manual mode approval needed → press prefix+y (Ctrl+B then y)
+    - If fatal error detected → abort early
+    - If Claude's input prompt reappears → done
+ 8. Take screenshots at key moments
+ 9. Stop video recording
+10. Collect all logs (post-test, not during):
+    - Full scrollback from both panes (10000 lines each)
+    - MCP call log (written by HiPilot's servers during the test)
+    - EDA tool log files (innovus.log, etc.)
+    - Tcl execution history
+11. Build correlated timeline (timeline.jsonl)
+    - Every entry has a timestamp and video offset
+    - You can find any MCP call → see what was on screen at that moment
+12. Score L1-L5 by reading the screen (not internal logs)
 ```
 
 ## What HiTestBot NEVER Does
 
-- Never calls MCP tools directly
-- Never sends commands to the EDA pane
-- Never reads MCP logs during the test
-- Never bypasses any part of HiPilot
+- **Never calls MCP tools.** It does not import any MCP server code or send JSON-RPC requests.
+- **Never sends commands to the right pane.** Only Claude Code controls the EDA tool.
+- **Never reads MCP logs during the test.** It collects them AFTER the test as evidence.
+- **Never bypasses `bin/hipilot`.** It launches HiPilot the same way a human would.
 
-If HiTestBot can't do it, a human can't do it. If a human would hit a bug, HiTestBot hits the same bug.
+## Scoring
 
-## Quick Start
+HiTestBot scores by reading what's visible on screen — the same evidence a human would have:
 
-```bash
-# On EDA server:
-cd /home/EDA/hipilot/current
-node src/hitestbot/tests/FlowCertificationTest.js /rtl2gds
+| Layer | Question | How HiTestBot checks |
+|---|---|---|
+| L1 | Did Claude respond at all? | Left pane text changed after typing the command |
+| L2 | Did Claude understand the task? | Left pane mentions keywords: rtl2gds, design, innovus, flow |
+| L3 | Did Claude use MCP tools (not bash)? | Left pane shows MCP tool names; right pane has EDA activity |
+| L4 | Did the EDA tool run without errors? | Right pane has output, no `**ERROR`/`FATAL` patterns |
+| L5 | Did Claude report timing results? | Left pane contains WNS and TNS numbers |
 
-# From dev machine (via SSH):
-bin/hitestbot-eda /rtl2gds
-bin/hitestbot-pull    # download evidence
-```
-
-## 5-Layer Scoring
-
-HiTestBot judges the result the way a human would — by reading the screen:
-
-| Layer | What a Human Checks | How HiTestBot Checks |
-|-------|--------------------|--------------------|
-| L1 Prompt Delivery | Did Claude respond? | Left pane output changed after typing |
-| L2 Intent Recognition | Did Claude understand the task? | Left pane mentions rtl2gds/design/flow keywords |
-| L3 Tool Usage | Did Claude use MCP tools? | Left pane shows tool calls, right pane has activity |
-| L4 EDA Execution | Did the EDA tool run? | Right pane has output, no error patterns |
-| L5 QoR Assessment | Did Claude report results? | Left pane contains WNS/TNS numbers |
-
-Status: **PASS** (≥4.0) / **PARTIAL** (≥2.0) / **FAIL** (<2.0)
+**Total: 0-5 points.** PASS ≥ 4.0 / PARTIAL ≥ 2.0 / FAIL < 2.0
 
 ## Failure Classification
 
-| Category | Meaning | Example |
-|----------|---------|---------|
-| `ENVIRONMENT` | Setup issue | Claude not ready, MCP not connected |
-| `AI_BEHAVIOR` | Claude made wrong choice | Used bash instead of MCP |
-| `HIPILOT_BUG` | HiPilot code is broken | Template produces bad Tcl |
+When a test fails, HiTestBot classifies why:
+
+| Category | What it means | Example |
+|---|---|---|
+| `ENVIRONMENT` | Something is broken in the setup | Claude Code not running, MCP servers not connected |
+| `AI_BEHAVIOR` | Claude made a wrong decision | Used bash instead of MCP, didn't follow the skill |
+| `HIPILOT_BUG` | HiPilot's code produced wrong output | Template generated bad Tcl, MCP tool returned error |
 
 ## Evidence Bundle
 
+Every test produces a self-contained evidence directory:
+
 ```
-evidence/20260226_103045/
-├── FLOW_REPORT.md                     # Human-readable summary with scores
-├── timeline.jsonl                     # Correlated timeline (video ↔ panes ↔ MCP)
-├── pane_log.jsonl                     # Both panes captured every 5s with timestamps
+/tmp/hipilot-test-evidence/20260226_103045/
+├── FLOW_REPORT.md                     # Summary with scores and recommendations
+├── timeline.jsonl                     # All events with video timestamps
+├── pane_log.jsonl                     # Both panes captured every 5 seconds
 ├── flow_progress.json                 # Machine-readable scores
-├── stage_scorecards.json              # L1-L5 detail
-├── observation_points.json            # Key moment snapshots
-├── run_log.txt                        # HiTestBot execution log
-├── screenshot_workspace_visible.png   # Desktop after launch
-├── screenshot_after_type.png          # After typing command
-├── screenshot_progress_*.png          # Every 60s during flow
+├── stage_scorecards.json              # L1-L5 detail per stage
+├── run_log.txt                        # HiTestBot's own log (what it did and why)
+├── screenshot_workspace_visible.png   # Desktop after HiPilot launches
+├── screenshot_after_type.png          # After typing the command
+├── screenshot_progress_*.png          # Every 60 seconds during the flow
 ├── screenshot_flow_done.png           # Final state
 ├── recordings/
-│   └── test_recording.mp4            # Full desktop video (display :0)
+│   └── test_recording.mp4            # Full desktop video from display :0
 ├── logs/
-│   ├── claude_full.log               # Left pane complete scrollback
-│   ├── eda_full.log                  # Right pane complete scrollback
+│   ├── claude_full.log               # Left pane complete scrollback (10000 lines)
+│   ├── eda_full.log                  # Right pane complete scrollback (10000 lines)
 │   ├── mcp_calls.jsonl               # Every MCP tool call (post-test collection)
 │   ├── eda_innovus_*.log             # EDA tool's own log files
-│   └── history_*.tcl                 # Every Tcl sent to EDA tool
-├── obs_before_command_claude.log
-├── obs_before_command_eda.log
-├── obs_after_flow_claude.log
-└── obs_after_flow_eda.log
+│   └── history_*.tcl                 # Every Tcl command HiPilot sent to the EDA tool
+├── obs_before_command_claude.log      # Left pane snapshot before typing
+├── obs_before_command_eda.log         # Right pane snapshot before typing
+├── obs_after_flow_claude.log          # Left pane snapshot after flow completes
+└── obs_after_flow_eda.log             # Right pane snapshot after flow completes
 ```
 
-## Architecture
+## How to Run
+
+On the EDA server directly:
+```bash
+cd /home/EDA/hipilot/current
+node src/hitestbot/tests/FlowCertificationTest.js /rtl2gds
+```
+
+From your dev machine via SSH:
+```bash
+bin/hitestbot-eda /rtl2gds      # runs test on EDA server
+bin/hitestbot-pull               # downloads evidence to your machine
+```
+
+## Code Structure
 
 ```
 src/hitestbot/
 ├── core/
-│   ├── FlowCertifier.js       # The virtual human (launch → type → watch → score)
-│   ├── ObservationPoint.js     # Capture pane state at a moment
-│   ├── FlowReporter.js         # Generate FLOW_REPORT.md
-│   └── ProgressTracker.js      # Cross-run improvement tracking
-│
+│   ├── FlowCertifier.js       # The virtual human — launches, types, watches, scores
+│   ├── ObservationPoint.js     # Captures pane text + screenshot at one moment
+│   ├── FlowReporter.js        # Generates FLOW_REPORT.md from scores
+│   └── ProgressTracker.js      # Tracks improvement across multiple test runs
 ├── infra/
-│   ├── deploy_hipilot.js       # Deploy HiPilot to EDA server
-│   ├── TmuxController.js       # Tmux operations helper
-│   └── ...
-│
+│   ├── deploy_hipilot.js       # Deploys HiPilot to EDA server (tarball with node_modules)
+│   ├── TmuxController.js       # Helper for tmux operations
+│   └── VideoRecorder.js        # Helper for ffmpeg recording
 └── tests/
-    ├── FlowCertificationTest.js # Main test (uses HiPilot like a human)
-    └── McpInfraTest.js          # MCP infrastructure check (standalone)
+    ├── FlowCertificationTest.js # Entry point — creates FlowCertifier and runs it
+    └── McpInfraTest.js          # Standalone MCP server infrastructure check
 ```
