@@ -29,6 +29,10 @@ All MCP servers communicate over stdio (JSON-RPC), not HTTP. No databases, Docke
 - The TUI (Ink/React) renders to terminal; in CI-like environments, set `CI=true` to prevent interactive TTY issues.
 - EDA tools (ICC2, Innovus, PrimeTime) are commercial software not available in cloud VMs. HiPilot works without them for Tcl generation, skill browsing, and template management.
 - tmux is required for workspace layout features but not for unit tests or MCP server testing.
+- **tmux send-keys**: Always use `-l` flag for literal text and `C-m` (unquoted) for Enter. Never put `Enter` inside quotes — tmux treats quoted `'Enter'` as literal text, not a keypress. See `servers/tmux/index.js` `send_keys` handler.
+- **settings.json on EDA server**: The `env` section stores API keys. Deployment (`deploy_hipilot.js`) deep-merges env to preserve existing keys — only `command`/`args` are updated. Never overwrite the entire env section.
+- **HiTestBot single mode**: HiTestBot only uses prompt-driven mode (human-like). It types in the Claude Code pane and observes. It never calls MCP directly or sends commands to the EDA pane.
+- **Deployment as tools**: HiPilot and HiTestBot are deployed to EDA server as self-contained packages (node_modules included in tarball). No `npm install` runs on the EDA server.
 
 ### Identity Separation (IMPORTANT)
 
