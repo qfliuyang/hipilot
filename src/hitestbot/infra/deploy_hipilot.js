@@ -150,7 +150,10 @@ async function deploy() {
   ];
   const requiredDeny = [
     'Bash(tmux *)', 'Bash(*send-keys*)', 'Bash(*capture-pane*)',
-    'Bash(*innovus*)', 'Bash(*icc2_shell*)', 'Bash(*pt_shell*)', 'Bash(source *)',
+    'Bash(*innovus*)', 'Bash(*icc2_shell*)', 'Bash(*icc2 *)', 'Bash(*pt_shell*)',
+    'Bash(*dc_shell*)', 'Bash(*genus*)', 'Bash(*tempus*)', 'Bash(*calibre*)',
+    'Bash(*pegasus*)', 'Bash(*voltus*)', 'Bash(*joules*)', 'Bash(*xcelium*)',
+    'Bash(*vivado*)', 'Bash(*quartus*)', 'Bash(source *)',
   ];
   
   const mergedAllow = [...new Set([...existingAllow, ...requiredAllow])];
