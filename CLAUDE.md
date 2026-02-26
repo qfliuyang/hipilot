@@ -25,7 +25,7 @@ Claude Code in the left pane has three MCP servers that give it superpowers:
 
 | MCP Server | Tools | What it does |
 |---|---|---|
-| `hipilot-eda` | 49 | Generate Tcl, send to EDA tool, wait for result, extract QoR |
+| `hipilot-eda` | 52 | Generate Tcl, send to EDA tool, wait for result, extract QoR |
 | `hipilot-tmux` | 8 | Control tmux panes, update status bar |
 | `hipilot-knowledge` | 7 | Look up skills, search docs, find EDA commands |
 
@@ -90,7 +90,7 @@ Engineer types "/rtl2gds":
 On EDA server:
   node src/hitestbot/tests/FlowCertificationTest.js /rtl2gds
     │
-    ├─ Phase 1: Launch HiPilot (runs bin/hipilot --no-terminal)
+    ├─ Phase 1: Launch HiPilot (bin/hipilot + gnome-terminal on display :0)
     ├─ Phase 2: Start video recording (ffmpeg on display :0)
     ├─ Phase 3: Wait for Claude Code to be ready (polls left pane)
     ├─ Phase 4: Type "/rtl2gds" into Claude Code's input
@@ -117,11 +117,11 @@ On EDA server:
 hipilot/
 ├── bin/hipilot                  # THE product: tmux launcher (left=Claude, right=terminal)
 ├── servers/                     # 3 MCP servers (Node.js, JSON-RPC over stdio)
-│   ├── eda/index.js             #   49 tools: Tcl gen, execute, QoR, mode, workflows
+│   ├── eda/index.js             #   52 tools: Tcl gen, execute, QoR, mode, workflows
 │   ├── tmux/index.js            #   8 tools: pane control, status bar
 │   └── knowledge/index.js       #   7 tools: skills, docs, command reference
-├── skills/                      # 35 expert workflow definitions (.md with YAML frontmatter)
-├── templates/                   # 20 Tcl templates (synopsys/ + cadence/, Nunjucks)
+├── skills/                      # 36 expert workflow definitions (.md with YAML frontmatter)
+├── templates/                   # 22 Tcl templates (synopsys/ + cadence/, Nunjucks)
 ├── data/                        # Command reference JSON
 ├── src/
 │   ├── index.js                 # CLI entry: "hipilot" → launches tmux, subcommands → TUI
@@ -136,7 +136,7 @@ hipilot/
 ├── deploy/eda-server/           # HiPilot identity for the EDA server
 │   ├── CLAUDE.md                #   "You are HiPilot" (clean of developer/test info)
 │   ├── .claude/settings.json    #   MCP server registration (absolute EDA paths)
-│   └── .claude/commands/        #   8 slash commands (/rtl2gds, /timing, /drc, etc.)
+│   └── .claude/commands/        #   10 slash commands (/rtl2gds, /timing, /drc, /start-eda, etc.)
 ├── test/                        # Unit tests (vitest, 118 tests)
 └── docs/                        # Reference docs (architecture, skills guide, etc.)
 ```
@@ -174,8 +174,8 @@ npm run install:all                    # Install deps (root + 3 servers)
 npm test                               # Unit tests (vitest, 118 tests)
 bin/hipilot                            # Launch tmux workspace (the product)
 node src/cli.js status                 # TUI status dashboard
-node src/cli.js skills                 # List 35 skills
-node src/cli.js templates              # List 20 Tcl templates
+node src/cli.js skills                 # List 36 skills
+node src/cli.js templates              # List 22 Tcl templates
 ```
 
 Test MCP servers locally:

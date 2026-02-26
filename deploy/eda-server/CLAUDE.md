@@ -83,12 +83,15 @@ Before running any flow (e.g. `/rtl2gds`), ensure the EDA tool is running in the
 
 This lets the user run `bin/hipilot` and type `/rtl2gds` without manually starting Innovus.
 
-### 8. Workflows
+### 8. Multi-stage flows
 
-For complete multi-stage flows, use workflow execution:
-- `workflow.list` — see available workflows
-- `workflow.run(name="rtl2gds")` — executes all Innovus stages sequentially with error handling and QoR tracking
-- `eda.rtl2gds.run_full_flow({"design":"ibex"})` — convenience wrapper for the builtin `rtl2gds` workflow
+For complete flows like `/rtl2gds`, you orchestrate each stage yourself:
+1. Load the flow skill with `knowledge.get_skill`
+2. For each stage: `eda.generate_tcl` → `eda.execute_and_verify` → check result → `qor.snapshot`
+3. Handle errors with `eda.diagnose_error` — don't just stop
+4. Report progress to the user after each stage
+
+Do NOT call `workflow.run` or `eda.rtl2gds.run_full_flow`. You stay in the loop at every stage.
 
 ## MCP Tool Reference
 
@@ -101,7 +104,6 @@ For complete multi-stage flows, use workflow execution:
 | Find skill for task | `knowledge.match_skill` |
 | Generate Tcl | `eda.generate_tcl` |
 | **Execute + verify (preferred)** | **`eda.execute_and_verify`** |
-| Run multi-stage workflow | `workflow.run` |
 | Save QoR checkpoint | `qor.snapshot` |
 | Compare QoR | `qor.compare` |
 | Diagnose EDA error | `eda.diagnose_error` |
@@ -127,14 +129,14 @@ For complete multi-stage flows, use workflow execution:
 - **EDA Tools Available:** Innovus v20.10, ICC2 T-2022.03, PrimeTime T-2022.03
 - **Demo Design:** Ibex RISC-V CPU (Sky130 HD, 7000+ cells, 100 MHz target)
 - **Design Location:** `/home/EDA/hipilot_test/ibex_work_upload/`
-- **35 Skills:** RTL-to-GDS flow, timing fixes, CTS, routing, DRC, verification, and more
-- **20 Tcl Templates:** 10 Synopsys (ICC2) + 10 Cadence (Innovus)
+- **36 Skills:** RTL-to-GDS flow, timing fixes, CTS, routing, DRC, verification, and more
+- **22 Tcl Templates:** Synopsys (ICC2) + Cadence (Innovus)
 
 ## What You Can Do
 
 - **Generate Tcl** from natural language ("fix setup timing on pcie_rx group")
 - **Execute and verify** — send Tcl to EDA tool, wait, detect errors, extract QoR
-- **Run complete flows** — RTL-to-GDS in 8 stages via `workflow.run`
+- **Run complete flows** — RTL-to-GDS in 8 stages, orchestrating each stage yourself
 - **Diagnose errors** — analyze EDA tool errors and suggest fixes
 - **Track QoR** — snapshot metrics, compare before/after, show trends
 - **Search knowledge** — find relevant skills, command references, methodology guides

@@ -14,9 +14,9 @@ HiPilot is an **AI-powered VLSI Physical Design Copilot** that extends Claude Co
 
 | Feature | Description |
 |---------|-------------|
-| **Tcl Generation** | Generate vendor-specific Tcl from natural language (20 templates) |
+| **Tcl Generation** | Generate vendor-specific Tcl from natural language (22 templates) |
 | **EDA Tool Control** | Control Innovus, ICC2, PrimeTime via MCP servers |
-| **35 Built-in Skills** | Complete RTL-to-GDS flow coverage |
+| **36 Built-in Skills** | Complete RTL-to-GDS flow coverage |
 | **Real Design Tested** | Validated on Ibex RISC-V CPU (Sky130, 7,000+ cells) |
 | **Multi-Vendor** | Synopsys (ICC2, DC, PT) and Cadence (Innovus) |
 | **Safety System** | Manual/Auto execution modes with risk analysis |
@@ -39,11 +39,11 @@ Claude Code (Pane 0)          Innovus/ICC2 (Pane 1)
 # Install dependencies
 npm run install:all
 
-# Run setup wizard
-npm run setup
+# Launch HiPilot (tmux workspace)
+bin/hipilot
 
-# Launch TUI dashboard
-node src/cli.js
+# Or use TUI dashboard for status/skills/templates
+node src/cli.js status
 ```
 
 See [docs/quick-start.md](docs/quick-start.md) for the complete first-time setup guide.
@@ -63,7 +63,7 @@ See [docs/quick-start.md](docs/quick-start.md) for the complete first-time setup
 
 | Component | Tools | Purpose |
 |-----------|-------|---------|
-| **EDA MCP Server** | 49 tools | Tcl generation, tool control, QoR, workflows |
+| **EDA MCP Server** | 52 tools | Tcl generation, tool control, QoR, workflows |
 | **Tmux MCP Server** | 8 tools | Workspace management, pane control |
 | **Knowledge MCP Server** | 7 tools | Skill loading, doc search, command ref |
 
@@ -123,7 +123,7 @@ hipilot/
 ```bash
 npm run install:all     # Install all dependencies (root + 3 servers)
 npm test                # Run unit tests (vitest, 118 tests)
-npm run setup           # Run setup wizard
+bin/hipilot             # Launch HiPilot (the product)
 ```
 
 ### Run MCP Servers (standalone)
@@ -137,9 +137,9 @@ echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/knowledge/i
 ### TUI Commands
 
 ```bash
-node src/cli.js              # Status dashboard
-node src/cli.js skills       # List 35 skills
-node src/cli.js templates    # List 20 Tcl templates
+node src/cli.js status       # Status dashboard
+node src/cli.js skills       # List 36 skills
+node src/cli.js templates    # List 22 Tcl templates
 node src/cli.js help         # All CLI commands
 ```
 

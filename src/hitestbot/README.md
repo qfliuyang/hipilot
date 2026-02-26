@@ -8,12 +8,17 @@ HiTestBot is a virtual human that uses HiPilot exactly as a real engineer would.
 HiTestBot does exactly what a human does:
 
   1. Run bin/hipilot         ← launches tmux workspace
-  2. Wait for Claude Code    ← watches left pane for ready prompt
-  3. Type "/rtl2gds"         ← types into Claude Code's input
-  4. Watch Claude work       ← polls both panes every 5 seconds
-  5. Approve when asked      ← presses prefix+y for pending Tcl
-  6. Read the result         ← captures final state of both panes
-  7. Score the outcome       ← did it work? did Claude report QoR?
+  2. Open gnome-terminal     ← workspace pops up on desktop (display :0)
+  3. Start video recording   ← ffmpeg captures the desktop
+  4. Wait for Claude Code    ← watches left pane for ready prompt
+  5. Type "/rtl2gds"         ← types into Claude Code's input
+  6. Watch Claude work       ← polls both panes every 5s, screenshots every 60s
+  7. Answer questions        ← types "yes" when Claude asks
+  8. Approve when asked      ← presses prefix+y for pending Tcl
+  9. Read the result         ← captures final state of both panes
+ 10. Collect all logs        ← pane dumps, MCP log, EDA logs, Tcl history
+ 11. Build timeline          ← correlates video ↔ panes ↔ MCP ↔ logs
+ 12. Score the outcome       ← L1-L5 based on what's visible on screen
 ```
 
 ## What HiTestBot NEVER Does
@@ -63,15 +68,29 @@ Status: **PASS** (≥4.0) / **PARTIAL** (≥2.0) / **FAIL** (<2.0)
 
 ```
 evidence/20260226_103045/
-├── FLOW_REPORT.md              # Human-readable summary
-├── flow_progress.json          # Machine-readable progress
-├── stage_scorecards.json       # Detailed scores
-├── observation_points.json     # Timeline snapshots
-├── run_log.txt                 # HiTestBot execution log
-├── obs_before_command_claude.log  # Left pane before typing
-├── obs_before_command_eda.log     # Right pane before typing
-├── obs_after_flow_claude.log      # Left pane after flow
-└── obs_after_flow_eda.log         # Right pane after flow
+├── FLOW_REPORT.md                     # Human-readable summary with scores
+├── timeline.jsonl                     # Correlated timeline (video ↔ panes ↔ MCP)
+├── pane_log.jsonl                     # Both panes captured every 5s with timestamps
+├── flow_progress.json                 # Machine-readable scores
+├── stage_scorecards.json              # L1-L5 detail
+├── observation_points.json            # Key moment snapshots
+├── run_log.txt                        # HiTestBot execution log
+├── screenshot_workspace_visible.png   # Desktop after launch
+├── screenshot_after_type.png          # After typing command
+├── screenshot_progress_*.png          # Every 60s during flow
+├── screenshot_flow_done.png           # Final state
+├── recordings/
+│   └── test_recording.mp4            # Full desktop video (display :0)
+├── logs/
+│   ├── claude_full.log               # Left pane complete scrollback
+│   ├── eda_full.log                  # Right pane complete scrollback
+│   ├── mcp_calls.jsonl               # Every MCP tool call (post-test collection)
+│   ├── eda_innovus_*.log             # EDA tool's own log files
+│   └── history_*.tcl                 # Every Tcl sent to EDA tool
+├── obs_before_command_claude.log
+├── obs_before_command_eda.log
+├── obs_after_flow_claude.log
+└── obs_after_flow_eda.log
 ```
 
 ## Architecture
