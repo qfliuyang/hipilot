@@ -211,9 +211,16 @@ async function deploy() {
     }
   }
   
-  ssh(`mkdir -p ~/.claude`);
   const settingsJson = JSON.stringify(mergedSettings, null, 2);
+  
+  // Write to BOTH ~/.claude/ (global) AND project .claude/ (local).
+  // Claude Code checks both. Belt and suspenders — if one fails, the other works.
+  ssh(`mkdir -p ~/.claude`);
   ssh(`cat > ~/.claude/settings.json << 'EOFSETTINGS'
+${settingsJson}
+EOFSETTINGS`);
+  ssh(`mkdir -p ${hipilotDir}/.claude`);
+  ssh(`cat > ${hipilotDir}/.claude/settings.json << 'EOFSETTINGS'
 ${settingsJson}
 EOFSETTINGS`);
   

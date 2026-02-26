@@ -13,24 +13,30 @@ The engineer wants you to run the complete place-and-route flow. You will execut
 
 ## What to do
 
+### 0. Verify MCP tools are available
+
+Call this MCP tool directly (it is in your tool list):
+```
+mcp__hipilot-eda__eda.get_status
+```
+If this fails, tell the engineer "MCP servers are not connected" and stop.
+
 ### 1. Make sure Innovus is running
 
 ```
-eda.detect_tool({})
+mcp__hipilot-eda__eda.detect_tool({})
 ```
 
 If no tool is running:
 
 ```
-eda.start_tool({tool: "innovus", design_dir: "/home/EDA/hipilot_test/ibex_work_upload"})
+mcp__hipilot-eda__eda.start_tool({tool: "innovus", design_dir: "/home/EDA/hipilot_test/ibex_work_upload"})
 ```
-
-Wait for Innovus to start (the tool returns when the Innovus prompt appears).
 
 ### 2. Load the flow guide
 
 ```
-knowledge.get_skill({name: "ibex-rtl2gds-flow"})
+mcp__hipilot-knowledge__knowledge.get_skill({name: "ibex-rtl2gds-flow"})
 ```
 
 Read the skill carefully. It contains the exact file paths (DEF, LEF, SDC), Tcl commands, and methodology for every stage. The Tcl in the skill is specific to the Ibex design on this server.
@@ -39,11 +45,11 @@ Read the skill carefully. It contains the exact file paths (DEF, LEF, SDC), Tcl 
 
 For each stage, follow this exact pattern:
 
-1. **Generate Tcl:** Call `eda.generate_tcl` with the operation name, OR copy the Tcl directly from the skill.
-2. **Execute:** Call `eda.execute_and_verify` with the Tcl, a description, and a timeout in seconds. This sends the Tcl to Innovus in the right pane, waits for the Innovus prompt to reappear, checks for errors, and returns the result.
-3. **Check the result:** The response includes `status` (success/error), `errors` (list), `warnings` (list), and `qor` (WNS/TNS if available). Read them.
-4. **If errors:** Call `eda.diagnose_error` with the error text. Follow the diagnosis. Fix the issue and retry the stage.
-5. **If success:** Call `qor.snapshot` with a name like `"after_placement"`.
+1. **Generate Tcl:** Call `mcp__hipilot-eda__eda.generate_tcl` with the operation name, OR copy the Tcl directly from the skill.
+2. **Execute:** Call `mcp__hipilot-eda__eda.execute_and_verify` with the Tcl, a description, and a timeout.
+3. **Check the result:** The response includes `status`, `errors`, `warnings`, and `qor`. Read them.
+4. **If errors:** Call `mcp__hipilot-eda__eda.diagnose_error` with the error text. Fix and retry.
+5. **If success:** Call `mcp__hipilot-eda__qor.snapshot` with a name like `"after_placement"`.
 6. **Report:** Tell the engineer: "Stage 3/8 Placement: done. WNS=-0.05ns, 0 violations."
 7. **Next stage:** Only proceed when the current stage succeeds.
 

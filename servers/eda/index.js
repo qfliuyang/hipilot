@@ -3486,7 +3486,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
           const badge = wf.is_builtin ? '[Built-in]' : '[Custom]';
           text += `**${wf.name}** ${badge}\n`;
           text += `  ${wf.description}\n`;
-          text += `  Steps: ${wf.steps.length || wf.steps}\n\n`;
+          text += `  Steps: ${Array.isArray(wf.steps) ? wf.steps.length : wf.steps}\n\n`;
         }
         
         return { content: [{ type: 'text', text }], _metadata: { workflows } };
