@@ -603,6 +603,9 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
       }
 
       case 'knowledge.get_skill': {
+        if (!args.name) {
+          return { content: [{ type: 'text', text: 'Error: name parameter is required. Example: knowledge.get_skill({name: "fix-setup-timing"})' }], isError: true };
+        }
         const result = getSkill(args.name);
 
         if (!result.found) {
