@@ -3,7 +3,26 @@
     "allow": [
       "mcp__hipilot-eda__*",
       "mcp__hipilot-tmux__*",
-      "mcp__hipilot-knowledge__*"
+      "mcp__hipilot-knowledge__*",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(pwd)",
+      "Bash(echo *)",
+      "Bash(which *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(find *)",
+      "Bash(grep *)"
+    ],
+    "deny": [
+      "Bash(tmux *)",
+      "Bash(*send-keys*)",
+      "Bash(*capture-pane*)",
+      "Bash(*innovus*)",
+      "Bash(*icc2_shell*)",
+      "Bash(*pt_shell*)",
+      "Bash(source *)"
     ]
   },
   "mcpServers": {

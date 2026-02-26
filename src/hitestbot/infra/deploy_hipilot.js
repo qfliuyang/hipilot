@@ -139,8 +139,29 @@ async function deploy() {
     };
   }
   
+  // Permissions: ensure deny rules exist to block bash EDA commands.
+  // Existing allow/deny entries are preserved; HiPilot entries are merged in.
+  const existingPermissions = existingSettings.permissions || {};
+  const existingAllow = existingPermissions.allow || [];
+  const existingDeny = existingPermissions.deny || [];
+  
+  const requiredAllow = [
+    'mcp__hipilot-eda__*', 'mcp__hipilot-tmux__*', 'mcp__hipilot-knowledge__*',
+  ];
+  const requiredDeny = [
+    'Bash(tmux *)', 'Bash(*send-keys*)', 'Bash(*capture-pane*)',
+    'Bash(*innovus*)', 'Bash(*icc2_shell*)', 'Bash(*pt_shell*)', 'Bash(source *)',
+  ];
+  
+  const mergedAllow = [...new Set([...existingAllow, ...requiredAllow])];
+  const mergedDeny = [...new Set([...existingDeny, ...requiredDeny])];
+  
   const mergedSettings = {
     ...existingSettings,
+    permissions: {
+      allow: mergedAllow,
+      deny: mergedDeny,
+    },
     mcpServers: {
       ...existingMcp,
       'hipilot-eda': patchServer('hipilot-eda', `${NODE_PATH}/node`, [`${hipilotDir}/servers/eda/index.js`], { HIPILOT_SESSION: 'hipilot' }),
