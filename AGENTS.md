@@ -23,7 +23,7 @@ All MCP servers communicate over stdio (JSON-RPC), not HTTP. No databases, Docke
 
 ### Key gotchas
 
-- No lockfile exists in the repo. `npm install` resolves versions from `package.json` ranges each time.
+- Lockfiles (`package-lock.json`) exist in all 4 locations (root + 3 servers). `npm ci` or `npm install` will use them.
 - Dependencies must be installed in all 4 locations: root + `servers/eda` + `servers/tmux` + `servers/knowledge`. Use `npm run install:all` or install each separately.
 - The project uses ES modules (`"type": "module"` in `package.json`). All source is plain JavaScript (no TypeScript build step).
 - The TUI (Ink/React) renders to terminal; in CI-like environments, set `CI=true` to prevent interactive TTY issues.
