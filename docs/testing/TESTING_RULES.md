@@ -781,103 +781,20 @@ The RTL-to-GDS Flow Certification is considered **passed** when:
 
 ---
 
-## 11. Relationship to Existing Tests
+## 11. Current Implementation
 
-### How current tests map to this framework
+HiTestBot (`src/hitestbot/tests/FlowCertificationTest.js`) implements these rules. It:
 
-| Current Test | Role in New Framework |
-|-------------|----------------------|
-| `MCPControlTest` | Component test — validates L3 (MCP Tool Usage) in isolation |
-| `QuickCommandsTest` | Component test — validates L1-L3 for slash commands |
-| `EvidenceOutputTest` | Component test — validates L5 (QoR Assessment) output format |
-| `SideEffectTest` | Component test — validates risk analysis (part of L3) |
-| `RTL2GDSFlowTest` | **Flow Certification Test** — needs refactoring to new rules |
-| `IbexRTL2GDSFlowTest` | **Flow Certification Test** — needs refactoring to new rules |
+1. Launches HiPilot (`bin/hipilot`)
+2. Opens gnome-terminal on display :0 (workspace visible on desktop)
+3. Records video with ffmpeg
+4. Types a command into Claude Code
+5. Watches both panes, approves when asked, answers questions
+6. Collects evidence after the test (pane dumps, MCP logs, EDA logs, screenshots)
+7. Scores L1-L5 by reading what's on screen
+8. Builds a correlated timeline (video ↔ panes ↔ MCP logs)
 
-### Test Hierarchy
-
-```
-Flow Certification Tests (top level)
-  └── Tests full RTL-to-GDS with layered scoring
-      │
-      ├── uses → Stage Verifiers (per-stage)
-      │           └── Collects 5-layer evidence for one stage
-      │
-      ├── uses → MCP Call Logger (infrastructure)
-      │           └── Records all tool calls for L3 evidence
-      │
-      └── uses → Component Tests (building blocks)
-                  └── MCPControlTest, QuickCommandsTest, etc.
-```
-
-Component tests remain useful for fast regression. Flow certification tests are the source of truth for the north star goal.
-
----
-
-## Appendix A: Scoring Examples
-
-### Example: Perfect Stage (5.0/5.0)
-
-```
-Stage: Routing
-L1  Prompt Delivery     1.0  Claude received "route the design" prompt
-L2  Intent Recognition  1.0  Selected route-design skill correctly
-L3  MCP Tool Usage      1.0  Called eda.run_skill(skill="route-design")
-                              → eda.generate_tcl(operation="route_design", tool="innovus")
-                              → eda.send_to_terminal(tcl="source /tmp/...")
-                              → eda.wait_for_prompt(timeout=120)
-L4  EDA Execution       1.0  routeDesign completed, 100% routed, 0 DRC
-L5  QoR Assessment      1.0  Reported: WNS=+0.01ns, TNS=0, DRC=0
-```
-
-### Example: Partial Stage (3.0/5.0)
-
-```
-Stage: Placement
-L1  Prompt Delivery     1.0  Prompt received
-L2  Intent Recognition  1.0  Selected placement operation
-L3  MCP Tool Usage      1.0  Used eda.generate_tcl correctly
-L4  EDA Execution       0.0  place_opt_design completed but 15 cells unplaced
-                              (WARNING: 15 unplaced instances)
-L5  QoR Assessment      0.0  Claude did not run timeDesign after placement
-```
-
-### Example: Failed Stage (0.5/5.0)
-
-```
-Stage: Signoff (PrimeTime)
-L1  Prompt Delivery     0.5  Claude received prompt but misunderstood scope
-                              (ran Innovus timing instead of PrimeTime)
-L2  Intent Recognition  0.0  Did not recognize this requires a different tool
-L3  MCP Tool Usage      0.0  No MCP call for PrimeTime flow
-L4  EDA Execution       0.0  Not attempted
-L5  QoR Assessment      0.0  Not reached
-```
-
----
-
-## Appendix B: Implementation Roadmap
-
-### Phase 1: MCP Call Logging
-Add `HIPILOT_TEST_LOG` support to all three MCP servers. This is the foundation for L3 evidence.
-
-### Phase 2: Observation Point Infrastructure
-Add the observation point capture system to E2ETestRunner: synchronized screenshot + pane capture + video timestamp at each mandatory observation point. Output `observation_points.jsonl` and `video_timestamps.json`.
-
-### Phase 3: Stage Verifier
-Create a `StageVerifier` class that collects evidence at all 5 layers for a single stage, captures observation points, and produces a scorecard.
-
-### Phase 4: Flow Certification Test
-Refactor `RTL2GDSFlowTest` to use `StageVerifier` for each stage, produce `FLOW_REPORT.md`, and save the full evidence bundle.
-
-### Phase 5: Failure Classifier
-Implement automatic failure classification based on the evidence patterns described in Section 4.
-
-### Phase 6: Observer Review Tool
-Build a tool that takes an evidence bundle and guides the observer (human or AI) through the review questions (Section 6.4). For AI observers, this sends screenshots + logs to a vision model and collects structured answers. Outputs `OBSERVER_REVIEW.md`.
-
-### Phase 7: Progress Dashboard
-Build a simple tool that reads `flow_progress.json` files across runs and produces the improvement trend table. Include both programmatic and observer verdicts in the trend.
+See `src/hitestbot/README.md` for the complete evidence bundle structure.
 
 ---
 

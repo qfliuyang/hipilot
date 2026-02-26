@@ -1,6 +1,6 @@
 # HiPilot Skills Guide
 
-**Complete Reference for All 35 Skills**
+**Complete Reference for All 36 Skills**
 
 ---
 
