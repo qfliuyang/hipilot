@@ -55,7 +55,7 @@ cd /home/EDA/hipilot/current
 node src/hitestbot/tests/FlowCertificationTest.js rtl2gds
 ```
 
-See [docs/HITESTBOT_V2_PLAN.md](../HITESTBOT_V2_PLAN.md) for HiTestBot v2 design; [docs/testing/TESTING_RULES.md](TESTING_RULES.md) for testing philosophy.
+See [docs/testing/TESTING_RULES.md](TESTING_RULES.md) for testing philosophy; [src/hitestbot/README.md](../../src/hitestbot/README.md) for HiTestBot architecture.
 
 ### Verbose Logging and Evidence-Only Debugging
 
