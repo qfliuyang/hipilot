@@ -30,8 +30,32 @@ import { ObservationPoint } from './ObservationPoint.js';
 import { FlowReporter } from './FlowReporter.js';
 
 const POLL_INTERVAL_MS = 5000;
-const IDLE_THRESHOLD_MS = 30000;
 const CLAUDE_READY_TIMEOUT_MS = 120000;
+
+// A human glances at both panes. They know Claude is done when the input prompt
+// reappears. They know the EDA tool is busy when new output is scrolling.
+// They answer Claude's questions. They don't stare at a frozen screen for 5 minutes.
+const IDLE_WITH_EDA_ACTIVE_MS = 120000;  // left pane idle but right pane changing — EDA is working
+const IDLE_BOTH_PANES_MS = 30000;        // both panes idle — probably done or stuck
+const EARLY_ABORT_PATTERNS = [           // a human would stop watching if they see these
+  /MCP.*not (available|found|configured)/i,
+  /no MCP/i,
+  /CLAUDE\.md.*not found/i,
+  /command not found: claude/i,
+  /ECONNREFUSED/i,
+  /permission denied/i,
+];
+const QUESTION_PATTERNS = [              // Claude is asking the human something
+  /should I (proceed|continue|start|fix|retry)/i,
+  /do you want/i,
+  /would you like/i,
+  /\? *$/m,
+  /\[y\/n\]/i,
+  /\[yes\/no\]/i,
+  /please confirm/i,
+  /choose.*:/i,
+  /select.*:/i,
+];
 
 export class FlowCertifier {
   constructor(options = {}) {
@@ -492,33 +516,91 @@ export class FlowCertifier {
     }
   }
 
+  /**
+   * Detect what state Claude is in — a human reads the screen and knows.
+   *
+   * States:
+   *   'working'         — Claude is producing output (left pane changing)
+   *   'waiting_for_eda' — Left pane idle but right pane still changing (EDA tool running)
+   *   'asking_question' — Claude asked the human something
+   *   'needs_approval'  — Manual mode, pending Tcl waiting for prefix+y
+   *   'done'            — Claude's input prompt reappeared (ready for next command)
+   *   'error'           — Something fundamentally broken (MCP not found, etc.)
+   *   'idle'            — Both panes idle, no prompt detected
+   */
+  _detectState(claude, eda, claudeChanged, edaChanged) {
+    const claudeLines = claude.split('\n').filter(l => l.trim());
+    const lastLine = claudeLines[claudeLines.length - 1] || '';
+
+    // Check for fatal errors first — a human would notice and stop
+    for (const pat of EARLY_ABORT_PATTERNS) {
+      if (pat.test(claude)) return { state: 'error', detail: claude.match(pat)[0] };
+    }
+
+    // Check for approval request
+    if (this._needsApproval(claude)) return { state: 'needs_approval' };
+
+    // Check for Claude asking a question
+    for (const pat of QUESTION_PATTERNS) {
+      if (pat.test(lastLine) || pat.test(claudeLines.slice(-3).join('\n'))) {
+        return { state: 'asking_question', detail: lastLine };
+      }
+    }
+
+    // Check for Claude's ready prompt (done — waiting for next input)
+    // Claude Code shows > or ❯ at the bottom when ready
+    const promptReady = lastLine.match(/^[>❯]\s*$/) ||
+      lastLine.includes('What can I help') ||
+      lastLine.includes('How can I help');
+    if (promptReady && !claudeChanged) return { state: 'done' };
+
+    // Claude is actively producing output
+    if (claudeChanged) return { state: 'working' };
+
+    // Left pane idle but right pane active — EDA tool is running, Claude is waiting
+    if (!claudeChanged && edaChanged) return { state: 'waiting_for_eda' };
+
+    // Both idle
+    return { state: 'idle' };
+  }
+
   async watchFlow(options = {}) {
     const maxWaitMs = options.maxWaitMs || 300000;
     this._runLog(`Phase 4: Watching flow (max ${maxWaitMs / 1000}s)...`);
 
     const start = Date.now();
     let lastClaudeOutput = '';
-    let lastChangeTime = start;
+    let lastEdaOutput = '';
+    let lastClaudeChangeTime = start;
+    let lastEdaChangeTime = start;
     let approvalCount = 0;
+    let questionCount = 0;
     let pollCount = 0;
+    let lastState = 'working';
 
     while (Date.now() - start < maxWaitMs) {
       await this._sleep(POLL_INTERVAL_MS);
       pollCount++;
 
-      // Log both panes continuously
+      // Log both panes continuously — this is what a human sees
       const panes = this._logPanes(`poll_${pollCount}`);
 
-      // Detect change
-      if (panes.claude !== lastClaudeOutput) {
-        lastChangeTime = Date.now();
-        lastClaudeOutput = panes.claude;
+      // Track what changed — a human notices when text appears or stops
+      const claudeChanged = panes.claude !== lastClaudeOutput;
+      const edaChanged = panes.eda !== lastEdaOutput;
+      if (claudeChanged) { lastClaudeChangeTime = Date.now(); lastClaudeOutput = panes.claude; }
+      if (edaChanged) { lastEdaChangeTime = Date.now(); lastEdaOutput = panes.eda; }
+
+      // Detect state — what would a human see?
+      const { state, detail } = this._detectState(panes.claude, panes.eda, claudeChanged, edaChanged);
+
+      if (state !== lastState) {
+        this._runLog(`State: ${lastState} → ${state}${detail ? ` (${detail})` : ''}`);
+        lastState = state;
       }
 
       // Screenshot every 60s
-      if (pollCount % 12 === 0) {
-        this._takeScreenshot(`progress_${pollCount}`);
-      }
+      if (pollCount % 12 === 0) this._takeScreenshot(`progress_${pollCount}`);
 
       // Observation point every 30s
       if (pollCount % 6 === 0) {
@@ -528,38 +610,77 @@ export class FlowCertifier {
           socket: this.socket,
           recordingStartTime: this.recordingStartTime,
           display: this.display,
-          context: { poll: pollCount, elapsed_s: Math.round((Date.now() - start) / 1000) },
+          context: { poll: pollCount, state, elapsed_s: Math.round((Date.now() - start) / 1000) },
         });
         this.observations.push(obs);
       }
 
-      // Detect approval requests
-      if (this._needsApproval(panes.claude)) {
-        this._runLog('Detected approval request — pressing prefix+y');
+      // React based on state — what would a human do?
+
+      if (state === 'needs_approval') {
+        this._runLog('Approval needed — pressing prefix+y');
         this._takeScreenshot(`approval_${approvalCount}`);
         this._pressApproval();
         approvalCount++;
-        lastChangeTime = Date.now();
+        lastClaudeChangeTime = Date.now();
         continue;
       }
 
-      // Detect completion
-      const idleTime = Date.now() - lastChangeTime;
-      if (idleTime > IDLE_THRESHOLD_MS && pollCount > 3) {
-        this._runLog(`Claude idle for ${(idleTime / 1000).toFixed(0)}s — flow appears complete`);
+      if (state === 'asking_question') {
+        this._runLog(`Claude asked: "${detail}" — responding "yes"`);
+        this._takeScreenshot(`question_${questionCount}`);
+        this.typeInHiPilot('yes');
+        questionCount++;
+        lastClaudeChangeTime = Date.now();
+        continue;
+      }
+
+      if (state === 'error') {
+        this._runLog(`Early abort: ${detail}`);
+        this._takeScreenshot('error_abort');
         break;
       }
 
+      if (state === 'done') {
+        this._runLog('Claude is done (input prompt reappeared)');
+        this._takeScreenshot('flow_done');
+        break;
+      }
+
+      if (state === 'working') {
+        // Claude is producing output — keep watching
+      }
+
+      if (state === 'waiting_for_eda') {
+        // Left pane idle but right pane active — EDA tool is running
+        // A human would wait patiently. Don't time out.
+        const edaIdleTime = Date.now() - lastEdaChangeTime;
+        if (edaIdleTime > IDLE_WITH_EDA_ACTIVE_MS) {
+          this._runLog(`EDA tool also idle for ${(edaIdleTime / 1000).toFixed(0)}s — may be stuck`);
+        }
+      }
+
+      if (state === 'idle') {
+        // Both panes idle. Could be: Claude thinking, or actually done.
+        const bothIdleTime = Math.min(Date.now() - lastClaudeChangeTime, Date.now() - lastEdaChangeTime);
+        if (bothIdleTime > IDLE_BOTH_PANES_MS && pollCount > 3) {
+          this._runLog(`Both panes idle for ${(bothIdleTime / 1000).toFixed(0)}s — flow appears complete`);
+          break;
+        }
+      }
+
+      // Progress log
       if (pollCount % 3 === 0) {
         const elapsed = ((Date.now() - start) / 1000).toFixed(0);
-        const idle = (idleTime / 1000).toFixed(0);
-        this._runLog(`Poll ${pollCount}: ${elapsed}s elapsed, ${idle}s idle, ${approvalCount} approvals`);
+        const claudeIdle = ((Date.now() - lastClaudeChangeTime) / 1000).toFixed(0);
+        const edaIdle = ((Date.now() - lastEdaChangeTime) / 1000).toFixed(0);
+        this._runLog(`Poll ${pollCount}: ${elapsed}s, state=${state}, claude_idle=${claudeIdle}s, eda_idle=${edaIdle}s, approvals=${approvalCount}, questions=${questionCount}`);
       }
     }
 
     const totalTime = Date.now() - start;
-    this._runLog(`Watch complete: ${(totalTime / 1000).toFixed(1)}s, ${approvalCount} approvals`);
-    return { elapsed_ms: totalTime, approvals: approvalCount, polls: pollCount };
+    this._runLog(`Watch complete: ${(totalTime / 1000).toFixed(1)}s, ${approvalCount} approvals, ${questionCount} questions answered`);
+    return { elapsed_ms: totalTime, approvals: approvalCount, questions: questionCount, polls: pollCount };
   }
 
   evaluate(beforeObs, afterObs) {
