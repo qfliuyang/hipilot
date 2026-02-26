@@ -113,15 +113,15 @@ bin/hitestbot-pull               # downloads evidence to your machine
 ```
 src/hitestbot/
 ├── core/
-│   ├── FlowCertifier.js       # The virtual human — launches, types, watches, scores
+│   ├── FlowCertifier.js       # The virtual human — launches, types, watches, records, scores
 │   ├── ObservationPoint.js     # Captures pane text + screenshot at one moment
 │   ├── FlowReporter.js        # Generates FLOW_REPORT.md from scores
 │   └── ProgressTracker.js      # Tracks improvement across multiple test runs
 ├── infra/
-│   ├── deploy_hipilot.js       # Deploys HiPilot to EDA server (tarball with node_modules)
-│   ├── TmuxController.js       # Helper for tmux operations
-│   └── VideoRecorder.js        # Helper for ffmpeg recording
+│   └── deploy_hipilot.js       # Deploys HiPilot to EDA server (tarball with node_modules)
 └── tests/
     ├── FlowCertificationTest.js # Entry point — creates FlowCertifier and runs it
-    └── McpInfraTest.js          # Standalone MCP server infrastructure check
+    └── McpInfraTest.js          # Standalone MCP server infrastructure check (no HiPilot needed)
 ```
+
+That's it. 7 files. No legacy code, no unused infrastructure.

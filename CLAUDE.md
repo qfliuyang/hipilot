@@ -161,13 +161,14 @@ hipilot/
 │   │   ├── mode.js                 #   Manual/auto mode state (file-based)
 │   │   ├── shell-escape.js         #   Safe shell quoting
 │   │   └── mcp-logger.js           #   Logs MCP calls to JSONL when HIPILOT_TEST_LOG is set
-│   └── hitestbot/                  # HiTestBot — tests HiPilot by using it like a human
-│       ├── core/FlowCertifier.js   #   The main test engine (launch → type → watch → score)
-│       ├── core/ObservationPoint.js#   Captures pane text + screenshot at a moment in time
+│   └── hitestbot/                  # HiTestBot — 7 files total, uses HiPilot like a human
+│       ├── core/FlowCertifier.js   #   The virtual human (launch → type → watch → record → score)
+│       ├── core/ObservationPoint.js#   Captures pane text + screenshot at a moment
 │       ├── core/FlowReporter.js    #   Generates FLOW_REPORT.md from scores
 │       ├── core/ProgressTracker.js #   Tracks improvement across multiple test runs
 │       ├── infra/deploy_hipilot.js #   Deploys HiPilot to EDA server (tarball with node_modules)
-│       └── tests/FlowCertificationTest.js  # Entry point: runs FlowCertifier
+│       ├── tests/FlowCertificationTest.js  # Main test entry point
+│       └── tests/McpInfraTest.js   #   Standalone MCP check (no HiPilot needed)
 ├── deploy/eda-server/              # Files deployed TO the EDA server (not used on dev machine)
 │   ├── CLAUDE.md                   #   HiPilot's identity — Claude Code reads this on startup
 │   ├── .claude/settings.json       #   Registers 3 MCP servers with absolute EDA server paths
