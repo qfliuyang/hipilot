@@ -103,13 +103,15 @@ evidence/20260225_103045/
     └── scorecard.json
 ```
 
-## Test Modes
+## Test Mode
+
+HiTestBot has a single execution mode: **prompt-driven** (human-like).
 
 | Mode | What It Tests | AI Involved? |
 |------|--------------|-------------|
-| **Workflow-driven** | Full pipeline via workflow.run | Yes (Claude calls it) |
-| **MCP-direct** | MCP infrastructure only | No |
-| **Prompt-driven** | AI behavior per stage | Yes (one prompt per stage) |
+| **Prompt-driven** | AI behavior (type in Claude Code, observe response) | Yes |
+
+HiTestBot acts like a human: it types commands into the Claude Code pane (left) via tmux `send-keys`, then observes both panes and MCP logs. It **never** sends commands to the EDA pane or calls MCP tools directly.
 
 ## Progress Tracking
 
