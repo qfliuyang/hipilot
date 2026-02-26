@@ -493,9 +493,11 @@ export class FlowCertifier {
   _openTerminalOnDesktop() {
     const attachCmd = `tmux -L ${this.socket} attach-session -t ${this.session}`;
 
-    // CentOS 7 uses GNOME. Open gnome-terminal like a real human would.
+    // CentOS 7 uses GNOME. Open gnome-terminal like a real human would —
+    // about 2/3 of the desktop, centered. A human doesn't maximize; they
+    // keep some desktop visible around the edges.
     const terminals = [
-      { name: 'gnome-terminal', cmd: `DISPLAY=${this.display} gnome-terminal --maximize --title=HiPilot -- ${attachCmd} &` },
+      { name: 'gnome-terminal', cmd: `DISPLAY=${this.display} gnome-terminal --title=HiPilot --geometry=180x50 -- ${attachCmd} &` },
     ];
 
     for (const term of terminals) {
@@ -507,7 +509,19 @@ export class FlowCertifier {
           shell: true,
         });
         this._runLog(`Opened ${term.name} on ${this.display} — HiPilot workspace is now visible on desktop`);
-        // Give the terminal a moment to render
+
+        // Center the window on the desktop (like a human would position it)
+        try {
+          execSync('sleep 1', { timeout: 3000 });
+          execSync(
+            `DISPLAY=${this.display} wmctrl -r HiPilot -e 0,-1,-1,-1,-1 2>/dev/null && ` +
+            `DISPLAY=${this.display} wmctrl -r HiPilot -b remove,maximized_vert,maximized_horz 2>/dev/null`,
+            { encoding: 'utf-8', timeout: 5000, shell: true, env: { ...process.env, DISPLAY: this.display } }
+          );
+          this._runLog('Window positioned (centered, ~2/3 desktop)');
+        } catch {
+          this._runLog('wmctrl not available — window uses default position');
+        }
         return;
       } catch {
         continue;
