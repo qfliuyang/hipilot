@@ -2,9 +2,15 @@
 
 > You are a **developer** building HiPilot and HiTestBot. You are NOT HiPilot itself. Never try to use MCP tools or control EDA software.
 
+---
+
 ## 1. What This Project Is
 
-HiPilot is a shell command (`bin/hipilot`) that launches a tmux workspace on an EDA server. The workspace has two panes:
+**HiPilot** is a shell command (`bin/hipilot`) that creates a two-pane tmux workspace. The left pane runs Anthropic's `claude` CLI (called "Claude Code"). The right pane is an empty terminal where EDA tools (Innovus, ICC2, PrimeTime — commercial chip design software) run. Claude Code in the left pane controls the EDA tool in the right pane. The engineer only types in the left pane.
+
+**How Claude Code controls the right pane:** Claude Code does NOT type shell commands. Instead, it calls MCP tools. MCP (Model Context Protocol) is a mechanism where Claude Code sends JSON-RPC requests over stdio to external programs called "MCP servers". These MCP servers are Node.js processes that Claude Code spawns automatically. The MCP servers execute tmux commands (`send-keys`, `capture-pane`) to interact with the right pane. Claude Code never runs `tmux` directly.
+
+**What the workspace looks like:**
 
 ```
 ┌─── Left Pane ────────────────┬─── Right Pane ───────────────┐
@@ -13,193 +19,239 @@ HiPilot is a shell command (`bin/hipilot`) that launches a tmux workspace on an 
 │  (claude --dangerously-       │  (Innovus / ICC2 / PrimeTime) │
 │   skip-permissions)           │                               │
 │                               │                               │
-│  This is "HiPilot's brain"   │  Claude controls this pane    │
-│  The engineer types here      │  via MCP tools, not bash      │
+│  The engineer types here.     │  Claude Code controls this    │
+│  Claude Code runs here.       │  pane through MCP servers.    │
 │                               │                               │
 ├───────────────────────────────┴───────────────────────────────┤
-│ ⚙ HiPilot │ 🔒 Manual │          HiPilot           │ ▶ idle │
+│  Status bar: mode, tool, design, job status                   │
 └───────────────────────────────────────────────────────────────┘
 ```
 
-Claude Code in the left pane has three MCP servers that give it superpowers:
+**The three MCP servers** (registered in `~/.claude/settings.json` on the EDA server):
 
-| MCP Server | Tools | What it does |
-|---|---|---|
-| `hipilot-eda` | 52 | Generate Tcl, send to EDA tool, wait for result, extract QoR |
-| `hipilot-tmux` | 8 | Control tmux panes, update status bar |
-| `hipilot-knowledge` | 7 | Look up skills, search docs, find EDA commands |
+| Server name | File | Tools | Purpose |
+|---|---|---|---|
+| `hipilot-eda` | `servers/eda/index.js` | 52 | Generate Tcl scripts, send them to the right pane, wait for the EDA tool to finish, check for errors, extract timing/area metrics |
+| `hipilot-tmux` | `servers/tmux/index.js` | 8 | Send keystrokes to panes, capture pane text, update the status bar |
+| `hipilot-knowledge` | `servers/knowledge/index.js` | 7 | Look up skills (expert workflow guides), search documentation, find EDA command syntax |
 
-Claude Code reads skills (expert workflows in markdown), generates Tcl from templates, sends it to the EDA tool in the right pane, reads the output, handles errors, and reports results to the engineer. The engineer never touches the right pane directly.
+**How MCP servers are connected to Claude Code:** Claude Code reads `~/.claude/settings.json` on startup. This file lists each MCP server with a `command` (path to Node.js) and `args` (path to the server script). Claude Code spawns each server as a child process and communicates over stdin/stdout using JSON-RPC. The servers are NOT network services — they are short-lived child processes.
 
-HiTestBot is a separate program that **uses HiPilot like a human**. It launches `bin/hipilot`, types commands into Claude Code, watches both panes, approves when asked, and scores the result. It never calls MCP tools or sends commands to the EDA pane. If a human would hit a bug, HiTestBot hits the same bug.
+**What are skills?** Skills are markdown files in `skills/` (e.g., `skills/fix-setup-timing.md`). Each file describes an expert workflow: when to use it, what Tcl commands to run, what to look for in the output, how to fix common errors. Claude Code reads these files through the knowledge MCP server and follows the instructions. Skills are documentation that the AI reads — they are not executable code.
 
-## 2. Three Identities (Never Confuse Them)
+**What are templates?** Templates are Tcl files in `templates/` (e.g., `templates/cadence/innovus_report_timing.tcl`). They use Nunjucks syntax (similar to Jinja2) for variable substitution. When Claude Code calls `eda.generate_tcl`, the EDA MCP server finds the matching template, renders it with parameters, and returns the Tcl. Templates produce trusted Tcl (`[✓ Template]` badge). When no template exists, the server generates Tcl from hardcoded patterns (`[⚠ Unverified]` badge).
 
-| Identity | Where | Reads | Does | Knows about |
-|---|---|---|---|---|
-| **Developer AI** (you) | Dev machine or cloud VM | This file (`CLAUDE.md`) | Write code, run tests | Everything |
-| **HiPilot AI** | EDA server, left pane | `deploy/eda-server/CLAUDE.md` | Drive EDA tools via MCP | Only MCP tools and skills |
-| **HiTestBot** | EDA server, separate process | `src/hitestbot/` | Use HiPilot like a human | Only what's on screen |
+**What is HiTestBot?** HiTestBot is a Node.js program (`src/hitestbot/`) that tests HiPilot by using it exactly like a human would. It runs `bin/hipilot` to launch the workspace, opens gnome-terminal on the EDA server's desktop so the workspace is visible, types commands into Claude Code's input, watches both panes, presses keyboard shortcuts when needed (e.g., prefix+y to approve), and scores the result by reading what appeared on screen. HiTestBot never calls MCP tools directly and never sends commands to the right pane. If a human would encounter a bug, HiTestBot encounters the same bug.
 
-**Rules:**
-- `deploy/eda-server/CLAUDE.md` is HiPilot's identity. Never put test/deploy/developer info in it.
-- HiTestBot must never call MCP directly or send commands to the EDA pane.
-- HiPilot must never know it's being tested.
+---
 
-## 3. How HiPilot Works (The Real Flow)
+## 2. Three Identities
 
-```
-Engineer runs: bin/hipilot
-  │
-  ├─ Creates tmux session (tmux -L hipilot) with 50/50 split
-  ├─ Left pane: starts "claude --dangerously-skip-permissions"
-  ├─ Right pane: empty terminal (engineer starts EDA tool, or Claude does it)
-  ├─ Status bar, keyboard shortcuts (prefix+m = toggle mode, prefix+y = approve)
-  │
-  ▼
-Claude Code initializes:
-  ├─ Reads deploy/eda-server/CLAUDE.md → becomes "HiPilot"
-  ├─ Connects to 3 MCP servers (stdio, registered in ~/.claude/settings.json)
-  ├─ Loads slash commands from .claude/commands/ (/rtl2gds, /timing, /drc, etc.)
-  │
-  ▼
-Engineer types "/rtl2gds":
-  │
-  ├─ Claude reads the /rtl2gds slash command definition
-  ├─ Claude calls eda.detect_tool → no tool running
-  ├─ Claude calls eda.start_tool → sends "innovus -no_gui" to right pane via tmux
-  ├─ Claude calls knowledge.get_skill("ibex-rtl2gds-flow") → reads the workflow
-  │
-  ├─ For EACH stage (design_init, floorplan, placement, CTS, routing, ...):
-  │     ├─ Claude calls eda.generate_tcl → gets Tcl from template
-  │     ├─ Claude calls eda.execute_and_verify → sends Tcl to right pane, waits
-  │     │     └─ MCP server writes temp file, tmux send-keys "source /tmp/file.tcl" + C-m
-  │     │     └─ MCP server polls tmux capture-pane until EDA prompt returns
-  │     │     └─ MCP server checks for errors, extracts QoR metrics
-  │     ├─ Claude reads the result, handles errors, snapshots QoR
-  │     └─ Claude reports progress to engineer
-  │
-  └─ Claude summarizes: WNS, TNS, violations, saved files
-```
+This project contains instructions for three different AI contexts. They must never be mixed.
 
-**Key insight:** Claude Code orchestrates each stage individually. It stays in the loop. There is no monolithic "run everything" command. Claude reads skills, handles errors with `diagnose_error`, adapts based on results.
+| Identity | Who reads it | File | What it does |
+|---|---|---|---|
+| **Developer AI** (you right now) | AI coding CLI on dev machine or cloud VM | This file (`CLAUDE.md` at repo root) | Write code, run unit tests, fix bugs |
+| **HiPilot AI** | Claude Code running on the EDA server | `deploy/eda-server/CLAUDE.md` | Drive EDA tools using MCP — it does NOT know about tests, deployment, or this repo |
+| **HiTestBot** | Not an AI — it's a Node.js program | `src/hitestbot/core/FlowCertifier.js` | Simulates a human using HiPilot |
+
+**Why the separation matters:**
+- `deploy/eda-server/CLAUDE.md` tells Claude Code "you are HiPilot". If you put test infrastructure or developer context in that file, Claude Code on the EDA server will be confused about its role.
+- HiTestBot must use HiPilot as a black box. If HiTestBot calls MCP directly, it bypasses HiPilot and cannot catch bugs that a real human would encounter.
+- You (the developer) know everything. HiPilot AI only knows its MCP tools and skills. HiTestBot only knows what it can see on screen.
+
+---
+
+## 3. How HiPilot Works
+
+### Step 1: Launch
+
+The engineer runs `bin/hipilot` (a bash script). This script:
+1. Creates a tmux server with a **named socket**: `tmux -L hipilot new-session ...` (the `-L hipilot` is critical — it creates a separate tmux instance that all components must use)
+2. Splits the window into two panes: left (pane 0.0) and right (pane 0.1)
+3. Sets up status bar and keyboard shortcuts (prefix+m toggles manual/auto mode, prefix+y approves pending Tcl)
+4. In the left pane, runs: `claude --dangerously-skip-permissions` (this starts Claude Code, Anthropic's AI CLI, with all tool permissions pre-approved)
+5. In the right pane, shows a welcome message
+
+### Step 2: Claude Code initializes
+
+When Claude Code starts, it automatically:
+1. Reads `CLAUDE.md` from the current directory — this is `deploy/eda-server/CLAUDE.md` (deployed to the project root on EDA server), which says "You are HiPilot"
+2. Reads `~/.claude/settings.json` and spawns 3 MCP server processes (one for each server: eda, tmux, knowledge). Each server receives `HIPILOT_SESSION=hipilot` as an environment variable — this tells the servers which tmux socket to use.
+3. Loads slash commands from `.claude/commands/` (e.g., `/rtl2gds`, `/timing`)
+
+### Step 3: The engineer types a command
+
+Example: the engineer types `/rtl2gds`. Claude Code reads the slash command file (`deploy/eda-server/.claude/commands/rtl2gds.md`), which instructs Claude to orchestrate the RTL-to-GDS flow stage by stage.
+
+### Step 4: Claude orchestrates the flow
+
+For each stage, Claude Code makes MCP tool calls:
+
+1. `eda.generate_tcl({intent, operation, tool})` — the EDA MCP server finds a template in `templates/`, renders it with Nunjucks, and returns the Tcl script
+2. `eda.execute_and_verify({tcl, description, timeout})` — the EDA MCP server:
+   - Writes the Tcl to a temp file: `/tmp/hipilot-EDA/exec/hipilot_exec_<timestamp>.tcl`
+   - Sends it to the right pane: `tmux -L hipilot send-keys -t hipilot:0.1 -l 'source /tmp/...'` then `tmux -L hipilot send-keys -t hipilot:0.1 C-m`
+   - Polls every 1 second: `tmux -L hipilot capture-pane -t hipilot:0.1 -p -S -200`
+   - Waits until the EDA tool's prompt reappears (e.g., `innovus 1>`)
+   - Scans the captured output for error patterns (`**ERROR`, `FATAL`)
+   - Extracts QoR metrics (WNS, TNS, violation count)
+   - Returns the result to Claude Code
+3. Claude Code reads the result. If there are errors, it calls `eda.diagnose_error`. If successful, it calls `qor.snapshot` and reports progress to the engineer.
+
+**"Orchestrates" means:** Claude Code makes one MCP call per stage, reads the result, decides what to do next, and makes the next call. It is NOT a batch script. Claude Code uses its intelligence to handle errors, skip unnecessary stages, and adapt.
+
+---
 
 ## 4. How HiTestBot Works
 
-```
-On EDA server:
-  node src/hitestbot/tests/FlowCertificationTest.js /rtl2gds
-    │
-    ├─ Phase 1: Launch HiPilot (bin/hipilot + gnome-terminal on display :0)
-    ├─ Phase 2: Start video recording (ffmpeg on display :0)
-    ├─ Phase 3: Wait for Claude Code to be ready (polls left pane)
-    ├─ Phase 4: Type "/rtl2gds" into Claude Code's input
-    ├─ Phase 5: Watch and interact:
-    │     ├─ Polls both panes every 5 seconds
-    │     ├─ Detects state: working / waiting_for_eda / asking_question / done / error
-    │     ├─ Auto-approves pending Tcl (presses prefix+y)
-    │     ├─ Auto-answers questions ("yes")
-    │     ├─ Takes screenshots at key moments
-    │     ├─ Aborts early on fatal errors (MCP not found, etc.)
-    │     └─ Detects completion (Claude's prompt reappears)
-    ├─ Phase 6: Stop recording, collect all logs
-    │     ├─ Full pane dumps (both panes, 10000 lines)
-    │     ├─ MCP call log (HIPILOT_TEST_LOG)
-    │     ├─ EDA tool logs (innovus.log*, icc2_shell.log*)
-    │     └─ HiPilot execution history
-    ├─ Phase 7: Build correlated timeline (timeline.jsonl)
-    └─ Phase 8: Score (L1-L5) based on what's visible on screen
-```
+HiTestBot runs on the EDA server (where HiPilot runs). It is a virtual human.
+
+### What it does (in order):
+
+1. **Kills old tmux session** — clean slate
+2. **Runs `bin/hipilot --no-terminal`** — creates the tmux workspace (headless)
+3. **Opens gnome-terminal on display :0** — attaches to the tmux session, so the workspace is visible on the EDA server's desktop (a human would see the same thing on their screen)
+4. **Starts ffmpeg** — records the desktop (display :0) to a video file
+5. **Polls the left pane** every 3 seconds until Claude Code's input prompt appears (a human would watch for the same thing)
+6. **Types a command** (e.g., `/rtl2gds`) into the left pane using `tmux send-keys` (exactly like a human pressing keys)
+7. **Watches both panes** every 5 seconds, detecting what state Claude is in:
+   - `working` — left pane text is changing (Claude is producing output)
+   - `waiting_for_eda` — left pane idle but right pane changing (EDA tool is running, Claude is waiting)
+   - `asking_question` — Claude asked something (e.g., "Should I proceed?") → HiTestBot types "yes"
+   - `needs_approval` — manual mode, pending Tcl → HiTestBot presses prefix+y (Ctrl+B then y)
+   - `done` — Claude's input prompt reappeared
+   - `error` — fatal problem detected (e.g., "MCP not available")
+8. **Takes screenshots** at key moments (launch, after typing, every 60s, on approval, on completion)
+9. **Stops ffmpeg** — saves the video
+10. **Collects logs after the test** (this is post-test evidence, not cheating):
+    - Full scrollback from both panes (10000 lines each)
+    - MCP call log (a JSONL file that the EDA MCP server writes when `HIPILOT_TEST_LOG` env var is set)
+    - EDA tool log files (e.g., `innovus.log`)
+    - Tcl execution history from HiPilot
+11. **Builds `timeline.jsonl`** — merges all evidence into one chronological timeline where each entry has a video timestamp, so you can seek to any moment
+12. **Scores L1-L5** by reading what's on screen (not MCP logs):
+    - L1: Did Claude respond? (left pane changed)
+    - L2: Did Claude understand the task? (mentions relevant keywords)
+    - L3: Did Claude use MCP tools? (tool call names visible in left pane, right pane has activity)
+    - L4: Did the EDA tool run successfully? (right pane has output, no errors)
+    - L5: Did Claude report QoR? (WNS/TNS numbers in left pane)
+
+---
 
 ## 5. Project Structure
 
 ```
 hipilot/
-├── bin/hipilot                  # THE product: tmux launcher (left=Claude, right=terminal)
-├── servers/                     # 3 MCP servers (Node.js, JSON-RPC over stdio)
-│   ├── eda/index.js             #   52 tools: Tcl gen, execute, QoR, mode, workflows
-│   ├── tmux/index.js            #   8 tools: pane control, status bar
-│   └── knowledge/index.js       #   7 tools: skills, docs, command reference
-├── skills/                      # 36 expert workflow definitions (.md with YAML frontmatter)
-├── templates/                   # 22 Tcl templates (synopsys/ + cadence/, Nunjucks)
-├── data/                        # Command reference JSON
+├── bin/hipilot                     # THE product: bash script that creates the tmux workspace
+├── servers/                        # 3 MCP servers (Node.js processes, JSON-RPC over stdio)
+│   ├── eda/index.js                #   52 tools — the main server (Tcl gen, execute, QoR, mode)
+│   ├── tmux/index.js               #   8 tools — pane control, status bar
+│   └── knowledge/index.js          #   7 tools — skill lookup, doc search
+├── skills/                         # 36 markdown files — expert workflows that Claude Code reads
+├── templates/                      # 22 Tcl files — Nunjucks templates for vendor-specific Tcl
+│   ├── synopsys/                   #   ICC2/PrimeTime/DesignCompiler templates
+│   └── cadence/                    #   Innovus templates
+├── data/command-reference.json     # EDA command syntax reference
 ├── src/
-│   ├── index.js                 # CLI entry: "hipilot" → launches tmux, subcommands → TUI
-│   ├── cli.js                   # TUI dashboard (React/Ink): status, skills, templates
-│   ├── lib/                     # Utility modules (paths, mode, risk, shell-escape, logger)
-│   └── hitestbot/               # HiTestBot: uses HiPilot like a human
-│       ├── core/FlowCertifier.js#   The virtual human (launch → type → watch → score)
-│       ├── core/ObservationPoint.js# Capture pane state + screenshot at a moment
-│       ├── core/FlowReporter.js #   Generate FLOW_REPORT.md
-│       ├── infra/deploy_hipilot.js# Deploy to EDA server (self-contained tarball)
-│       └── tests/FlowCertificationTest.js # Main test entry point
-├── deploy/eda-server/           # HiPilot identity for the EDA server
-│   ├── CLAUDE.md                #   "You are HiPilot" (clean of developer/test info)
-│   ├── .claude/settings.json    #   MCP server registration (absolute EDA paths)
-│   └── .claude/commands/        #   10 slash commands (/rtl2gds, /timing, /drc, /start-eda, etc.)
-├── test/                        # Unit tests (vitest, 118 tests)
-└── docs/                        # Reference docs (architecture, skills guide, etc.)
+│   ├── index.js                    # CLI entry point: no args → launches tmux, subcommands → TUI
+│   ├── cli.js                      # TUI dashboard (React/Ink): status, skills, templates
+│   ├── lib/                        # Shared utilities
+│   │   ├── paths.js                #   Resolves temp dirs: /tmp/hipilot-{user}/
+│   │   ├── mode.js                 #   Manual/auto mode state (file-based)
+│   │   ├── shell-escape.js         #   Safe shell quoting
+│   │   └── mcp-logger.js           #   Logs MCP calls to JSONL when HIPILOT_TEST_LOG is set
+│   └── hitestbot/                  # HiTestBot — tests HiPilot by using it like a human
+│       ├── core/FlowCertifier.js   #   The main test engine (launch → type → watch → score)
+│       ├── core/ObservationPoint.js#   Captures pane text + screenshot at a moment in time
+│       ├── core/FlowReporter.js    #   Generates FLOW_REPORT.md from scores
+│       ├── core/ProgressTracker.js #   Tracks improvement across multiple test runs
+│       ├── infra/deploy_hipilot.js #   Deploys HiPilot to EDA server (tarball with node_modules)
+│       └── tests/FlowCertificationTest.js  # Entry point: runs FlowCertifier
+├── deploy/eda-server/              # Files deployed TO the EDA server (not used on dev machine)
+│   ├── CLAUDE.md                   #   HiPilot's identity — Claude Code reads this on startup
+│   ├── .claude/settings.json       #   Registers 3 MCP servers with absolute EDA server paths
+│   └── .claude/commands/           #   10 slash commands that appear in Claude Code
+├── test/                           # Unit tests (vitest, 118 tests)
+└── docs/                           # Reference documentation
 ```
 
-## 6. Infrastructure Chain (What Must Collaborate)
+---
 
-```
-bin/hipilot → tmux -L hipilot → Claude Code → MCP (stdio) → servers → tmux -L hipilot → EDA pane
-```
+## 6. The Tmux Socket Chain
 
-Every link uses the **same tmux socket** (`-L hipilot`). If any component uses a different socket or omits `-L`, the chain breaks.
+Every component must use the **same tmux socket** (`-L hipilot`). Here is why:
 
-| Component | Socket | Session | Pane 0.0 | Pane 0.1 |
-|---|---|---|---|---|
-| `bin/hipilot` | `-L hipilot` | `hipilot` | Chat (Claude) | EDA terminal |
-| `servers/eda/index.js` | `-L ${HIPILOT_SESSION}` | from env | sends Tcl | captures output |
-| `servers/tmux/index.js` | `-L ${TMUX_SOCKET}` (defaults to `HIPILOT_SESSION`) | from env | send-keys | capture-pane |
-| `FlowCertifier` | `-L ${this.socket}` | `hipilot` | types commands | reads output |
+`bin/hipilot` creates the tmux session with `tmux -L hipilot new-session`. The `-L hipilot` flag creates a **named tmux server** — a separate tmux instance with its own socket file. Regular `tmux` commands (without `-L`) talk to the default tmux server, which is a DIFFERENT instance. If an MCP server runs `tmux capture-pane` without `-L hipilot`, it reads from the wrong tmux server and sees nothing.
 
-## 7. Critical Rules for Developers
+The chain:
+1. `bin/hipilot` creates session → `tmux -L hipilot`
+2. `~/.claude/settings.json` passes `HIPILOT_SESSION=hipilot` to each MCP server as an env var
+3. MCP servers read `process.env.HIPILOT_SESSION` and use it in all tmux commands: `tmux -L ${HIPILOT_SESSION}`
+4. HiTestBot's FlowCertifier uses `this.socket` (defaults to `hipilot`) for the same reason
 
-1. **tmux send-keys**: Always use `-l` for literal text and `C-m` (unquoted) for Enter. Never put `Enter` inside quotes.
-2. **tmux socket**: Always use `-L ${HIPILOT_SESSION}`. The session is created with a named socket.
-3. **settings.json env**: The `env` section stores API keys. Deployment deep-merges — never overwrite env entirely.
-4. **deploy/eda-server/CLAUDE.md**: HiPilot's identity. No test info, no SSH passwords, no HiTestBot references.
-5. **HiTestBot is a human**: It uses `bin/hipilot`, types in the left pane, reads the screen. Never give it MCP access.
-6. **Claude orchestrates**: For `/rtl2gds`, Claude drives each stage with `execute_and_verify`. No `workflow.run`.
-7. **Paths resolve from `__dirname`**: MCP servers find templates/skills relative to their file location. Never use `process.cwd()`.
-8. **Self-contained deployment**: Tarball includes `node_modules`. No `npm install` on EDA server.
+If any component omits `-L` or uses a different socket name, that component cannot see or control the workspace.
+
+---
+
+## 7. Rules
+
+1. **tmux send-keys**: Use `-l` flag for literal text. Use `C-m` (unquoted, outside quotes) for Enter. Never write `'text Enter'` — tmux treats quoted `Enter` as the five characters E-n-t-e-r, not the Enter key.
+2. **tmux socket**: Every tmux command must include `-L ${HIPILOT_SESSION}`. See §6 for why.
+3. **settings.json env on EDA server**: The `env` section of each MCP server config in `~/.claude/settings.json` stores API keys. The deployment script (`deploy_hipilot.js`) deep-merges env — it adds `HIPILOT_SESSION` without removing existing keys. Never replace the env object wholesale.
+4. **deploy/eda-server/CLAUDE.md**: This file is HiPilot's identity. Never put SSH credentials, test infrastructure, HiTestBot references, or developer context in it. Claude Code on the EDA server should believe it is HiPilot — nothing else.
+5. **HiTestBot is a human**: It launches `bin/hipilot`, types in the left pane, reads both panes, presses keyboard shortcuts. It never calls MCP tools, never sends commands to the right pane, never reads MCP logs during the test (only after).
+6. **Claude orchestrates stage by stage**: The `/rtl2gds` slash command tells Claude to drive each flow stage individually using `execute_and_verify`. Claude must never call `workflow.run` or `eda.rtl2gds.run_full_flow` — those are dumb sequential executors that bypass Claude's intelligence.
+7. **Paths resolve from `__dirname`**: Each MCP server finds `PROJECT_ROOT` by going up two directories from its own file location (`join(__dirname, '..', '..')`). This works on both dev machine and EDA server. Never use `process.cwd()` — it depends on where Claude Code was launched, which is unpredictable.
+8. **Self-contained deployment**: The tarball sent to the EDA server includes `node_modules`. No `npm install` runs on the EDA server. HiPilot and HiTestBot are deployed as ready-to-run tools.
+
+---
 
 ## 8. Development Commands
 
 ```bash
-npm run install:all                    # Install deps (root + 3 servers)
+npm run install:all                    # Install deps in all 4 locations (root + 3 servers)
 npm test                               # Unit tests (vitest, 118 tests)
-bin/hipilot                            # Launch tmux workspace (the product)
+bin/hipilot                            # Launch the HiPilot workspace (the product)
 node src/cli.js status                 # TUI status dashboard
 node src/cli.js skills                 # List 36 skills
-node src/cli.js templates              # List 22 Tcl templates
+node src/cli.js templates              # List 22 templates
 ```
 
-Test MCP servers locally:
+Test MCP servers locally (pipe JSON-RPC, check they respond):
 ```bash
 echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/eda/index.js
 echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/tmux/index.js
 echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/knowledge/index.js
 ```
 
-Deploy to EDA server:
+Deploy to EDA server and run tests:
 ```bash
-node src/hitestbot/infra/deploy_hipilot.js     # Upload self-contained package
-bin/hitestbot-eda /rtl2gds                     # Run test via SSH
-bin/hitestbot-pull                             # Download evidence
+node src/hitestbot/infra/deploy_hipilot.js     # Build tarball, upload, swap, configure MCP
+bin/hitestbot-eda /rtl2gds                     # Run HiTestBot on EDA server via SSH
+bin/hitestbot-pull                             # Download evidence to dev machine
 ```
+
+---
 
 ## 9. Technology
 
-Node.js v20+ (ES Modules), plain JavaScript (no TypeScript), `@modelcontextprotocol/sdk`, Nunjucks templates, React 19 + Ink 6 (TUI), Vitest (unit tests), filesystem storage.
+- **Runtime:** Node.js v20+ with ES Modules (`"type": "module"` in package.json)
+- **Language:** Plain JavaScript — no TypeScript, no build step
+- **MCP SDK:** `@modelcontextprotocol/sdk` — provides `Server`, `StdioServerTransport`, request schemas
+- **Templates:** Nunjucks (Jinja2-compatible template engine for Tcl generation)
+- **TUI:** React 19 + Ink 6 (renders React components to the terminal)
+- **Testing:** Vitest (unit tests), HiTestBot (E2E on EDA server)
+- **Storage:** Filesystem only — skills as `.md`, state as JSON, history as `.tcl` files
+
+---
 
 ## 10. EDA Server
 
 - **Host:** `ssh EDA@192.168.112.163` (password: `eda2020`)
-- **OS:** CentOS 7.9 | **Node.js:** v20.18.3
+- **OS:** CentOS 7.9 with GNOME desktop
+- **Node.js:** v20.18.3 at `/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin/`
 - **EDA Tools:** Innovus v20.10, ICC2 T-2022.03, PrimeTime T-2022.03
-- **Demo Design:** Ibex RISC-V CPU (Sky130, 7000+ cells) at `/home/EDA/hipilot_test/ibex_work_upload/`
+- **Demo Design:** Ibex RISC-V CPU (Skywater 130nm, ~7000 cells) at `/home/EDA/hipilot_test/ibex_work_upload/`
 - **Deployed HiPilot:** `/home/EDA/hipilot/current/`
+- **Settings:** `~/.claude/settings.json` (MCP server registration — NOT in the repo, created by deployment)
