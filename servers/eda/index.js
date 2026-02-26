@@ -1711,7 +1711,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         while (Date.now() - startTime < timeoutMs) {
           try {
             const output = execSync(
-              `tmux capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
+              `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
               { encoding: 'utf-8', timeout: 5000 }
             );
             const lastLine = output.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
@@ -2523,7 +2523,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         while (Date.now() - startTime < timeoutMs) {
           try {
             const output = execSync(
-              `tmux capture-pane -t ${target} -p -S -100 2>/dev/null || echo ""`,
+              `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -100 2>/dev/null || echo ""`,
               { encoding: 'utf-8', timeout: 5000 }
             );
             const match = output.match(regex);
@@ -2566,7 +2566,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         while (Date.now() - startTime < timeoutMs) {
           try {
             const output = execSync(
-              `tmux capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
+              `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
               { encoding: 'utf-8', timeout: 5000 }
             );
             const lastLine = output.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
@@ -2600,7 +2600,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         let output;
         try {
           output = execSync(
-            `tmux capture-pane -t ${target} -p -S -${lines} 2>/dev/null || echo ""`,
+            `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -${lines} 2>/dev/null || echo ""`,
             { encoding: 'utf-8', timeout: 5000 }
           );
         } catch (e) {
@@ -3053,7 +3053,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         let qorMetrics = {};
         try {
           const output = execSync(
-            `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -100 2>/dev/null || echo ""`,
+            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -100 2>/dev/null || echo ""`,
             { encoding: 'utf-8' }
           );
           qorMetrics = extractQoR(output);
@@ -3094,7 +3094,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         
         try {
           const output = execSync(
-            `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -500 2>/dev/null || echo ""`,
+            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -500 2>/dev/null || echo ""`,
             { encoding: 'utf-8' }
           );
           
@@ -3128,7 +3128,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         
         try {
           const output = execSync(
-            `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -300 2>/dev/null || echo ""`,
+            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -300 2>/dev/null || echo ""`,
             { encoding: 'utf-8' }
           );
           
@@ -3163,7 +3163,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         const stageResult = await (async () => {
           try {
             const output = execSync(
-              `tmux capture-pane -t ${TMUX_SESSION}:0.1 -p -S -300 2>/dev/null || echo ""`,
+              `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -300 2>/dev/null || echo ""`,
               { encoding: 'utf-8' }
             );
             if (/CTS|clock_tree/i.test(output)) return 'cts';
