@@ -493,43 +493,54 @@ export class FlowCertifier {
   _openTerminalOnDesktop() {
     const attachCmd = `tmux -L ${this.socket} attach-session -t ${this.session}`;
 
-    // CentOS 7 uses GNOME. Open gnome-terminal like a real human would —
-    // about 2/3 of the desktop, centered. A human doesn't maximize; they
-    // keep some desktop visible around the edges.
-    const terminals = [
-      { name: 'gnome-terminal', cmd: `DISPLAY=${this.display} gnome-terminal --title=HiPilot --geometry=180x50 -- ${attachCmd} &` },
-    ];
-
-    for (const term of terminals) {
-      try {
-        execSync(`which ${term.name} 2>/dev/null`, { encoding: 'utf-8', timeout: 2000 });
-        execSync(term.cmd, {
-          encoding: 'utf-8', timeout: 5000,
-          env: { ...process.env, DISPLAY: this.display },
-          shell: true,
-        });
-        this._runLog(`Opened ${term.name} on ${this.display} — HiPilot workspace is now visible on desktop`);
-
-        // Center the window on the desktop (like a human would position it)
-        try {
-          execSync('sleep 1', { timeout: 3000 });
-          execSync(
-            `DISPLAY=${this.display} wmctrl -r HiPilot -e 0,-1,-1,-1,-1 2>/dev/null && ` +
-            `DISPLAY=${this.display} wmctrl -r HiPilot -b remove,maximized_vert,maximized_horz 2>/dev/null`,
-            { encoding: 'utf-8', timeout: 5000, shell: true, env: { ...process.env, DISPLAY: this.display } }
-          );
-          this._runLog('Window positioned (centered, ~2/3 desktop)');
-        } catch {
-          this._runLog('wmctrl not available — window uses default position');
-        }
-        return;
-      } catch {
-        continue;
-      }
+    // CentOS 7 uses GNOME. A real human opens gnome-terminal, it appears
+    // at about 2/3 of the desktop, centered — some wallpaper visible around edges.
+    try {
+      execSync(`which gnome-terminal 2>/dev/null`, { encoding: 'utf-8', timeout: 2000 });
+    } catch {
+      this._runLog(`WARNING: gnome-terminal not found. HiPilot workspace created but not visible on ${this.display}.`);
+      return;
     }
 
-    // Fallback: no terminal emulator found — workspace is still functional but not visible
-    this._runLog(`WARNING: gnome-terminal not found. HiPilot workspace created but not visible on ${this.display}. Video recording will show blank desktop.`);
+    // Open gnome-terminal
+    execSync(`DISPLAY=${this.display} gnome-terminal --title=HiPilot -- ${attachCmd} &`, {
+      encoding: 'utf-8', timeout: 5000,
+      env: { ...process.env, DISPLAY: this.display },
+      shell: true,
+    });
+    this._runLog(`Opened gnome-terminal on ${this.display}`);
+
+    // Wait for window to appear, then resize to 2/3 desktop centered
+    try {
+      execSync('sleep 2', { timeout: 5000 });
+
+      // Detect screen resolution
+      let screenW = 1920, screenH = 1080;
+      try {
+        const res = execSync(`DISPLAY=${this.display} xdpyinfo 2>/dev/null | grep dimensions | awk '{print $2}'`, {
+          encoding: 'utf-8', timeout: 5000, shell: true,
+        }).trim();
+        if (res.includes('x')) {
+          const [w, h] = res.split('x').map(Number);
+          if (w > 0 && h > 0) { screenW = w; screenH = h; }
+        }
+      } catch { /* use defaults */ }
+
+      // 2/3 of screen, centered
+      const winW = Math.round(screenW * 2 / 3);
+      const winH = Math.round(screenH * 2 / 3);
+      const posX = Math.round((screenW - winW) / 2);
+      const posY = Math.round((screenH - winH) / 2);
+
+      execSync(
+        `DISPLAY=${this.display} wmctrl -r HiPilot -b remove,maximized_vert,maximized_horz 2>/dev/null; ` +
+        `DISPLAY=${this.display} wmctrl -r HiPilot -e 0,${posX},${posY},${winW},${winH} 2>/dev/null`,
+        { encoding: 'utf-8', timeout: 5000, shell: true, env: { ...process.env, DISPLAY: this.display } }
+      );
+      this._runLog(`Window: ${winW}x${winH} at (${posX},${posY}) — 2/3 of ${screenW}x${screenH}, centered`);
+    } catch (e) {
+      this._runLog(`wmctrl resize failed: ${e.message} — window uses default size`);
+    }
   }
 
   async waitForClaudeReady() {
