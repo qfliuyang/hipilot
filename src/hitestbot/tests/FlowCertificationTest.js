@@ -1,31 +1,41 @@
 #!/usr/bin/env node
 /**
- * FlowCertificationTest - Main v2 test for RTL-to-GDS flow certification
+ * FlowCertificationTest — Uses HiPilot like a human, then scores the result.
  *
- * Tests the complete pipeline: Claude Code → MCP tools → Workflow Engine → EDA
- * Produces FLOW_REPORT.md with 5-layer scoring per stage.
+ * This test launches HiPilot, types a command, watches Claude work,
+ * approves when asked, and judges the result by reading the screen —
+ * exactly like a human engineer would.
  *
  * Usage:
- *   node src/hitestbot/tests/FlowCertificationTest.js [workflow_name]
+ *   node src/hitestbot/tests/FlowCertificationTest.js [command]
  *
  * Examples:
- *   node src/hitestbot/tests/FlowCertificationTest.js rtl2gds
- *   node src/hitestbot/tests/FlowCertificationTest.js fix_setup_timing
+ *   node src/hitestbot/tests/FlowCertificationTest.js /rtl2gds
+ *   node src/hitestbot/tests/FlowCertificationTest.js "fix setup timing"
  */
 
 import { FlowCertifier } from '../core/FlowCertifier.js';
 import { ProgressTracker } from '../core/ProgressTracker.js';
 
 const EVIDENCE_DIR = process.env.HITESTBOT_EVIDENCE_DIR || '/tmp/hipilot-test-evidence';
-const WORKFLOW = process.argv[2] || 'fix_setup_timing';
+const COMMAND = process.argv[2] || '/rtl2gds';
+const MAX_WAIT = parseInt(process.env.HITESTBOT_MAX_WAIT || '300000', 10);
 
 async function main() {
   console.log('╔══════════════════════════════════════════════════╗');
   console.log('║  HiTestBot v2 — Flow Certification Test          ║');
   console.log('╚══════════════════════════════════════════════════╝');
   console.log('');
-  console.log(`Workflow:     ${WORKFLOW}`);
+  console.log(`Command:      ${COMMAND}`);
   console.log(`Evidence Dir: ${EVIDENCE_DIR}`);
+  console.log(`Max Wait:     ${MAX_WAIT / 1000}s`);
+  console.log('');
+  console.log('HiTestBot will use HiPilot like a human:');
+  console.log('  1. Launch HiPilot (bin/hipilot)');
+  console.log('  2. Wait for Claude Code to be ready');
+  console.log(`  3. Type "${COMMAND}"`);
+  console.log('  4. Watch Claude work, approve when asked');
+  console.log('  5. Read Claude\'s final report and score');
   console.log('');
 
   const certifier = new FlowCertifier({
@@ -33,17 +43,17 @@ async function main() {
     session: process.env.HIPILOT_SESSION || 'hipilot',
   });
 
-  console.log('Running flow certification...');
+  console.log('Starting test...');
   console.log('');
-  // Use prompt-driven mode to test actual Claude Code behavior
-  // This sends a prompt to Claude in pane 0.0 and observes the response
-  const result = await certifier.certifyWorkflowPrompt(WORKFLOW, `/rtl2gds`, { waitMs: 180000 });
+
+  const result = await certifier.runTest(COMMAND, { maxWaitMs: MAX_WAIT });
 
   // Print summary
   const progress = result.progress;
+  console.log('');
   console.log('═══════════════════════════════════════════════════');
-  console.log(`  Flow: ${progress.test_name}`);
-  console.log(`  Progress: ${progress.completed_stages}/${progress.total_stages} (${progress.progress_pct}%)`);
+  console.log(`  Command: ${COMMAND}`);
+  console.log(`  Duration: ${progress.duration_s}s`);
   console.log(`  Score: ${progress.total_score?.toFixed(1)}/${progress.max_score}`);
   if (progress.blocking_stage) {
     console.log(`  Blocked: ${progress.blocking_stage} (${progress.blocking_category})`);
@@ -51,18 +61,25 @@ async function main() {
   console.log('═══════════════════════════════════════════════════');
   console.log('');
 
-  // Print per-stage results
+  // Print per-layer scores
   for (const sr of result.stageResults) {
     const icon = sr.status === 'pass' ? '✅' : sr.status === 'partial' ? '⚠️' : '❌';
-    const layers = Object.values(sr.scores).map(s => s.score.toFixed(1)).join(' ');
-    console.log(`  ${icon} ${sr.stage.padEnd(25)} ${sr.total_score.toFixed(1)}/5.0  [${layers}]`);
+    console.log(`  ${icon} Overall: ${sr.total_score.toFixed(1)}/5.0 (${sr.status.toUpperCase()})`);
+    console.log('');
+    for (const [layer, val] of Object.entries(sr.scores)) {
+      const li = val.score >= 1.0 ? '✅' : val.score >= 0.5 ? '⚠️' : '❌';
+      console.log(`    ${li} ${layer}: ${val.score.toFixed(1)} — ${val.detail}`);
+    }
     if (sr.failure_classification) {
-      console.log(`     └─ ${sr.failure_classification.category}: ${sr.failure_classification.summary.slice(0, 70)}`);
+      console.log('');
+      console.log(`    Category: ${sr.failure_classification.category}`);
+      console.log(`    Summary:  ${sr.failure_classification.summary}`);
+      console.log(`    Action:   ${sr.failure_classification.action}`);
     }
   }
 
   console.log('');
-  console.log(`Report: ${result.reportPath}`);
+  console.log(`Report:   ${result.reportPath}`);
   console.log(`Evidence: ${result.evidenceDir}`);
   console.log('');
 
@@ -75,13 +92,12 @@ async function main() {
 
     const graduation = tracker.checkGraduation();
     if (graduation.graduated) {
-      console.log('🎉 GRADUATION CRITERIA MET — RTL-to-GDS flow certified!');
+      console.log('🎉 GRADUATION CRITERIA MET — Flow certified!');
     } else {
       console.log(`Graduation: ${graduation.reason}`);
     }
   }
 
-  // Exit with appropriate code
   const exitCode = progress.blocking_stage ? 1 : 0;
   process.exit(exitCode);
 }

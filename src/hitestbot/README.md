@@ -1,132 +1,95 @@
-# HiTestBot v2 — Evidence-Based Testing Framework
+# HiTestBot v2 — Uses HiPilot Like a Human
 
-Tests HiPilot like a human engineer: correlates MCP logs, screenshots, and video to produce diagnostic reports with 5-layer scoring, failure classification, and improvement tracking.
+HiTestBot is a virtual human that uses HiPilot exactly as a real engineer would. It launches HiPilot, types commands, watches Claude work, approves when asked, and judges the result by reading what's on screen.
+
+## How It Works
+
+```
+HiTestBot does exactly what a human does:
+
+  1. Run bin/hipilot         ← launches tmux workspace
+  2. Wait for Claude Code    ← watches left pane for ready prompt
+  3. Type "/rtl2gds"         ← types into Claude Code's input
+  4. Watch Claude work       ← polls both panes every 5 seconds
+  5. Approve when asked      ← presses prefix+y for pending Tcl
+  6. Read the result         ← captures final state of both panes
+  7. Score the outcome       ← did it work? did Claude report QoR?
+```
+
+## What HiTestBot NEVER Does
+
+- Never calls MCP tools directly
+- Never sends commands to the EDA pane
+- Never reads MCP logs during the test
+- Never bypasses any part of HiPilot
+
+If HiTestBot can't do it, a human can't do it. If a human would hit a bug, HiTestBot hits the same bug.
 
 ## Quick Start
 
 ```bash
-# MCP infrastructure test (no EDA server needed)
-node src/hitestbot/tests/McpInfraTest.js
-
-# Flow certification test (requires tmux session)
-node src/hitestbot/tests/FlowCertificationTest.js rtl2gds
-
-# Run on EDA server (from Mac via SSH, or directly on EDA server)
-bin/hitestbot-eda rtl2gds
-```
-
-## EDA Server Only ("Test Like Real Human")
-
-**HiTestBot runs ONLY on the EDA server.** That's where humans run HiPilot. Commands (tmux, ffmpeg, MCP) run locally there.
-
-**From dev machine:**
-```bash
-bin/hitestbot-eda rtl2gds    # SSH + run on EDA server
-bin/hitestbot-pull           # Download evidence to dev machine
-bin/hitestbot-push skills/   # Upload test plan/config to EDA server
-```
-
-**On EDA server directly:**
-```bash
+# On EDA server:
 cd /home/EDA/hipilot/current
-node src/hitestbot/tests/FlowCertificationTest.js rtl2gds
-```
+node src/hitestbot/tests/FlowCertificationTest.js /rtl2gds
 
-See [docs/testing/hitestbot-guide.md](../../docs/testing/hitestbot-guide.md) for execution model, sync workflow, and env vars.
-
-## Architecture
-
-```
-src/hitestbot/
-├── core/                        # v2 evidence-based framework
-│   ├── McpLogCollector.js       # Parse MCP JSONL logs
-│   ├── ObservationPoint.js      # Synchronized multi-view capture
-│   ├── StageVerifier.js         # 5-layer scoring (L1-L5)
-│   ├── FlowCertifier.js         # Flow test orchestrator
-│   ├── FlowReporter.js          # FLOW_REPORT.md generation
-│   └── ProgressTracker.js       # Cross-run improvement tracking
-│
-├── infra/                       # v1 infrastructure (preserved)
-│   ├── TestRunner.js            # Base test class
-│   ├── E2ETestRunner.js         # E2E test with SSH/video
-│   ├── TmuxController.js        # tmux operations
-│   ├── VideoRecorder.js         # ffmpeg recording
-│   ├── TestReporter.js          # Simple reports
-│   └── TestUtils.js             # Assertions, waits, file ops
-│
-└── tests/                       # Test implementations
-    ├── FlowCertificationTest.js # RTL-to-GDS flow certification
-    ├── McpInfraTest.js          # MCP server infrastructure
-    └── (12 v1 tests)            # Legacy tests (still work)
+# From dev machine (via SSH):
+bin/hitestbot-eda /rtl2gds
+bin/hitestbot-pull    # download evidence
 ```
 
 ## 5-Layer Scoring
 
-Each stage is scored across 5 evidence layers (0.0-1.0 each, max 5.0):
+HiTestBot judges the result the way a human would — by reading the screen:
 
-| Layer | What It Measures |
-|-------|-----------------|
-| L1 Prompt Delivery | Did the AI receive and respond? |
-| L2 Intent Recognition | Did it pick the right skill/operation? |
-| L3 MCP Tool Usage | Did it use MCP tools (not direct tmux)? |
-| L4 EDA Execution | Did the EDA tool execute without errors? |
-| L5 QoR Assessment | Were QoR metrics captured and reported? |
+| Layer | What a Human Checks | How HiTestBot Checks |
+|-------|--------------------|--------------------|
+| L1 Prompt Delivery | Did Claude respond? | Left pane output changed after typing |
+| L2 Intent Recognition | Did Claude understand the task? | Left pane mentions rtl2gds/design/flow keywords |
+| L3 Tool Usage | Did Claude use MCP tools? | Left pane shows tool calls, right pane has activity |
+| L4 EDA Execution | Did the EDA tool run? | Right pane has output, no error patterns |
+| L5 QoR Assessment | Did Claude report results? | Left pane contains WNS/TNS numbers |
 
 Status: **PASS** (≥4.0) / **PARTIAL** (≥2.0) / **FAIL** (<2.0)
 
 ## Failure Classification
 
-When a stage fails, the system classifies the root cause:
-
 | Category | Meaning | Example |
 |----------|---------|---------|
+| `ENVIRONMENT` | Setup issue | Claude not ready, MCP not connected |
+| `AI_BEHAVIOR` | Claude made wrong choice | Used bash instead of MCP |
 | `HIPILOT_BUG` | HiPilot code is broken | Template produces bad Tcl |
-| `AI_BEHAVIOR` | AI made wrong decision | Claude used bash instead of MCP |
-| `ENVIRONMENT` | Setup issue | No design loaded, missing libraries |
 
 ## Evidence Bundle
 
-Each test produces a self-contained evidence directory:
-
 ```
-evidence/20260225_103045/
-├── FLOW_REPORT.md            # Human-readable report
-├── flow_progress.json        # Machine-readable progress
-├── mcp_calls.jsonl           # Full MCP call log
-├── stage_scorecards.json     # All stage scores
-├── observation_points.json   # Timeline bookmarks
-└── stage_01_init/            # Per-stage evidence
-    ├── obs_stage_start.png
-    ├── obs_stage_complete.png
-    ├── obs_stage_complete_claude.log
-    ├── obs_stage_complete_eda.log
-    └── scorecard.json
+evidence/20260226_103045/
+├── FLOW_REPORT.md              # Human-readable summary
+├── flow_progress.json          # Machine-readable progress
+├── stage_scorecards.json       # Detailed scores
+├── observation_points.json     # Timeline snapshots
+├── run_log.txt                 # HiTestBot execution log
+├── obs_before_command_claude.log  # Left pane before typing
+├── obs_before_command_eda.log     # Right pane before typing
+├── obs_after_flow_claude.log      # Left pane after flow
+└── obs_after_flow_eda.log         # Right pane after flow
 ```
 
-## Test Mode
-
-HiTestBot has a single execution mode: **prompt-driven** (human-like).
-
-| Mode | What It Tests | AI Involved? |
-|------|--------------|-------------|
-| **Prompt-driven** | AI behavior (type in Claude Code, observe response) | Yes |
-
-HiTestBot acts like a human: it types commands into the Claude Code pane (left) via tmux `send-keys`, then observes both panes and MCP logs. It **never** sends commands to the EDA pane or calls MCP tools directly.
-
-## Progress Tracking
+## Architecture
 
 ```
-Date        Progress   Score    Blocking Stage   Category
-──────────  ─────────  ──────── ───────────────  ────────────
-2026-02-25  4/10 (40%) 20.5/50  CTS              AI_BEHAVIOR
-2026-02-26  6/10 (60%) 30.0/50  Routing          ENVIRONMENT
-2026-02-27  8/10 (80%) 38.0/50  Signoff          HIPILOT_BUG
+src/hitestbot/
+├── core/
+│   ├── FlowCertifier.js       # The virtual human (launch → type → watch → score)
+│   ├── ObservationPoint.js     # Capture pane state at a moment
+│   ├── FlowReporter.js         # Generate FLOW_REPORT.md
+│   └── ProgressTracker.js      # Cross-run improvement tracking
+│
+├── infra/
+│   ├── deploy_hipilot.js       # Deploy HiPilot to EDA server
+│   ├── TmuxController.js       # Tmux operations helper
+│   └── ...
+│
+└── tests/
+    ├── FlowCertificationTest.js # Main test (uses HiPilot like a human)
+    └── McpInfraTest.js          # MCP infrastructure check (standalone)
 ```
-
-## Key Rules (from TESTING_RULES.md)
-
-1. **Progress over pass/fail** — report how far, not just whether
-2. **Evidence at every layer** — MCP log is ground truth
-3. **Three-view correlation** — logs + screenshots + video must agree
-4. **Classify failures** — different categories need different fixes
-5. **Self-contained bundles** — reviewable without re-running
