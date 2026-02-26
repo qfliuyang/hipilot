@@ -84,12 +84,13 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
     tools: [
       {
         name: 'tmux.send_keys',
-        description: 'Send keystrokes to a tmux pane. Use "chat" for left pane, "eda" for right pane.',
+        description: 'Send text and/or a key to a tmux pane. Use "chat" for left pane, "eda" for right pane. Text is sent literally; set submit=true to press Enter (C-m) after the text.',
         inputSchema: {
           type: 'object',
           properties: {
             pane: { type: 'string', description: 'Pane name: chat, eda, 0, 1' },
-            keys: { type: 'string', description: 'Keys to send. Use Enter to submit commands.' },
+            keys: { type: 'string', description: 'Text to send (sent literally). Trailing "Enter" or "C-m" is auto-detected and converted to a keypress.' },
+            submit: { type: 'boolean', description: 'Press Enter (C-m) after the text. Default: auto-detect from trailing Enter/C-m in keys, or false.' },
           },
           required: ['pane', 'keys'],
         },
@@ -191,12 +192,38 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
       case 'tmux.send_keys': {
         const paneId = resolvePane(args.pane);
         const target = `${HIPILOT_SESSION}:0.${paneId}`;
-        // Send keys as-is. Caller should include "Enter" in keys if they want to submit.
-        // Quote the keys to handle spaces and special characters.
         const socketFlag = TMUX_SOCKET ? `-L ${TMUX_SOCKET} ` : '';
-        execSync(`tmux ${socketFlag}send-keys -t ${target} ${shellEscape(args.keys)}`, { encoding: 'utf-8' });
+
+        let text = args.keys;
+        let shouldSubmit = args.submit;
+
+        // Auto-detect trailing Enter/C-m in the keys string and strip it.
+        // "Enter" and "C-m" inside shellEscape quotes become literal text,
+        // so we must send them as separate unquoted tmux key names.
+        if (shouldSubmit === undefined) {
+          if (/\s+Enter\s*$/.test(text)) {
+            text = text.replace(/\s+Enter\s*$/, '');
+            shouldSubmit = true;
+          } else if (/\s+C-m\s*$/.test(text)) {
+            text = text.replace(/\s+C-m\s*$/, '');
+            shouldSubmit = true;
+          } else {
+            shouldSubmit = false;
+          }
+        }
+
+        // Step 1: Send text literally (in quotes so tmux treats it as literal text)
+        if (text) {
+          execSync(`tmux ${socketFlag}send-keys -t ${target} -l ${shellEscape(text)}`, { encoding: 'utf-8' });
+        }
+
+        // Step 2: Send Enter (C-m) as a real keypress, unquoted
+        if (shouldSubmit) {
+          execSync(`tmux ${socketFlag}send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+        }
+
         return {
-          content: [{ type: 'text', text: `Sent to pane ${args.pane}: ${args.keys}` }],
+          content: [{ type: 'text', text: `Sent to pane ${args.pane}: ${text}${shouldSubmit ? ' [Enter]' : ''}` }],
         };
       }
 

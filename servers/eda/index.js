@@ -492,8 +492,15 @@ function executeTcl(tcl, pane = 'eda') {
       paneTarget = pane;
     }
 
+    // Send text literally with -l flag, then press C-m (Enter) as a real keypress.
+    // Using C-m instead of "Enter" ensures reliability across all terminal apps
+    // (e.g., Claude Code input where "Enter" may insert a newline instead of submitting).
     execSync(
-      `tmux -L ${session} send-keys -t ${paneTarget} "source ${tmpFile}" Enter`,
+      `tmux -L ${session} send-keys -t ${paneTarget} -l 'source ${tmpFile}'`,
+      { encoding: 'utf-8', stdio: 'pipe' }
+    );
+    execSync(
+      `tmux -L ${session} send-keys -t ${paneTarget} C-m`,
       { encoding: 'utf-8', stdio: 'pipe' }
     );
 
@@ -1676,10 +1683,12 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
 
         try {
           if (design_dir) {
-            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} "cd ${design_dir}" Enter`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'cd ${design_dir}'`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
             await new Promise(r => setTimeout(r, 800));
           }
-          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} "${launchCmd}" Enter`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l '${launchCmd}'`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
         } catch (e) {
           return {
             content: [{ type: 'text', text: `❌ Failed to send start command: ${e.message}` }],
@@ -2642,7 +2651,8 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         const tclFile = `${hipilotPaths.tempDir}/capture_wait_${Date.now()}.tcl`;
         writeFileSync(tclFile, tcl);
         try {
-          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} "source ${tclFile}" Enter`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'source ${tclFile}'`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
         } catch (e) {
           return { content: [{ type: 'text', text: `❌ Failed to send Tcl: ${e.message}` }], isError: true };
         }
@@ -2735,7 +2745,11 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
 
         try {
           execSync(
-            `tmux -L ${TMUX_SESSION} send-keys -t ${target} "source ${tclFile}" Enter`,
+            `tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'source ${tclFile}'`,
+            { encoding: 'utf-8', stdio: 'pipe' }
+          );
+          execSync(
+            `tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`,
             { encoding: 'utf-8', stdio: 'pipe' }
           );
         } catch (e) {
@@ -3668,7 +3682,11 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
 
             try {
               execSync(
-                `tmux -L ${TMUX_SESSION} send-keys -t ${target} "source ${tclFile}" Enter`,
+                `tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'source ${tclFile}'`,
+                { encoding: 'utf-8', stdio: 'pipe' }
+              );
+              execSync(
+                `tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`,
                 { encoding: 'utf-8', stdio: 'pipe' }
               );
             } catch (e) {
