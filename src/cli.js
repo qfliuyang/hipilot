@@ -544,15 +544,6 @@ async function main() {
         process.exit(1);
       }
       return;
-    case 'workspace':
-      console.log('Launching workspace...');
-      try {
-        execSync('bash bin/hipilot', { cwd: PROJECT_ROOT, stdio: 'inherit' });
-      } catch (error) {
-        console.error('Failed to launch workspace:', error.message);
-        process.exit(1);
-      }
-      return;
     case 'skill-gen':
       const isPiped = !process.stdin.isTTY;
       if (isPiped) {

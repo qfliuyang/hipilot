@@ -15,12 +15,6 @@ if (command === 'setup') {
   } catch {
     process.exit(1);
   }
-} else if (command === 'workspace') {
-  try {
-    execSync('bash bin/hipilot', { cwd: PROJECT_ROOT, stdio: 'inherit' });
-  } catch {
-    process.exit(1);
-  }
 } else if (command === 'skill-gen') {
   const { runSkillGenerationWorkflow, quickGenerate } = await import('./lib/skill-cli.js');
   const isPiped = !process.stdin.isTTY;
@@ -58,6 +52,15 @@ if (command === 'setup') {
       process.exit(1);
     }
   }
-} else {
+} else if (command === 'status' || command === 'skills' || command === 'templates'
+  || command === 'quick' || command === 'help' || command === '--help' || command === '-h'
+  || command === 'version' || command === '--version' || command === '-v') {
   import('./cli.js');
+} else {
+  // Default: launch the tmux workspace (left=Claude Code, right=terminal)
+  try {
+    execSync('bash bin/hipilot', { cwd: PROJECT_ROOT, stdio: 'inherit' });
+  } catch {
+    process.exit(1);
+  }
 }

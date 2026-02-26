@@ -143,7 +143,8 @@ tmux -L "$HIPILOT_SESSION" bind-key y run-shell "\
     TMPFILE=$HIPILOT_TMPDIR/exec/exec_\$(date +%s).tcl; \
     cp $HIPILOT_TMPDIR/pending.tcl \$TMPFILE; \
     rm -f $HIPILOT_TMPDIR/pending.tcl $HIPILOT_TMPDIR/pending_meta.json; \
-    tmux -L $HIPILOT_SESSION send-keys -t $HIPILOT_SESSION:0.1 \"source \$TMPFILE\" Enter; \
+    tmux -L $HIPILOT_SESSION send-keys -t $HIPILOT_SESSION:0.1 -l \"source \$TMPFILE\"; \
+    tmux -L $HIPILOT_SESSION send-keys -t $HIPILOT_SESSION:0.1 C-m; \
     tmux -L $HIPILOT_SESSION display-message '✓ Approved and executed pending Tcl'; \
   else \
     tmux -L $HIPILOT_SESSION display-message 'No pending Tcl to approve'; \
@@ -180,38 +181,50 @@ tmux -L "$HIPILOT_SESSION" bind-key M run-shell "\
 # -------------------------------------------------------------------
 
 # Setup left pane (Chat)
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "clear" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "clear"
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
 
 if command -v claude >/dev/null 2>&1; then
   # Auto-start Claude Code with MCP permissions in the chat pane
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "claude --dangerously-skip-permissions" Enter
+  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "claude --dangerously-skip-permissions"
+  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
 else
   # Fallback instructions if claude CLI is not available
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo ''" Enter
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '  HiPilot Chat Pane'" Enter
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '  ─────────────────'" Enter
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo ''" Enter
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '  Claude CLI not found in PATH.'" Enter
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo '  Install Claude, then run: claude --dangerously-skip-permissions'" Enter
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "echo ''" Enter
+  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "echo '  HiPilot Chat Pane'"
+  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
+  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "echo '  ─────────────────'"
+  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
+  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "echo ''"
+  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
+  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "echo '  Claude CLI not found in PATH.'"
+  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
+  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "echo '  Install Claude, then run: claude --dangerously-skip-permissions'"
+  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
 fi
 
 # Setup right pane (EDA) - show welcome
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "clear" Enter
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo ''" Enter
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '  EDA Tool Pane'" Enter
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '  ──────────────'" Enter
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo ''" Enter
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '  Start your EDA tool:'" Enter
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '    icc2_shell    (Synopsys ICC2)'" Enter
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '    innovus       (Cadence Innovus)'" Enter
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '    pt_shell      (Synopsys PrimeTime)'" Enter
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo ''" Enter
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '  🔒 Manual mode active (default)'" Enter
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '  HiPilot Tcl commands require approval.'" Enter
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo ''" Enter
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo '  Press prefix+m to enable \"Claude has the conn\"'" Enter
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "echo ''" Enter
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "clear"
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '  EDA Tool Pane'"
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '  ──────────────'"
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '  Start your EDA tool:'"
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '    icc2_shell    (Synopsys ICC2)'"
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '    innovus       (Cadence Innovus)'"
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '    pt_shell      (Synopsys PrimeTime)'"
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo ''"
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '  🔒 Manual mode active (default)'"
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '  HiPilot Tcl commands require approval.'"
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '  Press prefix+m to enable Claude has the conn'"
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
 
 # Select left pane (chat) as default focus
 tmux -L "$HIPILOT_SESSION" select-pane -t 0
