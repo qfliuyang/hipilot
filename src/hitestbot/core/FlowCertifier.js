@@ -493,10 +493,8 @@ export class FlowCertifier {
   _openTerminalOnDesktop() {
     const attachCmd = `tmux -L ${this.socket} attach-session -t ${this.session}`;
 
-    // Try terminal emulators in order of preference
+    // CentOS 7 uses GNOME. Open gnome-terminal like a real human would.
     const terminals = [
-      { name: 'xterm', cmd: `DISPLAY=${this.display} xterm -maximized -title HiPilot -fa Monospace -fs 11 -e '${attachCmd}' &` },
-      { name: 'xfce4-terminal', cmd: `DISPLAY=${this.display} xfce4-terminal --maximize --title=HiPilot -e '${attachCmd}' &` },
       { name: 'gnome-terminal', cmd: `DISPLAY=${this.display} gnome-terminal --maximize --title=HiPilot -- ${attachCmd} &` },
     ];
 
@@ -517,7 +515,7 @@ export class FlowCertifier {
     }
 
     // Fallback: no terminal emulator found — workspace is still functional but not visible
-    this._runLog(`WARNING: No terminal emulator found (tried xterm, xfce4-terminal, gnome-terminal). HiPilot workspace created but not visible on ${this.display}. Video recording will show blank desktop.`);
+    this._runLog(`WARNING: gnome-terminal not found. HiPilot workspace created but not visible on ${this.display}. Video recording will show blank desktop.`);
   }
 
   async waitForClaudeReady() {
