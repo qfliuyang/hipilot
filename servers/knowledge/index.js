@@ -33,8 +33,10 @@ const DOCS_DIR = join(PROJECT_ROOT, 'docs');
 const DATA_DIR = join(PROJECT_ROOT, 'data');
 
 // 3-level skill directories (project > user > built-in)
+// Uses PROJECT_ROOT (not process.cwd()) for project-level paths to avoid
+// dependency on Claude Code's working directory when spawning this MCP server.
 const SKILL_DIRS = [
-  join(process.cwd(), '.hipilot', 'skills'),      // project-level (highest priority)
+  join(PROJECT_ROOT, '.hipilot', 'skills'),         // project-level (highest priority)
   join(homedir(), '.hipilot', 'skills'),            // user-level
   join(PROJECT_ROOT, 'skills'),                     // built-in (lowest priority)
 ];
@@ -42,7 +44,7 @@ const SKILL_DIRS = [
 // Additional doc search paths (team/project knowledge)
 const DOC_SEARCH_PATHS = [
   DOCS_DIR,
-  join(process.cwd(), '.hipilot', 'docs'),          // project docs
+  join(PROJECT_ROOT, '.hipilot', 'docs'),           // project docs
   join(homedir(), '.hipilot', 'docs'),              // user docs
 ];
 

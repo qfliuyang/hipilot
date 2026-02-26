@@ -18,15 +18,14 @@ import { shellEscape, validateInt } from '../../src/lib/shell-escape.js';
 import { createMcpLogger } from '../../src/lib/mcp-logger.js';
 
 const HIPILOT_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
-// Use -L <socket> only if HIPILOT_TMUX_SOCKET is explicitly set.
-// Default: use the standard tmux server socket so the MCP server
-// talks to the same tmux server that the workspace was created on.
-const TMUX_SOCKET = process.env.HIPILOT_TMUX_SOCKET || '';
+// bin/hipilot creates the session with "tmux -L hipilot", so the MCP server
+// must also use "-L hipilot" to talk to the same tmux server instance.
+// HIPILOT_TMUX_SOCKET overrides the socket name if needed.
+const TMUX_SOCKET = process.env.HIPILOT_TMUX_SOCKET || HIPILOT_SESSION;
 
 function tmuxExec(args) {
   try {
-    const socketFlag = TMUX_SOCKET ? `-L ${TMUX_SOCKET} ` : '';
-    const cmd = `tmux ${socketFlag}${args}`;
+    const cmd = `tmux -L ${TMUX_SOCKET} ${args}`;
     return execSync(cmd, { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 });
   } catch (error) {
     throw new Error('Tmux command failed: ' + error.message);
@@ -192,7 +191,6 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
       case 'tmux.send_keys': {
         const paneId = resolvePane(args.pane);
         const target = `${HIPILOT_SESSION}:0.${paneId}`;
-        const socketFlag = TMUX_SOCKET ? `-L ${TMUX_SOCKET} ` : '';
 
         let text = args.keys;
         let shouldSubmit = args.submit;
@@ -214,12 +212,12 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
 
         // Step 1: Send text literally (in quotes so tmux treats it as literal text)
         if (text) {
-          execSync(`tmux ${socketFlag}send-keys -t ${target} -l ${shellEscape(text)}`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${TMUX_SOCKET} send-keys -t ${target} -l ${shellEscape(text)}`, { encoding: 'utf-8' });
         }
 
         // Step 2: Send Enter (C-m) as a real keypress, unquoted
         if (shouldSubmit) {
-          execSync(`tmux ${socketFlag}send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${TMUX_SOCKET} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
         }
 
         return {
@@ -250,7 +248,6 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
 
       case 'tmux.setup_layout': {
         const workDir = args.working_dir || process.cwd();
-        const socketFlag = TMUX_SOCKET ? `-L ${TMUX_SOCKET} ` : '';
 
         // Check if session exists
         try {
@@ -263,7 +260,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         }
 
         // Create new session with 50/50 split
-        execSync(`tmux ${socketFlag}new-session -d -s ${HIPILOT_SESSION} -n HiPilot -c ${shellEscape(workDir)}`, { encoding: 'utf-8' });
+        execSync(`tmux -L ${TMUX_SOCKET} new-session -d -s ${HIPILOT_SESSION} -n HiPilot -c ${shellEscape(workDir)}`, { encoding: 'utf-8' });
         tmuxExec(`split-window -h -t ${HIPILOT_SESSION} -l 50% -c ${shellEscape(workDir)}`);
         tmuxExec(`select-pane -t ${HIPILOT_SESSION}:0.0`);
 
