@@ -31,3 +31,6 @@ test-evidence/
 # Demo videos (too large for git)
 *.mp4
 ibex_work_upload/
+
+# OMC runtime state
+.omc/

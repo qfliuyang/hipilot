@@ -1184,6 +1184,103 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {},
         },
       },
+      // === SESSION NOTE-TAKING TOOLS (Persistence Support) ===
+      {
+        name: 'session.add_note',
+        description: 'Add a note to the session journal. Use to record errors, decisions, observations, and fixes for later reference. Categories: error, decision, observation, qor, fix.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            category: {
+              type: 'string',
+              description: 'Type of note: error, decision, observation, qor, fix, warning',
+              enum: ['error', 'decision', 'observation', 'qor', 'fix', 'warning'],
+            },
+            stage: {
+              type: 'string',
+              description: 'Flow stage this note relates to (e.g., placement, cts)',
+            },
+            content: {
+              type: 'string',
+              description: 'The note content. Be specific about what happened and why.',
+            },
+            tcl_fixed: {
+              type: 'string',
+              description: 'Optional: Tcl command that fixed the issue (for error/fix notes)',
+            },
+          },
+          required: ['category', 'content'],
+        },
+      },
+      {
+        name: 'session.get_notes',
+        description: 'Retrieve session notes. Filter by category or stage to review previous errors, decisions, etc.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            category: {
+              type: 'string',
+              description: 'Filter by category (error, decision, observation, qor, fix, warning)',
+              enum: ['error', 'decision', 'observation', 'qor', 'fix', 'warning'],
+            },
+            stage: {
+              type: 'string',
+              description: 'Filter by flow stage',
+            },
+          },
+        },
+      },
+      {
+        name: 'session.add_todo',
+        description: 'Add a task to remember for later. Use for deferred checks or follow-up actions.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            task: {
+              type: 'string',
+              description: 'Description of what needs to be done',
+            },
+            priority: {
+              type: 'string',
+              description: 'Priority level',
+              enum: ['low', 'medium', 'high', 'critical'],
+              default: 'medium',
+            },
+            stage: {
+              type: 'string',
+              description: 'Stage where this todo should be checked (e.g., post_cts)',
+            },
+          },
+          required: ['task'],
+        },
+      },
+      {
+        name: 'session.get_todos',
+        description: 'Get list of pending todos. Review before proceeding to next stage.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            stage: {
+              type: 'string',
+              description: 'Filter todos for specific stage',
+            },
+          },
+        },
+      },
+      {
+        name: 'session.complete_todo',
+        description: 'Mark a todo as completed.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            todo_id: {
+              type: 'string',
+              description: 'ID of todo to complete',
+            },
+          },
+          required: ['todo_id'],
+        },
+      },
       // === PHASE 1.3: CONTEXT DETECTION TOOLS ===
       {
         name: 'context.detect',
@@ -3119,6 +3216,178 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         if (context.qor.tns !== undefined) text += `**TNS:** ${context.qor.tns}\n`;
         
         return { content: [{ type: 'text', text }], _metadata: context };
+      }
+
+      // === SESSION NOTE-TAKING TOOL HANDLERS ===
+      case 'session.add_note': {
+        const { category, stage, content, tcl_fixed } = args;
+        const note = {
+          id: `note_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          timestamp: new Date().toISOString(),
+          category,
+          stage: stage || 'general',
+          content,
+          tcl_fixed: tcl_fixed || null,
+        };
+
+        // Append to session notes file
+        const notesFile = join(hipilotPaths.baseDir, 'session_notes.jsonl');
+        try {
+          const existing = existsSync(notesFile) ? readFileSync(notesFile, 'utf-8') : '';
+          writeFileSync(notesFile, existing + JSON.stringify(note) + '\n');
+        } catch {
+          // If file write fails, still return success (memory-only note)
+        }
+
+        const icon = {
+          error: '❌',
+          fix: '🔧',
+          decision: '📌',
+          observation: '👁️',
+          qor: '📊',
+          warning: '⚠️',
+        }[category] || '📝';
+
+        return {
+          content: [{ type: 'text', text: `${icon} Note added [${category}]: ${content.substring(0, 100)}${content.length > 100 ? '...' : ''}` }],
+          _metadata: { note_id: note.id },
+        };
+      }
+
+      case 'session.get_notes': {
+        const { category, stage } = args;
+        const notesFile = join(hipilotPaths.baseDir, 'session_notes.jsonl');
+        const notes = [];
+
+        try {
+          if (existsSync(notesFile)) {
+            const lines = readFileSync(notesFile, 'utf-8').trim().split('\n').filter(Boolean);
+            for (const line of lines) {
+              try {
+                const note = JSON.parse(line);
+                if (category && note.category !== category) continue;
+                if (stage && note.stage !== stage) continue;
+                notes.push(note);
+              } catch {}
+            }
+          }
+        } catch {}
+
+        // Sort by timestamp (newest first)
+        notes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        let text = `📝 **Session Notes** (${notes.length} total)`;
+        if (category) text += ` [filter: ${category}]`;
+        if (stage) text += ` [stage: ${stage}]`;
+        text += '\n\n';
+
+        for (const note of notes.slice(0, 20)) {
+          const icon = { error: '❌', fix: '🔧', decision: '📌', observation: '👁️', qor: '📊', warning: '⚠️' }[note.category] || '📝';
+          text += `${icon} [${note.category}] ${note.stage}\n`;
+          text += `   ${note.content.substring(0, 80)}${note.content.length > 80 ? '...' : ''}\n`;
+          if (note.tcl_fixed) text += `   🔧 Fix: ${note.tcl_fixed.substring(0, 60)}...\n`;
+          text += '\n';
+        }
+
+        if (notes.length === 0) {
+          text += 'No notes found. Use `session.add_note` to record errors, decisions, or observations.';
+        }
+
+        return { content: [{ type: 'text', text }], _metadata: { count: notes.length } };
+      }
+
+      case 'session.add_todo': {
+        const { task, priority, stage } = args;
+        const todo = {
+          id: `todo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          timestamp: new Date().toISOString(),
+          task,
+          priority: priority || 'medium',
+          stage: stage || 'general',
+          completed: false,
+        };
+
+        const todosFile = join(hipilotPaths.baseDir, 'session_todos.jsonl');
+        try {
+          const existing = existsSync(todosFile) ? readFileSync(todosFile, 'utf-8') : '';
+          writeFileSync(todosFile, existing + JSON.stringify(todo) + '\n');
+        } catch {}
+
+        const priorityIcon = { critical: '🔴', high: '🟠', medium: '🟡', low: '🟢' }[todo.priority] || '⚪';
+
+        return {
+          content: [{ type: 'text', text: `${priorityIcon} Todo added [${todo.priority}]: ${task}` }],
+          _metadata: { todo_id: todo.id },
+        };
+      }
+
+      case 'session.get_todos': {
+        const { stage } = args;
+        const todosFile = join(hipilotPaths.baseDir, 'session_todos.jsonl');
+        const todos = [];
+
+        try {
+          if (existsSync(todosFile)) {
+            const lines = readFileSync(todosFile, 'utf-8').trim().split('\n').filter(Boolean);
+            for (const line of lines) {
+              try {
+                const todo = JSON.parse(line);
+                if (todo.completed) continue;
+                if (stage && todo.stage !== stage) continue;
+                todos.push(todo);
+              } catch {}
+            }
+          }
+        } catch {}
+
+        // Sort by priority (critical > high > medium > low)
+        const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+        todos.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+
+        let text = `📋 **Pending Todos** (${todos.length})\n\n`;
+
+        for (const todo of todos) {
+          const icon = { critical: '🔴', high: '🟠', medium: '🟡', low: '🟢' }[todo.priority] || '⚪';
+          text += `${icon} [${todo.priority}] ${todo.stage}\n`;
+          text += `   ${todo.task}\n`;
+          text += `   ID: ${todo.id}\n\n`;
+        }
+
+        if (todos.length === 0) {
+          text += 'No pending todos. Use `session.add_todo` to create reminders.';
+        }
+
+        return { content: [{ type: 'text', text }], _metadata: { count: todos.length } };
+      }
+
+      case 'session.complete_todo': {
+        const { todo_id } = args;
+        const todosFile = join(hipilotPaths.baseDir, 'session_todos.jsonl');
+        let completed = false;
+
+        try {
+          if (existsSync(todosFile)) {
+            const lines = readFileSync(todosFile, 'utf-8').trim().split('\n').filter(Boolean);
+            const updated = [];
+            for (const line of lines) {
+              try {
+                const todo = JSON.parse(line);
+                if (todo.id === todo_id && !todo.completed) {
+                  todo.completed = true;
+                  todo.completed_at = new Date().toISOString();
+                  completed = true;
+                }
+                updated.push(JSON.stringify(todo));
+              } catch {}
+            }
+            writeFileSync(todosFile, updated.join('\n') + '\n');
+          }
+        } catch {}
+
+        return {
+          content: [{ type: 'text', text: completed ? `✅ Todo completed: ${todo_id}` : `⚠️ Todo not found or already completed: ${todo_id}` }],
+          _metadata: { completed },
+        };
       }
 
       // === PHASE 1.3: CONTEXT DETECTION TOOL HANDLERS ===
