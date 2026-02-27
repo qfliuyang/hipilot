@@ -1931,11 +1931,28 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
       }
 
       case 'eda.get_status': {
-        // Get comprehensive system status
+        // Get comprehensive system status INCLUDING what's on screen in both panes.
+        // This gives Claude Code "eyes" — it can see the right pane through MCP.
         const modeStatus = getModeStatus();
         const pending = getPending();
         const detectedTool = detectTool();
         const templates = listTemplates();
+
+        // Capture both panes so Claude can SEE what's happening
+        let edaPaneText = '';
+        let claudePaneText = '';
+        try {
+          edaPaneText = execSync(
+            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -50 2>/dev/null || echo ""`,
+            { encoding: 'utf-8', timeout: 5000 }
+          ).trim();
+        } catch { edaPaneText = '(could not capture)'; }
+        try {
+          claudePaneText = execSync(
+            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.0 -p -S -20 2>/dev/null || echo ""`,
+            { encoding: 'utf-8', timeout: 5000 }
+          ).trim();
+        } catch { claudePaneText = '(could not capture)'; }
 
         let text = `📊 **HiPilot System Status**\n\n`;
 
@@ -1953,36 +1970,39 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         if (detectedTool) {
           text += `${detectedTool.tool} ${detectedTool.version} (${detectedTool.vendor})`;
         } else {
-          text += `None detected. Start icc2_shell, innovus, or pt_shell in the EDA pane.`;
+          text += `None detected — call eda.start_tool to launch one`;
         }
         text += `\n`;
 
         // Pending Tcl
-        text += `**Pending Tcl:** `;
         if (pending.exists) {
-          text += `Yes (${pending.tcl.split('\n').length} lines waiting for approval)\n`;
-          text += `  Use \`eda.approve_pending()\` or \`eda.reject_pending()\`\n`;
-        } else {
-          text += `None\n`;
+          text += `**Pending Tcl:** Yes (${pending.tcl.split('\n').length} lines)\n`;
         }
-        text += `\n`;
 
         // Templates
         text += `**Templates Available:** ${templates.length}\n`;
         text += `\n`;
 
-        // Available tools
-        text += `**Available MCP Tools:**\n`;
-        text += `  - \`eda.generate_tcl()\` - Generate Tcl from intent\n`;
-        text += `  - \`eda.send_to_terminal()\` - Send Tcl to EDA pane (with approval)\n`;
-        text += `  - \`eda.get_risk_analysis()\` - Analyze risk level\n`;
-        text += `  - \`eda.approve_pending()\` - Approve queued Tcl\n`;
-        text += `  - \`eda.reject_pending()\` - Reject queued Tcl\n`;
-        text += `  - \`eda.confirm_dangerous()\` - Confirm dangerous/critical operations\n`;
-        text += `  - \`eda.get_mode()\` / \`eda.set_mode()\` - Check/change mode\n`;
-        text += `\n`;
+        // RIGHT PANE SNAPSHOT — this is Claude's "eyes" on the EDA tool
+        text += `### Right Pane (EDA Tool) — last 20 lines\n\n`;
+        const edaLines = edaPaneText.split('\n').filter(l => l.trim()).slice(-20);
+        if (edaLines.length > 0) {
+          text += '```\n' + edaLines.join('\n') + '\n```\n\n';
+          // Tell Claude what the pane state means
+          const lastEdaLine = edaLines[edaLines.length - 1] || '';
+          if (/innovus\s*\d+>/.test(lastEdaLine)) {
+            text += `**→ Innovus is running and ready for commands**\n\n`;
+          } else if (/icc2_shell>/.test(lastEdaLine)) {
+            text += `**→ ICC2 is running and ready for commands**\n\n`;
+          } else if (/\$\s*$/.test(lastEdaLine)) {
+            text += `**→ Shell prompt — no EDA tool running. Call eda.start_tool first.**\n\n`;
+          } else {
+            text += `**→ EDA tool may be running a command (no prompt visible)**\n\n`;
+          }
+        } else {
+          text += `(empty)\n\n`;
+        }
 
-        // Instructions
         text += `---\n\n`;
         text += `**Workflow:**\n`;
         text += `1. Use \`eda.generate_tcl()\` to create Tcl from intent\n`;

@@ -69,6 +69,13 @@ Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"know
 
 **IMPORTANT:** Parse the JSON response to extract the `result.content[0].text` field which contains the actual result.
 
+### How to "see" the right pane
+
+You cannot directly see the right pane. But `eda.get_status` shows you the **last 20 lines** of both panes. Call it anytime to check what's happening:
+- If the right pane shows a shell prompt (`$`) → no EDA tool running
+- If it shows `innovus 1>` → Innovus is ready for commands
+- If it shows scrolling output → a command is running
+
 ### ACTION SEQUENCE: What to do when you receive /rtl2gds
 
 Execute these steps IN ORDER. Do NOT stop to think between steps. Call the next one IMMEDIATELY.
@@ -77,8 +84,9 @@ Execute these steps IN ORDER. Do NOT stop to think between steps. Call the next 
 2. `eda.start_tool` with `{"tool":"innovus","design_dir":"/home/EDA/ibex_work_upload"}` → Wait for result. Go to step 3.
 3. `knowledge.get_skill` with `{"name":"ibex-rtl2gds-flow"}` → Read the skill. Go to step 4.
 4. For each stage in the skill: `eda.execute_and_verify` with the Tcl block → Check result → Report to user → Next stage.
+5. Between stages, call `eda.get_status` to see the right pane if you need to check what happened.
 
-**DO NOT** call get_status, get_mode, or any other diagnostic tool before starting. Just detect tool → start tool → load skill → execute stages. Every second you spend thinking is a second wasted.
+**DO NOT overthink.** Detect tool → start tool → load skill → execute stages. Act, don't plan.
 
 ### NEVER use direct tmux or EDA tool commands
 
