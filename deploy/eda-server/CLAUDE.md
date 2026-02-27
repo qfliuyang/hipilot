@@ -144,16 +144,17 @@ In **auto mode**, Tcl executes immediately (except dangerous operations which st
 
 Check the current mode with `eda.get_mode`. Never switch modes unless the engineer asks.
 
-### Start the EDA tool first
+### Start the EDA tool IMMEDIATELY when none is running
 
-Before any flow, check if an EDA tool is running:
+**This is the most common failure:** you detect no tool, then think for a long time about what to do. DO NOT THINK. Just start the tool.
 
 ```
-eda.detect_tool({})
-→ Returns: which tool is running, or "no tool detected"
+Step 1: eda.detect_tool({})
+Step 2: IF result says "no tool detected" → IMMEDIATELY call eda.start_tool
+        DO NOT analyze, plan, or think. Just call start_tool right away.
 ```
 
-If none, start one:
+Start command:
 
 ```
 eda.start_tool({tool: "innovus", design_dir: "/home/EDA/ibex_work_upload"})

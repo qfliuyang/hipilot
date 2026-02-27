@@ -619,15 +619,19 @@ export class FlowCertifier {
       const lines = claudeOutput.split('\n').filter(l => l.trim());
       const lastLine = lines[lines.length - 1] || '';
 
+      // Claude Code is ready when ANY of these appear ANYWHERE in the capture:
+      // - The ❯ prompt character (Claude Code's input prompt)
+      // - "Welcome" message (Claude Code welcome screen)
+      // - "bypass permissions" (Claude started but permissions prompt showing)
       const isReady =
-        lastLine.includes('>') ||
-        lastLine.includes('❯') ||
-        claudeOutput.includes('What can I help') ||
-        claudeOutput.includes('How can I help') ||
-        claudeOutput.includes('Claude');
+        claudeOutput.includes('❯') ||
+        claudeOutput.includes('Welcome') ||
+        claudeOutput.includes('bypass permissions') ||
+        claudeOutput.includes('Claude Code') ||
+        claudeOutput.includes('Opus');
 
-      if (isReady && claudeOutput.length > 50) {
-        this._runLog(`Claude Code ready (${((Date.now() - start) / 1000).toFixed(1)}s)`);
+      if (isReady) {
+        this._runLog(`Claude Code ready (${((Date.now() - start) / 1000).toFixed(1)}s), captured ${claudeOutput.length} chars`);
         return true;
       }
 
@@ -1180,12 +1184,27 @@ export class FlowCertifier {
   // ═══════════════════════════════════════════════════════════════════
 
   _capturePane(paneId) {
-    try {
-      return execSync(
-        `tmux -L ${this.socket} capture-pane -t ${this.session}:0.${paneId} -p -S -200 2>/dev/null || echo ""`,
-        { encoding: 'utf-8', timeout: 5000 }
-      );
-    } catch { return ''; }
+    // Claude Code uses alternate screen mode for its TUI. tmux capture-pane -p
+    // may only return the "frame" (2 lines) instead of the full content.
+    // Use -e flag to get escape sequences, or -S -10000 for deep scrollback.
+    // Try multiple approaches and return the longest result.
+    const target = `${this.session}:0.${paneId}`;
+    let best = '';
+    const cmds = [
+      // Normal visible content
+      `tmux -L ${this.socket} capture-pane -t ${target} -p 2>/dev/null`,
+      // Full scrollback (catches content that scrolled up)
+      `tmux -L ${this.socket} capture-pane -t ${target} -p -S -1000 2>/dev/null`,
+      // Start from beginning of visible area
+      `tmux -L ${this.socket} capture-pane -t ${target} -p -S - 2>/dev/null`,
+    ];
+    for (const cmd of cmds) {
+      try {
+        const result = execSync(cmd, { encoding: 'utf-8', timeout: 5000 });
+        if (result.length > best.length) best = result;
+      } catch { /* try next */ }
+    }
+    return best || '';
   }
 
   _needsApproval(claudeOutput) {
