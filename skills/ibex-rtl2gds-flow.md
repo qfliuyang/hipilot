@@ -73,8 +73,17 @@ puts "INIT COMPLETE"
 ## Stage 2: Floorplan (timeout: 120s)
 
 ```tcl
+# Define die area with rows
 floorPlan -site unithd -su 1 0.4 1 1 1 1
+
+# Place block ports from IO file
 loadIoFile /home/EDA/ibex_work_upload/designs/sky130hd/ibex/io.file
+
+# Set dont-use cells (low-power cells cause issues in Sky130)
+foreach cell {sky130_fd_sc_hd__probec_p_8 sky130_fd_sc_hd__lpflow_bleeder_1 sky130_fd_sc_hd__lpflow_clkbufkapwr_1 sky130_fd_sc_hd__lpflow_clkbufkapwr_16 sky130_fd_sc_hd__lpflow_clkbufkapwr_2 sky130_fd_sc_hd__lpflow_clkbufkapwr_4 sky130_fd_sc_hd__lpflow_clkbufkapwr_8 sky130_fd_sc_hd__lpflow_clkinvkapwr_1 sky130_fd_sc_hd__lpflow_clkinvkapwr_16 sky130_fd_sc_hd__lpflow_clkinvkapwr_2 sky130_fd_sc_hd__lpflow_clkinvkapwr_4 sky130_fd_sc_hd__lpflow_clkinvkapwr_8} {
+    set_dont_use [get_lib_cells */$cell] true
+}
+
 saveDesign result/pr/data/floor_plan.enc
 defOut -floorplan -noStdCells result/pr/data/ibex.floorplan.def
 puts "FLOORPLAN COMPLETE"
@@ -83,6 +92,7 @@ puts "FLOORPLAN COMPLETE"
 ## Stage 3: Power Planning (timeout: 120s)
 
 ```tcl
+# Global PG net connections
 globalNetConnect VDD -type pgpin -pin {VPB VPWR} -inst *
 globalNetConnect VDD -type tiehi -pin {VPB VPWR} -inst *
 globalNetConnect VDD -type net -net VDD
@@ -90,11 +100,34 @@ globalNetConnect VSS -type pgpin -pin {VGND VNB} -inst *
 globalNetConnect VSS -type tielo -pin {VGND VNB} -inst *
 globalNetConnect VSS -type net -net VSS
 
-addStripe -nets {VSS VDD} -layer met4 -direction vertical -width 6 -spacing 2 -set_to_set_distance 30 -start_from left -start_offset 1
-addStripe -nets {VSS VDD} -layer met5 -direction horizontal -width 6 -spacing 2 -set_to_set_distance 30 -start_from bottom -start_offset 1
-sroute -connect { corePin } -layerChangeRange { li1(1) met4(4) } -nets { VDD VSS } -allowJogging 1 -allowLayerChange 1
+# Vertical power stripes (met4)
+addStripe -nets {VSS VDD} \
+    -layer met4 -direction vertical \
+    -width 6 -spacing 2 -set_to_set_distance 30 \
+    -start_from left -start_offset 1 \
+    -uda power_stripe_v
 
+# Horizontal power stripes (met5)
+addStripe -nets {VSS VDD} \
+    -layer met5 -direction horizontal \
+    -width 6 -spacing 2 -set_to_set_distance 30 \
+    -start_from bottom -start_offset 1 \
+    -uda power_stripe_h
+
+# Power rail routing (connect stripes to standard cell VDD/VSS pins)
+sroute -connect { corePin } \
+    -layerChangeRange { li1(1) met4(4) } \
+    -corePinTarget { none } \
+    -allowJogging 1 \
+    -crossoverViaLayerRange { li1(1) met4(4) } \
+    -nets { VDD VSS } \
+    -allowLayerChange 1 \
+    -targetViaLayerRange { li1(1) met4(4) }
+
+# Verify PG connectivity
 verifyConnectivity -type special -noAntenna -noWeakConnect -noUnroutedNet -error 1000 -warning 50
+verify_PG_short -no_routing_blkg
+
 saveDesign result/pr/data/powerplan.enc
 puts "POWER PLAN COMPLETE"
 ```
@@ -135,11 +168,30 @@ puts "PLACEMENT COMPLETE"
 ## Stage 5: CTS (timeout: 300s)
 
 ```tcl
+# CTS cell setup
 set_ccopt_property use_inverters true
+
+# Non-default routing rule for clock nets (2x width/spacing for signal integrity)
+add_ndr -name cts_1 \
+    -width_multiplier "met2:met4 2" \
+    -spacing_multiplier "met2:met4 2"
+create_route_type -name clk_net_rule \
+    -non_default_rule cts_1 \
+    -top_preferred_layer met2 \
+    -bottom_preferred_layer met4
+set_ccopt_property route_type clk_net_rule -net_type trunk
+
+# Set CTS routing layers
+setNanoRouteMode -quiet -routeTopRoutingLayer 6 -routeBottomRouting 2
+
+# Generate and source clock tree spec
 create_ccopt_clock_tree_spec -file result/pr/data/clk.spec
 source result/pr/data/clk.spec
+
+# Run CTS
 ccopt_design -cts
 
+# Report and save
 report_ccopt_skew_groups
 timeDesign -postCTS -pathReports -drvReports -slackReports -numPaths 50 -prefix postCTS -outDir result/pr/report/cts_timing
 saveDesign result/pr/data/cts.enc
