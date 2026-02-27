@@ -69,12 +69,26 @@ Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"know
 
 **IMPORTANT:** Parse the JSON response to extract the `result.content[0].text` field which contains the actual result.
 
-### How to "see" the right pane
+### How to "see" the right pane (progressive disclosure)
 
-You cannot directly see the right pane. But `eda.get_status` shows you the **last 20 lines** of both panes. Call it anytime to check what's happening:
-- If the right pane shows a shell prompt (`$`) → no EDA tool running
-- If it shows `innovus 1>` → Innovus is ready for commands
-- If it shows scrolling output → a command is running
+You cannot directly see the right pane. But you have two tools to look:
+
+**`eda.peek`** — instant snapshot of the right pane. Returns:
+- The last 20 lines of text currently visible
+- State assessment: `ready` (prompt visible), `running` (output changing), `error`, `no_tool`
+- Call this repeatedly to watch long-running commands progress
+
+**`eda.get_status`** — full system status including both panes, mode, tool detection
+
+**For long-running stages** (placement, CTS, routing), use the non-blocking pattern:
+1. `eda.send_tcl_nonblocking({tcl: "...", description: "placement"})` — sends and returns immediately
+2. Wait a few seconds, then call `eda.peek` — see current output
+3. Repeat `eda.peek` every 30-60 seconds until state is `ready` (prompt returned)
+4. Call `eda.peek` one final time to check for errors in the output
+
+**For short commands** (< 30s), use `eda.execute_and_verify` as before — it blocks and returns the result.
+
+This is how a human works: send a command, then glance at the terminal periodically to check progress.
 
 ### ACTION SEQUENCE: What to do when you receive /rtl2gds
 

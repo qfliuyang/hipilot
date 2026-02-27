@@ -35,7 +35,7 @@ Claude Code communicates with the right pane through 3 MCP servers (Node.js proc
 
 | MCP Server | Tools | Purpose |
 |---|---|---|
-| `hipilot-eda` | 52 | Tcl generation, execution, error checking, timing metrics |
+| `hipilot-eda` | 54 | Tcl generation, execution, error checking, timing metrics |
 | `hipilot-tmux` | 8 | Pane control, status bar |
 | `hipilot-knowledge` | 7 | Skill lookup, documentation search |
 

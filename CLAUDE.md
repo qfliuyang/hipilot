@@ -31,7 +31,7 @@
 
 | Server name | File | Tools | Purpose |
 |---|---|---|---|
-| `hipilot-eda` | `servers/eda/index.js` | 52 | Generate Tcl scripts, send them to the right pane, wait for the EDA tool to finish, check for errors, extract timing/area metrics |
+| `hipilot-eda` | `servers/eda/index.js` | 54 | Generate Tcl scripts, send them to the right pane, wait for the EDA tool to finish, check for errors, extract timing/area metrics |
 | `hipilot-tmux` | `servers/tmux/index.js` | 8 | Send keystrokes to panes, capture pane text, update the status bar |
 | `hipilot-knowledge` | `servers/knowledge/index.js` | 7 | Look up skills (expert workflow guides), search documentation, find EDA command syntax |
 
@@ -140,7 +140,7 @@ HiTestBot runs on the EDA server (where HiPilot runs). It is a virtual human.
 hipilot/
 ├── bin/hipilot                     # THE product: bash script that creates the tmux workspace
 ├── servers/                        # 3 MCP servers (Node.js processes, JSON-RPC over stdio)
-│   ├── eda/index.js                #   52 tools — the main server (Tcl gen, execute, QoR, mode)
+│   ├── eda/index.js                #   54 tools — the main server (Tcl gen, execute, QoR, mode)
 │   ├── tmux/index.js               #   8 tools — pane control, status bar
 │   └── knowledge/index.js          #   7 tools — skill lookup, doc search
 ├── skills/                         # 36 markdown files — expert workflows that Claude Code reads

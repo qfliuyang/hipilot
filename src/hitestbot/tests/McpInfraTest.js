@@ -70,7 +70,7 @@ async function main() {
   // EDA Server Tests
   console.log('EDA MCP Server:');
 
-  if (test('tools/list returns 52 tools', () => {
+  if (test('tools/list returns 54 tools', () => {
     const r = callMcp('eda', null); // tools/list
     const listReq = JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' });
     const result = execSync(
@@ -78,7 +78,7 @@ async function main() {
       { encoding: 'utf-8', timeout: 10000, env: { ...process.env, HIPILOT_TEST_LOG: LOG_PATH }, stdio: ['pipe', 'pipe', 'pipe'] }
     );
     const tools = JSON.parse(result).result.tools;
-    if (tools.length < 50) throw new Error(`Expected 52+ tools, got ${tools.length}`);
+    if (tools.length < 52) throw new Error(`Expected 54+ tools, got ${tools.length}`);
     return `${tools.length} tools`;
   })) passed++; else failed++;
 

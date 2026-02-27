@@ -1309,6 +1309,29 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ['tcl'],
         },
       },
+      // === PROGRESSIVE DISCLOSURE: Non-blocking send + peek ===
+      {
+        name: 'eda.send_tcl_nonblocking',
+        description: 'Send Tcl to the EDA tool in the right pane and return IMMEDIATELY. Does NOT wait for completion. Use eda.peek to check progress afterward. Use this for long-running commands (placement, CTS, routing) so you can monitor progress.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tcl: { type: 'string', description: 'Tcl code to send to EDA tool' },
+            description: { type: 'string', description: 'What this command does (for logging)' },
+          },
+          required: ['tcl'],
+        },
+      },
+      {
+        name: 'eda.peek',
+        description: 'Instantly capture what is currently visible in the EDA tool pane (right pane). Returns the last N lines plus a state assessment: is the tool running, is the prompt back, are there errors? Call this repeatedly to watch progress of long-running commands.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            lines: { type: 'number', description: 'Number of lines to capture (default: 30)', default: 30 },
+          },
+        },
+      },
       // === PHASE 2.3: WORKFLOW AUTOMATION TOOLS ===
       {
         name: 'workflow.define',
@@ -3444,6 +3467,99 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         }
         
         return { content: [{ type: 'text', text }], _metadata: { valid, errors } };
+      }
+
+      // === PROGRESSIVE DISCLOSURE TOOL HANDLERS ===
+
+      case 'eda.send_tcl_nonblocking': {
+        // Send Tcl to the right pane and return IMMEDIATELY.
+        // Claude can then call eda.peek to watch progress.
+        const { tcl, description = '' } = args;
+        const tclFile = `${hipilotPaths.execDir}/hipilot_exec_${Date.now()}.tcl`;
+        writeFileSync(tclFile, tcl);
+
+        // Archive to history
+        try {
+          if (!existsSync(HISTORY_DIR)) mkdirSync(HISTORY_DIR, { recursive: true });
+          const histFile = join(HISTORY_DIR, `${new Date().toISOString().replace(/[:.]/g, '-')}.tcl`);
+          writeFileSync(histFile, `# ${description}\n# Sent at: ${new Date().toISOString()}\n\n${tcl}`);
+        } catch {}
+
+        const target = `${TMUX_SESSION}:0.1`;
+        try {
+          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'source ${tclFile}'`, { encoding: 'utf-8', stdio: 'pipe' });
+          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8', stdio: 'pipe' });
+        } catch (e) {
+          return { content: [{ type: 'text', text: `❌ Failed to send: ${e.message}` }], isError: true };
+        }
+
+        return {
+          content: [{ type: 'text', text: `✓ **Sent to EDA pane** (non-blocking)\n\n**File:** ${tclFile}\n**Description:** ${description || 'N/A'}\n\nThe command is now running. Call \`eda.peek\` to check progress.` }],
+          _metadata: { file: tclFile, description, sent_at: new Date().toISOString() },
+        };
+      }
+
+      case 'eda.peek': {
+        // Instant snapshot of the right pane. No waiting, no processing.
+        // Returns what's on screen NOW + state assessment.
+        const lines = args.lines || 30;
+        const target = `${TMUX_SESSION}:0.1`;
+        let output = '';
+        try {
+          output = execSync(
+            `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -${lines} 2>/dev/null || echo ""`,
+            { encoding: 'utf-8', timeout: 5000 }
+          );
+        } catch { output = ''; }
+
+        const outputLines = output.split('\n');
+        const nonEmpty = outputLines.filter(l => l.trim());
+        const lastLine = nonEmpty[nonEmpty.length - 1] || '';
+
+        // Assess state — what would a human see?
+        let state = 'unknown';
+        let stateDetail = '';
+
+        const promptPatterns = [
+          { pat: /innovus\s*\d+>/, tool: 'Innovus', state: 'ready' },
+          { pat: /icc2_shell>/, tool: 'ICC2', state: 'ready' },
+          { pat: /pt_shell>/, tool: 'PrimeTime', state: 'ready' },
+          { pat: /\$\s*$/, tool: 'shell', state: 'no_tool' },
+        ];
+
+        for (const { pat, tool, state: s } of promptPatterns) {
+          if (pat.test(lastLine)) {
+            state = s;
+            stateDetail = `${tool} prompt detected — ${s === 'ready' ? 'tool is idle, ready for next command' : 'no EDA tool running'}`;
+            break;
+          }
+        }
+
+        if (state === 'unknown') {
+          // Check for errors
+          const errorPatterns = [/\*\*ERROR/i, /FATAL/i, /syntax error/i];
+          for (const pat of errorPatterns) {
+            if (pat.test(output)) {
+              state = 'error';
+              stateDetail = `Error detected: ${output.match(pat)[0]}`;
+              break;
+            }
+          }
+        }
+
+        if (state === 'unknown') {
+          state = 'running';
+          stateDetail = `Output is changing — command may still be running. Last line: "${lastLine.slice(0, 80)}"`;
+        }
+
+        let text = `👁️ **EDA Pane Snapshot** (${nonEmpty.length} lines)\n\n`;
+        text += `**State:** ${state} — ${stateDetail}\n\n`;
+        text += `\`\`\`\n${nonEmpty.slice(-20).join('\n')}\n\`\`\`\n`;
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: { state, lines: nonEmpty.length, last_line: lastLine.slice(0, 100) },
+        };
       }
 
       // === PHASE 2.3: WORKFLOW AUTOMATION TOOL HANDLERS ===
