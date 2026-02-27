@@ -56,18 +56,22 @@ Each stage is a **standalone tool invocation** — the tool starts, loads the pr
 6. **Report:** Tell the engineer: "Stage 3/8 Placement: done. WNS=-0.05ns, 0 violations."
 7. **Next stage:** Only proceed when the current stage succeeds.
 
-### The 8 stages
+### The 10 stages
 
-| # | Stage | What to do | Timeout |
-|---|-------|-----------|---------|
-| 1 | Design Init | Load netlist + LEF + constraints. Use `eda.generate_tcl({operation: "read_design"})` or the Tcl from the skill. | 180s |
-| 2 | Floorplan | Define die area and rows. The skill has the exact Tcl. Check if a floorplan already exists before running. | 120s |
-| 3 | Placement | Place standard cells. For Innovus: `place_opt_design`. | 300s |
-| 4 | CTS | Build the clock tree. Use `eda.generate_tcl({operation: "run_cts"})`. Requires clock definitions in the design. | 300s |
-| 5 | Post-CTS Opt | Fix setup/hold violations that CTS introduced. Use `eda.generate_tcl({operation: "optimize_design"})`. | 300s |
-| 6 | Routing | Route all signal nets (global + detail). Use `eda.generate_tcl({operation: "route_design"})`. This is the longest stage. | 600s |
-| 7 | Timing Report | Generate a timing report. Use `eda.generate_tcl({operation: "report_timing"})`. If this fails, skip it — it is not critical. | 120s |
-| 8 | Chip Finish | Save the design (DEF, netlist). Use `eda.generate_tcl({operation: "save_design"})`. | 120s |
+| # | Stage | Tool | Timeout | Notes |
+|---|-------|------|---------|-------|
+| 0 | Synthesis + DFT | dc_shell | 300s | RTL → gate-level netlist. Skip if `result/syn/data/ibex_core.syn.v` already exists. |
+| 1 | Design Init + MMMC | innovus | 180s | Load netlist + LEF + MMMC. |
+| 2 | Floorplan | innovus | 120s | Die area, IO placement, dont-use cells. |
+| 3 | Power Planning | innovus | 120s | VDD/VSS stripes, rail routing. |
+| 4 | Placement | innovus | 300s | `place_opt_design`. Report WNS after. |
+| 5 | CTS | innovus | 300s | Clock tree + NDR rules. |
+| 6 | Post-CTS Opt | innovus | 300s | Fix setup/hold violations. |
+| 7 | Routing | innovus | 600s | Global + detail routing. Longest stage. |
+| 8 | Route Opt | innovus | 300s | Post-route optimization. |
+| 9 | Chip Finish + GDS | innovus | 300s | Export DEF, netlist, GDS. |
+
+**Tool switching:** Stage 0 uses `dc_shell`, stages 1-9 use `innovus`. The skill has the exact Tcl for each stage.
 
 ### 4. Final summary
 
