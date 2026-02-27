@@ -86,20 +86,15 @@ Example: the engineer types `/rtl2gds`. Claude Code reads the slash command file
 
 ### Step 4: Claude orchestrates the flow
 
-For each stage, Claude Code makes MCP tool calls:
+Each stage is a **standalone tool invocation**. The EDA tool starts fresh, loads the previous stage's checkpoint, runs the stage commands, saves a new checkpoint, and exits. This gives a clean database environment for each stage and enables recovery/branching.
 
-1. `eda.generate_tcl({intent, operation, tool})` — the EDA MCP server finds a template in `templates/`, renders it with Nunjucks, and returns the Tcl script
-2. `eda.execute_and_verify({tcl, description, timeout})` — the EDA MCP server:
-   - Writes the Tcl to a temp file: `/tmp/hipilot-EDA/exec/hipilot_exec_<timestamp>.tcl`
-   - Sends it to the right pane: `tmux -L hipilot send-keys -t hipilot:0.1 -l 'source /tmp/...'` then `tmux -L hipilot send-keys -t hipilot:0.1 C-m`
-   - Polls every 1 second: `tmux -L hipilot capture-pane -t hipilot:0.1 -p -S -200`
-   - Waits until the EDA tool's prompt reappears (e.g., `innovus 1>`)
-   - Scans the captured output for error patterns (`**ERROR`, `FATAL`)
-   - Extracts QoR metrics (WNS, TNS, violation count)
-   - Returns the result to Claude Code
-3. Claude Code reads the result. If there are errors, it calls `eda.diagnose_error`. If successful, it calls `qor.snapshot` and reports progress to the engineer.
+For each stage:
+1. Claude loads the skill (`knowledge.get_skill`) and copies the Tcl block for that stage. Each block includes `source checkpoint.enc` at the top and `saveDesign + exit` at the bottom.
+2. Claude calls `eda.execute_and_verify({tcl, description, timeout})` — the MCP server writes the Tcl to a file and sends `innovus -no_gui -files /tmp/stage.tcl` to the right pane. It waits for Innovus to exit (not just the prompt — the whole process), checks errors, extracts QoR.
+3. If errors → `eda.diagnose_error`. If success → `qor.snapshot`, report to engineer.
+4. The next stage starts a fresh Innovus with the new checkpoint.
 
-**"Orchestrates" means:** Claude Code makes one MCP call per stage, reads the result, decides what to do next, and makes the next call. It is NOT a batch script. Claude Code uses its intelligence to handle errors, skip unnecessary stages, and adapt.
+**Tool switching is natural.** Synthesis uses `dc_shell`, P&R uses `innovus`, signoff uses `pt_shell`. Claude reads the skill to know which tool each stage needs.
 
 ---
 

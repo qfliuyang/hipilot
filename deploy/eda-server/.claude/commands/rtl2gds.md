@@ -45,11 +45,14 @@ Read the skill carefully. It contains the exact file paths (DEF, LEF, SDC), Tcl 
 
 For each stage, follow this exact pattern:
 
-1. **Generate Tcl:** Call `mcp__hipilot-eda__eda.generate_tcl` with the operation name, OR copy the Tcl directly from the skill.
-2. **Execute:** Call `mcp__hipilot-eda__eda.execute_and_verify` with the Tcl, a description, and a timeout.
+Each stage is a **standalone tool invocation** — the tool starts, loads the previous checkpoint, runs the stage, saves a new checkpoint, and exits. This gives a clean environment and enables recovery.
+
+1. **Get the Tcl:** Load the skill with `mcp__hipilot-knowledge__knowledge.get_skill({name: "ibex-rtl2gds-flow"})`. Copy the Tcl block for the current stage. Each block includes `source checkpoint.enc` at the top and `saveDesign + exit` at the bottom.
+2. **Execute:** Call `mcp__hipilot-eda__eda.execute_and_verify` with the complete Tcl, a description, and a timeout. The MCP server will start Innovus fresh, run the script, and wait for it to exit.
 3. **Check the result:** The response includes `status`, `errors`, `warnings`, and `qor`. Read them.
 4. **If errors:** Call `mcp__hipilot-eda__eda.diagnose_error` with the error text. Fix and retry.
 5. **If success:** Call `mcp__hipilot-eda__qor.snapshot` with a name like `"after_placement"`.
+6. **Next stage:** The tool has exited. The next stage starts a fresh Innovus and loads the new checkpoint.
 6. **Report:** Tell the engineer: "Stage 3/8 Placement: done. WNS=-0.05ns, 0 violations."
 7. **Next stage:** Only proceed when the current stage succeeds.
 
