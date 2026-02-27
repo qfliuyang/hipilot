@@ -14,7 +14,7 @@ HiPilot uses three MCP (Model Context Protocol) servers to extend Claude Code's 
 │                                                                  │
 │   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │
 │   │   EDA MCP   │  │  Tmux MCP   │  │Knowledge MCP│            │
-│   │  (52 tools) │  │  (8 tools)  │  │  (7 tools)  │            │
+│   │  (54 tools) │  │  (8 tools)  │  │  (7 tools)  │            │
 │   └─────────────┘  └─────────────┘  └─────────────┘            │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘

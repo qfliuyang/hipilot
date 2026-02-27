@@ -1,242 +1,228 @@
-# HiPilot Test Plan
+# HiPilot Test Plan (v2)
 
-> Progressive testing on the EDA server to achieve full RTL-to-GDS flow.
+> Progressive testing with latest code improvements. Each test is one command.
 
-## How to Run Each Test
+## What Changed Since Last Test
 
-Every test is one command. HiTestBot launches HiPilot, types the command, watches, scores.
+| Fix | Impact on testing |
+|---|---|
+| `_capturePane` tries 3 capture methods | HiTestBot can now see Claude Code's full output (was 2 lines) |
+| `waitForClaudeReady` searches anywhere for ❯/Welcome | Claude ready detection no longer times out at 120s |
+| `eda.peek` new tool | Claude can watch right pane during long operations |
+| `eda.send_tcl_nonblocking` new tool | Claude can send Tcl without blocking |
+| `eda.get_status` includes pane snapshots | Claude has "eyes" on both panes |
+| Deny patterns fixed | `Bash(*innovus*)` → `Bash(innovus *)` — Bash workaround no longer blocked |
+| `HIPILOT_TEST_LOG` in settings.json | MCP calls now logged for evidence collection |
+| L4 scoring fixed | Welcome message scores 0.0 (was 0.5) |
+| Window sizing: 80% desktop | gnome-terminal --geometry calculated from screen resolution |
+| Idle detection: prompt-based | No fixed timeout — waits for ❯ prompt or EDA tool prompt |
+| CLAUDE.md: action sequence | "detect → start → skill → execute. DO NOT overthink." |
+| CLAUDE.md: progressive disclosure | Teaches Claude to use peek for long-running commands |
+| Ibex skill: standalone stages | Each stage has `source checkpoint.enc` + `exit` |
+
+## How to Run
 
 ```bash
-# From dev machine (SSH to EDA server):
+# From dev machine:
 bin/hitestbot-eda "<command>"
 
 # Download evidence:
 bin/hitestbot-pull
+
+# Evidence at: test-evidence/<timestamp>/
 ```
 
-Evidence appears in `test-evidence/<timestamp>/`.
-
-## Pre-Test Checklist
-
-Before each test, verify on the EDA server:
+## Pre-Test on EDA Server
 
 ```bash
-# 1. Kill stale processes
-pkill -9 -f "innovus|icc2_shell|pt_shell|ffmpeg" 2>/dev/null; tmux -L hipilot kill-server 2>/dev/null
+# Kill stale processes
+pkill -9 -f "innovus|icc2_shell|pt_shell|ffmpeg" 2>/dev/null
+tmux -L hipilot kill-server 2>/dev/null
 
-# 2. Verify design files exist
-ls /home/EDA/ibex_work_upload/result/syn/data/ibex_core.syn.v
-ls /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lef/sky130_fd_sc_hd.tlef
+# Deploy latest code
+node src/hitestbot/infra/deploy_hipilot.js
 
-# 3. Verify HiPilot is deployed
-ls /home/EDA/hipilot/current/bin/hipilot
+# Verify
 ls /home/EDA/hipilot/current/servers/eda/index.js
-
-# 4. Verify Claude Code settings
-cat ~/.claude/settings.json | python -m json.tool | head -5
+cat ~/.claude/settings.json | python -m json.tool | grep hipilot-eda
 ```
 
 ---
 
-## Phase 0: Infrastructure (5 min)
+## Phase 0: Claude Responds (5 min)
 
-**Goal:** HiPilot launches, Claude Code responds.
-
-| Test | Command | What to check | Pass criteria |
-|------|---------|--------------|---------------|
-| P0-1 | `hello` | Claude responds to a simple message | L1 ≥ 1.0 |
-
-**Known issues from previous testing:**
-- Claude Code shows "Quick safety check" trust prompt — `bin/hipilot` handles this (polls and sends "1")
-- Claude Code shows "bypass permissions" prompt — `bin/hipilot` handles this (Tab + Space + Enter)
-- If MCP feature gate is disabled (v2.1.59), Claude falls back to Bash workaround
-
-**Exit:** Claude responds → proceed to Phase 1.
-
----
-
-## Phase 1: EDA Tool Detection (10 min)
-
-**Goal:** Claude uses MCP to check system status.
-
-| Test | Command | What to check | Pass criteria |
-|------|---------|--------------|---------------|
-| P1-1 | `check if any EDA tool is running` | Claude calls `eda.detect_tool` or `eda.get_status` | L3 ≥ 0.5 (MCP used) |
-
-**What to look for in evidence:**
-- Left pane shows MCP tool call (e.g., `eda.detect_tool` or Bash workaround with `node servers/eda/index.js`)
-- Result shows "No EDA tool detected" or tool name
-- Claude reports the result to the user
-
-**Exit:** MCP tool call succeeded → proceed to Phase 2.
-
----
-
-## Phase 2: Tcl Generation (10 min)
-
-**Goal:** Claude generates Tcl from a template.
-
-| Test | Command | What to check | Pass criteria |
-|------|---------|--------------|---------------|
-| P2-1 | `generate a timing report for Innovus` | Claude calls `eda.generate_tcl` | L3 ≥ 0.5, sees `[✓ Template]` in output |
-
-**What to look for in evidence:**
-- Left pane shows `generate_tcl` call with `operation: "report_timing"`
-- Response includes `[✓ Template]` badge
-- Tcl content is visible (from `cadence/innovus_report_timing.tcl`)
-
-**Exit:** Template Tcl generated → proceed to Phase 3.
-
----
-
-## Phase 3: Start EDA Tool (15 min)
-
-**Goal:** Claude starts Innovus in the right pane via MCP.
-
-| Test | Command | What to check | Pass criteria |
-|------|---------|--------------|---------------|
-| P3-1 | `start innovus for the ibex design` | Claude calls `eda.start_tool`, Innovus prompt appears in right pane | L4 ≥ 0.5 (right pane has `innovus 1>`) |
-
-**This is the critical test.** If Claude uses Bash instead of MCP, Innovus starts in the WRONG pane. The CLAUDE.md explains why MCP is needed (sends to right pane through tmux).
-
-**What to look for in evidence:**
-- Left pane shows `eda.start_tool` call (or Bash workaround calling `node servers/eda/index.js`)
-- Right pane shows Innovus startup messages and `innovus 1>` prompt
-- NOT: Innovus running in the left pane (that means Bash was used directly)
-
-**Known blocker (P6-002):** `eda.start_tool` via Bash workaround may be permission-denied. If so, check `settings.json` permissions.allow patterns.
-
-**Exit:** `innovus 1>` in right pane → proceed to Phase 4.
-
----
-
-## Phase 4: Execute Single Stage (15 min)
-
-**Goal:** Claude executes one Tcl stage in Innovus.
-
-| Test | Command | What to check | Pass criteria |
-|------|---------|--------------|---------------|
-| P4-1 | `run the design init stage for ibex` | Claude loads skill, sends init Tcl, Innovus processes it | L4 ≥ 0.5 (right pane shows Innovus output) |
-
-**What to look for in evidence:**
-- Claude loads `ibex-rtl2gds-flow` skill
-- Claude sends the Stage 1 Tcl (MMMC + init_design)
-- Right pane shows Innovus processing (LEF files loaded, design initialized)
-- `checkDesign` and `timeDesign` output visible
-- `saveDesign result/pr/data/init_design.enc` succeeds
-- Innovus exits cleanly
-
-**Exit:** Design initialized, checkpoint saved → proceed to Phase 5.
-
----
-
-## Phase 5: Multi-Stage Flow (30-60 min)
-
-**Goal:** Claude executes multiple sequential stages with checkpoint chain.
-
-| Test | Command | What to check | Pass criteria |
-|------|---------|--------------|---------------|
-| P5-1 | `/rtl2gds` | Claude drives stages 1-4 (init → floorplan → power → placement) | ≥3 stages complete, L4 ≥ 0.5 |
-
-**Each stage should:**
-1. Start fresh Innovus: `innovus -no_gui -files stage.tcl`
-2. Load previous checkpoint: `source result/pr/data/previous.enc`
-3. Run stage commands
-4. Save new checkpoint: `saveDesign result/pr/data/current.enc`
-5. Exit: `exit`
-
-**Checkpoint chain:**
-```
-init_design.enc → floor_plan.enc → powerplan.enc → placement.enc
+```bash
+bin/hitestbot-eda "hello"
 ```
 
-**What to look for:**
-- Each stage starts a new Innovus (right pane shows startup each time)
-- Each checkpoint file gets created on the EDA server
-- Claude reports QoR after timing-sensitive stages (placement)
-- If a stage fails, Claude calls `diagnose_error` and retries
+| Check | Expected |
+|---|---|
+| Claude Code starts | ❯ prompt appears within 120s |
+| Trust/bypass prompt handled | bin/hipilot auto-sends "1" and Tab+Space+Enter |
+| Claude responds to "hello" | Left pane shows a response |
+| L1 score | ≥ 1.0 |
 
-**Exit:** ≥4 stages complete → proceed to Phase 6.
+**Pass:** Claude responds → Phase 1.
 
 ---
 
-## Phase 6: Full RTL2GDS Flow (60-90 min)
+## Phase 1: MCP Tool Call (10 min)
 
-**Goal:** Complete 9-stage flow produces GDS.
+```bash
+bin/hitestbot-eda "check what EDA tools are available"
+```
 
-| Test | Command | What to check | Pass criteria |
-|------|---------|--------------|---------------|
-| P6-1 | `/rtl2gds` | All 9 stages complete, GDS file exists | L4 ≥ 0.5 on ≥7 stages, GDS exists |
+| Check | Expected |
+|---|---|
+| Claude uses MCP (native or Bash workaround) | `eda.detect_tool` or `eda.get_status` called |
+| Result shows tool status | "No tool detected" or tool name |
+| Right pane shows nothing new | Still welcome message (no tool started yet) |
+| L3 score | ≥ 0.5 |
 
-**Stages and expected outputs:**
+**New check:** MCP log at `/tmp/hipilot_test_mcp.jsonl` should have entries.
 
-| # | Stage | Output checkpoint | Key verification |
-|---|-------|------------------|-----------------|
-| 1 | Init + MMMC | init_design.enc | `checkDesign` passes |
-| 2 | Floorplan | floor_plan.enc | Rows created, DEF exported |
-| 3 | Power Planning | powerplan.enc | `verifyConnectivity` passes |
-| 4 | Placement | placement.enc | `place_opt_design` completes, WNS reported |
-| 5 | CTS | cts.enc | `ccopt_design` completes, clock tree built |
-| 6 | Post-CTS Opt | post_cts_opt.enc | `optDesign -postCTS -hold` completes |
-| 7 | Routing | routing.enc | `routeDesign -globalDetail` completes |
-| 8 | Route Opt | routing_opt.enc | `optDesign -postRoute -setup` completes |
-| 9 | Chip Finish | chip_done.enc + ibex_core.gds | GDS file exported |
+**Pass:** MCP tool call succeeded → Phase 2.
 
-**Verify on EDA server after test:**
+---
+
+## Phase 2: Start Innovus (15 min)
+
+```bash
+bin/hitestbot-eda "start innovus for the ibex design at /home/EDA/ibex_work_upload"
+```
+
+| Check | Expected |
+|---|---|
+| Claude calls `eda.start_tool` | Via native MCP or Bash workaround |
+| Right pane shows Innovus starting | Startup messages, license checkout |
+| Right pane shows prompt | `innovus 1>` appears |
+| L4 score | ≥ 0.5 |
+
+**This was the blocker in the last test.** The deny pattern `Bash(*innovus*)` blocked the Bash workaround because the JSON payload contained "innovus". Fixed: now `Bash(innovus *)` only blocks direct execution.
+
+**If it fails again:** Check `settings.json` permissions on EDA server:
+```bash
+cat ~/.claude/settings.json | python -m json.tool | grep -A30 permissions
+```
+
+**Pass:** `innovus 1>` in right pane → Phase 3.
+
+---
+
+## Phase 3: Generate and Execute Tcl (15 min)
+
+```bash
+bin/hitestbot-eda "generate a timing report and execute it in innovus"
+```
+
+| Check | Expected |
+|---|---|
+| Claude generates Tcl | `[✓ Template]` badge |
+| Claude executes Tcl | `eda.execute_and_verify` or non-blocking send + peek |
+| Right pane shows Innovus output | Timing report results visible |
+| L5 score | ≥ 0.5 (WNS/TNS in Claude's response) |
+
+**Pass:** Tcl executed, QoR reported → Phase 4.
+
+---
+
+## Phase 4: Single P&R Stage (20 min)
+
+```bash
+bin/hitestbot-eda "load the ibex-rtl2gds-flow skill and run stage 1 (design init)"
+```
+
+| Check | Expected |
+|---|---|
+| Claude loads skill | `knowledge.get_skill` called |
+| Claude sends Stage 1 Tcl | MMMC setup + init_design |
+| Innovus processes Tcl | Right pane shows LEF/netlist loading |
+| Checkpoint saved | `result/pr/data/init_design.enc` created |
+| Innovus exits | Stage is standalone (source + run + save + exit) |
+| L4 score | ≥ 0.5 |
+
+**New behavior:** Claude may use `eda.send_tcl_nonblocking` + `eda.peek` for progress monitoring.
+
+**Pass:** `init_design.enc` exists on EDA server → Phase 5.
+
+---
+
+## Phase 5: Multi-Stage Flow (60 min)
+
+```bash
+bin/hitestbot-eda "/rtl2gds"
+```
+
+| Check | Expected |
+|---|---|
+| Claude runs ≥4 stages | init → floorplan → power → placement |
+| Each stage is standalone | Fresh Innovus start, source checkpoint, save, exit |
+| Checkpoints created | `init_design.enc`, `floor_plan.enc`, `powerplan.enc`, `placement.enc` |
+| QoR reported after placement | WNS/TNS numbers in Claude's output |
+| Claude uses peek for progress | `eda.peek` calls between stages (progressive disclosure) |
+
+**Verify on EDA server:**
 ```bash
 ls -la /home/EDA/ibex_work_upload/result/pr/data/*.enc
+```
+
+**Pass:** ≥4 checkpoints exist → Phase 6.
+
+---
+
+## Phase 6: Full Flow to GDS (90 min)
+
+```bash
+bin/hitestbot-eda "/rtl2gds"
+```
+
+| # | Stage | Checkpoint | Verify |
+|---|-------|-----------|--------|
+| 1 | Init + MMMC | init_design.enc | `checkDesign` passes |
+| 2 | Floorplan | floor_plan.enc | Rows created |
+| 3 | Power | powerplan.enc | `verifyConnectivity` passes |
+| 4 | Placement | placement.enc | WNS reported |
+| 5 | CTS | cts.enc | Clock tree built |
+| 6 | Post-CTS | post_cts_opt.enc | Hold violations fixed |
+| 7 | Routing | routing.enc | `routeDesign` completes |
+| 8 | Route Opt | routing_opt.enc | `optDesign` completes |
+| 9 | Chip Finish | chip_done.enc + ibex_core.gds | GDS exported |
+
+**Verify:**
+```bash
 ls -la /home/EDA/ibex_work_upload/result/pr/data/ibex_core.gds
 ```
 
-**Exit:** GDS exists → Phase 6 PASS.
+**Pass:** GDS exists.
 
 ---
 
-## Phase 7: Error Recovery (15 min)
+## Evidence Review After Each Test
 
-**Goal:** Claude handles errors gracefully.
+```
+test-evidence/<timestamp>/
+├── FLOW_REPORT.md          ← L1-L5 scores (verify against raw logs!)
+├── test_metadata.json      ← score, duration, result
+├── run_log.txt             ← HiTestBot's actions (verify state detection works)
+├── logs/
+│   ├── claude_full.log     ← Claude's complete output (verify MCP calls visible)
+│   ├── eda_full.log        ← EDA pane complete output (verify tool ran)
+│   └── mcp_calls.jsonl     ← MCP call log (NEW — should have entries now)
+├── screenshots/            ← Verify window is 80% of desktop
+├── recordings/             ← Verify video captures the workspace
+└── timeline.jsonl          ← Cross-reference video timestamps with MCP calls
+```
 
-| Test | Command | What to check | Pass criteria |
-|------|---------|--------------|---------------|
-| P7-1 | `run placement` (without init) | Claude detects missing checkpoint, reports error | Error detected and reported |
-| P7-2 | `run invalid tcl command xyz123` | Claude detects Innovus error, calls diagnose_error | Error diagnosed |
+**Cross-reference checklist:**
+- [ ] `claude_full.log` shows more than 2 lines (capture fix working)
+- [ ] `mcp_calls.jsonl` exists and has entries (HIPILOT_TEST_LOG working)
+- [ ] L4 score is 0.0 when EDA pane only has welcome message (scoring fix)
+- [ ] HiTestBot detected Claude ready within 30s (not 120s timeout)
+- [ ] No "Both panes idle" premature termination (prompt-based detection)
 
----
+## Known Upstream Issues
 
-## Evidence Review Checklist
-
-After each test, review `test-evidence/<timestamp>/`:
-
-- [ ] `FLOW_REPORT.md` — L1-L5 scores, failure classification
-- [ ] `screenshot_workspace_visible.png` — HiPilot layout visible (2 panes, status bar)
-- [ ] `screenshot_after_type.png` — command typed in left pane
-- [ ] `screenshot_after_flow.png` — final state of both panes
-- [ ] `logs/claude_full.log` — complete left pane scrollback (Claude's actions)
-- [ ] `logs/eda_full.log` — complete right pane scrollback (EDA tool output)
-- [ ] `recordings/test_recording.mp4` — desktop video
-- [ ] `timeline.jsonl` — correlated timeline (video ↔ panes ↔ MCP)
-- [ ] `test_metadata.json` — test ID, duration, score, result
-
-## Scoring Reference
-
-| Score | Meaning |
-|-------|---------|
-| ≥ 4.0/5 | PASS |
-| 2.0-3.9 | PARTIAL — some layers succeeded |
-| < 2.0 | FAIL |
-
-| Layer | What it measures |
-|-------|-----------------|
-| L1 | Did Claude respond at all? |
-| L2 | Did Claude understand the task? |
-| L3 | Did Claude use MCP tools (not just Bash)? |
-| L4 | Did the EDA tool run successfully? |
-| L5 | Did Claude report QoR (WNS/TNS)? |
-
-## Known Issues
-
-| ID | Description | Workaround |
-|----|-------------|-----------|
-| P6-001 | Claude Code v2.1.59 MCP feature gate disables native MCP tools | Bash workaround: Claude calls MCP servers via `node servers/eda/index.js` |
-| P6-002 | `eda.start_tool` Bash workaround permission-denied | Broaden `permissions.allow` patterns in settings.json |
-| P6-003 | "bypass permissions" prompt not dismissible programmatically | `bin/hipilot` attempts Tab+Space+Enter sequence |
+| ID | Issue | Status | Impact |
+|----|-------|--------|--------|
+| P6-001 | MCP feature gate disabled in Claude Code v2.1.59 | UPSTREAM | Forces Bash workaround |
+| P6-003 | "bypass permissions" prompt not dismissible | UPSTREAM | May interfere with tool calls |

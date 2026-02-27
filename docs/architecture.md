@@ -88,7 +88,7 @@ HiPilot extends Claude Code with specialized capabilities for VLSI physical desi
 
 ### 2. MCP Server Layer
 
-#### EDA MCP Server (`servers/eda/index.js`) — 52 tools
+#### EDA MCP Server (`servers/eda/index.js`) — 54 tools
 
 **Purpose:** EDA tool integration, Tcl generation, QoR tracking, workflow automation
 
@@ -269,7 +269,7 @@ hipilot/
 │   └── setup.sh             # Installation wizard
 │
 ├── servers/                 # MCP servers (JSON-RPC over stdio)
-│   ├── eda/index.js         # EDA MCP (52 tools)
+│   ├── eda/index.js         # EDA MCP (54 tools)
 │   ├── tmux/index.js        # Tmux MCP (8 tools)
 │   └── knowledge/index.js   # Knowledge MCP (7 tools)
 │
