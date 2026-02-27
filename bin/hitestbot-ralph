@@ -1,0 +1,131 @@
+#!/bin/bash
+# HiTestBot Ralph-Loop — Iterative test certification with persistence
+#
+# Usage:
+#   bin/hitestbot-ralph                     # Run full v4 certification
+#   bin/hitestbot-ralph --target-phase 4    # Run up to phase 4
+#   bin/hitestbot-ralph --max-iterations 5  # Limit to 5 iterations
+#
+# Environment variables:
+#   RALPH_MAX_ITERATIONS      # Default: 10
+#   RALPH_TARGET_PHASE        # Default: 7 (full RTL2GDS)
+#   RALPH_CLEAN_DESIGN        # Default: /home/EDA/ibex_demo.tar
+#   RALPH_WORK_DIR            # Default: /home/EDA/hipilot_test
+#   RALPH_VALIDATE_EVIDENCE   # Default: true
+#   HITESTBOT_EVIDENCE_DIR    # Default: /tmp/hipilot-test-evidence
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+SSH_HOST="${HIPILOT_SSH_HOST:-EDA@192.168.112.163}"
+DEPLOYED_HIPILOT="${HIPILOT_DEPLOY_DIR:-/home/EDA/hipilot/current}"
+NODE_PATH="${HIPILOT_NODE_PATH:-/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin}"
+
+# Parse arguments
+TARGET_PHASE="${RALPH_TARGET_PHASE:-7}"
+MAX_ITERATIONS="${RALPH_MAX_ITERATIONS:-10}"
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --target-phase)
+      TARGET_PHASE="$2"
+      shift 2
+      ;;
+    --max-iterations)
+      MAX_ITERATIONS="$2"
+      shift 2
+      ;;
+    --clean-design-source)
+      export RALPH_CLEAN_DESIGN="$2"
+      shift 2
+      ;;
+    --validate-evidence)
+      export RALPH_VALIDATE_EVIDENCE="true"
+      shift
+      ;;
+    --graduation-requirements)
+      export RALPH_GRADUATION_REQUIREMENTS="$2"
+      shift 2
+      ;;
+    --help|-h)
+      echo "HiTestBot Ralph-Loop v4 — Iterative certification"
+      echo ""
+      echo "Usage: bin/hitestbot-ralph [options]"
+      echo ""
+      echo "Options:"
+      echo "  --target-phase N         Target phase (0-7, default: 7)"
+      echo "  --max-iterations N       Max iterations (default: 10)"
+      echo "  --clean-design-source    Path to clean design tar"
+      echo "  --validate-evidence      Enable strict evidence validation"
+      echo "  --graduation-requirements strict|lenient"
+      echo ""
+      echo "Environment variables:"
+      echo "  RALPH_MAX_ITERATIONS"
+      echo "  RALPH_TARGET_PHASE"
+      echo "  RALPH_CLEAN_DESIGN"
+      echo "  RALPH_WORK_DIR"
+      echo "  HITESTBOT_EVIDENCE_DIR"
+      echo ""
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $1"
+      echo "Use --help for usage"
+      exit 1
+      ;;
+  esac
+done
+
+export RALPH_TARGET_PHASE="$TARGET_PHASE"
+export RALPH_MAX_ITERATIONS="$MAX_ITERATIONS"
+
+# Use SSHPASS env var
+export SSHPASS="${SSHPASS:-${HIPILOT_SSH_PASS:-eda2020}}"
+
+echo '═══════════════════════════════════════════════════════════'
+echo '  RALPH-LOOP: HiPilot Test Certification v4'
+echo '═══════════════════════════════════════════════════════════'
+echo ''
+echo "Target Phase: $TARGET_PHASE"
+echo "Max Iterations: $MAX_ITERATIONS"
+echo "Clean Design: ${RALPH_CLEAN_DESIGN:-/home/EDA/ibex_demo.tar}"
+echo ''
+
+# If already on EDA server, run locally
+if [ -n "$HIPILOT_EDA_SERVER" ]; then
+  export PATH="${NODE_PATH}:$PATH"
+  export HIPILOT_SESSION="${HIPILOT_SESSION:-hipilot}"
+  echo "Running on EDA server..."
+  echo ""
+  node "$PROJECT_DIR/src/hitestbot/RalphLoopCertifier.js"
+  exit $?
+fi
+
+# From dev machine: SSH and run on EDA server
+echo "Running on EDA server (SSH: $SSH_HOST)..."
+echo ""
+
+# Retry SSH connection up to 5 times
+for i in 1 2 3 4 5; do
+  sshpass -e ssh -o ConnectTimeout=15 -o StrictHostKeyChecking=no \
+    "$SSH_HOST" "echo connected" 2>/dev/null && break
+  echo "SSH attempt $i/5 failed, retrying in $((i * 5))s..."
+  sleep $((i * 5))
+done
+
+sshpass -e ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=15 -o ServerAliveCountMax=3 \
+  "$SSH_HOST" "
+  export HIPILOT_EDA_SERVER=1
+  export PATH=${NODE_PATH}:\$PATH
+  export DISPLAY=:0
+  export RALPH_TARGET_PHASE=${TARGET_PHASE}
+  export RALPH_MAX_ITERATIONS=${MAX_ITERATIONS}
+  export RALPH_CLEAN_DESIGN=${RALPH_CLEAN_DESIGN:-/home/EDA/ibex_demo.tar}
+  export RALPH_WORK_DIR=${RALPH_WORK_DIR:-/home/EDA/hipilot_test}
+  export HITESTBOT_EVIDENCE_DIR=${HITESTBOT_EVIDENCE_DIR:-/tmp/hipilot-test-evidence}
+  export RALPH_VALIDATE_EVIDENCE=${RALPH_VALIDATE_EVIDENCE:-true}
+  cd $DEPLOYED_HIPILOT
+  node src/hitestbot/RalphLoopCertifier.js
+"

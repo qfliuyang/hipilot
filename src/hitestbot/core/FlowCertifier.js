@@ -575,7 +575,7 @@ export class FlowCertifier {
     // Step 1: Create the tmux session (headless — reliable)
     try {
       const output = execSync(`bash ${binPath} --no-terminal 2>&1`, {
-        encoding: 'utf-8', timeout: 60000,
+        encoding: 'utf-8', timeout: 300000,
         env: { ...process.env, HIPILOT_SESSION: this.session },
       });
       this._runLog(`bin/hipilot --no-terminal output:\n${output}`);
