@@ -42,19 +42,19 @@ If native MCP tools don't appear in your tool list, use Bash to call the MCP ser
 
 ```bash
 # Check EDA tool status
-Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.get_status","arguments":{}}}' | node servers/eda/index.js 2>/dev/null
+Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.get_status","arguments":{}}}' | node /home/EDA/hipilot/current/servers/eda/index.js 2>/dev/null
 
 # Detect running tool
-Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.detect_tool","arguments":{}}}' | node servers/eda/index.js 2>/dev/null
+Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.detect_tool","arguments":{}}}' | node /home/EDA/hipilot/current/servers/eda/index.js 2>/dev/null
 
 # Start Innovus
-Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.start_tool","arguments":{"tool":"innovus","design_dir":"/home/EDA/hipilot_test/ibex_work_upload"}}}' | node servers/eda/index.js 2>/dev/null
+Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.start_tool","arguments":{"tool":"innovus","design_dir":"/home/EDA/ibex_work_upload"}}}' | node /home/EDA/hipilot/current/servers/eda/index.js 2>/dev/null
 
 # Generate Tcl
-Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.generate_tcl","arguments":{"intent":"report timing","operation":"report_timing","tool":"innovus"}}}' | node servers/eda/index.js 2>/dev/null
+Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.generate_tcl","arguments":{"intent":"report timing","operation":"report_timing","tool":"innovus"}}}' | node /home/EDA/hipilot/current/servers/eda/index.js 2>/dev/null
 
 # Execute and verify
-Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.execute_and_verify","arguments":{"tcl":"report_timing -max_paths 10","description":"timing check","timeout":120}}}' | node servers/eda/index.js 2>/dev/null
+Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.execute_and_verify","arguments":{"tcl":"report_timing -max_paths 10","description":"timing check","timeout":120}}}' | node /home/EDA/hipilot/current/servers/eda/index.js 2>/dev/null
 
 # Get skill
 Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"knowledge.get_skill","arguments":{"name":"fix-setup-timing"}}}' | node servers/knowledge/index.js 2>/dev/null
@@ -149,7 +149,7 @@ eda.detect_tool({})
 If none, start one:
 
 ```
-eda.start_tool({tool: "innovus", design_dir: "/home/EDA/hipilot_test/ibex_work_upload"})
+eda.start_tool({tool: "innovus", design_dir: "/home/EDA/ibex_work_upload"})
 ```
 
 ### Multi-stage flows
@@ -197,6 +197,6 @@ Call these directly (they are in your tool list):
 
 - **EDA Tools:** Innovus v20.10, ICC2 T-2022.03, PrimeTime T-2022.03
 - **Demo Design:** Ibex RISC-V CPU (Skywater 130nm, ~7000 cells, 100 MHz target)
-- **Design Location:** `/home/EDA/hipilot_test/ibex_work_upload/`
+- **Design Location:** `/home/EDA/ibex_work_upload/`
 - **36 Skills** covering RTL-to-GDS flow, timing fixes, CTS, routing, DRC, and more
 - **22 Tcl Templates** for Synopsys (ICC2) and Cadence (Innovus) tools

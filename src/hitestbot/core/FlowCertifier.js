@@ -62,8 +62,8 @@ const CLAUDE_READY_TIMEOUT_MS = 120000;
 // A human glances at both panes. They know Claude is done when the input prompt
 // reappears. They know the EDA tool is busy when new output is scrolling.
 // They answer Claude's questions. They don't stare at a frozen screen for 5 minutes.
-const IDLE_WITH_EDA_ACTIVE_MS = 120000;  // left pane idle but right pane changing — EDA is working
-const IDLE_BOTH_PANES_MS = 30000;        // both panes idle — probably done or stuck
+const IDLE_WITH_EDA_ACTIVE_MS = 180000;  // left pane idle but right pane changing — EDA is working
+const IDLE_BOTH_PANES_MS = 60000;        // both panes idle — Claude may still be thinking (was 30s, too short)
 const EARLY_ABORT_PATTERNS = [           // a human would stop watching if they see these
   /MCP.*not (available|found|configured)/i,
   /no MCP/i,
@@ -561,53 +561,52 @@ export class FlowCertifier {
   _openTerminalOnDesktop() {
     const attachCmd = `tmux -L ${this.socket} attach-session -t ${this.session}`;
 
-    // CentOS 7 uses GNOME. A real human opens gnome-terminal, it appears
-    // at about 2/3 of the desktop, centered — some wallpaper visible around edges.
+    // Detect screen resolution BEFORE opening terminal
+    let screenW = 1920, screenH = 1080;
+    try {
+      const res = execSync(`DISPLAY=${this.display} xdpyinfo 2>/dev/null | grep dimensions | awk '{print $2}'`, {
+        encoding: 'utf-8', timeout: 5000, shell: true,
+      }).trim();
+      if (res.includes('x')) {
+        const [w, h] = res.split('x').map(Number);
+        if (w > 0 && h > 0) { screenW = w; screenH = h; }
+      }
+    } catch { /* use defaults */ }
+
     try {
       execSync(`which gnome-terminal 2>/dev/null`, { encoding: 'utf-8', timeout: 2000 });
     } catch {
-      this._runLog(`WARNING: gnome-terminal not found. HiPilot workspace created but not visible on ${this.display}.`);
+      this._runLog(`WARNING: gnome-terminal not found.`);
       return;
     }
 
-    // Open gnome-terminal
-    execSync(`DISPLAY=${this.display} gnome-terminal --title=HiPilot -- ${attachCmd} &`, {
+    // 80% of desktop. Convert pixels to terminal cols×rows.
+    // Monospace font on CentOS 7 gnome-terminal: ~8px wide, ~17px tall
+    const cols = Math.round(screenW * 0.8 / 8);
+    const rows = Math.round(screenH * 0.8 / 17);
+
+    execSync(`DISPLAY=${this.display} gnome-terminal --title=HiPilot --geometry=${cols}x${rows} -- ${attachCmd} &`, {
       encoding: 'utf-8', timeout: 5000,
       env: { ...process.env, DISPLAY: this.display },
       shell: true,
     });
-    this._runLog(`Opened gnome-terminal on ${this.display}`);
+    this._runLog(`Opened gnome-terminal: ${cols}x${rows} chars (80% of ${screenW}x${screenH})`);
 
-    // Wait for window to appear, then resize to 2/3 desktop centered
+    // Center the window. Try xdotool first (more reliable on CentOS 7), wmctrl as fallback.
     try {
       execSync('sleep 2', { timeout: 5000 });
-
-      // Detect screen resolution
-      let screenW = 1920, screenH = 1080;
-      try {
-        const res = execSync(`DISPLAY=${this.display} xdpyinfo 2>/dev/null | grep dimensions | awk '{print $2}'`, {
-          encoding: 'utf-8', timeout: 5000, shell: true,
-        }).trim();
-        if (res.includes('x')) {
-          const [w, h] = res.split('x').map(Number);
-          if (w > 0 && h > 0) { screenW = w; screenH = h; }
-        }
-      } catch { /* use defaults */ }
-
-      // Full screen minus small margin for visibility (was 2/3, now 95% for 4x larger effective area)
-      const winW = Math.round(screenW * 0.95);
-      const winH = Math.round(screenH * 0.95);
+      const winW = Math.round(screenW * 0.8);
+      const winH = Math.round(screenH * 0.8);
       const posX = Math.round((screenW - winW) / 2);
       const posY = Math.round((screenH - winH) / 2);
-
       execSync(
-        `DISPLAY=${this.display} wmctrl -r HiPilot -b remove,maximized_vert,maximized_horz 2>/dev/null; ` +
-        `DISPLAY=${this.display} wmctrl -r HiPilot -e 0,${posX},${posY},${winW},${winH} 2>/dev/null`,
-        { encoding: 'utf-8', timeout: 5000, shell: true, env: { ...process.env, DISPLAY: this.display } }
+        `DISPLAY=${this.display} xdotool search --name HiPilot windowmove ${posX} ${posY} windowsize ${winW} ${winH} 2>/dev/null || ` +
+        `DISPLAY=${this.display} wmctrl -r HiPilot -e 0,${posX},${posY},${winW},${winH} 2>/dev/null || true`,
+        { encoding: 'utf-8', timeout: 5000, shell: true }
       );
-      this._runLog(`Window: ${winW}x${winH} at (${posX},${posY}) — 2/3 of ${screenW}x${screenH}, centered`);
-    } catch (e) {
-      this._runLog(`wmctrl resize failed: ${e.message} — window uses default size`);
+      this._runLog(`Window centered at (${posX},${posY}), size ${winW}x${winH}`);
+    } catch {
+      this._runLog('Window centering failed — uses default position');
     }
   }
 

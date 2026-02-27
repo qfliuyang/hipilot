@@ -30,7 +30,7 @@ mcp__hipilot-eda__eda.detect_tool({})
 If no tool is running:
 
 ```
-mcp__hipilot-eda__eda.start_tool({tool: "innovus", design_dir: "/home/EDA/hipilot_test/ibex_work_upload"})
+mcp__hipilot-eda__eda.start_tool({tool: "innovus", design_dir: "/home/EDA/ibex_work_upload"})
 ```
 
 ### 2. Load the flow guide

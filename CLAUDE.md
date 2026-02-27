@@ -267,6 +267,6 @@ These rules exist because previous AI coding sessions caused real problems.
 - **OS:** CentOS 7.9 with GNOME desktop
 - **Node.js:** v20.18.3 at `/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin/`
 - **EDA Tools:** Innovus v20.10, ICC2 T-2022.03, PrimeTime T-2022.03
-- **Demo Design:** Ibex RISC-V CPU (Skywater 130nm, ~7000 cells) at `/home/EDA/hipilot_test/ibex_work_upload/`
+- **Demo Design:** Ibex RISC-V CPU (Skywater 130nm, ~7000 cells) at `/home/EDA/ibex_work_upload/`
 - **Deployed HiPilot:** `/home/EDA/hipilot/current/`
 - **Settings:** `~/.claude/settings.json` (MCP server registration — NOT in the repo, created by deployment)
