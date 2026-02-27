@@ -1,741 +1,0 @@
-ffmpeg version 2.8.15 Copyright (c) 2000-2018 the FFmpeg developers
-  built with gcc 4.8.5 (GCC) 20150623 (Red Hat 4.8.5-36)
-  configuration: --prefix=/usr --bindir=/usr/bin --datadir=/usr/share/ffmpeg --incdir=/usr/include/ffmpeg --libdir=/usr/lib64 --mandir=/usr/share/man --arch=x86_64 --optflags='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic' --extra-ldflags='-Wl,-z,relro ' --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3 --enable-bzlib --disable-crystalhd --enable-gnutls --enable-ladspa --enable-libass --enable-libcdio --enable-libdc1394 --enable-libfdk-aac --enable-nonfree --disable-indev=jack --enable-libfreetype --enable-libgsm --enable-libmp3lame --enable-openal --enable-libopenjpeg --enable-libopus --enable-libpulse --enable-libschroedinger --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libvorbis --enable-libv4l2 --enable-libx264 --enable-libx265 --enable-libxvid --enable-x11grab --enable-avfilter --enable-avresample --enable-postproc --enable-pthreads --disable-static --enable-shared --enable-gpl --disable-debug --disable-stripping --shlibdir=/usr/lib64 --enable-runtime-cpudetect
-  libavutil      54. 31.100 / 54. 31.100
-  libavcodec     56. 60.100 / 56. 60.100
-  libavformat    56. 40.101 / 56. 40.101
-  libavdevice    56.  4.100 / 56.  4.100
-  libavfilter     5. 40.101 /  5. 40.101
-  libavresample   2.  1.  0 /  2.  1.  0
-  libswscale      3.  1.101 /  3.  1.101
-  libswresample   1.  2.101 /  1.  2.101
-  libpostproc    53.  3.100 / 53.  3.100
-Input #0, x11grab, from ':0':
-  Duration: N/A, start: 1772134545.066021, bitrate: N/A
-    Stream #0:0: Video: rawvideo (BGR[0] / 0x524742), bgr0, 2560x1542, 10 fps, 10 tbr, 1000k tbn, 10 tbc
-[libx264 @ 0x1614420] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX AVX2 FMA3 LZCNT BMI2
-[libx264 @ 0x1614420] profile High, level 5.0
-[libx264 @ 0x1614420] 264 - core 142 r2495 6a301b6 - H.264/MPEG-4 AVC codec - Copyleft 2003-2014 - http://www.videolan.org/x264.html - options: cabac=1 ref=2 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=6 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=9 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=1 keyint=250 keyint_min=10 scenecut=40 intra_refresh=0 rc_lookahead=30 rc=crf mbtree=1 crf=25.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
-Output #0, mp4, to '/tmp/hipilot-test-evidence/20260226193512/recordings/test_recording.mp4':
-  Metadata:
-    encoder         : Lavf56.40.101
-    Stream #0:0: Video: h264 (libx264) ([33][0][0][0] / 0x0021), yuv420p, 2560x1542, q=-1--1, 10 fps, 10240 tbn, 10 tbc
-    Metadata:
-      encoder         : Lavc56.60.100 libx264
-Stream mapping:
-  Stream #0:0 -> #0:0 (rawvideo (native) -> h264 (libx264))
-Press [q] to stop, [?] for help
-frame=    7 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A    frame=   12 fps= 12 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A    frame=   18 fps= 11 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A    Past duration 0.989967 too large
-Past duration 0.999931 too large
-frame=   25 fps= 11 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.999504 too large
-frame=   30 fps= 11 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=1 drop=0    Past duration 0.999748 too large
-Past duration 0.999809 too large
-Past duration 0.999855 too large
-Past duration 0.999886 too large
-frame=   36 fps= 11 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=1 drop=0    Past duration 0.999794 too large
-Past duration 0.999916 too large
-frame=   41 fps= 11 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.999886 too large
-Past duration 0.999672 too large
-Past duration 0.999702 too large
-Past duration 0.999672 too large
-Past duration 0.999901 too large
-frame=   47 fps= 11 q=27.0 size=     163kB time=00:00:00.20 bitrate=6688.9kbits/s dup=1 drop=0    Past duration 0.999550 too large
-Past duration 0.999977 too large
-Past duration 0.999916 too large
-Past duration 0.999657 too large
-Past duration 0.999886 too large
-Past duration 0.999931 too large
-frame=   53 fps= 11 q=27.0 size=     166kB time=00:00:00.80 bitrate=1699.2kbits/s dup=1 drop=0    Past duration 0.999474 too large
-Past duration 0.999275 too large
-frame=   58 fps= 11 q=27.0 size=     167kB time=00:00:01.30 bitrate=1051.8kbits/s dup=1 drop=0    Past duration 0.999275 too large
-Past duration 0.999840 too large
-Past duration 0.999977 too large
-Past duration 0.999657 too large
-frame=   64 fps= 10 q=27.0 size=     168kB time=00:00:01.90 bitrate= 724.0kbits/s dup=1 drop=0    Past duration 0.999672 too large
-Past duration 0.999809 too large
-frame=   69 fps= 10 q=27.0 size=     169kB time=00:00:02.40 bitrate= 576.5kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999519 too large
-frame=   74 fps= 10 q=27.0 size=     170kB time=00:00:02.90 bitrate= 479.5kbits/s dup=1 drop=0    Past duration 0.999947 too large
-Past duration 0.999763 too large
-Past duration 0.999580 too large
-Past duration 0.999474 too large
-frame=   80 fps= 10 q=27.0 size=     171kB time=00:00:03.50 bitrate= 399.5kbits/s dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.999855 too large
-Past duration 0.999947 too large
-frame=   85 fps= 10 q=27.0 size=     172kB time=00:00:04.00 bitrate= 351.6kbits/s dup=1 drop=0    Past duration 0.999733 too large
-Past duration 0.999809 too large
-Past duration 0.999794 too large
-Past duration 0.999947 too large
-frame=   91 fps= 10 q=27.0 size=     173kB time=00:00:04.60 bitrate= 307.4kbits/s dup=1 drop=0    Past duration 0.999748 too large
-Past duration 0.999947 too large
-Past duration 0.999870 too large
-frame=   97 fps= 10 q=27.0 size=     174kB time=00:00:05.20 bitrate= 273.7kbits/s dup=1 drop=0    Past duration 0.999855 too large
-Past duration 0.999916 too large
-frame=  103 fps= 10 q=27.0 size=     175kB time=00:00:05.80 bitrate= 246.7kbits/s dup=1 drop=0    Past duration 0.999718 too large
-Past duration 0.999916 too large
-Past duration 0.999641 too large
-frame=  108 fps= 10 q=27.0 size=     175kB time=00:00:06.30 bitrate= 228.2kbits/s dup=1 drop=0    Past duration 0.999947 too large
-Past duration 0.999809 too large
-Past duration 0.999565 too large
-frame=  114 fps= 10 q=27.0 size=     177kB time=00:00:06.90 bitrate= 209.7kbits/s dup=1 drop=0    Past duration 0.999168 too large
-Past duration 0.999382 too large
-Past duration 0.999947 too large
-Past duration 0.999962 too large
-frame=  119 fps= 10 q=27.0 size=     177kB time=00:00:07.40 bitrate= 196.4kbits/s dup=1 drop=0    Past duration 0.999565 too large
-Past duration 0.999901 too large
-Past duration 0.999809 too large
-Past duration 0.999916 too large
-Past duration 0.999687 too large
-frame=  125 fps= 10 q=27.0 size=     179kB time=00:00:08.00 bitrate= 182.8kbits/s dup=1 drop=0    Past duration 0.988289 too large
-Past duration 0.999138 too large
-Past duration 0.660286 too large
-frame=  130 fps= 10 q=27.0 size=     179kB time=00:00:08.50 bitrate= 172.8kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999947 too large
-Past duration 0.999565 too large
-Past duration 0.999733 too large
-Past duration 0.999992 too large
-frame=  137 fps= 10 q=27.0 size=     181kB time=00:00:09.20 bitrate= 160.8kbits/s dup=1 drop=0    Past duration 0.999931 too large
-frame=  142 fps= 10 q=27.0 size=     181kB time=00:00:09.70 bitrate= 153.2kbits/s dup=1 drop=0    Past duration 0.999794 too large
-Past duration 0.999962 too large
-frame=  148 fps= 10 q=27.0 size=     182kB time=00:00:10.30 bitrate= 145.0kbits/s dup=1 drop=0    Past duration 0.999794 too large
-frame=  154 fps= 10 q=27.0 size=     183kB time=00:00:10.90 bitrate= 137.9kbits/s dup=1 drop=0    Past duration 0.999779 too large
-Past duration 0.999474 too large
-Past duration 0.999840 too large
-frame=  159 fps= 10 q=27.0 size=     184kB time=00:00:11.40 bitrate= 132.4kbits/s dup=1 drop=0    Past duration 0.999763 too large
-Past duration 0.999977 too large
-frame=  165 fps= 10 q=27.0 size=     185kB time=00:00:12.00 bitrate= 126.5kbits/s dup=1 drop=0    Past duration 0.999718 too large
-Past duration 0.999962 too large
-frame=  170 fps= 10 q=27.0 size=     186kB time=00:00:12.50 bitrate= 122.0kbits/s dup=1 drop=0    Past duration 0.999931 too large
-Past duration 0.999977 too large
-    Last message repeated 1 times
-frame=  176 fps= 10 q=27.0 size=     187kB time=00:00:13.10 bitrate= 117.0kbits/s dup=1 drop=0    Past duration 0.999718 too large
-frame=  181 fps= 10 q=27.0 size=     188kB time=00:00:13.60 bitrate= 113.3kbits/s dup=1 drop=0    Past duration 0.999779 too large
-Past duration 0.999718 too large
-Past duration 0.999977 too large
-Past duration 0.999962 too large
-frame=  187 fps= 10 q=27.0 size=     189kB time=00:00:14.20 bitrate= 109.1kbits/s dup=1 drop=0    Past duration 0.999702 too large
-frame=  192 fps= 10 q=27.0 size=     190kB time=00:00:14.70 bitrate= 105.8kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.998894 too large
-Past duration 0.999977 too large
-Past duration 0.999809 too large
-frame=  198 fps= 10 q=27.0 size=     191kB time=00:00:15.30 bitrate= 102.3kbits/s dup=1 drop=0    Past duration 0.999748 too large
-frame=  203 fps= 10 q=27.0 size=     192kB time=00:00:15.80 bitrate=  99.5kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999641 too large
-frame=  208 fps= 10 q=27.0 size=     193kB time=00:00:16.30 bitrate=  96.8kbits/s dup=1 drop=0    Past duration 0.999977 too large
-frame=  214 fps= 10 q=27.0 size=     194kB time=00:00:16.90 bitrate=  93.9kbits/s dup=1 drop=0    Past duration 0.999687 too large
-Past duration 0.999840 too large
-frame=  219 fps= 10 q=27.0 size=     195kB time=00:00:17.40 bitrate=  91.6kbits/s dup=1 drop=0    Past duration 0.999931 too large
-Past duration 0.999611 too large
-Past duration 0.999977 too large
-frame=  225 fps= 10 q=27.0 size=     196kB time=00:00:18.00 bitrate=  89.1kbits/s dup=1 drop=0    Past duration 0.999886 too large
-Past duration 0.999535 too large
-Past duration 0.999718 too large
-frame=  230 fps= 10 q=27.0 size=     197kB time=00:00:18.50 bitrate=  87.0kbits/s dup=1 drop=0    Past duration 0.999611 too large
-frame=  236 fps= 10 q=27.0 size=     197kB time=00:00:19.10 bitrate=  84.7kbits/s dup=1 drop=0    Past duration 0.999657 too large
-frame=  241 fps= 10 q=27.0 size=     198kB time=00:00:19.60 bitrate=  82.9kbits/s dup=1 drop=0    Past duration 0.999062 too large
-frame=  246 fps= 10 q=27.0 size=     199kB time=00:00:20.10 bitrate=  81.2kbits/s dup=1 drop=0    Past duration 0.999947 too large
-frame=  252 fps= 10 q=27.0 size=     200kB time=00:00:20.70 bitrate=  79.2kbits/s dup=1 drop=0    Past duration 0.999352 too large
-Past duration 0.999748 too large
-frame=  257 fps= 10 q=27.0 size=     201kB time=00:00:21.20 bitrate=  77.7kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999779 too large
-Past duration 0.999367 too large
-Past duration 0.999962 too large
-Past duration 0.999840 too large
-frame=  263 fps= 10 q=27.0 size=     202kB time=00:00:21.80 bitrate=  76.0kbits/s dup=1 drop=0    Past duration 0.999947 too large
-Past duration 0.999855 too large
-frame=  268 fps= 10 q=27.0 size=     203kB time=00:00:22.30 bitrate=  74.6kbits/s dup=1 drop=0    Past duration 0.999840 too large
-Past duration 0.999718 too large
-frame=  274 fps= 10 q=27.0 size=     204kB time=00:00:22.90 bitrate=  73.0kbits/s dup=1 drop=0    Past duration 0.999825 too large
-Past duration 0.999855 too large
-Past duration 0.999138 too large
-frame=  279 fps= 10 q=27.0 size=     205kB time=00:00:23.40 bitrate=  71.7kbits/s dup=1 drop=0    Past duration 0.999657 too large
-    Last message repeated 1 times
-frame=  285 fps= 10 q=27.0 size=     206kB time=00:00:24.00 bitrate=  70.3kbits/s dup=1 drop=0    Past duration 0.999809 too large
-Past duration 0.999840 too large
-Past duration 0.999809 too large
-frame=  290 fps= 10 q=27.0 size=     207kB time=00:00:24.50 bitrate=  69.2kbits/s dup=1 drop=0    Past duration 0.999962 too large
-frame=  296 fps= 10 q=27.0 size=     411kB time=00:00:25.10 bitrate= 134.2kbits/s dup=1 drop=0    Past duration 0.999931 too large
-Past duration 0.999901 too large
-frame=  301 fps= 10 q=27.0 size=     412kB time=00:00:25.60 bitrate= 131.9kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999962 too large
-Past duration 0.999977 too large
-frame=  307 fps= 10 q=27.0 size=     413kB time=00:00:26.20 bitrate= 129.2kbits/s dup=1 drop=0    Past duration 0.999748 too large
-Past duration 0.999840 too large
-Past duration 0.999611 too large
-Past duration 0.999748 too large
-frame=  312 fps= 10 q=27.0 size=     414kB time=00:00:26.70 bitrate= 127.0kbits/s dup=1 drop=0    Past duration 0.999840 too large
-Past duration 0.999763 too large
-frame=  318 fps= 10 q=27.0 size=     415kB time=00:00:27.30 bitrate= 124.5kbits/s dup=1 drop=0    Past duration 0.999260 too large
-Past duration 0.999809 too large
-    Last message repeated 1 times
-Past duration 0.999977 too large
-Past duration 0.999687 too large
-Past duration 0.999977 too large
-frame=  324 fps= 10 q=27.0 size=     416kB time=00:00:27.90 bitrate= 122.1kbits/s dup=1 drop=0    Past duration 0.999763 too large
-Past duration 0.999596 too large
-frame=  329 fps= 10 q=27.0 size=     417kB time=00:00:28.40 bitrate= 120.2kbits/s dup=1 drop=0    Past duration 0.999855 too large
-Past duration 0.999962 too large
-Past duration 0.999977 too large
-frame=  335 fps= 10 q=27.0 size=     417kB time=00:00:29.00 bitrate= 117.9kbits/s dup=1 drop=0    Past duration 0.999809 too large
-Past duration 0.999886 too large
-frame=  340 fps= 10 q=27.0 size=     418kB time=00:00:29.50 bitrate= 116.1kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999947 too large
-frame=  346 fps= 10 q=27.0 size=     419kB time=00:00:30.10 bitrate= 114.0kbits/s dup=1 drop=0    Past duration 0.999306 too large
-Past duration 0.999550 too large
-frame=  352 fps= 10 q=27.0 size=     420kB time=00:00:30.70 bitrate= 112.0kbits/s dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.999474 too large
-frame=  357 fps= 10 q=27.0 size=     421kB time=00:00:31.20 bitrate= 110.4kbits/s dup=1 drop=0    Past duration 0.999855 too large
-Past duration 0.999657 too large
-frame=  363 fps= 10 q=27.0 size=     421kB time=00:00:31.80 bitrate= 108.6kbits/s dup=1 drop=0    Past duration 0.998741 too large
-Past duration 0.997612 too large
-Past duration 0.999916 too large
-Past duration 0.999657 too large
-Past duration 0.998924 too large
-frame=  369 fps= 10 q=27.0 size=     422kB time=00:00:32.40 bitrate= 106.8kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999306 too large
-Past duration 0.999657 too large
-frame=  375 fps= 10 q=27.0 size=     423kB time=00:00:33.00 bitrate= 105.0kbits/s dup=1 drop=0    Past duration 0.999931 too large
-Past duration 0.999870 too large
-Past duration 0.999077 too large
-Past duration 0.999565 too large
-frame=  381 fps= 10 q=27.0 size=     424kB time=00:00:33.60 bitrate= 103.4kbits/s dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.999840 too large
-Past duration 0.999947 too large
-Past duration 0.999641 too large
-frame=  387 fps= 10 q=27.0 size=     425kB time=00:00:34.20 bitrate= 101.8kbits/s dup=1 drop=0    Past duration 0.999397 too large
-Past duration 0.999550 too large
-Past duration 0.999977 too large
-    Last message repeated 1 times
-frame=  393 fps= 10 q=27.0 size=     426kB time=00:00:34.80 bitrate= 100.2kbits/s dup=1 drop=0    Past duration 0.999886 too large
-    Last message repeated 1 times
-Past duration 0.999840 too large
-frame=  398 fps= 10 q=27.0 size=     426kB time=00:00:35.30 bitrate=  99.0kbits/s dup=1 drop=0    frame=  403 fps= 10 q=27.0 size=     427kB time=00:00:35.80 bitrate=  97.7kbits/s dup=1 drop=0    Past duration 0.999992 too large
-Past duration 0.999779 too large
-Past duration 0.999916 too large
-Past duration 0.999947 too large
-frame=  409 fps= 10 q=27.0 size=     428kB time=00:00:36.40 bitrate=  96.3kbits/s dup=1 drop=0    Past duration 0.999825 too large
-Past duration 0.999916 too large
-frame=  415 fps= 10 q=27.0 size=     429kB time=00:00:37.00 bitrate=  95.0kbits/s dup=1 drop=0    Past duration 0.999870 too large
-Past duration 0.999702 too large
-Past duration 0.999809 too large
-Past duration 0.999886 too large
-frame=  420 fps= 10 q=27.0 size=     430kB time=00:00:37.50 bitrate=  93.8kbits/s dup=1 drop=0    Past duration 0.999840 too large
-frame=  425 fps= 10 q=27.0 size=     430kB time=00:00:38.00 bitrate=  92.8kbits/s dup=1 drop=0    Past duration 0.999947 too large
-frame=  431 fps= 10 q=27.0 size=     431kB time=00:00:38.60 bitrate=  91.5kbits/s dup=1 drop=0    Past duration 0.999916 too large
-Past duration 0.999229 too large
-Past duration 0.999550 too large
-Past duration 0.999565 too large
-Past duration 0.999809 too large
-frame=  437 fps= 10 q=27.0 size=     432kB time=00:00:39.20 bitrate=  90.3kbits/s dup=1 drop=0    Past duration 0.999550 too large
-Past duration 0.999809 too large
-Past duration 0.999855 too large
-Past duration 0.999916 too large
-Past duration 0.999855 too large
-frame=  443 fps= 10 q=27.0 size=     433kB time=00:00:39.80 bitrate=  89.1kbits/s dup=1 drop=0    Past duration 0.999489 too large
-Past duration 0.999748 too large
-Past duration 0.999886 too large
-Past duration 0.999611 too large
-Past duration 0.999565 too large
-frame=  449 fps= 10 q=27.0 size=     434kB time=00:00:40.40 bitrate=  88.0kbits/s dup=1 drop=0    Past duration 0.999626 too large
-Past duration 0.999977 too large
-frame=  455 fps= 10 q=27.0 size=     435kB time=00:00:41.00 bitrate=  86.8kbits/s dup=1 drop=0    Past duration 0.999840 too large
-frame=  460 fps= 10 q=27.0 size=     435kB time=00:00:41.50 bitrate=  85.9kbits/s dup=1 drop=0    Past duration 0.999870 too large
-Past duration 0.999947 too large
-Past duration 0.999916 too large
-Past duration 0.999535 too large
-frame=  466 fps= 10 q=27.0 size=     436kB time=00:00:42.10 bitrate=  84.9kbits/s dup=1 drop=0    Past duration 0.999718 too large
-Past duration 0.999687 too large
-frame=  471 fps= 10 q=27.0 size=     437kB time=00:00:42.60 bitrate=  84.0kbits/s dup=1 drop=0    Past duration 0.999916 too large
-Past duration 0.999428 too large
-Past duration 0.999962 too large
-Past duration 0.999779 too large
-Past duration 0.999916 too large
-frame=  477 fps= 10 q=27.0 size=     438kB time=00:00:43.20 bitrate=  83.0kbits/s dup=1 drop=0    Past duration 0.999947 too large
-Past duration 0.999763 too large
-Past duration 0.999657 too large
-Past duration 0.999977 too large
-Past duration 0.999947 too large
-frame=  483 fps= 10 q=27.0 size=     439kB time=00:00:43.80 bitrate=  82.0kbits/s dup=1 drop=0    Past duration 0.999947 too large
-Past duration 0.999962 too large
-Past duration 0.999748 too large
-Past duration 0.999870 too large
-Past duration 0.999840 too large
-frame=  488 fps= 10 q=27.0 size=     439kB time=00:00:44.30 bitrate=  81.2kbits/s dup=1 drop=0    Past duration 0.999947 too large
-Past duration 0.993156 too large
-frame=  493 fps= 10 q=27.0 size=     440kB time=00:00:44.80 bitrate=  80.5kbits/s dup=1 drop=0    Past duration 0.860802 too large
-Past duration 0.999611 too large
-Past duration 0.999901 too large
-frame=  500 fps= 10 q=27.0 size=     441kB time=00:00:45.50 bitrate=  79.4kbits/s dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.987694 too large
-Past duration 0.999916 too large
-frame=  506 fps= 10 q=27.0 size=     442kB time=00:00:46.10 bitrate=  78.5kbits/s dup=1 drop=0    frame=  512 fps= 10 q=27.0 size=     443kB time=00:00:46.70 bitrate=  77.7kbits/s dup=1 drop=0    Past duration 0.999870 too large
-frame=  517 fps= 10 q=27.0 size=     443kB time=00:00:47.20 bitrate=  77.0kbits/s dup=1 drop=0    Past duration 0.999855 too large
-Past duration 0.999947 too large
-frame=  523 fps= 10 q=27.0 size=     444kB time=00:00:47.80 bitrate=  76.2kbits/s dup=1 drop=0    Past duration 0.999763 too large
-Past duration 0.999855 too large
-Past duration 0.999352 too large
-frame=  529 fps= 10 q=27.0 size=     445kB time=00:00:48.40 bitrate=  75.4kbits/s dup=1 drop=0    Past duration 0.999916 too large
-frame=  535 fps= 10 q=27.0 size=     446kB time=00:00:49.00 bitrate=  74.6kbits/s dup=1 drop=0    Past duration 0.999779 too large
-Past duration 0.999886 too large
-frame=  540 fps= 10 q=27.0 size=     447kB time=00:00:49.50 bitrate=  73.9kbits/s dup=1 drop=0    Past duration 0.999992 too large
-Past duration 0.999962 too large
-Past duration 0.999977 too large
-Past duration 0.999794 too large
-frame=  546 fps= 10 q=27.0 size=     651kB time=00:00:50.10 bitrate= 106.5kbits/s dup=1 drop=0    Past duration 0.999565 too large
-Past duration 0.999779 too large
-Past duration 0.999840 too large
-frame=  552 fps= 10 q=27.0 size=     652kB time=00:00:50.70 bitrate= 105.4kbits/s dup=1 drop=0    Past duration 0.999809 too large
-Past duration 0.999077 too large
-Past duration 0.999809 too large
-frame=  557 fps= 10 q=27.0 size=     653kB time=00:00:51.20 bitrate= 104.5kbits/s dup=1 drop=0    Past duration 0.999596 too large
-frame=  563 fps= 10 q=27.0 size=     654kB time=00:00:51.80 bitrate= 103.5kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999886 too large
-Past duration 0.999229 too large
-frame=  569 fps= 10 q=27.0 size=     655kB time=00:00:52.40 bitrate= 102.4kbits/s dup=1 drop=0    Past duration 0.999702 too large
-Past duration 0.999809 too large
-Past duration 0.999886 too large
-frame=  575 fps= 10 q=27.0 size=     656kB time=00:00:53.00 bitrate= 101.4kbits/s dup=1 drop=0    Past duration 0.999718 too large
-Past duration 0.999870 too large
-frame=  580 fps= 10 q=27.0 size=     657kB time=00:00:53.50 bitrate= 100.6kbits/s dup=1 drop=0    Past duration 0.999977 too large
-    Last message repeated 1 times
-frame=  586 fps= 10 q=27.0 size=     658kB time=00:00:54.10 bitrate=  99.6kbits/s dup=1 drop=0    Past duration 0.999718 too large
-Past duration 0.999992 too large
-Past duration 0.999886 too large
-frame=  591 fps= 10 q=27.0 size=     658kB time=00:00:54.60 bitrate=  98.8kbits/s dup=1 drop=0    Past duration 0.999947 too large
-frame=  597 fps= 10 q=27.0 size=     659kB time=00:00:55.20 bitrate=  97.8kbits/s dup=1 drop=0    Past duration 0.999458 too large
-Past duration 0.999992 too large
-    Last message repeated 1 times
-Past duration 0.999748 too large
-frame=  603 fps= 10 q=27.0 size=     660kB time=00:00:55.80 bitrate=  96.9kbits/s dup=1 drop=0    Past duration 0.999565 too large
-Past duration 0.999641 too large
-Past duration 0.999779 too large
-frame=  609 fps= 10 q=27.0 size=     661kB time=00:00:56.40 bitrate=  96.0kbits/s dup=1 drop=0    Past duration 0.999916 too large
-Past duration 0.999748 too large
-frame=  615 fps= 10 q=27.0 size=     662kB time=00:00:57.00 bitrate=  95.1kbits/s dup=1 drop=0    Past duration 0.999947 too large
-Past duration 0.999931 too large
-Past duration 0.999168 too large
-Past duration 0.999916 too large
-frame=  620 fps= 10 q=27.0 size=     662kB time=00:00:57.50 bitrate=  94.4kbits/s dup=1 drop=0    Past duration 0.999947 too large
-Past duration 0.999825 too large
-Past duration 0.999779 too large
-frame=  625 fps= 10 q=27.0 size=     663kB time=00:00:58.00 bitrate=  93.7kbits/s dup=1 drop=0    Past duration 0.999733 too large
-Past duration 0.999550 too large
-Past duration 0.999855 too large
-Past duration 0.999397 too large
-frame=  631 fps= 10 q=27.0 size=     664kB time=00:00:58.60 bitrate=  92.8kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999855 too large
-Past duration 0.999886 too large
-Past duration 0.999947 too large
-frame=  637 fps= 10 q=27.0 size=     665kB time=00:00:59.20 bitrate=  92.0kbits/s dup=1 drop=0    Past duration 0.999779 too large
-Past duration 0.999977 too large
-Past duration 0.999916 too large
-frame=  643 fps= 10 q=27.0 size=     666kB time=00:00:59.80 bitrate=  91.2kbits/s dup=1 drop=0    Past duration 0.999916 too large
-Past duration 0.999840 too large
-frame=  649 fps= 10 q=27.0 size=     667kB time=00:01:00.40 bitrate=  90.4kbits/s dup=1 drop=0    frame=  655 fps= 10 q=27.0 size=     667kB time=00:01:01.00 bitrate=  89.6kbits/s dup=1 drop=0    Past duration 0.999825 too large
-frame=  660 fps= 10 q=27.0 size=     668kB time=00:01:01.50 bitrate=  89.0kbits/s dup=1 drop=0    frame=  666 fps= 10 q=27.0 size=     669kB time=00:01:02.10 bitrate=  88.3kbits/s dup=1 drop=0    frame=  671 fps= 10 q=27.0 size=     670kB time=00:01:02.60 bitrate=  87.6kbits/s dup=1 drop=0    Past duration 0.999947 too large
-frame=  677 fps= 10 q=27.0 size=     671kB time=00:01:03.20 bitrate=  86.9kbits/s dup=1 drop=0    frame=  682 fps= 10 q=27.0 size=     671kB time=00:01:03.70 bitrate=  86.3kbits/s dup=1 drop=0    frame=  688 fps= 10 q=27.0 size=     672kB time=00:01:04.30 bitrate=  85.6kbits/s dup=1 drop=0    Past duration 0.999886 too large
-Past duration 0.999657 too large
-Past duration 0.999886 too large
-Past duration 0.999947 too large
-frame=  693 fps= 10 q=27.0 size=     673kB time=00:01:04.80 bitrate=  85.1kbits/s dup=1 drop=0    Past duration 0.999962 too large
-frame=  699 fps= 10 q=27.0 size=     674kB time=00:01:05.40 bitrate=  84.4kbits/s dup=1 drop=0    Past duration 0.999992 too large
-Past duration 0.999931 too large
-Past duration 0.999992 too large
-frame=  705 fps= 10 q=27.0 size=     675kB time=00:01:06.00 bitrate=  83.7kbits/s dup=1 drop=0    frame=  710 fps= 10 q=27.0 size=     675kB time=00:01:06.50 bitrate=  83.2kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999550 too large
-Past duration 0.999870 too large
-Past duration 0.999916 too large
-frame=  716 fps= 10 q=27.0 size=     676kB time=00:01:07.10 bitrate=  82.6kbits/s dup=1 drop=0    Past duration 0.999855 too large
-Past duration 0.999825 too large
-frame=  721 fps= 10 q=27.0 size=     677kB time=00:01:07.60 bitrate=  82.0kbits/s dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.999977 too large
-    Last message repeated 1 times
-Past duration 0.999794 too large
-frame=  727 fps= 10 q=27.0 size=     678kB time=00:01:08.20 bitrate=  81.4kbits/s dup=1 drop=0    Past duration 0.999931 too large
-Past duration 0.999687 too large
-Past duration 0.999916 too large
-frame=  733 fps= 10 q=27.0 size=     679kB time=00:01:08.80 bitrate=  80.8kbits/s dup=1 drop=0    Past duration 0.999870 too large
-Past duration 0.999977 too large
-Past duration 0.999550 too large
-frame=  739 fps= 10 q=27.0 size=     679kB time=00:01:09.40 bitrate=  80.2kbits/s dup=1 drop=0    Past duration 0.999901 too large
-Past duration 0.999977 too large
-    Last message repeated 1 times
-Past duration 0.999962 too large
-frame=  745 fps= 10 q=27.0 size=     680kB time=00:01:10.00 bitrate=  79.6kbits/s dup=1 drop=0    Past duration 0.999931 too large
-Past duration 0.999916 too large
-    Last message repeated 1 times
-frame=  750 fps= 10 q=27.0 size=     681kB time=00:01:10.50 bitrate=  79.1kbits/s dup=1 drop=0    Past duration 0.999535 too large
-frame=  755 fps= 10 q=27.0 size=     682kB time=00:01:11.00 bitrate=  78.7kbits/s dup=1 drop=0    Past duration 0.998436 too large
-Past duration 0.999092 too large
-Past duration 0.999931 too large
-frame=  760 fps= 10 q=27.0 size=     682kB time=00:01:11.50 bitrate=  78.2kbits/s dup=1 drop=0    Past duration 0.999611 too large
-Past duration 0.999977 too large
-    Last message repeated 1 times
-frame=  766 fps= 10 q=27.0 size=     683kB time=00:01:12.10 bitrate=  77.6kbits/s dup=1 drop=0    Past duration 0.999947 too large
-    Last message repeated 1 times
-frame=  771 fps= 10 q=27.0 size=     684kB time=00:01:12.60 bitrate=  77.2kbits/s dup=1 drop=0    Past duration 0.999626 too large
-Past duration 0.999901 too large
-Past duration 0.999977 too large
-frame=  776 fps= 10 q=27.0 size=     685kB time=00:01:13.10 bitrate=  76.7kbits/s dup=1 drop=0    Past duration 0.999779 too large
-Past duration 0.999580 too large
-frame=  781 fps= 10 q=27.0 size=     686kB time=00:01:13.60 bitrate=  76.3kbits/s dup=1 drop=0    Past duration 0.999107 too large
-frame=  786 fps= 10 q=24.0 size=     686kB time=00:01:14.10 bitrate=  75.9kbits/s dup=1 drop=0    Past duration 0.999763 too large
-frame=  792 fps= 10 q=27.0 size=     687kB time=00:01:14.70 bitrate=  75.3kbits/s dup=1 drop=0    Past duration 0.999718 too large
-Past duration 0.999947 too large
-Past duration 0.999992 too large
-Past duration 0.999763 too large
-frame=  797 fps= 10 q=27.0 size=     891kB time=00:01:15.20 bitrate=  97.1kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999916 too large
-Past duration 0.999580 too large
-frame=  802 fps= 10 q=27.0 size=     892kB time=00:01:15.70 bitrate=  96.6kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999931 too large
-Past duration 0.999977 too large
-frame=  808 fps= 10 q=27.0 size=     893kB time=00:01:16.30 bitrate=  95.9kbits/s dup=1 drop=0    Past duration 0.999748 too large
-Past duration 0.999870 too large
-frame=  814 fps= 10 q=27.0 size=     894kB time=00:01:16.90 bitrate=  95.3kbits/s dup=1 drop=0    Past duration 0.999947 too large
-Past duration 0.999458 too large
-Past duration 0.999779 too large
-frame=  819 fps= 10 q=27.0 size=     895kB time=00:01:17.40 bitrate=  94.7kbits/s dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.999763 too large
-frame=  825 fps= 10 q=27.0 size=     896kB time=00:01:18.00 bitrate=  94.1kbits/s dup=1 drop=0    Past duration 0.999702 too large
-Past duration 0.999779 too large
-Past duration 0.999840 too large
-frame=  830 fps= 10 q=27.0 size=     896kB time=00:01:18.50 bitrate=  93.5kbits/s dup=1 drop=0    Past duration 0.999718 too large
-    Last message repeated 1 times
-Past duration 0.999947 too large
-Past duration 0.999962 too large
-frame=  836 fps= 10 q=27.0 size=     897kB time=00:01:19.10 bitrate=  92.9kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999809 too large
-Past duration 0.999901 too large
-Past duration 0.999840 too large
-    Last message repeated 1 times
-frame=  841 fps= 10 q=27.0 size=     898kB time=00:01:19.60 bitrate=  92.4kbits/s dup=1 drop=0    Past duration 0.999977 too large
-    Last message repeated 1 times
-Past duration 0.999672 too large
-Past duration 0.999977 too large
-frame=  847 fps= 10 q=27.0 size=     899kB time=00:01:20.20 bitrate=  91.8kbits/s dup=1 drop=0    Past duration 0.999840 too large
-Past duration 0.999519 too large
-frame=  852 fps= 10 q=27.0 size=     899kB time=00:01:20.70 bitrate=  91.3kbits/s dup=1 drop=0    Past duration 0.999916 too large
-Past duration 0.999489 too large
-frame=  857 fps= 10 q=27.0 size=     900kB time=00:01:21.20 bitrate=  90.8kbits/s dup=1 drop=0    Past duration 0.999840 too large
-Past duration 0.999016 too large
-frame=  863 fps= 10 q=27.0 size=     901kB time=00:01:21.80 bitrate=  90.2kbits/s dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.999641 too large
-frame=  869 fps= 10 q=27.0 size=     902kB time=00:01:22.40 bitrate=  89.6kbits/s dup=1 drop=0    Past duration 0.999977 too large
-    Last message repeated 1 times
-frame=  875 fps= 10 q=27.0 size=     902kB time=00:01:23.00 bitrate=  89.1kbits/s dup=1 drop=0    Past duration 0.999779 too large
-    Last message repeated 1 times
-frame=  880 fps= 10 q=27.0 size=     903kB time=00:01:23.50 bitrate=  88.6kbits/s dup=1 drop=0    Past duration 0.999077 too large
-Past duration 0.999977 too large
-    Last message repeated 1 times
-Past duration 0.999809 too large
-frame=  886 fps= 10 q=27.0 size=     904kB time=00:01:24.10 bitrate=  88.0kbits/s dup=1 drop=0    Past duration 0.999260 too large
-Past duration 0.999947 too large
-Past duration 0.999977 too large
-    Last message repeated 1 times
-frame=  892 fps= 10 q=27.0 size=     905kB time=00:01:24.70 bitrate=  87.5kbits/s dup=1 drop=0    Past duration 0.999809 too large
-Past duration 0.999947 too large
-Past duration 0.999672 too large
-frame=  898 fps= 10 q=27.0 size=     905kB time=00:01:25.30 bitrate=  86.9kbits/s dup=1 drop=0    Past duration 0.999947 too large
-Past duration 0.999886 too large
-Past duration 0.999947 too large
-frame=  904 fps= 10 q=27.0 size=     906kB time=00:01:25.90 bitrate=  86.4kbits/s dup=1 drop=0    Past duration 0.999855 too large
-Past duration 0.999947 too large
-frame=  909 fps= 10 q=27.0 size=     907kB time=00:01:26.40 bitrate=  86.0kbits/s dup=1 drop=0    Past duration 0.999733 too large
-Past duration 0.999977 too large
-Past duration 0.999886 too large
-frame=  914 fps= 10 q=27.0 size=     907kB time=00:01:26.90 bitrate=  85.5kbits/s dup=1 drop=0    Past duration 0.999489 too large
-Past duration 0.999947 too large
-Past duration 0.999977 too large
-Past duration 0.999870 too large
-Past duration 0.999626 too large
-frame=  920 fps= 10 q=27.0 size=     908kB time=00:01:27.50 bitrate=  85.0kbits/s dup=1 drop=0    Past duration 0.999657 too large
-Past duration 0.999916 too large
-Past duration 0.999947 too large
-Past duration 0.999916 too large
-frame=  926 fps= 10 q=27.0 size=     909kB time=00:01:28.10 bitrate=  84.5kbits/s dup=1 drop=0    Past duration 0.999596 too large
-frame=  931 fps= 10 q=27.0 size=     910kB time=00:01:28.60 bitrate=  84.1kbits/s dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.999931 too large
-Past duration 0.999947 too large
-Past duration 0.999916 too large
-frame=  937 fps= 10 q=27.0 size=     911kB time=00:01:29.20 bitrate=  83.6kbits/s dup=1 drop=0    Past duration 0.999870 too large
-frame=  943 fps= 10 q=27.0 size=     911kB time=00:01:29.80 bitrate=  83.1kbits/s dup=1 drop=0    Past duration 0.999718 too large
-Past duration 0.999977 too large
-frame=  949 fps= 10 q=27.0 size=     912kB time=00:01:30.40 bitrate=  82.7kbits/s dup=1 drop=0    Past duration 0.999916 too large
-Past duration 0.999962 too large
-Past duration 0.999519 too large
-frame=  955 fps= 10 q=27.0 size=     913kB time=00:01:31.00 bitrate=  82.2kbits/s dup=1 drop=0    Past duration 0.998909 too large
-Past duration 0.999168 too large
-Past duration 0.999428 too large
-frame=  960 fps= 10 q=27.0 size=     914kB time=00:01:31.50 bitrate=  81.8kbits/s dup=1 drop=0    Past duration 0.999840 too large
-Past duration 0.999565 too large
-frame=  966 fps= 10 q=27.0 size=     914kB time=00:01:32.10 bitrate=  81.3kbits/s dup=1 drop=0    Past duration 0.999855 too large
-frame=  971 fps= 10 q=27.0 size=     915kB time=00:01:32.60 bitrate=  81.0kbits/s dup=1 drop=0    Past duration 0.999535 too large
-Past duration 0.999977 too large
-Past duration 0.999992 too large
-Past duration 0.999382 too large
-frame=  977 fps= 10 q=27.0 size=     916kB time=00:01:33.20 bitrate=  80.5kbits/s dup=1 drop=0    Past duration 0.999886 too large
-Past duration 0.999626 too large
-frame=  982 fps= 10 q=27.0 size=     917kB time=00:01:33.70 bitrate=  80.1kbits/s dup=1 drop=0    Past duration 0.999397 too large
-Past duration 0.999947 too large
-Past duration 0.999886 too large
-Past duration 0.999779 too large
-frame=  988 fps= 10 q=27.0 size=     917kB time=00:01:34.30 bitrate=  79.7kbits/s dup=1 drop=0    Past duration 0.999916 too large
-frame=  994 fps= 10 q=27.0 size=     918kB time=00:01:34.90 bitrate=  79.3kbits/s dup=1 drop=0    Past duration 0.999748 too large
-frame=  999 fps= 10 q=27.0 size=     919kB time=00:01:35.40 bitrate=  78.9kbits/s dup=1 drop=0    frame= 1005 fps= 10 q=27.0 size=     920kB time=00:01:36.00 bitrate=  78.5kbits/s dup=1 drop=0    frame= 1010 fps= 10 q=27.0 size=     920kB time=00:01:36.50 bitrate=  78.1kbits/s dup=1 drop=0    frame= 1016 fps= 10 q=27.0 size=     921kB time=00:01:37.10 bitrate=  77.7kbits/s dup=1 drop=0    Past duration 0.999809 too large
-frame= 1021 fps= 10 q=27.0 size=     922kB time=00:01:37.60 bitrate=  77.4kbits/s dup=1 drop=0    Past duration 0.923393 too large
-Past duration 0.999336 too large
-Past duration 0.999901 too large
-Past duration 0.999947 too large
-Past duration 0.999886 too large
-Past duration 0.999992 too large
-frame= 1027 fps= 10 q=27.0 size=     923kB time=00:01:38.20 bitrate=  77.0kbits/s dup=1 drop=0    Past duration 0.999367 too large
-frame= 1033 fps= 10 q=27.0 size=     923kB time=00:01:38.80 bitrate=  76.6kbits/s dup=1 drop=0    Past duration 0.999367 too large
-Past duration 0.999947 too large
-Past duration 0.999519 too large
-Past duration 0.999916 too large
-Past duration 0.999840 too large
-frame= 1039 fps= 10 q=27.0 size=     924kB time=00:01:39.40 bitrate=  76.2kbits/s dup=1 drop=0    Past duration 0.999718 too large
-Past duration 0.999947 too large
-Past duration 0.999992 too large
-frame= 1045 fps= 10 q=27.0 size=    1129kB time=00:01:40.00 bitrate=  92.5kbits/s dup=1 drop=0    Past duration 0.999931 too large
-Past duration 0.999107 too large
-Past duration 0.999992 too large
-frame= 1050 fps= 10 q=27.0 size=    1130kB time=00:01:40.50 bitrate=  92.1kbits/s dup=1 drop=0    Past duration 0.999611 too large
-Past duration 0.999657 too large
-frame= 1056 fps= 10 q=27.0 size=    1131kB time=00:01:41.10 bitrate=  91.6kbits/s dup=1 drop=0    Past duration 0.999886 too large
-frame= 1061 fps= 10 q=27.0 size=    1131kB time=00:01:41.60 bitrate=  91.2kbits/s dup=1 drop=0    Past duration 0.999779 too large
-Past duration 0.999962 too large
-Past duration 0.999977 too large
-Past duration 0.999992 too large
-frame= 1067 fps= 10 q=27.0 size=    1132kB time=00:01:42.20 bitrate=  90.7kbits/s dup=1 drop=0    Past duration 0.999245 too large
-Past duration 0.999977 too large
-    Last message repeated 1 times
-frame= 1073 fps= 10 q=27.0 size=    1133kB time=00:01:42.80 bitrate=  90.3kbits/s dup=1 drop=0    Past duration 0.999779 too large
-Past duration 0.999565 too large
-frame= 1079 fps= 10 q=27.0 size=    1134kB time=00:01:43.40 bitrate=  89.8kbits/s dup=1 drop=0    Past duration 0.999916 too large
-Past duration 0.999977 too large
-Past duration 0.999916 too large
-frame= 1085 fps= 10 q=27.0 size=    1134kB time=00:01:44.00 bitrate=  89.4kbits/s dup=1 drop=0    Past duration 0.999840 too large
-frame= 1090 fps= 10 q=27.0 size=    1135kB time=00:01:44.50 bitrate=  89.0kbits/s dup=1 drop=0    Past duration 0.999870 too large
-    Last message repeated 1 times
-Past duration 0.999794 too large
-frame= 1095 fps= 10 q=27.0 size=    1136kB time=00:01:45.00 bitrate=  88.6kbits/s dup=1 drop=0    Past duration 0.999657 too large
-Past duration 0.999886 too large
-frame= 1101 fps= 10 q=27.0 size=    1137kB time=00:01:45.60 bitrate=  88.2kbits/s dup=1 drop=0    Past duration 0.999992 too large
-Past duration 0.999901 too large
-Past duration 0.999992 too large
-frame= 1107 fps= 10 q=27.0 size=    1137kB time=00:01:46.20 bitrate=  87.7kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999992 too large
-frame= 1113 fps= 10 q=27.0 size=    1138kB time=00:01:46.80 bitrate=  87.3kbits/s dup=1 drop=0    Past duration 0.999870 too large
-Past duration 0.999077 too large
-Past duration 0.999458 too large
-frame= 1119 fps= 10 q=27.0 size=    1139kB time=00:01:47.40 bitrate=  86.9kbits/s dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.999626 too large
-Past duration 0.999962 too large
-Past duration 0.999992 too large
-Past duration 0.998253 too large
-frame= 1125 fps= 10 q=27.0 size=    1140kB time=00:01:48.00 bitrate=  86.4kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999550 too large
-Past duration 0.999657 too large
-frame= 1130 fps= 10 q=27.0 size=    1140kB time=00:01:48.50 bitrate=  86.1kbits/s dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.998817 too large
-frame= 1136 fps= 10 q=27.0 size=    1141kB time=00:01:49.10 bitrate=  85.7kbits/s dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.999992 too large
-Past duration 0.999947 too large
-frame= 1141 fps= 10 q=27.0 size=    1142kB time=00:01:49.60 bitrate=  85.3kbits/s dup=1 drop=0    frame= 1146 fps= 10 q=27.0 size=    1142kB time=00:01:50.10 bitrate=  85.0kbits/s dup=1 drop=0    Past duration 0.999886 too large
-Past duration 0.999977 too large
-Past duration 0.999901 too large
-frame= 1152 fps= 10 q=27.0 size=    1143kB time=00:01:50.70 bitrate=  84.6kbits/s dup=1 drop=0    Past duration 0.999931 too large
-frame= 1157 fps= 10 q=27.0 size=    1144kB time=00:01:51.20 bitrate=  84.3kbits/s dup=1 drop=0    Past duration 0.999428 too large
-Past duration 0.999367 too large
-Past duration 0.999443 too large
-Past duration 0.999870 too large
-frame= 1162 fps= 10 q=27.0 size=    1145kB time=00:01:51.70 bitrate=  83.9kbits/s dup=1 drop=0    Past duration 0.999550 too large
-Past duration 0.999962 too large
-Past duration 0.999672 too large
-frame= 1168 fps= 10 q=27.0 size=    1145kB time=00:01:52.30 bitrate=  83.5kbits/s dup=1 drop=0    Past duration 0.999870 too large
-Past duration 0.999809 too large
-Past duration 0.999641 too large
-frame= 1173 fps= 10 q=27.0 size=    1146kB time=00:01:52.80 bitrate=  83.2kbits/s dup=1 drop=0    Past duration 0.999947 too large
-Past duration 0.999855 too large
-Past duration 0.999748 too large
-frame= 1178 fps= 10 q=27.0 size=    1147kB time=00:01:53.30 bitrate=  82.9kbits/s dup=1 drop=0    Past duration 0.999977 too large
-Past duration 0.999718 too large
-frame= 1183 fps= 10 q=27.0 size=    1147kB time=00:01:53.80 bitrate=  82.6kbits/s dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.999977 too large
-frame= 1189 fps= 10 q=27.0 size=    1148kB time=00:01:54.40 bitrate=  82.2kbits/s dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.999916 too large
-Past duration 0.999992 too large
-frame= 1195 fps= 10 q=27.0 size=    1149kB time=00:01:55.00 bitrate=  81.8kbits/s dup=1 drop=0    Past duration 0.999565 too large
-Past duration 0.999855 too large
-Past duration 0.999840 too large
-    Last message repeated 1 times
-frame= 1200 fps= 10 q=27.0 size=    1149kB time=00:01:55.50 bitrate=  81.5kbits/s dup=1 drop=0    Past duration 0.999718 too large
-Past duration 0.999748 too large
-Past duration 0.999977 too large
-Past duration 0.999962 too large
-    Last message repeated 1 times
-frame= 1206 fps= 10 q=27.0 size=    1150kB time=00:01:56.10 bitrate=  81.2kbits/s dup=1 drop=0    Past duration 0.999992 too large
-Past duration 0.999596 too large
-frame= 1211 fps= 10 q=27.0 size=    1151kB time=00:01:56.60 bitrate=  80.9kbits/s dup=1 drop=0    Past duration 0.999565 too large
-Past duration 0.999977 too large
-Past duration 0.999580 too large
-frame= 1217 fps= 10 q=27.0 size=    1152kB time=00:01:57.20 bitrate=  80.5kbits/s dup=1 drop=0    Past duration 0.999657 too large
-Past duration 0.999809 too large
-frame= 1223 fps= 10 q=27.0 size=    1152kB time=00:01:57.80 bitrate=  80.1kbits/s dup=1 drop=0    Past duration 0.998650 too large
-Past duration 0.999748 too large
-frame= 1228 fps= 10 q=27.0 size=    1153kB time=00:01:58.30 bitrate=  79.8kbits/s dup=1 drop=0    Past duration 0.999657 too large
-Past duration 0.999977 too large
-Past duration 0.999992 too large
-Past duration 0.999977 too large
-frame= 1234 fps= 10 q=27.0 size=    1154kB time=00:01:58.90 bitrate=  79.5kbits/s dup=1 drop=0    Past duration 0.999947 too large
-Past duration 0.966438 too large
-Past duration 0.999657 too large
-frame= 1239 fps= 10 q=27.0 size=    1155kB time=00:01:59.40 bitrate=  79.2kbits/s dup=1 drop=0    Past duration 0.999367 too large
-Past duration 0.999855 too large
-frame= 1245 fps= 10 q=27.0 size=    1155kB time=00:02:00.00 bitrate=  78.9kbits/s dup=1 drop=0    Past duration 0.999886 too large
-Past duration 0.999901 too large
-frame= 1250 fps= 10 q=27.0 size=    1156kB time=00:02:00.50 bitrate=  78.6kbits/s dup=1 drop=0    Past duration 0.999367 too large
-Past duration 0.999550 too large
-frame= 1255 fps= 10 q=27.0 size=    1157kB time=00:02:01.00 bitrate=  78.3kbits/s dup=1 drop=0    Past duration 0.999748 too large
-Past duration 0.999031 too large
-Past duration 0.998985 too large
-frame= 1261 fps= 10 q=27.0 size=    1157kB time=00:02:01.60 bitrate=  78.0kbits/s dup=1 drop=0    Past duration 0.999886 too large
-frame= 1267 fps= 10 q=27.0 size=    1158kB time=00:02:02.20 bitrate=  77.6kbits/s dup=1 drop=0    frame= 1272 fps= 10 q=27.0 size=    1159kB time=00:02:02.70 bitrate=  77.4kbits/s dup=1 drop=0    Past duration 0.999901 too large
-frame= 1278 fps= 10 q=27.0 size=    1160kB time=00:02:03.30 bitrate=  77.0kbits/s dup=1 drop=0    Past duration 0.999947 too large
-frame= 1283 fps= 10 q=27.0 size=    1160kB time=00:02:03.80 bitrate=  76.8kbits/s dup=1 drop=0    Past duration 0.999809 too large
-frame= 1288 fps= 10 q=27.0 size=    1161kB time=00:02:04.30 bitrate=  76.5kbits/s dup=1 drop=0    frame= 1294 fps= 10 q=27.0 size=    1359kB time=00:02:04.90 bitrate=  89.2kbits/s dup=1 drop=0    Past duration 0.999763 too large
-frame= 1299 fps= 10 q=27.0 size=    1373kB time=00:02:05.40 bitrate=  89.7kbits/s dup=1 drop=0    frame= 1305 fps= 10 q=27.0 size=    1375kB time=00:02:06.00 bitrate=  89.4kbits/s dup=1 drop=0    Past duration 0.999840 too large
-Past duration 0.999886 too large
-frame= 1310 fps= 10 q=27.0 size=    1376kB time=00:02:06.50 bitrate=  89.1kbits/s dup=1 drop=0    Past duration 0.999794 too large
-frame= 1315 fps= 10 q=27.0 size=    1377kB time=00:02:07.00 bitrate=  88.8kbits/s dup=1 drop=0    Past duration 0.999748 too large
-Past duration 0.999855 too large
-Past duration 0.999565 too large
-frame= 1321 fps= 10 q=27.0 size=    1378kB time=00:02:07.60 bitrate=  88.5kbits/s dup=1 drop=0    Past duration 0.998741 too large
-Past duration 0.998985 too large
-Past duration 0.999657 too large
-Past duration 0.999825 too large
-frame= 1327 fps= 10 q=27.0 size=    1379kB time=00:02:08.20 bitrate=  88.1kbits/s dup=1 drop=0    Past duration 0.999855 too large
-Past duration 0.999260 too large
-Past duration 0.999458 too large
-frame= 1333 fps= 10 q=27.0 size=    1380kB time=00:02:08.80 bitrate=  87.8kbits/s dup=1 drop=0    Past duration 0.999275 too large
-Past duration 0.999840 too large
-Past duration 0.999626 too large
-frame= 1339 fps= 10 q=27.0 size=    1382kB time=00:02:09.40 bitrate=  87.5kbits/s dup=1 drop=0    Past duration 0.998909 too large
-Past duration 0.999748 too large
-frame= 1345 fps= 10 q=27.0 size=    1383kB time=00:02:10.00 bitrate=  87.2kbits/s dup=1 drop=0    Past duration 0.999214 too large
-Past duration 0.999763 too large
-Past duration 0.999718 too large
-Past duration 0.999840 too large
-Past duration 0.999809 too large
-frame= 1351 fps= 10 q=27.0 size=    1385kB time=00:02:10.60 bitrate=  86.9kbits/s dup=1 drop=0    Past duration 0.999794 too large
-Past duration 0.999702 too large
-Past duration 0.999931 too large
-Past duration 0.999748 too large
-frame= 1357 fps= 10 q=27.0 size=    1386kB time=00:02:11.20 bitrate=  86.5kbits/s dup=1 drop=0    Past duration 0.999840 too large
-frame= 1362 fps= 10 q=27.0 size=    1387kB time=00:02:11.70 bitrate=  86.2kbits/s dup=1 drop=0    Past duration 0.999184 too large
-frame= 1368 fps= 10 q=27.0 size=    1388kB time=00:02:12.30 bitrate=  85.9kbits/s dup=1 drop=0    Past duration 0.999733 too large
-Past duration 0.999535 too large
-frame= 1374 fps= 10 q=27.0 size=    1389kB time=00:02:12.90 bitrate=  85.6kbits/s dup=1 drop=0    Past duration 0.999992 too large
-Past duration 0.999672 too large
-frame= 1379 fps= 10 q=27.0 size=    1389kB time=00:02:13.40 bitrate=  85.3kbits/s dup=1 drop=0    Past duration 0.999794 too large
-    Last message repeated 1 times
-frame= 1385 fps= 10 q=27.0 size=    1390kB time=00:02:14.00 bitrate=  85.0kbits/s dup=1 drop=0    Past duration 0.999565 too large
-Past duration 0.999977 too large
-Past duration 0.999352 too large
-Past duration 0.999550 too large
-frame= 1390 fps= 10 q=27.0 size=    1391kB time=00:02:14.50 bitrate=  84.7kbits/s dup=1 drop=0    Past duration 0.999672 too large
-frame= 1396 fps= 10 q=27.0 size=    1392kB time=00:02:15.10 bitrate=  84.4kbits/s dup=1 drop=0    Past duration 0.999901 too large
-Past duration 0.999886 too large
-frame= 1401 fps= 10 q=27.0 size=    1393kB time=00:02:15.60 bitrate=  84.2kbits/s dup=1 drop=0    frame= 1407 fps= 10 q=27.0 size=    1394kB time=00:02:16.20 bitrate=  83.8kbits/s dup=1 drop=0    Past duration 0.999687 too large
-Past duration 0.999809 too large
-frame= 1412 fps= 10 q=27.0 size=    1395kB time=00:02:16.70 bitrate=  83.6kbits/s dup=1 drop=0    frame= 1418 fps= 10 q=27.0 size=    1396kB time=00:02:17.30 bitrate=  83.3kbits/s dup=1 drop=0    Past duration 0.999443 too large
-Past duration 0.999840 too large
-frame= 1424 fps= 10 q=27.0 size=    1397kB time=00:02:17.90 bitrate=  83.0kbits/s dup=1 drop=0    Past duration 0.999138 too large
-Past duration 0.998940 too large
-frame= 1429 fps= 10 q=27.0 size=    1397kB time=00:02:18.40 bitrate=  82.7kbits/s dup=1 drop=0    Past duration 0.993568 too large
-frame= 1435 fps= 10 q=27.0 size=    1398kB time=00:02:19.00 bitrate=  82.4kbits/s dup=1 drop=0    Past duration 0.999840 too large
-Past duration 0.999519 too large
-frame= 1441 fps= 10 q=27.0 size=    1399kB time=00:02:19.60 bitrate=  82.1kbits/s dup=1 drop=0    frame= 1446 fps= 10 q=27.0 size=    1400kB time=00:02:20.10 bitrate=  81.9kbits/s dup=1 drop=0    Past duration 0.999214 too large
-Past duration 0.999901 too large
-frame= 1452 fps= 10 q=27.0 size=    1403kB time=00:02:20.70 bitrate=  81.7kbits/s dup=1 drop=0    frame= 1457 fps= 10 q=27.0 size=    1404kB time=00:02:21.20 bitrate=  81.4kbits/s dup=1 drop=0    frame= 1463 fps= 10 q=27.0 size=    1405kB time=00:02:21.80 bitrate=  81.2kbits/s dup=1 drop=0    frame= 1469 fps= 10 q=27.0 size=    1407kB time=00:02:22.40 bitrate=  80.9kbits/s dup=1 drop=0    Past duration 0.999992 too large
-frame= 1475 fps= 10 q=27.0 size=    1452kB time=00:02:23.00 bitrate=  83.2kbits/s dup=1 drop=0    frame= 1480 fps= 10 q=27.0 size=    1454kB time=00:02:23.50 bitrate=  83.0kbits/s dup=1 drop=0    Past duration 0.999992 too large
-frame= 1486 fps= 10 q=27.0 size=    1456kB time=00:02:24.10 bitrate=  82.7kbits/s dup=1 drop=0    frame= 1491 fps= 10 q=27.0 size=    1457kB time=00:02:24.60 bitrate=  82.5kbits/s dup=1 drop=0    Past duration 0.999855 too large
-Past duration 0.998558 too large
-frame= 1497 fps= 10 q=27.0 size=    1458kB time=00:02:25.20 bitrate=  82.2kbits/s dup=1 drop=0    Past duration 0.997993 too large
-Past duration 0.998665 too large
-Past duration 0.999367 too large
-frame= 1502 fps= 10 q=27.0 size=    1459kB time=00:02:25.70 bitrate=  82.0kbits/s dup=1 drop=0    Past duration 0.999886 too large
-frame= 1508 fps= 10 q=27.0 size=    1460kB time=00:02:26.30 bitrate=  81.8kbits/s dup=1 drop=0    Past duration 0.999977 too large
-frame= 1513 fps= 10 q=27.0 size=    1461kB time=00:02:26.80 bitrate=  81.5kbits/s dup=1 drop=0    frame= 1518 fps= 10 q=27.0 size=    1462kB time=00:02:27.30 bitrate=  81.3kbits/s dup=1 drop=0    Past duration 0.999779 too large
-Past duration 0.999199 too large
-Past duration 0.998940 too large
-frame= 1524 fps= 10 q=27.0 size=    1463kB time=00:02:27.90 bitrate=  81.1kbits/s dup=1 drop=0    Past duration 0.998619 too large
-frame= 1529 fps= 10 q=27.0 size=    1464kB time=00:02:28.40 bitrate=  80.8kbits/s dup=1 drop=0    Past duration 0.999855 too large
-Past duration 0.999718 too large
-Past duration 0.999733 too large
-Past duration 0.999306 too large
-frame= 1534 fps= 10 q=27.0 size=    1465kB time=00:02:28.90 bitrate=  80.6kbits/s dup=1 drop=0    Past duration 0.999748 too large
-Past duration 0.999519 too large
-Past duration 0.993599 too large
-Past duration 0.999626 too large
-Past duration 0.999733 too large
-frame= 1540 fps= 10 q=27.0 size=    1466kB time=00:02:29.50 bitrate=  80.4kbits/s dup=1 drop=0    Past duration 0.999718 too large
-Past duration 0.999672 too large
-Past duration 0.999321 too large
-frame= 1546 fps= 10 q=27.0 size=    1707kB time=00:02:30.10 bitrate=  93.1kbits/s dup=1 drop=0    Past duration 0.999641 too large
-Past duration 0.999947 too large
-frame= 1551 fps= 10 q=27.0 size=    1708kB time=00:02:30.60 bitrate=  92.9kbits/s dup=1 drop=0    Past duration 0.999596 too large
-Past duration 0.989052 too large
-Past duration 0.999580 too large
-frame= 1557 fps= 10 q=27.0 size=    1709kB time=00:02:31.20 bitrate=  92.6kbits/s dup=1 drop=0    frame= 1563 fps= 10 q=27.0 size=    1710kB time=00:02:31.80 bitrate=  92.3kbits/s dup=1 drop=0    Past duration 0.999962 too large
-Past duration 0.621437 too large
-frame= 1568 fps= 10 q=27.0 size=    1711kB time=00:02:32.30 bitrate=  92.0kbits/s dup=1 drop=0    Past duration 0.997719 too large
-Past duration 0.999702 too large
-Past duration 0.999901 too large
-frame= 1575 fps= 10 q=27.0 size=    1713kB time=00:02:33.00 bitrate=  91.7kbits/s dup=1 drop=0    Past duration 0.999916 too large
-frame= 1580 fps= 10 q=27.0 size=    1714kB time=00:02:33.50 bitrate=  91.5kbits/s dup=1 drop=0    Past duration 0.999931 too large
-frame= 1586 fps= 10 q=27.0 size=    1715kB time=00:02:34.10 bitrate=  91.2kbits/s dup=1 drop=0    frame= 1592 fps= 10 q=27.0 size=    1716kB time=00:02:34.70 bitrate=  90.9kbits/s dup=1 drop=0    Past duration 0.999718 too large
-frame= 1597 fps= 10 q=27.0 size=    1727kB time=00:02:35.20 bitrate=  91.1kbits/s dup=1 drop=0    Past duration 0.987648 too large
-frame= 1602 fps= 10 q=27.0 size=    1755kB time=00:02:35.70 bitrate=  92.3kbits/s dup=1 drop=0    Past duration 0.999474 too large
-frame= 1608 fps= 10 q=27.0 size=    1757kB time=00:02:36.30 bitrate=  92.1kbits/s dup=1 drop=0    Past duration 0.998772 too large
-Past duration 0.999855 too large
-frame= 1614 fps= 10 q=27.0 size=    1758kB time=00:02:36.90 bitrate=  91.8kbits/s dup=1 drop=0    Past duration 0.999870 too large
-Past duration 0.999046 too large
-Past duration 0.998741 too large
-frame= 1619 fps= 10 q=27.0 size=    1759kB time=00:02:37.40 bitrate=  91.5kbits/s dup=1 drop=0    frame= 1625 fps= 10 q=27.0 size=    1760kB time=00:02:38.00 bitrate=  91.3kbits/s dup=1 drop=0    Past duration 0.999016 too large
-Past duration 0.867409 too large
-Past duration 0.999748 too large
-frame= 1630 fps= 10 q=27.0 size=    1761kB time=00:02:38.50 bitrate=  91.0kbits/s dup=1 drop=0    Past duration 0.999748 too large
-Past duration 0.999504 too large
-Past duration 0.999840 too large
-Past duration 0.999962 too large
-frame= 1636 fps= 10 q=27.0 size=    1762kB time=00:02:39.10 bitrate=  90.7kbits/s dup=1 drop=0    Past duration 0.999001 too large
-Past duration 0.847054 too large
-Past duration 0.999962 too large
-frame= 1641 fps= 10 q=27.0 size=    1764kB time=00:02:39.60 bitrate=  90.5kbits/s dup=1 drop=0    Past duration 0.999977 too large
-frame= 1647 fps= 10 q=27.0 size=    1765kB time=00:02:40.20 bitrate=  90.3kbits/s dup=1 drop=0    Past duration 0.999779 too large
-frame= 1648 fps= 10 q=-1.0 Lsize=    1814kB time=00:02:44.60 bitrate=  90.3kbits/s dup=1 drop=0    
-video:1794kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 1.121617%
-[libx264 @ 0x1614420] frame I:7     Avg QP:10.02  size:203016
-[libx264 @ 0x1614420] frame P:415   Avg QP:14.48  size:   594
-[libx264 @ 0x1614420] frame B:1226  Avg QP:24.03  size:   138
-[libx264 @ 0x1614420] consecutive B-frames:  0.8%  0.0%  0.2% 99.0%
-[libx264 @ 0x1614420] mb I  I16..4: 18.8% 56.9% 24.2%
-[libx264 @ 0x1614420] mb P  I16..4:  0.0%  0.0%  0.0%  P16..4:  0.3%  0.0%  0.1%  0.0%  0.0%    skip:99.5%
-[libx264 @ 0x1614420] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8:  0.0%  0.0%  0.0%  direct: 0.0%  skip:99.9%  L0:34.7% L1:64.9% BI: 0.4%
-[libx264 @ 0x1614420] 8x8 transform intra:54.5% inter:29.9%
-[libx264 @ 0x1614420] coded y,uvDC,uvAC intra: 25.9% 59.6% 56.4% inter: 0.0% 0.1% 0.0%
-[libx264 @ 0x1614420] i16 v,h,dc,p: 42% 44%  3% 11%
-[libx264 @ 0x1614420] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 48% 13% 11%  5%  7%  6%  4%  4%  2%
-[libx264 @ 0x1614420] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 49% 18%  8%  5%  7%  5%  3%  3%  1%
-[libx264 @ 0x1614420] i8c dc,h,v,p: 65% 18% 14%  3%
-[libx264 @ 0x1614420] Weighted P-Frames: Y:0.0% UV:0.0%
-[libx264 @ 0x1614420] ref P L0: 92.1%  7.9%
-[libx264 @ 0x1614420] ref B L0: 78.6% 21.4%
-[libx264 @ 0x1614420] ref B L1: 86.1% 13.9%
-[libx264 @ 0x1614420] kb/s:89.14
-Exiting normally, received signal 2.
