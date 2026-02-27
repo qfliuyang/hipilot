@@ -43,6 +43,8 @@ const CLAUDE_READY_TIMEOUT_MS = 120000;
 //    5. Read MCP logs DURING the test (only AFTER the test ends)
 //    6. Fabricate screenshots or evidence files
 //    7. Run EDA tool commands directly
+//    8. Mock or fake EDA tools (no "puts innovus 1>", no "echo" to simulate output)
+//    9. Use results from a previous test run (each test gets a clean design copy)
 //
 //  All interaction with HiPilot is through:
 //    - tmux send-keys to pane 0.0 (type in Claude Code's input)
@@ -93,8 +95,14 @@ export class FlowCertifier {
     this.display = options.display || ':0';
     this.mcpLogPath = options.mcpLogPath || '/tmp/hipilot_test_mcp.jsonl';
 
+    // Design source: tarball to extract for a clean start each test.
+    // Existing results from previous runs can mislead scoring.
+    this.designTarball = options.designTarball || '/home/EDA/ibex_demo.tar';
+    this.testWorkBase = options.testWorkBase || '/home/EDA/hipilot_test/runs';
+
     this.timestamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
     this.evidenceDir = join(this.evidenceBaseDir, this.timestamp);
+    this.testWorkDir = join(this.testWorkBase, this.timestamp);
     this.observations = [];
     this.stageResults = [];
     this.recordingStartTime = null;
@@ -102,6 +110,48 @@ export class FlowCertifier {
     this._paneLog = [];
     this._ffmpegPid = null;
     this._videoFile = null;
+  }
+
+  /**
+   * Prepare a clean design copy for this test run.
+   * Extracts ibex_demo.tar into a timestamped directory so each test
+   * starts from scratch — no leftover results from previous runs.
+   *
+   * Returns the path to the clean work directory.
+   */
+  prepareCleanDesign() {
+    this._runLog('Preparing clean design copy...');
+
+    // Create timestamped work directory
+    try {
+      execSync(`mkdir -p ${this.testWorkDir}`, { encoding: 'utf-8', timeout: 5000 });
+    } catch (e) {
+      this._runLog(`Failed to create work dir: ${e.message}`);
+      return null;
+    }
+
+    // Extract design tarball
+    if (!existsSync(this.designTarball)) {
+      this._runLog(`Design tarball not found: ${this.designTarball} — using existing design location`);
+      return null;
+    }
+
+    try {
+      execSync(`tar xf ${this.designTarball} -C ${this.testWorkDir}`, {
+        encoding: 'utf-8', timeout: 60000,
+      });
+      // Find the extracted directory (usually ibex_work_upload or similar)
+      const contents = execSync(`ls ${this.testWorkDir}`, { encoding: 'utf-8', timeout: 5000 }).trim().split('\n');
+      const designDir = contents.length === 1
+        ? join(this.testWorkDir, contents[0])
+        : this.testWorkDir;
+
+      this._runLog(`Clean design at: ${designDir}`);
+      return designDir;
+    } catch (e) {
+      this._runLog(`Failed to extract design: ${e.message}`);
+      return null;
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -1047,6 +1097,13 @@ export class FlowCertifier {
       detail: existsSync(binPath) ? binPath : 'NOT FOUND',
     });
 
+    // Design tarball for clean start?
+    checks.push({
+      name: 'design tarball',
+      ok: existsSync(this.designTarball),
+      detail: existsSync(this.designTarball) ? this.designTarball : `NOT FOUND: ${this.designTarball}`,
+    });
+
     // Log results
     let allOk = true;
     for (const c of checks) {
@@ -1070,7 +1127,11 @@ export class FlowCertifier {
     mkdirSync(this.evidenceDir, { recursive: true });
     this.recordingStartTime = Date.now();
 
-    // Write test metadata (unique ID, purpose, timestamps — for tracking)
+    // Prepare clean design copy (extract tarball to timestamped dir)
+    // Each test starts from scratch — no leftover results from previous runs.
+    const cleanDesignDir = this.prepareCleanDesign();
+
+    // Write test metadata
     const metadata = {
       test_id: this.timestamp,
       timestamp: new Date().toISOString(),
@@ -1078,6 +1139,9 @@ export class FlowCertifier {
       purpose,
       command,
       evidence_dir: this.evidenceDir,
+      test_work_dir: this.testWorkDir,
+      design_dir: cleanDesignDir,
+      design_tarball: this.designTarball,
       session: this.session,
       display: this.display,
       hostname: process.env.HOSTNAME || 'unknown',
@@ -1089,6 +1153,9 @@ export class FlowCertifier {
     };
     writeFileSync(join(this.evidenceDir, 'test_metadata.json'), JSON.stringify(metadata, null, 2));
     this._runLog(`Test ID: ${this.timestamp}, purpose: ${purpose}`);
+    if (cleanDesignDir) {
+      this._runLog(`Clean design at: ${cleanDesignDir}`);
+    }
 
     // Pre-flight checks
     await this.preflight();

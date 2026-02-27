@@ -36,16 +36,36 @@ bin/hitestbot-pull
 
 ```bash
 # Kill stale processes
-pkill -9 -f "innovus|icc2_shell|pt_shell|ffmpeg" 2>/dev/null
+pkill -9 -f "innovus|icc2_shell|pt_shell|dc_shell|ffmpeg" 2>/dev/null
 tmux -L hipilot kill-server 2>/dev/null
 
 # Deploy latest code
 node src/hitestbot/infra/deploy_hipilot.js
 
-# Verify
+# Verify design tarball exists (for clean start)
+ls -la /home/EDA/ibex_demo.tar
+
+# Verify HiPilot deployed
 ls /home/EDA/hipilot/current/servers/eda/index.js
-cat ~/.claude/settings.json | python -m json.tool | grep hipilot-eda
 ```
+
+## Clean Start Rule
+
+**Every test starts with a fresh design copy.** HiTestBot automatically:
+1. Extracts `/home/EDA/ibex_demo.tar` into `/home/EDA/hipilot_test/runs/<timestamp>/`
+2. Each test gets its own isolated copy — no leftover results from previous runs
+3. If the tarball doesn't exist, logs a warning but continues (uses existing design location)
+
+This prevents false positives: old `result/syn/data/ibex_core.syn.v` from a previous run could make Claude skip synthesis and claim success.
+
+## Real Tools Only
+
+**NEVER mock or fake EDA tools.** All tests MUST use real EDA tools:
+- `dc_shell` for synthesis (Synopsys Design Compiler)
+- `innovus` for P&R (Cadence Innovus)
+- `pt_shell` for signoff STA (Synopsys PrimeTime)
+
+If a test cannot use real tools (e.g., license unavailable), it must be marked as SKIPPED, not faked with `puts` or `echo` commands.
 
 ---
 

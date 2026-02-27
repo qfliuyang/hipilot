@@ -241,6 +241,8 @@ These rules exist because previous AI coding sessions caused real problems.
 5. **SSH to the EDA server is unreliable.** Always use `sshpass` with retry logic and timeouts. The deploy script has 3 retries with exponential backoff.
 6. **CentOS 7 is old.** glibc 2.17, no modern shell features. Test bash scripts for compatibility. Node.js v20 works because it's a static build.
 7. **Always run `npm test` before committing.** If tests fail, fix them before pushing.
+8. **Never mock EDA tools.** All tests use real `innovus`, `dc_shell`, `pt_shell`. Never use `puts` or `echo` to fake EDA tool output. If a tool can't run, mark the test SKIPPED.
+9. **Each test starts with a clean design.** HiTestBot extracts `ibex_demo.tar` into a timestamped directory. Never run tests on the same design directory as a previous run — old results cause false positives.
 
 ---
 
