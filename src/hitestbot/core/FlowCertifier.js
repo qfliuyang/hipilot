@@ -59,11 +59,11 @@ const CLAUDE_READY_TIMEOUT_MS = 120000;
 //    - HiTestBot cannot create or modify MCP log entries
 // ═══════════════════════════════════════════════════════════════════
 
-// A human glances at both panes. They know Claude is done when the input prompt
-// reappears. They know the EDA tool is busy when new output is scrolling.
-// They answer Claude's questions. They don't stare at a frozen screen for 5 minutes.
-const IDLE_WITH_EDA_ACTIVE_MS = 180000;  // left pane idle but right pane changing — EDA is working
-const IDLE_BOTH_PANES_MS = 60000;        // both panes idle — Claude may still be thinking (was 30s, too short)
+// A human does NOT stare at a timer. They glance at the screen and read:
+// - Is there a prompt (❯, >, $, innovus N>)? → terminal is idle, ready for input
+// - Is text scrolling? → something is running
+// - Is Claude showing a spinner (thinking/Drizzling)? → Claude is working
+// - Nothing changed but no prompt either? → might be stuck
 const EARLY_ABORT_PATTERNS = [           // a human would stop watching if they see these
   /MCP.*not (available|found|configured)/i,
   /no MCP/i,
@@ -698,26 +698,51 @@ export class FlowCertifier {
       }
     }
 
-    // Check for Claude's ready prompt (done — waiting for next input)
-    // Claude Code shows > or ❯ at the bottom when ready
-    const promptReady = lastLine.match(/^[>❯]\s*$/) ||
+    // Check for Claude's ready prompt — the cursor is blinking at ❯ or >
+    // This is the clearest signal: Claude finished and is waiting for next input
+    const claudePromptReady = /^[>❯]\s*$/.test(lastLine) ||
+      /^❯\s/.test(lastLine) ||
       lastLine.includes('What can I help') ||
       lastLine.includes('How can I help');
-    if (promptReady && !claudeChanged) return { state: 'done' };
 
-    // Claude is actively producing output
-    if (claudeChanged) return { state: 'working' };
+    // Check if Claude is actively thinking (spinner visible)
+    const claudeThinking = /thinking|Drizzling|Working|Generating/i.test(lastLine) ||
+      /[⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏✶●◉⠿]/.test(lastLine);
 
-    // Left pane idle but right pane active — EDA tool is running, Claude is waiting
-    if (!claudeChanged && edaChanged) return { state: 'waiting_for_eda' };
+    // Check EDA pane for tool prompt (innovus N>, icc2_shell>, $)
+    const edaLines = eda.split('\n').filter(l => l.trim());
+    const edaLastLine = edaLines[edaLines.length - 1] || '';
+    const edaPromptReady = /innovus\s*\d+>/i.test(edaLastLine) ||
+      /icc2_shell>/i.test(edaLastLine) ||
+      /pt_shell>/i.test(edaLastLine) ||
+      /\$\s*$/.test(edaLastLine);
 
-    // Both idle
-    return { state: 'idle' };
+    // If Claude shows prompt AND Claude pane didn't just change → done
+    if (claudePromptReady && !claudeChanged) {
+      return { state: 'done', detail: `Claude prompt: "${lastLine.trim()}"` };
+    }
+
+    // Claude is actively producing output or thinking
+    if (claudeChanged || claudeThinking) {
+      return { state: 'working', detail: claudeThinking ? 'thinking' : 'output changing' };
+    }
+
+    // Left pane idle but right pane changing — EDA tool is executing
+    if (!claudeChanged && edaChanged) {
+      return { state: 'waiting_for_eda', detail: edaPromptReady ? 'EDA prompt returned' : 'EDA running' };
+    }
+
+    // Both panes idle. Check if EITHER has a ready prompt — that's a strong signal
+    if (claudePromptReady) {
+      return { state: 'done', detail: 'Claude prompt visible, both panes quiet' };
+    }
+
+    return { state: 'idle', detail: `claude: "${lastLine.trim().slice(0, 40)}", eda: "${edaLastLine.trim().slice(0, 40)}"` };
   }
 
   async watchFlow(options = {}) {
-    const maxWaitMs = options.maxWaitMs || 300000;
-    this._runLog(`Phase 4: Watching flow (max ${maxWaitMs / 1000}s)...`);
+    const maxWaitMs = options.maxWaitMs || MAX_WATCH_MS;
+    this._runLog(`Phase 4: Watching flow (max ${maxWaitMs / 1000}s, terminates on prompt detection)...`);
 
     const start = Date.now();
     let lastClaudeOutput = '';
@@ -817,20 +842,18 @@ export class FlowCertifier {
       }
 
       if (state === 'waiting_for_eda') {
-        // Left pane idle but right pane active — EDA tool is running
-        // A human would wait patiently. Don't time out.
-        const edaIdleTime = Date.now() - lastEdaChangeTime;
-        if (edaIdleTime > IDLE_WITH_EDA_ACTIVE_MS) {
-          this._runLog(`EDA tool also idle for ${(edaIdleTime / 1000).toFixed(0)}s — may be stuck`);
-        }
+        // EDA tool is running. A human waits — no timeout needed.
+        // But log so we know what's happening.
       }
 
       if (state === 'idle') {
-        // Both panes idle. Could be: Claude thinking, or actually done.
-        const bothIdleTime = Math.min(Date.now() - lastClaudeChangeTime, Date.now() - lastEdaChangeTime);
-        if (bothIdleTime > IDLE_BOTH_PANES_MS && pollCount > 3) {
-          this._runLog(`Both panes idle for ${(bothIdleTime / 1000).toFixed(0)}s — flow appears complete`);
-          break;
+        // Both panes quiet, no prompt detected. Check how long:
+        const quietTime = Math.min(Date.now() - lastClaudeChangeTime, Date.now() - lastEdaChangeTime);
+        // A human would wait ~2 minutes before concluding something is stuck.
+        // But if it's been very quiet, take a screenshot and log the state.
+        if (quietTime > 120000 && pollCount > 10) {
+          this._runLog(`Both panes quiet for ${(quietTime / 1000).toFixed(0)}s with no prompt — may be stuck`);
+          this._takeScreenshot(`quiet_${pollCount}`);
         }
       }
 
