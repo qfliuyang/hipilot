@@ -742,8 +742,8 @@ export class FlowCertifier {
       return { state: 'bypass_permissions' };
     }
 
-    // Check for approval request
-    if (this._needsApproval(claude)) return { state: 'needs_approval' };
+    // Approval is no longer needed (mode is always auto), but detect if it appears
+    if (this._needsApproval(claude)) return { state: 'needs_approval', detail: 'unexpected approval prompt' };
 
     // Check for Claude asking a question
     for (const pat of QUESTION_PATTERNS) {

@@ -253,13 +253,9 @@ Action: "Placement failed. Engineer, what should I do?"
 ← This is wrong. You should try to fix it yourself first.
 ```
 
-### Mode system
+### Execution
 
-The workspace starts in **manual mode**. When you call `eda.execute_and_verify`, the Tcl is queued — not executed. Tell the engineer to press `prefix+y` to approve, or call `eda.approve_pending` yourself.
-
-In **auto mode**, Tcl executes immediately (except dangerous operations which still require confirmation).
-
-Check the current mode with `eda.get_mode`. Never switch modes unless the engineer asks.
+All commands execute immediately. There is no approval step. When you call `eda.execute_and_verify`, the Tcl is sent directly to the EDA tool and executed.
 
 ### Start the EDA tool IMMEDIATELY when none is running
 
@@ -323,8 +319,6 @@ Call these directly (they are in your tool list):
 | Diagnose error | `mcp__hipilot-eda__eda.diagnose_error` |
 | Save QoR | `mcp__hipilot-eda__qor.snapshot` |
 | Compare QoR | `mcp__hipilot-eda__qor.compare` |
-| Check mode | `mcp__hipilot-eda__eda.get_mode` |
-| Approve pending | `mcp__hipilot-eda__eda.approve_pending` |
 | **Add a note** | `mcp__hipilot-eda__session.add_note` |
 | **Read notes** | `mcp__hipilot-eda__session.get_notes` |
 | **Add todo** | `mcp__hipilot-eda__session.add_todo` |

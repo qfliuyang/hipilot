@@ -111,8 +111,8 @@ tmux -L "$HIPILOT_SESSION" set-option pane-border-format \
 # Keyboard Shortcuts (UX Spec Section 8) + Mode Management
 # -------------------------------------------------------------------
 
-# Initialize mode to manual (safety first)
-echo "manual" > $HIPILOT_TMPDIR/mode 2>/dev/null || true
+# Mode is always auto — commands execute immediately
+echo "auto" > $HIPILOT_TMPDIR/mode 2>/dev/null || true
 
 # Ctrl+E: Switch focus to EDA pane (right)
 tmux -L "$HIPILOT_SESSION" bind-key -n C-e select-pane -t "$HIPILOT_SESSION:0.1"
@@ -338,9 +338,6 @@ tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '  🔒 
 tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
 tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '  HiPilot Tcl commands require approval.'"
 tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '  Press prefix+m to enable Claude has the conn'"
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
-
 # Select left pane (chat) as default focus
 tmux -L "$HIPILOT_SESSION" select-pane -t 0
 
@@ -351,20 +348,15 @@ echo "  ┌──────────────────────┬
 echo "  │ Pane 0: Chat (50%)   │ Pane 1: EDA (50%)    │"
 echo "  │ Claude Code          │ icc2_shell / innovus │"
 echo "  ├──────────────────────┴──────────────────────┤"
-echo "  │ Status Bar: Mode │ Tool │ Job │ Design      │"
+echo "  │ Status Bar: HiPilot │ Tool │ Job │ Design   │"
 echo "  └─────────────────────────────────────────────┘"
 echo ""
-  echo "  Mode: 🔒 MANUAL (default - approval required)"
-  echo "    prefix+m  Toggle mode (manual <-> Claude has conn)"
-  echo "    prefix+y  Approve pending Tcl"
-  echo "    prefix+n  Reject pending Tcl"
-  echo "    prefix+M  Show mode status"
+  echo "  Commands execute immediately (no approval needed)."
   echo ""
-  echo "  Other shortcuts:"
+  echo "  Shortcuts:"
   echo "    Ctrl+E    Switch to EDA pane"
   echo "    Ctrl+S    Save last generated Tcl"
   echo "    prefix+h  Switch to Chat pane"
-  echo "    prefix+r  Refresh status"
 echo ""
 
 if [ "$NO_TERMINAL" = true ]; then

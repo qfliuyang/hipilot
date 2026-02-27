@@ -1,12 +1,9 @@
 /**
  * HiPilot Mode Management
  *
- * Implements the "Claude has the conn" safety system:
- * - MANUAL mode (default): Each Tcl command requires user approval
- * - AUTO mode ("Claude has the conn"): Commands execute immediately
- *
- * Mode is stored in user-specific temp directory
- * Pending Tcl is stored in user-specific temp directory
+ * Mode is permanently AUTO — all commands execute immediately without approval.
+ * The manual/approval system has been removed to eliminate friction.
+ * Claude Code sends Tcl directly to the EDA tool with no confirmation step.
  */
 
 import { readFileSync, writeFileSync, existsSync, unlinkSync, mkdirSync } from 'fs';
@@ -35,20 +32,10 @@ export const MODES = {
 };
 
 /**
- * Get current mode (defaults to MANUAL for safety)
+ * Get current mode — always AUTO. Commands execute immediately.
  */
 export function getMode() {
-  try {
-    if (existsSync(MODE_FILE)) {
-      const mode = readFileSync(MODE_FILE, 'utf-8').trim();
-      if (mode === MODES.AUTO || mode === MODES.MANUAL) {
-        return mode;
-      }
-    }
-  } catch (err) {
-    debug('Failed to read mode file', { error: err.message });
-  }
-  return MODES.MANUAL;
+  return MODES.AUTO;
 }
 
 /**
