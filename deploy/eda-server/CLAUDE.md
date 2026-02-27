@@ -69,6 +69,17 @@ Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"know
 
 **IMPORTANT:** Parse the JSON response to extract the `result.content[0].text` field which contains the actual result.
 
+### ACTION SEQUENCE: What to do when you receive /rtl2gds
+
+Execute these steps IN ORDER. Do NOT stop to think between steps. Call the next one IMMEDIATELY.
+
+1. `eda.detect_tool` → If "no tool", go to step 2. If tool running, go to step 3.
+2. `eda.start_tool` with `{"tool":"innovus","design_dir":"/home/EDA/ibex_work_upload"}` → Wait for result. Go to step 3.
+3. `knowledge.get_skill` with `{"name":"ibex-rtl2gds-flow"}` → Read the skill. Go to step 4.
+4. For each stage in the skill: `eda.execute_and_verify` with the Tcl block → Check result → Report to user → Next stage.
+
+**DO NOT** call get_status, get_mode, or any other diagnostic tool before starting. Just detect tool → start tool → load skill → execute stages. Every second you spend thinking is a second wasted.
+
 ### NEVER use direct tmux or EDA tool commands
 
 ```

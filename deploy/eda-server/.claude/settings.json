@@ -13,27 +13,29 @@
       "Bash(tail *)",
       "Bash(wc *)",
       "Bash(find *)",
-      "Bash(grep *)"
+      "Bash(grep *)",
+      "Bash(*node */servers/eda/index.js*)",
+      "Bash(*node */servers/tmux/index.js*)",
+      "Bash(*node */servers/knowledge/index.js*)"
     ],
     "deny": [
       "Bash(tmux *)",
       "Bash(*send-keys*)",
       "Bash(*capture-pane*)",
-      "Bash(*innovus*)",
-      "Bash(*icc2_shell*)",
-      "Bash(*icc2 *)",
-      "Bash(*pt_shell*)",
-      "Bash(*dc_shell*)",
-      "Bash(*genus*)",
-      "Bash(*tempus*)",
-      "Bash(*calibre*)",
-      "Bash(*pegasus*)",
-      "Bash(*voltus*)",
-      "Bash(*joules*)",
-      "Bash(*xcelium*)",
-      "Bash(*vivado*)",
-      "Bash(*quartus*)",
-      "Bash(source *)"
+      "Bash(innovus *)",
+      "Bash(icc2_shell *)",
+      "Bash(icc2 *)",
+      "Bash(pt_shell *)",
+      "Bash(dc_shell *)",
+      "Bash(genus *)",
+      "Bash(tempus *)",
+      "Bash(calibre *)",
+      "Bash(pegasus *)",
+      "Bash(voltus *)",
+      "Bash(joules *)",
+      "Bash(xcelium *)",
+      "Bash(vivado *)",
+      "Bash(quartus *)"
     ]
   },
   "mcpServers": {
@@ -41,7 +43,8 @@
       "command": "/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin/node",
       "args": ["/home/EDA/hipilot/current/servers/eda/index.js"],
       "env": {
-        "HIPILOT_SESSION": "hipilot"
+        "HIPILOT_SESSION": "hipilot",
+        "HIPILOT_TEST_LOG": "/tmp/hipilot_test_mcp.jsonl"
       }
     },
     "hipilot-tmux": {

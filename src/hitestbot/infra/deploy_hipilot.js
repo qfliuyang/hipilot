@@ -180,24 +180,22 @@ async function deploy() {
     // Allow Bash MCP Workaround: echo '{jsonrpc}' | node servers/.../index.js
     // This is needed when native MCP tools are gated in Claude Code
     'Bash(*servers/eda/index.js*)', 'Bash(*servers/tmux/index.js*)', 'Bash(*servers/knowledge/index.js*)',
-    // Allow broader patterns for Bash fallback commands
-    'Bash(*mcp__hipilot*)', 'Bash(*detect_tool*)', 'Bash(*get_status*)', 'Bash(*start_tool*)',
-    'Bash(*generate_tcl*)', 'Bash(*execute_and_verify*)', 'Bash(*2>/dev/null*)',
-    // Additional patterns for JSON-RPC calls with various parameter combinations
-    'Bash(*tools/call*)', 'Bash(*jsonrpc*)', 'Bash(*eda.*)', 'Bash(*knowledge.*)', 'Bash(*tmux.*)',
-    'Bash(*innovus*)', 'Bash(*ibex*)', 'Bash(*work_upload*)',
-    // Ultra-broad patterns to catch all JSON-RPC echo commands
-    'Bash(echo*)', 'Bash(*node*)', 'Bash(*index.js*)',
-    // AGGRESSIVE: Allow all Bash commands to workaround Claude Code permission system
-    'Bash(*)',
+    // Allow Bash workaround: piping JSON to MCP server via node
+    // (needed when MCP feature gate is disabled in Claude Code v2.1.59)
+    'Bash(*node */servers/eda/index.js*)',
+    'Bash(*node */servers/tmux/index.js*)',
+    'Bash(*node */servers/knowledge/index.js*)',
   ];
+  // Deny DIRECT execution of EDA tools (tool binary as the command).
+  // Pattern 'Bash(innovus *)' blocks 'innovus -no_gui' but NOT
+  // 'echo {...} | node servers/eda/index.js' (the Bash workaround).
+  // CRITICAL: old patterns used Bash(*innovus*) which also blocked the
+  // Bash workaround because the JSON payload contains "innovus" as a value.
   const requiredDeny = [
-    // Deny direct EDA tool access (must go through HiPilot MCP servers)
-    'Bash(*innovus*)', 'Bash(*icc2_shell*)', 'Bash(*icc2 *)', 'Bash(*pt_shell*)',
-    'Bash(*dc_shell*)', 'Bash(*genus*)', 'Bash(*tempus*)', 'Bash(*calibre*)',
-    'Bash(*pegasus*)', 'Bash(*voltus*)', 'Bash(*joules*)', 'Bash(*xcelium*)',
-    'Bash(*vivado*)', 'Bash(*quartus*)', 'Bash(source *)',
-    // Deny direct tmux control (must go through HiPilot MCP servers)
+    'Bash(innovus *)', 'Bash(icc2_shell *)', 'Bash(icc2 *)', 'Bash(pt_shell *)',
+    'Bash(dc_shell *)', 'Bash(genus *)', 'Bash(tempus *)', 'Bash(calibre *)',
+    'Bash(pegasus *)', 'Bash(voltus *)', 'Bash(joules *)', 'Bash(xcelium *)',
+    'Bash(vivado *)', 'Bash(quartus *)',
     'Bash(tmux *)', 'Bash(*send-keys*)', 'Bash(*capture-pane*)',
   ];
   

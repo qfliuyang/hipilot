@@ -945,12 +945,30 @@ export class FlowCertifier {
     for (const pat of errorPatterns) {
       if (pat.test(edaOutput)) return { score: 0.0, detail: `EDA error: ${edaOutput.match(pat)[0]}` };
     }
-    if (edaOutput.length < 100) return { score: 0.0, detail: 'No significant EDA tool output' };
+
+    // Check for EDA tool prompt (strongest signal: tool ran and returned)
     const promptPatterns = [/innovus\s*\d+>/i, /icc2_shell>/i, /pt_shell>/i];
     for (const pat of promptPatterns) {
       if (pat.test(edaOutput)) return { score: 1.0, detail: 'EDA tool ran and returned to prompt' };
     }
-    return { score: 0.5, detail: 'EDA pane has output but no prompt detected' };
+
+    // Check for EDA tool activity (weaker: tool output without prompt)
+    const activityPatterns = [
+      /reading lef/i, /init_design/i, /floorPlan/i, /place_opt/i, /ccopt/i,
+      /routeDesign/i, /optDesign/i, /timeDesign/i, /saveDesign/i,
+      /checkDesign/i, /source.*\.tcl/i, /source.*\.enc/i,
+    ];
+    for (const pat of activityPatterns) {
+      if (pat.test(edaOutput)) return { score: 0.5, detail: `EDA tool active: ${edaOutput.match(pat)[0]}` };
+    }
+
+    // If the pane only has the welcome message or shell prompt, no tool ran
+    if (edaOutput.includes('Start your EDA tool') || edaOutput.includes('EDA Tool Pane')) {
+      return { score: 0.0, detail: 'EDA pane shows only welcome message — no tool started' };
+    }
+
+    if (edaOutput.length < 100) return { score: 0.0, detail: 'No significant EDA tool output' };
+    return { score: 0.0, detail: 'EDA pane has text but no tool activity detected' };
   }
 
   _scoreQoR(claudeOutput) {
