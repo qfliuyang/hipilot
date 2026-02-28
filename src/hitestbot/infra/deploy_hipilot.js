@@ -177,14 +177,8 @@ async function deploy() {
   
   const requiredAllow = [
     'mcp__hipilot-eda__*', 'mcp__hipilot-tmux__*', 'mcp__hipilot-knowledge__*',
-    // Allow Bash MCP Workaround: echo '{jsonrpc}' | node servers/.../index.js
-    // This is needed when native MCP tools are gated in Claude Code
-    'Bash(*servers/eda/index.js*)', 'Bash(*servers/tmux/index.js*)', 'Bash(*servers/knowledge/index.js*)',
-    // Allow Bash workaround: piping JSON to MCP server via node
-    // (needed when MCP feature gate is disabled in Claude Code v2.1.59)
-    'Bash(*node */servers/eda/index.js*)',
-    'Bash(*node */servers/tmux/index.js*)',
-    'Bash(*node */servers/knowledge/index.js*)',
+    // NOTE: Removed Bash MCP workarounds to ensure native MCP tools are used
+    // Claude Code must use native MCP tools (tools/call) not bash fallbacks
   ];
   // Deny DIRECT execution of EDA tools (tool binary as the command).
   // Pattern 'Bash(innovus *)' blocks 'innovus -no_gui' but NOT
@@ -214,7 +208,9 @@ async function deploy() {
       'hipilot-tmux': patchServer('hipilot-tmux', `${NODE_PATH}/node`, [`${hipilotDir}/servers/tmux/index.js`], { HIPILOT_SESSION: 'hipilot' }),
       'hipilot-knowledge': patchServer('hipilot-knowledge', `${NODE_PATH}/node`, [`${hipilotDir}/servers/knowledge/index.js`], {}),
     },
-    skipDangerousModePermissionPrompt: true
+    // NOTE: Removed skipDangerousModePermissionPrompt to ensure native MCP tools are used
+    // This requires user interaction on first run but ensures proper MCP functionality
+    // skipDangerousModePermissionPrompt: false  // Explicitly disabled
   };
   
   // Validate: env keys must still be present after merge

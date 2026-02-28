@@ -185,10 +185,10 @@ tmux -L "$HIPILOT_SESSION" bind-key M run-shell "\
 
 if command -v claude >/dev/null 2>&1; then
   # Auto-start Claude Code with MCP permissions in the chat pane
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "claude --dangerously-skip-permissions"
+  # Note: Using regular 'claude' (not --dangerously-skip-permissions) to ensure MCP tools work
+  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "claude"
   tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
   # Wait for Claude to start and acknowledge the trust prompt
-  # (--dangerously-skip-permissions doesn't bypass the trust prompt in newer versions)
   # Poll for up to 30 seconds until the trust prompt appears, then send "1"
   echo "Waiting for Claude Code to initialize..."
   TRUST_HANDLED=false
