@@ -13,24 +13,9 @@ MCP tools send commands to the RIGHT pane through tmux. This is the ONLY way to:
 
 **Bash cannot do this.** Bash runs in your own pane. MCP is the bridge to the right pane.
 
-### Step 0: Verify your MCP tools are available
+### Step 0: Use Native MCP Tools
 
-Before doing anything else, check if MCP tools are in your tool list:
-
-1. Look for tools with `mcp__` prefix (e.g., `mcp__hipilot-eda__eda.get_status`)
-2. If found → use them directly (preferred)
-3. If NOT found → use the Bash workaround below (MCP servers are running but native integration is gated)
-
-**To check if native MCP tools are available, try:**
-```
-Bash: mcp__hipilot-eda__eda.detect_tool 2>/dev/null || echo "not available"
-```
-
-If you see "not available" or get a permission error, use Option B below.
-
-### Option A: Native MCP Tools (preferred)
-
-If you see `mcp__hipilot-eda__*` in your tool list, call them directly:
+You have native MCP tools available. Look for tools with `mcp__` prefix in your tool list:
 
 | Tool name | What it does |
 |---|---|
@@ -43,31 +28,7 @@ If you see `mcp__hipilot-eda__*` in your tool list, call them directly:
 | `mcp__hipilot-eda__qor.snapshot` | Save timing metrics |
 | `mcp__hipilot-knowledge__knowledge.get_skill` | Load skill workflow |
 
-### Option B: Bash Workaround (when native MCP is gated)
-
-If native MCP tools don't appear in your tool list, use Bash to call the MCP servers directly:
-
-```bash
-# Check EDA tool status
-Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.get_status","arguments":{}}}' | node /home/EDA/hipilot/current/servers/eda/index.js 2>/dev/null
-
-# Detect running tool
-Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.detect_tool","arguments":{}}}' | node /home/EDA/hipilot/current/servers/eda/index.js 2>/dev/null
-
-# Start Innovus
-Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.start_tool","arguments":{"tool":"innovus","design_dir":"/home/EDA/ibex_work_upload"}}}' | node /home/EDA/hipilot/current/servers/eda/index.js 2>/dev/null
-
-# Generate Tcl
-Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.generate_tcl","arguments":{"intent":"report timing","operation":"report_timing","tool":"innovus"}}}' | node /home/EDA/hipilot/current/servers/eda/index.js 2>/dev/null
-
-# Execute and verify
-Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"eda.execute_and_verify","arguments":{"tcl":"report_timing -max_paths 10","description":"timing check","timeout":120}}}' | node /home/EDA/hipilot/current/servers/eda/index.js 2>/dev/null
-
-# Get skill
-Bash: echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"knowledge.get_skill","arguments":{"name":"fix-setup-timing"}}}' | node servers/knowledge/index.js 2>/dev/null
-```
-
-**IMPORTANT:** Parse the JSON response to extract the `result.content[0].text` field which contains the actual result.
+**CRITICAL:** Only use native MCP tools (`mcp__hipilot-eda__*`). Do NOT use Bash to call the MCP servers - this requires user approval for each command and breaks the workflow.
 
 ### How to "see" the right pane (progressive disclosure)
 
