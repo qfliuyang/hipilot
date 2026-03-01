@@ -237,7 +237,8 @@ if command -v claude >/dev/null 2>&1; then
       sleep 0.1
 
       # Check if it's a numbered list interface (newer Claude versions)
-      if echo "$CAPTURE" | grep -qE "1\.\s*No.*2\.\s*Yes"; then
+      # Note: grep -z allows matching across lines, or check for unique "Yes, I accept" text
+      if echo "$CAPTURE" | grep -qE "2\.\s*Yes, I accept"; then
         echo "Detected numbered list interface, selecting option 2 (Yes)..."
         tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
         tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "2"
