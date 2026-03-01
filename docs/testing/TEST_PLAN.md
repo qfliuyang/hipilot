@@ -1,248 +1,533 @@
-# HiPilot Test Plan (v2)
+# HiPilot Unified Test Plan v3.0
 
-> Progressive testing with latest code improvements. Each test is one command.
+> **One test plan to rule them all.** Self-improving, evidence-based, progressive certification.
 
-## What Changed Since Last Test
-
-| Fix | Impact on testing |
-|---|---|
-| `_capturePane` tries 3 capture methods | HiTestBot can now see Claude Code's full output (was 2 lines) |
-| `waitForClaudeReady` searches anywhere for ❯/Welcome | Claude ready detection no longer times out at 120s |
-| `eda.peek` new tool | Claude can watch right pane during long operations |
-| `eda.send_tcl_nonblocking` new tool | Claude can send Tcl without blocking |
-| `eda.get_status` includes pane snapshots | Claude has "eyes" on both panes |
-| Deny patterns fixed | `Bash(*innovus*)` → `Bash(innovus *)` — Bash workaround no longer blocked |
-| `HIPILOT_TEST_LOG` in settings.json | MCP calls now logged for evidence collection |
-| L4 scoring fixed | Welcome message scores 0.0 (was 0.5) |
-| Window sizing: 80% desktop | gnome-terminal --geometry calculated from screen resolution |
-| Idle detection: prompt-based | No fixed timeout — waits for ❯ prompt or EDA tool prompt |
-| CLAUDE.md: action sequence | "detect → start → skill → execute. DO NOT overthink." |
-| CLAUDE.md: progressive disclosure | Teaches Claude to use peek for long-running commands |
-| Ibex skill: standalone stages | Each stage has `source checkpoint.enc` + `exit` |
-
-## How to Run
-
-```bash
-# From dev machine:
-bin/hitestbot-eda "<command>"
-
-# Download evidence:
-bin/hitestbot-pull
-
-# Evidence at: test-evidence/<timestamp>/
-```
-
-## Pre-Test on EDA Server
-
-```bash
-# Kill stale processes
-pkill -9 -f "innovus|icc2_shell|pt_shell|dc_shell|ffmpeg" 2>/dev/null
-tmux -L hipilot kill-server 2>/dev/null
-
-# Deploy latest code
-node src/hitestbot/infra/deploy_hipilot.js
-
-# Verify design tarball exists (for clean start)
-ls -la /home/EDA/ibex_demo.tar
-
-# Verify HiPilot deployed
-ls /home/EDA/hipilot/current/servers/eda/index.js
-```
-
-## Clean Start Rule
-
-**Every test starts with a fresh design copy.** HiTestBot automatically:
-1. Extracts `/home/EDA/ibex_demo.tar` into `/home/EDA/hipilot_test/runs/<timestamp>/`
-2. Each test gets its own isolated copy — no leftover results from previous runs
-3. If the tarball doesn't exist, logs a warning but continues (uses existing design location)
-
-This prevents false positives: old `result/syn/data/ibex_core.syn.v` from a previous run could make Claude skip synthesis and claim success.
-
-## Real Tools Only
-
-**NEVER mock or fake EDA tools.** All tests MUST use real EDA tools:
-- `dc_shell` for synthesis (Synopsys Design Compiler)
-- `innovus` for P&R (Cadence Innovus)
-- `pt_shell` for signoff STA (Synopsys PrimeTime)
-
-If a test cannot use real tools (e.g., license unavailable), it must be marked as SKIPPED, not faked with `puts` or `echo` commands.
+**Version:** 3.0
+**Status:** Active
+**Replaces:** TEST_PLAN_v2.md, TEST_PLAN_v3_*.md, RTL2GDS_TEST_PLAN_OPERATIONAL.md
 
 ---
 
-## Phase 0: Claude Responds (5 min)
+## 1. Philosophy
+
+### 1.1 Core Principles
+
+| Principle | Meaning |
+|-----------|---------|
+| **Progress Over Pass/Fail** | 7/10 stages with detailed failure analysis > binary FAIL |
+| **Evidence at Every Layer** | Logs + Screenshots + Video = Three-view correlation |
+| **Test Like a Human** | HiTestBot uses HiPilot like a real engineer would |
+| **Self-Improving** | Every failure feeds back into the next iteration |
+| **Real Tools Only** | No mocks. Real dc_shell, innovus, pt_shell. |
+
+### 1.2 The North Star
+
+> **HiPilot can conduct a complete RTL-to-GDS flow driven by Claude Code, MCP tools, and skills — proving that an AI Agent can replace a human for standard flow execution.**
+
+---
+
+## 2. Test Architecture
+
+### 2.1 Three-View Evidence System
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     HiTestBot (Virtual Human)                    │
+│                         ┌─────────────┐                         │
+│                         │  TIMELINE   │                         │
+│                         │  MERGER     │                         │
+│                         └──────┬──────┘                         │
+│              ┌──────────────────┼──────────────────┐            │
+│              ▼                  ▼                  ▼            │
+│    ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ │
+│    │  VIEW 1: LOGS   │ │ VIEW 2: SCREEN  │ │ VIEW 3: VIDEO   │ │
+│    │                 │ │                 │ │                 │ │
+│    │ claude_full.log │ │ screenshots/    │ │ recording.mp4   │ │
+│    │ eda_full.log    │ │ • launch.png    │ │                 │ │
+│    │ mcp_calls.jsonl │ │ • complete.png  │ │                 │ │
+│    │ timeline.jsonl  │ │                 │ │                 │ │
+│    └─────────────────┘ └─────────────────┘ └─────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Rule:** Disagreement between views → Human/AI observer review required. Observer judgment > programmatic score.
+
+### 2.2 Five-Layer Scoring (L1-L5)
+
+| Layer | Score | What | How to Verify |
+|-------|-------|------|---------------|
+| **L1** | 0-1.0 | Claude responds | Left pane changes from initial state |
+| **L2** | 0-1.0 | Understands task | Keywords match intent (timing, route, etc.) |
+| **L3** | 0-1.0 | Uses MCP tools | Tool calls visible in left pane |
+| **L4** | 0-1.0 | EDA tool responds | Right pane shows tool activity |
+| **L5** | 0-1.0 | Reports QoR | WNS/TNS/metrics in Claude's response |
+
+**Stage Score** = Average of all 5 layers (0.0 to 1.0)
+
+---
+
+## 3. Progressive Test Phases
+
+### Phase 0: Infrastructure (5 min)
+**Goal:** HiPilot workspace creates successfully
+
+| Check | Command | Pass Criteria | Evidence |
+|-------|---------|---------------|----------|
+| tmux session | `bin/hipilot --no-terminal` | Session `hipilot` created | `tmux -L hipilot list-sessions` |
+| Display | gnome-terminal | Window opens, 80% desktop | Screenshot |
+| Claude starts | Auto-launched | ❯ prompt within 60s | claude_full.log |
+| MCP servers | Auto-registered | 3 servers in settings.json | mcp_calls.jsonl entries |
+
+**Failure Modes:**
+- `tmux` not installed → Install tmux
+- `claude` not found → Check PATH
+- Display unavailable → Verify :0 accessible
+
+---
+
+### Phase 1: Claude Responds (5 min)
+**Goal:** Basic interaction works
 
 ```bash
 bin/hitestbot-eda "hello"
 ```
 
-| Check | Expected |
-|---|---|
-| Claude Code starts | ❯ prompt appears within 120s |
-| Trust/bypass prompt handled | bin/hipilot auto-sends "1" and Tab+Space+Enter |
-| Claude responds to "hello" | Left pane shows a response |
-| L1 score | ≥ 1.0 |
+| Check | Expected | Score |
+|-------|----------|-------|
+| L1: Claude responds | Left pane shows response | ≥ 1.0 |
+| L2: Coherent | Response makes sense | ≥ 0.5 |
 
-**Pass:** Claude responds → Phase 1.
+**Failure Modes:**
+- Trust prompt not handled → Fix bin/hipilot auto-acknowledge
+- Bypass permissions blocked → Check --dangerously-skip-permissions
 
 ---
 
-## Phase 1: MCP Tool Call (10 min)
+### Phase 2: MCP Tool Call (10 min)
+**Goal:** MCP infrastructure functional
 
 ```bash
 bin/hitestbot-eda "check what EDA tools are available"
 ```
 
-| Check | Expected |
-|---|---|
-| Claude uses MCP (native or Bash workaround) | `eda.detect_tool` or `eda.get_status` called |
-| Result shows tool status | "No tool detected" or tool name |
-| Right pane shows nothing new | Still welcome message (no tool started yet) |
-| L3 score | ≥ 0.5 |
+| Check | Expected | Score |
+|-------|----------|-------|
+| L3: Uses MCP | `eda.detect_tool` or `eda.get_status` called | ≥ 0.5 |
+| Result | Tool status reported | Any result acceptable |
 
-**New check:** MCP log at `/tmp/hipilot_test_mcp.jsonl` should have entries.
-
-**Pass:** MCP tool call succeeded → Phase 2.
+**Failure Modes:**
+- MCP feature gate → Use --mcp-config workaround
+- Bash deny pattern → Fix settings.json permissions
 
 ---
 
-## Phase 2: Start Innovus (15 min)
+### Phase 3: Start EDA Tool (15 min)
+**Goal:** EDA tool launches in right pane
 
 ```bash
-bin/hitestbot-eda "start innovus for the ibex design at /home/EDA/ibex_work_upload"
+bin/hitestbot-eda "start innovus for the ibex design"
 ```
 
-| Check | Expected |
-|---|---|
-| Claude calls `eda.start_tool` | Via native MCP or Bash workaround |
-| Right pane shows Innovus starting | Startup messages, license checkout |
-| Right pane shows prompt | `innovus 1>` appears |
-| L4 score | ≥ 0.5 |
+| Check | Expected | Score |
+|-------|----------|-------|
+| L3: Tool call | `eda.start_tool` with tool="innovus" | ≥ 0.5 |
+| L4: Tool responds | `innovus 1>` prompt appears | ≥ 0.5 |
 
-**This was the blocker in the last test.** The deny pattern `Bash(*innovus*)` blocked the Bash workaround because the JSON payload contained "innovus". Fixed: now `Bash(innovus *)` only blocks direct execution.
-
-**If it fails again:** Check `settings.json` permissions on EDA server:
-```bash
-cat ~/.claude/settings.json | python -m json.tool | grep -A30 permissions
-```
-
-**Pass:** `innovus 1>` in right pane → Phase 3.
+**Failure Modes:**
+- License unavailable → Check lmstat, restart flexlm
+- Design path wrong → Verify /home/EDA/ibex_work_upload exists
+- Tool crashes → Check tool setup scripts
 
 ---
 
-## Phase 3: Generate and Execute Tcl (15 min)
+### Phase 4: Generate and Execute Tcl (15 min)
+**Goal:** End-to-end Tcl execution pipeline
 
 ```bash
-bin/hitestbot-eda "generate a timing report and execute it in innovus"
+bin/hitestbot-eda "generate a timing report and execute it"
 ```
 
-| Check | Expected |
-|---|---|
-| Claude generates Tcl | `[✓ Template]` badge |
-| Claude executes Tcl | `eda.execute_and_verify` or non-blocking send + peek |
-| Right pane shows Innovus output | Timing report results visible |
-| L5 score | ≥ 0.5 (WNS/TNS in Claude's response) |
+| Check | Expected | Score |
+|-------|----------|-------|
+| L3: Tcl generated | `[✓ Template]` badge visible | ≥ 0.5 |
+| L4: Tcl executed | Right pane shows report_timing output | ≥ 0.5 |
+| L5: QoR reported | WNS/TNS numbers in response | ≥ 0.5 |
 
-**Pass:** Tcl executed, QoR reported → Phase 4.
+**Failure Modes:**
+- Template not found → Check template_path in skill metadata
+- Tcl syntax error → Check EDA server version compatibility
+- No timing data → Design may be in physical-only mode
 
 ---
 
-## Phase 4: Single P&R Stage (20 min)
+### Phase 5: Single Stage Execution (30 min)
+**Goal:** One complete P&R stage (design init)
 
 ```bash
-bin/hitestbot-eda "load the ibex-rtl2gds-flow skill and run stage 1 (design init)"
+bin/hitestbot-eda "run stage 1: design init with MMMC setup"
 ```
 
-| Check | Expected |
-|---|---|
-| Claude loads skill | `knowledge.get_skill` called |
-| Claude sends Stage 1 Tcl | MMMC setup + init_design |
-| Innovus processes Tcl | Right pane shows LEF/netlist loading |
-| Checkpoint saved | `result/pr/data/init_design.enc` created |
-| Innovus exits | Stage is standalone (source + run + save + exit) |
-| L4 score | ≥ 0.5 |
+| Check | Expected | Evidence |
+|-------|----------|----------|
+| Skill loaded | `knowledge.get_skill` called | mcp_calls.jsonl |
+| Tcl sent | MMMC setup + init_design | eda_full.log |
+| Checkpoint saved | `init_design.enc` exists | File check |
+| Tool exits | Innovus exits cleanly | eda_full.log |
 
-**New behavior:** Claude may use `eda.send_tcl_nonblocking` + `eda.peek` for progress monitoring.
-
-**Pass:** `init_design.enc` exists on EDA server → Phase 5.
+**Pass Criteria:**
+- L4 ≥ 0.5 (tool ran)
+- Checkpoint file exists
+- No ERROR in logs
 
 ---
 
-## Phase 5: Multi-Stage Flow (60 min)
+### Phase 6: Multi-Stage Flow (60 min)
+**Goal:** 4+ stages in sequence
 
 ```bash
-bin/hitestbot-eda "/rtl2gds"
+bin/hitestbot-eda "/rtl2gds run through placement"
 ```
 
-| Check | Expected |
-|---|---|
-| Claude runs ≥4 stages | init → floorplan → power → placement |
-| Each stage is standalone | Fresh Innovus start, source checkpoint, save, exit |
-| Checkpoints created | `init_design.enc`, `floor_plan.enc`, `powerplan.enc`, `placement.enc` |
-| QoR reported after placement | WNS/TNS numbers in Claude's output |
-| Claude uses peek for progress | `eda.peek` calls between stages (progressive disclosure) |
+| Stage | Checkpoint | Duration | Verify |
+|-------|------------|----------|--------|
+| 1. Design Init | init_design.enc | 2 min | File exists |
+| 2. Floorplan | floor_plan.enc | 1 min | File exists |
+| 3. Power Plan | powerplan.enc | 1 min | File exists |
+| 4. Placement | placement.enc | 5 min | WNS reported |
 
-**Verify on EDA server:**
-```bash
-ls -la /home/EDA/ibex_work_upload/result/pr/data/*.enc
-```
-
-**Pass:** ≥4 checkpoints exist → Phase 6.
+**Pass Criteria:**
+- All 4 checkpoints exist
+- L5 ≥ 0.5 (QoR reported)
+- No stage fails
 
 ---
 
-## Phase 6: Full Flow to GDS (90 min)
+### Phase 7: Full RTL2GDS to GDS (120 min)
+**Goal:** Complete flow, GDS output
 
 ```bash
-bin/hitestbot-eda "/rtl2gds"
+bin/hitestbot-eda "/rtl2gds full flow"
 ```
 
-| # | Stage | Checkpoint | Verify |
-|---|-------|-----------|--------|
-| 1 | Init + MMMC | init_design.enc | `checkDesign` passes |
-| 2 | Floorplan | floor_plan.enc | Rows created |
-| 3 | Power | powerplan.enc | `verifyConnectivity` passes |
-| 4 | Placement | placement.enc | WNS reported |
-| 5 | CTS | cts.enc | Clock tree built |
-| 6 | Post-CTS | post_cts_opt.enc | Hold violations fixed |
-| 7 | Routing | routing.enc | `routeDesign` completes |
-| 8 | Route Opt | routing_opt.enc | `optDesign` completes |
-| 9 | Chip Finish | chip_done.enc + ibex_core.gds | GDS exported |
+| Stage | Checkpoint | Verify |
+|-------|------------|--------|
+| 5. CTS | cts.enc | Clock tree built |
+| 6. Post-CTS Opt | post_cts_opt.enc | Hold fixed |
+| 7. Routing | routing.enc | 100% routed |
+| 8. Route Opt | routing_opt.enc | DRC clean |
+| 9. Chip Finish | chip_done.enc | Final checkpoint |
+| 10. GDS Export | ibex_core.gds | File > 10MB |
 
-**Verify:**
-```bash
-ls -la /home/EDA/ibex_work_upload/result/pr/data/ibex_core.gds
-```
-
-**Pass:** GDS exists.
+**Graduation Criteria:**
+- All 10 stages complete
+- GDS file exists and > 10MB
+- Final timing report generated
+- Fresh evidence (timestamps after test start)
 
 ---
 
-## Evidence Review After Each Test
+## 4. Self-Improvement System
+
+### 4.1 Failure Classification
+
+Every failure is classified into one of these categories:
+
+| Category | Owner | Fix Type | Examples |
+|----------|-------|----------|----------|
+| `infrastructure` | DevOps | Environment | License, disk, network |
+| `configuration` | User | Setup | Paths, constraints, settings |
+| `methodology` | HiPilot Team | Code | Flow steps, Tcl commands |
+| `ai_behavior` | CLAUDE.md | Prompt | Misunderstanding, wrong tool |
+| `tool_bug` | Vendor | Workaround | Actual EDA tool defects |
+
+### 4.2 Iteration Loop
 
 ```
-test-evidence/<timestamp>/
-├── FLOW_REPORT.md          ← L1-L5 scores (verify against raw logs!)
-├── test_metadata.json      ← score, duration, result
-├── run_log.txt             ← HiTestBot's actions (verify state detection works)
+ITERATION N:
+  FOR phase 0..target:
+    RUN phase test
+    IF phase passes:
+      MARK passed
+    ELSE:
+      CLASSIFY failure (category, root cause)
+      RECORD fix (what changed)
+      APPLY fix if automatic
+      UPDATE knowledge base
+      STOP (retry in next iteration)
+
+  IF all phases passed:
+    VERIFY graduation criteria
+    IF verified: GRADUATE
+    ELSE: CONTINUE with stricter criteria
+```
+
+### 4.3 Knowledge Base Updates
+
+After each iteration, update:
+
+```yaml
+# test-evidence/knowledge_base.yaml
+failures:
+  - id: F001
+    pattern: "license checkout failed"
+    category: infrastructure
+    fix: "Restart flexlm: lmutil lmdown && lmutil lmdown -c license.dat"
+    auto_apply: true
+
+  - id: F002
+    pattern: "No paths with slack less than 0.000"
+    category: configuration
+    fix: "Check SDC constraints for current_design command"
+    auto_apply: false
+
+  - id: F003
+    pattern: "physical-only mode"
+    category: methodology
+    fix: "Use init_design with MMMC, not just LEF"
+    skill_update: skills/design-init.md
+```
+
+### 4.4 Skill Auto-Update
+
+When a `methodology` failure is detected:
+
+1. Analyze the failure pattern
+2. Check if skill documentation needs update
+3. Propose skill improvement PR
+4. Track skill version vs failure rate
+
+---
+
+## 5. Evidence Standards
+
+### 5.1 Required Evidence Structure
+
+```
+test-evidence/<test_id>/
+├── FLOW_REPORT.md              # L1-L5 scores, stage-by-stage
+├── test_metadata.json          # Test config, duration, result
+├── run_log.txt                 # HiTestBot actions and state transitions
+├── knowledge_base_updates.yaml # New failures/Fixes discovered
 ├── logs/
-│   ├── claude_full.log     ← Claude's complete output (verify MCP calls visible)
-│   ├── eda_full.log        ← EDA pane complete output (verify tool ran)
-│   └── mcp_calls.jsonl     ← MCP call log (NEW — should have entries now)
-├── screenshots/            ← Verify window is 80% of desktop
-├── recordings/             ← Verify video captures the workspace
-└── timeline.jsonl          ← Cross-reference video timestamps with MCP calls
+│   ├── claude_full.log         # Left pane (10000 lines)
+│   ├── eda_full.log            # Right pane (10000 lines)
+│   └── mcp_calls.jsonl         # MCP tool call log
+├── screenshots/
+│   ├── 00_launch.png
+│   ├── 01_command_typed.png
+│   ├── 02_during_execution.png
+│   └── 03_completion.png
+├── recordings/
+│   └── desktop_recording.mp4   # Full test video
+└── timeline.jsonl              # Synchronized event timeline
 ```
 
-**Cross-reference checklist:**
-- [ ] `claude_full.log` shows more than 2 lines (capture fix working)
-- [ ] `mcp_calls.jsonl` exists and has entries (HIPILOT_TEST_LOG working)
-- [ ] L4 score is 0.0 when EDA pane only has welcome message (scoring fix)
-- [ ] HiTestBot detected Claude ready within 30s (not 120s timeout)
-- [ ] No "Both panes idle" premature termination (prompt-based detection)
+### 5.2 Freshness Validation
 
-## Known Upstream Issues
+```javascript
+function validateFreshness(file, testStartTime) {
+  const stats = fs.statSync(file);
+  const createTime = stats.birthtimeMs;
 
-| ID | Issue | Status | Impact |
-|----|-------|--------|--------|
-| P6-001 | MCP feature gate disabled in Claude Code v2.1.59 | UPSTREAM | Forces Bash workaround |
-| P6-003 | "bypass permissions" prompt not dismissible | UPSTREAM | May interfere with tool calls |
+  // 5-second buffer for filesystem precision
+  if (createTime < testStartTime - 5000) {
+    return {
+      valid: false,
+      error: 'STALE_EVIDENCE',
+      ageMinutes: Math.round((testStartTime - createTime) / 60000)
+    };
+  }
+  return { valid: true };
+}
+```
+
+### 5.3 Tool Execution Validation
+
+```javascript
+function validateToolExecution(edaLog) {
+  const echoOnly = /^\[EDA@.*\]\$ echo/;
+  const toolPatterns = [
+    /innovus\s*\d+>/,
+    /dc_shell>/,
+    /pt_shell>/,
+    /Placement completed/,
+    /Routing completed/,
+    /streamOut.*completed/
+  ];
+
+  const lines = edaLog.split('\n').filter(l => l.trim());
+
+  if (lines.every(l => echoOnly.test(l))) {
+    return { valid: false, error: 'ECHO_ONLY_NO_TOOL_EXECUTION' };
+  }
+
+  if (!toolPatterns.some(p => lines.some(l => p.test(l)))) {
+    return { valid: false, error: 'NO_TOOL_ACTIVITY_DETECTED' };
+  }
+
+  return { valid: true };
+}
+```
+
+---
+
+## 6. Graduation Criteria
+
+### 6.1 Flow Certification Levels
+
+| Level | Phases Required | Evidence | Use Case |
+|-------|-----------------|----------|----------|
+| **Bronze** | 0-4 | MCP works, Tcl executes | Development, debugging |
+| **Silver** | 0-6 | Multi-stage flow | CI/CD integration |
+| **Gold** | 0-7 + GDS | Full RTL2GDS | Production release |
+| **Platinum** | 0-7 + GDS, 3 consecutive passes | Reliable automation | Customer deployment |
+
+### 6.2 Graduation Report Template
+
+```
+═══════════════════════════════════════════════════════════
+  HiPilot Flow Certification: GOLD
+═══════════════════════════════════════════════════════════
+
+Test ID: hipilot_v3_20260301_120000
+Total Iterations: 3
+Total Time: 145 minutes
+Phases Completed: 8/8
+Certification Level: GOLD
+
+Iteration History:
+  Iteration 1: Phase 6 failed (congestion) → Reduced utilization 80%→70%
+  Iteration 2: Phase 4 failed (license) → Restarted flexlm
+  Iteration 3: ALL PHASES PASSED
+
+Evidence Summary:
+  Screenshots: 12
+  Video: desktop_recording.mp4 (2.3GB)
+  MCP Calls: 1,247
+  Result Files:
+    - ibex_core.gds: 19.3 MB ✓
+    - chip_done.enc: 5.1 MB ✓
+    - qor.rpt: 245 KB ✓
+
+Quality Metrics:
+  WNS: +0.01ns
+  TNS: 0.00ns
+  Congestion: 3.2%
+  DRC Violations: 0
+
+Knowledge Base Updates:
+  + Added fix F004: "High congestion at 80% utilization"
+  + Updated skill: skills/floorplan.md (utilization guidance)
+
+Next Test Recommendation:
+  Platinum certification: Run 2 more consecutive passes
+
+Evidence Location: test-evidence/hipilot_v3_20260301_120000/
+```
+
+---
+
+## 7. Execution Guide
+
+### 7.1 Pre-Flight Checklist
+
+```bash
+# 1. EDA server connectivity
+ssh EDA@192.168.112.163 "echo 'SSH OK'"
+
+# 2. License server
+ssh EDA@192.168.112.163 "lmutil lmstat -c 27000@localhost"
+
+# 3. Design tarball
+ssh EDA@192.168.112.163 "ls -la /home/EDA/ibex_demo.tar"
+
+# 4. Display
+ssh EDA@192.168.112.163 "DISPLAY=:0 xset q"
+
+# 5. Clean state
+ssh EDA@192.168.112.163 "pkill -f innovus; pkill -f dc_shell"
+```
+
+### 7.2 Run Test
+
+```bash
+# Bronze certification (Phases 0-4)
+bin/hitestbot-eda "hello"
+bin/hitestbot-eda "check what EDA tools are available"
+bin/hitestbot-eda "start innovus"
+bin/hitestbot-eda "generate timing report"
+
+# Silver certification (Phases 0-6)
+bin/hitestbot-eda "/rtl2gds through placement"
+
+# Gold certification (Full flow)
+bin/hitestbot-eda "/rtl2gds"
+
+# With environment variables
+export HIPILOT_TEST_LOG=/tmp/hipilot_test_mcp.jsonl
+export RALPH_TARGET_PHASE=7
+bin/hitestbot-eda "/rtl2gds"
+```
+
+### 7.3 Collect and Review Evidence
+
+```bash
+# Download from EDA server
+bin/hitestbot-pull <test_id>
+
+# View report
+cat test-evidence/<test_id>/FLOW_REPORT.md
+
+# Analyze timeline
+cat test-evidence/<test_id>/timeline.jsonl | jq -c 'select(.type=="mcp_call")'
+
+# Check knowledge base updates
+cat test-evidence/<test_id>/knowledge_base_updates.yaml
+```
+
+---
+
+## 8. Maintenance
+
+### 8.1 When to Update This Plan
+
+- New MCP tools added → Update Phase 2/3/4 expectations
+- New skills added → Update Phase 5/6/7 stages
+- Tool versions change → Update EDA tool versions
+- New failure patterns discovered → Update Section 4.3
+
+### 8.2 Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 3.0 | 2026-03-01 | Unified all test plans, added self-improvement system |
+| 2.0 | 2026-02-25 | Progressive phase testing, MCP feature gate workarounds |
+| 1.0 | 2026-02-20 | Initial test plan |
+
+---
+
+## Appendix A: Quick Reference
+
+```bash
+# Full certification run
+bin/hitestbot-eda "/rtl2gds"
+
+# Check latest test
+cat test-evidence/$(ls -t test-evidence/ | head -1)/FLOW_REPORT.md
+
+# Clean evidence
+rm -rf test-evidence/
+
+# Deploy latest code
+node src/hitestbot/infra/deploy_hipilot.js
+```
+
+## Appendix B: File Locations
+
+| File | Purpose |
+|------|---------|
+| `docs/testing/TEST_PLAN.md` | This document (single source of truth) |
+| `docs/testing/TESTING_RULES.md` | Scoring methodology and principles |
+| `src/hitestbot/core/FlowCertifier.js` | Test orchestrator |
+| `skills/ibex-rtl2gds-flow.md` | Complete flow skill |
+| `deploy/eda-server/.claude/commands/rtl2gds.md` | Slash command |
