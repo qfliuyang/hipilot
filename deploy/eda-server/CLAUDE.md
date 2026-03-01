@@ -30,6 +30,8 @@ You have native MCP tools available. Look for tools with `mcp__` prefix in your 
 
 **CRITICAL:** Only use native MCP tools (`mcp__hipilot-eda__*`). Do NOT use Bash to call the MCP servers - this requires user approval for each command and breaks the workflow.
 
+**If you don't see `mcp__` tools in your tool list**, HiPilot was started with the `--mcp-config` flag to force MCP loading. The tools should appear as `mcp__hipilot-eda__*`, `mcp__hipilot-tmux__*`, and `mcp__hipilot-knowledge__*`. Use ONLY these tools - never use Bash workarounds like `echo '{"jsonrpc":...}' | node servers/eda/index.js`.
+
 ### How to "see" the right pane (progressive disclosure)
 
 You cannot directly see the right pane. But you have two tools to look:

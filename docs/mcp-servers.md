@@ -31,27 +31,61 @@ Add to `~/.claude/settings.json`:
 ```json
 {
   "mcpServers": {
-    "eda": {
-      "command": "node",
+    "hipilot-eda": {
+      "command": "/path/to/node",
       "args": ["/path/to/hipilot/servers/eda/index.js"],
       "env": {
         "HIPILOT_SESSION": "hipilot"
       }
     },
-    "tmux": {
-      "command": "node",
+    "hipilot-tmux": {
+      "command": "/path/to/node",
       "args": ["/path/to/hipilot/servers/tmux/index.js"],
       "env": {
         "HIPILOT_SESSION": "hipilot"
       }
     },
-    "knowledge": {
-      "command": "node",
+    "hipilot-knowledge": {
+      "command": "/path/to/node",
       "args": ["/path/to/hipilot/servers/knowledge/index.js"]
     }
   }
 }
 ```
+
+### Claude Code MCP Configuration (Important)
+
+Claude Code v2.1.63+ may have a feature gate that prevents MCP tool discovery even when servers are configured in `settings.json`. To ensure MCP tools are available, launch Claude Code with the `--mcp-config` flag:
+
+```bash
+claude --mcp-config /path/to/mcp-config.json --strict-mcp-config
+```
+
+The `--strict-mcp-config` flag ensures only the specified MCP configuration is used, bypassing the feature gate.
+
+**Example `/tmp/force_mcp.json`:**
+```json
+{
+  "mcpServers": {
+    "hipilot-eda": {
+      "command": "/path/to/node",
+      "args": ["/path/to/hipilot/servers/eda/index.js"],
+      "env": {"HIPILOT_SESSION": "hipilot"}
+    },
+    "hipilot-tmux": {
+      "command": "/path/to/node",
+      "args": ["/path/to/hipilot/servers/tmux/index.js"],
+      "env": {"HIPILOT_SESSION": "hipilot"}
+    },
+    "hipilot-knowledge": {
+      "command": "/path/to/node",
+      "args": ["/path/to/hipilot/servers/knowledge/index.js"]
+    }
+  }
+}
+```
+
+**HiPilot automatically handles this** - the `bin/hipilot` launcher creates this configuration and launches Claude Code with the appropriate flags.
 
 ### Environment Variables
 
@@ -315,6 +349,14 @@ ls servers/*/index.js
 echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/eda/index.js
 ```
 
+4. **Verify MCP tools are loaded in Claude Code:**
+```
+# In Claude Code, check if tools have mcp__ prefix:
+Look for: mcp__hipilot-eda__*, mcp__hipilot-tmux__*, mcp__hipilot-knowledge__*
+```
+
+If MCP tools are not showing (no `mcp__` prefix), Claude Code may have a feature gate blocking MCP discovery. Use the `--mcp-config` flag as described in the [Claude Code MCP Configuration](#claude-code-mcp-configuration-important) section above.
+
 ### tmux Commands Failing
 
 1. **Check session exists:**
@@ -382,4 +424,22 @@ tmux -V  # Should be 1.8+ or 3.4+
 
 ---
 
-**Last Updated:** 2026-02-25
+**Last Updated:** 2026-03-01
+
+## MCP Configuration Verification
+
+To verify MCP tools are being used correctly (not bash workarounds), check the Claude Code pane output:
+
+**✅ Correct (Native MCP):**
+```
+● hipilot-eda - eda.detect_tool (MCP)
+● hipilot-eda - eda.start_tool (MCP)
+● hipilot-eda - eda.execute_and_verify (MCP)
+```
+
+**❌ Wrong (Bash Workaround):**
+```
+● Bash(echo '{"jsonrpc":"2.0",...}' | node servers/eda/index.js)
+```
+
+If you see bash workarounds instead of native MCP tools, ensure Claude Code is launched with `--mcp-config /path/to/mcp-config.json --strict-mcp-config`.

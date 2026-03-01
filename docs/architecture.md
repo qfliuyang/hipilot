@@ -86,6 +86,12 @@ HiPilot extends Claude Code with specialized capabilities for VLSI physical desi
 
 **Configuration:** `~/.claude/settings.json`
 
+**MCP Feature Gate Workaround:** Claude Code v2.1.63+ may have a feature gate that prevents MCP tool discovery even when servers are configured. To ensure MCP tools are available, HiPilot launches Claude Code with:
+```bash
+claude --mcp-config /path/to/mcp-config.json --strict-mcp-config
+```
+The `--strict-mcp-config` flag forces Claude Code to use only the specified MCP configuration, bypassing the feature gate. See [mcp-servers.md](mcp-servers.md) for details.
+
 ### 2. MCP Server Layer
 
 #### EDA MCP Server (`servers/eda/index.js`) — 54 tools
