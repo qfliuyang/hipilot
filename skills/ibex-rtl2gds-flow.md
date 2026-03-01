@@ -85,6 +85,13 @@ Runs Design Compiler to synthesize RTL Verilog into a gate-level netlist. Includ
 
 ```tcl
 cd /home/EDA/ibex_work_upload
+
+# Skip synthesis if netlist already exists (allows restarting from P&R)
+if {[file exists result/syn/data/ibex_core.syn.v]} {
+    puts "SYNTHESIS ALREADY COMPLETE — using existing netlist at result/syn/data/ibex_core.syn.v"
+    exit 0
+}
+
 file mkdir result/syn/data result/syn/log result/syn/report result/syn/work
 file mkdir result/scanchain/data result/scanchain/report result/scanchain/log
 
