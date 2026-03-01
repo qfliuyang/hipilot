@@ -179,7 +179,16 @@ if {![file exists $timing_lib]} {
     exit 1
 }
 
-# MMMC setup (must be before init_design for timing-driven flow)
+# Design init FIRST (before MMMC setup)
+set defHierChar {/}
+set init_gnd_net VSS
+set init_pwr_net VDD
+set init_verilog /home/EDA/ibex_work_upload/result/syn/data/ibex_core.syn.v
+set init_top_cell ibex_core
+set init_lef_file [list /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lef/sky130_fd_sc_hd.tlef /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lef/sky130_fd_sc_hd_merged.lef]
+init_design
+
+# MMMC setup AFTER design init
 create_rc_corner -name rc_max -preRoute_res 1.05 -preRoute_cap 1.05 -postRoute_res 1.05 -postRoute_cap 1.05
 create_rc_corner -name rc_min -preRoute_res 1 -preRoute_cap 1 -postRoute_res 1 -postRoute_cap 1
 create_library_set -name lib_set_max -timing $timing_lib
@@ -190,15 +199,6 @@ create_delay_corner -name delay_min -library_set lib_set_min -rc_corner rc_min
 create_analysis_view -name max_view -constraint_mode common -delay_corner delay_max
 create_analysis_view -name min_view -constraint_mode common -delay_corner delay_min
 set_analysis_view -setup {max_view} -hold {min_view}
-
-# Design init
-set defHierChar {/}
-set init_gnd_net VSS
-set init_pwr_net VDD
-set init_verilog /home/EDA/ibex_work_upload/result/syn/data/ibex_core.syn.v
-set init_top_cell ibex_core
-set init_lef_file [list /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lef/sky130_fd_sc_hd.tlef /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lef/sky130_fd_sc_hd_merged.lef]
-init_design
 
 checkDesign -netList -noHtml -outfile result/pr/report/check_data_init.report
 timeDesign -prePlace -pathReports -drvReports -slackReports -numPaths 50 -prefix prePlace -outDir result/pr/report/init_data_timing
