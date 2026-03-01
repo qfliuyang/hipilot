@@ -227,17 +227,28 @@ if command -v claude >/dev/null 2>&1; then
     sleep 0.5
     CAPTURE=$(tmux -L "$HIPILOT_SESSION" capture-pane -t "$HIPILOT_SESSION:0.0" -p 2>/dev/null || true)
     # Check for bypass permissions prompt (various forms)
-    if echo "$CAPTURE" | grep -qE "(bypass permissions|Dangerous mode|shift.tab|⏵⏵)"; then
+    # Note: Claude Code v2.1.59+ uses numbered list: "1. No, exit" / "2. Yes, I accept"
+    if echo "$CAPTURE" | grep -qE "(bypass permissions|Dangerous mode|Yes, I accept|Enter to confirm)"; then
       echo "Bypass permissions prompt detected (attempt $i), enabling..."
       sleep 0.5
-      # Try multiple approaches - the prompt might need different navigation
-      # Approach 1: Tab to checkbox, Space to toggle, Enter to confirm
-      tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" Tab
-      sleep 0.2
-      tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" " "
-      sleep 0.2
-      tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
+
+      # Check if it's a numbered list interface (newer Claude versions)
+      if echo "$CAPTURE" | grep -qE "1\.\s*No.*2\.\s*Yes"; then
+        echo "Detected numbered list interface, selecting option 2 (Yes)..."
+        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "2"
+        sleep 0.2
+        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
+      else
+        # Fallback: Try checkbox interface (older approach)
+        echo "Trying checkbox interface..."
+        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" Tab
+        sleep 0.2
+        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" " "
+        sleep 0.2
+        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
+      fi
       sleep 0.5
+
       # Check if it worked by looking for the welcome screen
       CAPTURE2=$(tmux -L "$HIPILOT_SESSION" capture-pane -t "$HIPILOT_SESSION:0.0" -p 2>/dev/null || true)
       if echo "$CAPTURE2" | grep -q "Welcome back"; then
@@ -245,25 +256,24 @@ if command -v claude >/dev/null 2>&1; then
         BYPASS_HANDLED=true
         break
       fi
-      # If still showing prompt, try again with Shift+Tab
-      if echo "$CAPTURE2" | grep -qE "(bypass permissions|Dangerous mode)"; then
-        echo "First attempt failed, trying Shift+Tab..."
-        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" S-Tab
-        sleep 0.2
-        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" " "
+
+      # If still showing prompt with numbered list, retry with explicit 2+Enter
+      if echo "$CAPTURE2" | grep -qE "(1\.\s*No|2\.\s*Yes)"; then
+        echo "Retrying with explicit selection..."
+        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "2"
         sleep 0.2
         tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
         sleep 0.5
-        # Check again after retry
         CAPTURE3=$(tmux -L "$HIPILOT_SESSION" capture-pane -t "$HIPILOT_SESSION:0.0" -p 2>/dev/null || true)
         if echo "$CAPTURE3" | grep -q "Welcome back"; then
-          echo "Bypass permissions enabled successfully (Shift+Tab retry)."
+          echo "Bypass permissions enabled successfully (retry)."
           BYPASS_HANDLED=true
           break
         fi
-        if echo "$CAPTURE3" | grep -qE "(bypass permissions|Dangerous mode)"; then
-          echo "WARNING: Bypass prompt still showing after retry."
-        fi
+      fi
+
+      if echo "$CAPTURE2" | grep -qE "(bypass permissions|Dangerous mode)"; then
+        echo "WARNING: Bypass prompt still showing after attempts."
       fi
     fi
     # If we see the welcome screen, permissions are already handled
