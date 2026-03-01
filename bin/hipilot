@@ -232,19 +232,28 @@ if command -v claude >/dev/null 2>&1; then
       echo "Bypass permissions prompt detected (attempt $i), enabling..."
       sleep 0.5
 
+      # Ensure pane 0.0 is focused before sending keys (gnome-terminal may attach with wrong focus)
+      tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
+      sleep 0.1
+
       # Check if it's a numbered list interface (newer Claude versions)
       if echo "$CAPTURE" | grep -qE "1\.\s*No.*2\.\s*Yes"; then
         echo "Detected numbered list interface, selecting option 2 (Yes)..."
+        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
         tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "2"
         sleep 0.2
+        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
         tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
       else
         # Fallback: Try checkbox interface (older approach)
         echo "Trying checkbox interface..."
+        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
         tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" Tab
         sleep 0.2
+        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
         tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" " "
         sleep 0.2
+        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
         tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
       fi
       sleep 0.5
@@ -260,8 +269,10 @@ if command -v claude >/dev/null 2>&1; then
       # If still showing prompt with numbered list, retry with explicit 2+Enter
       if echo "$CAPTURE2" | grep -qE "(1\.\s*No|2\.\s*Yes)"; then
         echo "Retrying with explicit selection..."
+        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
         tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "2"
         sleep 0.2
+        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
         tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
         sleep 0.5
         CAPTURE3=$(tmux -L "$HIPILOT_SESSION" capture-pane -t "$HIPILOT_SESSION:0.0" -p 2>/dev/null || true)
