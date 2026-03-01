@@ -165,11 +165,18 @@ First stage — no checkpoint to load. Sets up MMMC, loads LEF/netlist, initiali
 cd /home/EDA/ibex_work_upload
 file mkdir result/pr/data result/pr/log result/pr/report
 
+# Check that timing library exists
+set timing_lib /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+if {![file exists $timing_lib]} {
+    puts "ERROR: Timing library not found: $timing_lib"
+    exit 1
+}
+
 # MMMC setup (must be before init_design for timing-driven flow)
 create_rc_corner -name rc_max -preRoute_res 1.05 -preRoute_cap 1.05 -postRoute_res 1.05 -postRoute_cap 1.05
 create_rc_corner -name rc_min -preRoute_res 1 -preRoute_cap 1 -postRoute_res 1 -postRoute_cap 1
-create_library_set -name lib_set_max -timing /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
-create_library_set -name lib_set_min -timing /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+create_library_set -name lib_set_max -timing $timing_lib
+create_library_set -name lib_set_min -timing $timing_lib
 create_constraint_mode -name common -sdc_files /home/EDA/ibex_work_upload/designs/sky130hd/ibex/constraint_for_pr.sdc
 create_delay_corner -name delay_max -library_set lib_set_max -rc_corner rc_max
 create_delay_corner -name delay_min -library_set lib_set_min -rc_corner rc_min
