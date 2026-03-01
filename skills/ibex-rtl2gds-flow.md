@@ -245,8 +245,14 @@ exit
 ```tcl
 source /home/EDA/ibex_work_upload/result/pr/data/powerplan.enc
 
-# Note: Scan chain info is already in the design from synthesis checkpoint
-# Do NOT load external scan DEF - it causes "lib cell exists" conflict
+# Delete any existing scan chains that aren't properly defined
+# This avoids "Scan chains exist but are not defined" error during placement
+set scan_chains [getScanChains -quiet]
+if {$scan_chains != ""} {
+    foreach chain $scan_chains {
+        deleteScanChain $chain
+    }
+}
 
 # Timing derate
 set_timing_derate -delay_corner delay_max -early 0.97 -late 1.03 -clock
@@ -269,7 +275,7 @@ setPathGroupOptions reg2out -effortLevel low
 setPathGroupOptions feedthr -effortLevel low
 setOptMode -ignorePathGroupsForHold {in2reg reg2out feedthr}
 
-# Place settings
+# Place settings - ignore scan since we deleted the chains
 setPlaceMode -reset
 setPlaceMode -place_global_ignore_scan true -place_global_reorder_scan false
 setPlaceMode -place_global_place_io_pins false -place_detail_legalization_inst_gap 2
