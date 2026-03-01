@@ -131,7 +131,7 @@ bin/hitestbot-ralph --resume ${TEST_ID}
 
 | Check | Command | Pass Criteria |
 |-------|---------|---------------|
-| MCP connectivity | `/status` | Returns status without error |
+| MCP connectivity | `HiPilot status check` or `eda.get_status` | Returns status without error |
 | Tmux socket | `tmux -L hipilot list-sessions` | Session exists |
 | Display | Screenshot captured | Image >10KB, valid PNG |
 
@@ -144,9 +144,9 @@ bin/hitestbot-ralph --resume ${TEST_ID}
 
 | Check | Command | Pass Criteria |
 |-------|---------|---------------|
-| Innovus starts | `start innovus` | `innovus>` prompt appears |
-| DC Shell starts | `start dc_shell` | `dc_shell>` prompt appears |
-| PT Shell starts | `start pt_shell` | `pt_shell>` prompt appears |
+| Innovus starts | `/start-eda` or `start_eda tool="innovus"` | `innovus>` prompt appears |
+| DC Shell starts | `/start-eda` or `start_eda tool="dc_shell"` | `dc_shell>` prompt appears |
+| PT Shell starts | `/start-eda` or `start_eda tool="pt_shell"` | `pt_shell>` prompt appears |
 
 **Evidence**: Pane log showing tool prompt, timestamp validated
 
@@ -157,9 +157,9 @@ bin/hitestbot-ralph --resume ${TEST_ID}
 
 | Check | Command | Pass Criteria |
 |-------|---------|---------------|
-| Basic Tcl | `/tcl report_timing` | Output appears in right pane |
-| Complex Tcl | `/tcl optDesign` | Optimization completes |
-| Error handling | `/tcl invalid_cmd` | Error caught and reported |
+| Basic Tcl | `/report-timing` | Output appears in right pane |
+| Complex Tcl | `/fix-setup-timing` | Optimization completes |
+| Error handling | Invalid command | Error caught and reported |
 
 **Evidence**: Full pane capture showing command + output
 

@@ -46,7 +46,7 @@ fi
 
 echo -e "${CYAN}"
 echo "╔══════════════════════════════════════════════════════╗"
-echo "║   HiPilot v0.2.1 - VLSI Physical Design Copilot    ║"
+echo "║   HiPilot v0.7.0 - VLSI Physical Design Copilot    ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 

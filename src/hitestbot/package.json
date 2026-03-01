@@ -1,0 +1,13 @@
+{
+  "name": "hitestbot",
+  "version": "0.2.1",
+  "description": "HiTestBot — Virtual Human Testing Framework for HiPilot",
+  "type": "module",
+  "main": "tests/FlowCertificationTest.js",
+  "scripts": {
+    "test": "node tests/FlowCertificationTest.js"
+  },
+  "dependencies": {
+    "glob": "^10.3.10"
+  }
+}
