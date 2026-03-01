@@ -26,6 +26,7 @@ export SSHPASS="${SSHPASS:-${HIPILOT_SSH_PASS:-eda2020}}"
 if [ -n "$HIPILOT_EDA_SERVER" ]; then
   export PATH="${NODE_PATH}:$PATH"
   export HIPILOT_SESSION="${HIPILOT_SESSION:-hipilot}"
+  export HITESTBOT_MAX_WAIT="${HITESTBOT_MAX_WAIT:-300000}"
   COMMAND="${1:-/rtl2gds}"
   echo "HiTestBot — Running on EDA server"
   echo "Command: $COMMAND"
@@ -55,6 +56,7 @@ sshpass -e ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=15 -o ServerAl
   export PATH=${NODE_PATH}:\$PATH
   export HIPILOT_SESSION=\${HIPILOT_SESSION:-hipilot}
   export DISPLAY=:0
+  export HITESTBOT_MAX_WAIT=\${HITESTBOT_MAX_WAIT:-300000}
   cd $DEPLOYED_HIPILOT
   node src/hitestbot/tests/FlowCertificationTest.js \"$COMMAND\"
 "
