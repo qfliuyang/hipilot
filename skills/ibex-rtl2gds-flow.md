@@ -203,14 +203,13 @@ init_design
 checkDesign -netList -noHtml -outfile result/pr/report/check_data_init.report
 timeDesign -prePlace -pathReports -drvReports -slackReports -numPaths 50 -prefix prePlace -outDir result/pr/report/init_data_timing
 saveDesign result/pr/data/init_design.enc
-# Note: For continuous flow, do not exit - continue to next stage
+exit
 ```
 
 ## Stage 2: Floorplan (innovus, timeout: 120s)
 
 ```tcl
-# For continuous flow: design already loaded from Stage 1
-# For stage-by-stage: source /home/EDA/ibex_work_upload/result/pr/data/init_design.enc
+source /home/EDA/ibex_work_upload/result/pr/data/init_design.enc
 
 floorPlan -site unithd -su 1 0.4 1 1 1 1
 loadIoFile /home/EDA/ibex_work_upload/designs/sky130hd/ibex/io.file
@@ -222,14 +221,13 @@ foreach cell {sky130_fd_sc_hd__probec_p_8 sky130_fd_sc_hd__lpflow_bleeder_1 sky1
 
 saveDesign result/pr/data/floor_plan.enc
 defOut -floorplan -noStdCells result/pr/data/ibex.floorplan.def
-# Note: For continuous flow, do not exit - continue to next stage
+exit
 ```
 
 ## Stage 3: Power Planning (innovus, timeout: 120s)
 
 ```tcl
-# For continuous flow: design already loaded from Stage 2
-# For stage-by-stage: source /home/EDA/ibex_work_upload/result/pr/data/floor_plan.enc
+source /home/EDA/ibex_work_upload/result/pr/data/floor_plan.enc
 
 globalNetConnect VDD -type pgpin -pin {VPB VPWR} -inst *
 globalNetConnect VDD -type tiehi -pin {VPB VPWR} -inst *
@@ -246,18 +244,15 @@ sroute -connect { corePin } -layerChangeRange { li1(1) met4(4) } -corePinTarget 
 verifyConnectivity -type special -noAntenna -noWeakConnect -noUnroutedNet -error 1000 -warning 50
 verify_PG_short -no_routing_blkg
 saveDesign result/pr/data/powerplan.enc
-# Note: For continuous flow, do not exit - continue to next stage
+exit
 ```
 
 ## Stage 4: Placement (innovus, timeout: 300s)
 
-**CRITICAL:** DO NOT use `loadDefFile` or `loadDef` in this stage. The design is already loaded from the checkpoint. Loading DEF will cause "lib cell exists" error.
-
-If scan chain errors occur, delete existing scan chains (as shown below) - do NOT try to load scan DEF files.
+**CRITICAL:** DO NOT use `loadDefFile` or `loadDef` in this stage. Loading a DEF file will cause error "lib cell exists" because the design is already loaded from the checkpoint.
 
 ```tcl
-# For continuous flow: design already loaded from Stage 3
-# For stage-by-stage: source /home/EDA/ibex_work_upload/result/pr/data/powerplan.enc
+source /home/EDA/ibex_work_upload/result/pr/data/powerplan.enc
 
 # Delete any existing scan chains that aren't properly defined
 # This avoids "Scan chains exist but are not defined" error during placement
@@ -302,14 +297,13 @@ reportCongestion -overflow
 
 timeDesign -preCTS -idealClock -pathReports -drvReports -slackReports -numPaths 50 -prefix preCTS -outDir result/pr/report/placement_timing
 saveDesign result/pr/data/placement.enc
-# Note: For continuous flow, do not exit - continue to next stage
+exit
 ```
 
 ## Stage 5: CTS (innovus, timeout: 300s)
 
 ```tcl
-# For continuous flow: design already loaded from Stage 4
-# For stage-by-stage: source /home/EDA/ibex_work_upload/result/pr/data/placement.enc
+source /home/EDA/ibex_work_upload/result/pr/data/placement.enc
 
 set_ccopt_property use_inverters true
 
@@ -326,14 +320,13 @@ ccopt_design -cts
 report_ccopt_skew_groups
 timeDesign -postCTS -pathReports -drvReports -slackReports -numPaths 50 -prefix postCTS -outDir result/pr/report/cts_timing
 saveDesign result/pr/data/cts.enc
-# Note: For continuous flow, do not exit - continue to next stage
+exit
 ```
 
 ## Stage 6: Post-CTS Optimization (innovus, timeout: 300s)
 
 ```tcl
-# For continuous flow: design already loaded from Stage 5
-# For stage-by-stage: source /home/EDA/ibex_work_upload/result/pr/data/cts.enc
+source /home/EDA/ibex_work_upload/result/pr/data/cts.enc
 
 set_interactive_constraint_modes [all_constraint_modes -active]
 set_propagated_clock [all_clocks]
@@ -343,14 +336,13 @@ optDesign -postCTS -hold
 
 timeDesign -postCTS -pathReports -drvReports -slackReports -numPaths 50 -prefix postCTSOpt -outDir result/pr/report/cts_opt_timing
 saveDesign result/pr/data/post_cts_opt.enc
-# Note: For continuous flow, do not exit - continue to next stage
+exit
 ```
 
 ## Stage 7: Routing (innovus, timeout: 600s)
 
 ```tcl
-# For continuous flow: design already loaded from Stage 6
-# For stage-by-stage: source /home/EDA/ibex_work_upload/result/pr/data/post_cts_opt.enc
+source /home/EDA/ibex_work_upload/result/pr/data/post_cts_opt.enc
 
 setNanoRouteMode -quiet -routeWithTimingDriven true
 setAnalysisMode -analysisType onChipVariation
@@ -365,26 +357,24 @@ routeDesign -globalDetail
 
 timeDesign -postRoute -prefix postRoute -outDir result/pr/report/routing_timing
 saveDesign result/pr/data/routing.enc
-# Note: For continuous flow, do not exit - continue to next stage
+exit
 ```
 
 ## Stage 8: Routing Optimization (innovus, timeout: 300s)
 
 ```tcl
-# For continuous flow: design already loaded from Stage 7
-# For stage-by-stage: source /home/EDA/ibex_work_upload/result/pr/data/routing.enc
+source /home/EDA/ibex_work_upload/result/pr/data/routing.enc
 
 optDesign -postRoute -setup
 timeDesign -postRoute -prefix postRouteOpt -outDir result/pr/report/routing_opt_timing
 saveDesign result/pr/data/routing_opt.enc
-# Note: For continuous flow, do not exit - continue to next stage
+exit
 ```
 
 ## Stage 9: Chip Finish + GDS Export (innovus, timeout: 300s)
 
 ```tcl
-# For continuous flow: design already loaded from Stage 8
-# For stage-by-stage: source /home/EDA/ibex_work_upload/result/pr/data/routing_opt.enc
+source /home/EDA/ibex_work_upload/result/pr/data/routing_opt.enc
 
 remove_assigns -buffering
 deleteDanglingNet
@@ -411,6 +401,5 @@ setStreamOutMode -textSize 5 -virtualConnection true -uniquifyCellNamesPrefix tr
 streamOut result/pr/data/ibex_core.gds -mapFile /home/EDA/ibex_work_upload/designs/sky130hd/pdk/gds/gds.map -libName DesignLib -units 1000 -mode ALL
 
 saveDesign result/pr/data/chip_done.enc
-# Flow complete - exit to return to shell
 exit
 ```
