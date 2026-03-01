@@ -249,11 +249,16 @@ exit
 
 ## Stage 4: Placement (innovus, timeout: 300s)
 
+**CRITICAL:** DO NOT use `loadDefFile` or `loadDef` in this stage. The design is already loaded from the checkpoint. Loading DEF will cause "lib cell exists" error.
+
+If scan chain errors occur, delete existing scan chains (as shown below) - do NOT try to load scan DEF files.
+
 ```tcl
 source /home/EDA/ibex_work_upload/result/pr/data/powerplan.enc
 
 # Delete any existing scan chains that aren't properly defined
 # This avoids "Scan chains exist but are not defined" error during placement
+# NOTE: Do NOT use loadDefFile to load scan chains - it causes conflicts
 set scan_chains [getScanChains -quiet]
 if {$scan_chains != ""} {
     foreach chain $scan_chains {
