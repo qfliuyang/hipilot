@@ -11,7 +11,7 @@ hipilot:
     - session.list_checkpoints
     - session.restore_checkpoint
     - session.get_context
-    - context.get_context
+    - context.detect
     - context.suggest_next
   autonomous: false
   flow_stages: [all]
@@ -33,7 +33,8 @@ hipilot:
 |------|---------|
 | `session.list_checkpoints` | List available checkpoints |
 | `session.restore_checkpoint` | Restore checkpoint context |
-| `session.get_context` | Get restored context |
+| `session.get_context` | Get session context |
+| `context.detect` | Detect current design context |
 | `context.suggest_next` | Suggest next actions |
 
 ---
@@ -88,11 +89,11 @@ checkpoint:
 
 ---
 
-### Step 3 — Get Current Context
+### Step 3 — Detect Current Context
 
 **MCP Call:**
 ```
-context.get_context
+context.detect
 ```
 
 ---

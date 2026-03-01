@@ -12,7 +12,9 @@ hipilot:
     synopsys: "icc2 T-2022.03+"
     cadence: "innovus 20.10+"
   has_template: true
-  template_path: templates/fix_hold_timing.tcl.j2
+  template_path:
+    synopsys: templates/synopsys/icc2_fix_hold_timing.tcl
+    cadence: templates/cadence/innovus_fix_hold_timing.tcl
   auto_generated: false
   flexible: true
   flow_stages: [post_cts, post_route]

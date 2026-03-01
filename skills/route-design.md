@@ -13,7 +13,9 @@ hipilot:
     synopsys: "icc2 T-2022.03+"
     cadence: "innovus 20.10+"
   has_template: true
-  template_path: templates/route_design.tcl.j2
+  template_path:
+    synopsys: templates/synopsys/icc2_route_design.tcl
+    cadence: templates/cadence/innovus_route_design.tcl
   auto_generated: false
   flexible: true
   flow_stages: [post_cts, routing]

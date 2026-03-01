@@ -29,7 +29,7 @@ HiPilot extends Claude Code with specialized capabilities for VLSI physical desi
 │   │  │   EDA MCP   │  │  Tmux MCP   │  │Knowledge MCP│            │   │
 │   │  │   Server    │  │   Server    │  │   Server    │            │   │
 │   │  │             │  │             │  │             │            │   │
-│   │  │ 49 Tools:   │  │ 8 Tools:    │  │ 7 Tools:    │            │   │
+│   │  │ 57 Tools:   │  │ 8 Tools:    │  │ 7 Tools:    │            │   │
 │   │  │ - generate  │  │ - send_keys │  │ - search    │            │   │
 │   │  │ - send_tcl  │  │ - capture   │  │ - list      │            │   │
 │   │  │ - extract   │  │ - status    │  │ - get       │            │   │
@@ -60,7 +60,7 @@ HiPilot extends Claude Code with specialized capabilities for VLSI physical desi
 │   │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │   │
 │   │  │ 36 Skills   │  │  Templates  │  │     Docs    │            │   │
 │   │  │             │  │             │  │             │            │   │
-│   │  │ - Flow      │  │ - Tcl.j2    │  │ - Specs     │            │   │
+│   │  │ - Flow      │  │ - Tcl       │  │ - Specs     │            │   │
 │   │  │ - Fix       │  │ - Report    │  │ - Guides    │            │   │
 │   │  │ - Report    │  │ - Timing    │  │ - PRD       │            │   │
 │   │  └─────────────┘  └─────────────┘  └─────────────┘            │   │
@@ -94,7 +94,7 @@ The `--strict-mcp-config` flag forces Claude Code to use only the specified MCP 
 
 ### 2. MCP Server Layer
 
-#### EDA MCP Server (`servers/eda/index.js`) — 54 tools
+#### EDA MCP Server (`servers/eda/index.js`) — 59 tools
 
 **Purpose:** EDA tool integration, Tcl generation, QoR tracking, workflow automation
 
@@ -275,7 +275,7 @@ hipilot/
 │   └── setup.sh             # Installation wizard
 │
 ├── servers/                 # MCP servers (JSON-RPC over stdio)
-│   ├── eda/index.js         # EDA MCP (54 tools)
+│   ├── eda/index.js         # EDA MCP (59 tools)
 │   ├── tmux/index.js        # Tmux MCP (8 tools)
 │   └── knowledge/index.js   # Knowledge MCP (7 tools)
 │

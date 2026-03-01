@@ -14,7 +14,9 @@ hipilot:
     synopsys_pt: "pt_shell T-2022.03+ (with PrimePower)"
     cadence: "innovus 20.10+"
   has_template: true
-  template_path: templates/report_power.tcl.j2
+  template_path:
+    synopsys: templates/synopsys/icc2_report_power.tcl
+    cadence: templates/cadence/innovus_report_power.tcl
   auto_generated: false
   flexible: true
   flow_stages: [post_place, post_cts, post_route, signoff]

@@ -12,7 +12,7 @@ hipilot:
     - qor.list_snapshots
     - qor.get_trend
     - qor.compare
-    - context.get_context
+    - context.detect
   autonomous: false
   flow_stages: [all]
 ---
@@ -37,7 +37,7 @@ hipilot:
 | `qor.list_snapshots` | List all saved snapshots |
 | `qor.get_trend` | Show trend over time |
 | `qor.compare` | Compare two snapshots |
-| `context.get_context` | Get current design context |
+| `context.detect` | Get current design context |
 
 ---
 
@@ -47,7 +47,7 @@ hipilot:
 
 **MCP Call:**
 ```
-context.get_context
+context.detect
 ```
 
 **Response:**

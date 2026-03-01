@@ -59,19 +59,19 @@ When running on the EDA server with HiPilot:
 - **Full-flow execution (P&R onwards) using the builtin workflow:**
 
 ```bash
-eda.rtl2gds.run_full_flow {"design":"ibex"}
+rtl2gds.run_full_flow {"design":"ibex"}
 # or, equivalently:
-eda.workflow.run {"name":"rtl2gds","params":{"design":"ibex"}}
+workflow.run {"name":"rtl2gds","params":{"design":"ibex"}}
 ```
 
 - **Single-stage execution for targeted reruns:**
 
 ```bash
-eda.rtl2gds.run_stage {"stage":"floorplan","design":"ibex"}
-eda.rtl2gds.run_stage {"stage":"placement","design":"ibex"}
-eda.rtl2gds.run_stage {"stage":"cts","design":"ibex"}
-eda.rtl2gds.run_stage {"stage":"routing","design":"ibex"}
-eda.rtl2gds.run_stage {"stage":"chip_finish","design":"ibex"}
+rtl2gds.run_stage {"stage":"floorplan","design":"ibex"}
+rtl2gds.run_stage {"stage":"placement","design":"ibex"}
+rtl2gds.run_stage {"stage":"cts","design":"ibex"}
+rtl2gds.run_stage {"stage":"routing","design":"ibex"}
+rtl2gds.run_stage {"stage":"chip_finish","design":"ibex"}
 ```
 
 This generic `rtl2gds-flow` skill describes the **overall RTL→GDS methodology**; design-specific skills like `/ibex-rtl2gds-flow` provide concrete parameter choices (paths, clocks, technology) for a particular chip.

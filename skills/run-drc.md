@@ -14,7 +14,9 @@ hipilot:
     synopsys: "icc2 T-2022.03+"
     cadence: "innovus 20.10+"
   has_template: true
-  template_path: templates/run_drc.tcl.j2
+  template_path:
+    synopsys: templates/synopsys/icc2_check_drc.tcl
+    cadence: templates/cadence/innovus_check_drc.tcl
   auto_generated: false
   flexible: true
   flow_stages: [post_route, post_route_opt, signoff]

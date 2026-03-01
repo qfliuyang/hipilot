@@ -1,6 +1,6 @@
 {
   "name": "hipilot",
-  "version": "0.5.0",
+  "version": "0.7.0",
   "description": "VLSI Physical Design Copilot - AI assistant for EDA engineers. Generate Tcl scripts, control EDA tools, and manage RTL-to-GDS flows with Claude Code.",
   "main": "src/index.js",
   "bin": {
