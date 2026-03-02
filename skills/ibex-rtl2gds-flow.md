@@ -352,6 +352,9 @@ exit
 ```tcl
 source /home/EDA/ibex_work_upload/result/pr/data/post_cts_opt.enc
 
+# Re-establish timing library (needed after checkpoint restore)
+set_timing_library /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+
 setNanoRouteMode -quiet -routeWithTimingDriven true
 setAnalysisMode -analysisType onChipVariation
 setNanoRouteMode -quiet -drouteEndIteration 70
