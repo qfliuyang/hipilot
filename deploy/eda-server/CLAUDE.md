@@ -91,6 +91,37 @@ Execute these steps IN ORDER. Do NOT stop to think between steps. Call the next 
 └────────────────────────────────┴────────────────────────────────────┘
 ```
 
+## CRITICAL: Common Mistakes to AVOID
+
+### NEVER use `loadDef`, `loadDefFile`, or DEF loading
+
+When working with the Ibex RTL2GDS flow, **NEVER** use these commands:
+- ❌ `loadDef` — This is ambiguous and will fail
+- ❌ `loadDefFile` — This causes "lib cell exists" errors
+- ❌ `loadDef -scan` — Scan chains are handled differently
+- ❌ `defIn` — Don't read DEF files, use checkpoints instead
+
+**WHY:** The Ibex flow uses **checkpoints** (`.enc` files) to save/load design state between stages. DEF files are for interface exchange, not for flow state. Loading a DEF when a design is already initialized causes "lib cell exists" errors.
+
+**CORRECT approach:**
+```tcl
+# Stage 1: Initialize fresh
+cd /home/EDA/ibex_work_upload
+set init_verilog result/syn/data/ibex_core.syn.v
+set init_lef_file [list ...]
+init_design
+saveDesign result/pr/data/init_design.enc
+exit
+
+# Stage 2: Load from checkpoint
+source result/pr/data/init_design.enc  ;# ← CORRECT: load checkpoint
+floorPlan ...
+saveDesign result/pr/data/floor_plan.enc
+exit
+```
+
+The skill `ibex-rtl2gds-flow` has the correct Tcl for each stage. **Follow it exactly.**
+
 ## How to Do Any Task
 
 Follow this pattern for every request from the engineer:

@@ -19,6 +19,10 @@ hipilot:
 
 # Ibex RTL2GDS Flow
 
+> **⚠️ CRITICAL WARNING:** This flow uses **checkpoints** (`.enc` files) to pass design state between stages.
+> **NEVER** use `loadDef`, `loadDefFile`, `defIn`, or any DEF loading commands — they cause "lib cell exists" errors.
+> Always use `source <checkpoint.enc>` to load design state.
+
 Each stage is a **standalone Tcl script**. The tool starts fresh, loads the previous checkpoint, runs the stage, saves a new checkpoint, and exits. This gives a clean environment for each stage and enables branching/recovery.
 
 ## How to execute each stage
