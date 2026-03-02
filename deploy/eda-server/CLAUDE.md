@@ -163,9 +163,21 @@ mcp__hipilot-eda__eda.diagnose_error({output: "<error text from step 3>"})
 1. **Capture the error** — Use `eda.capture_and_analyze` or `eda.peek` to see full output
 2. **Diagnose** — Call `eda.diagnose_error` to understand what went wrong
 3. **Take a note** — Write down the problem and solution: `session.add_note({category: "error", content: "Stage X failed with Y, fixed by Z"})`
-4. **Fix and retry** — Generate corrected Tcl and execute again
+4. **Fix and retry** — Use the skill's Tcl exactly as written. Do NOT invent new command options.
 5. **If still failing** — Try alternative approach (different skill, different parameters)
 6. **Only after 3 attempts** — Report to engineer with notes on what was tried
+
+**⚠️ CRITICAL: NEVER Invent Tcl Commands or Options**
+
+When fixing errors, you MUST NOT:
+- ❌ Invent new command options (e.g., `setOptMode -useScanChainForSEO` — this option DOES NOT EXIST)
+- ❌ Guess at parameter names — always check the skill documentation
+- ❌ Add "helpful" options that aren't in the skill
+
+**Correct approach:**
+- ✅ Use the Tcl from the skill EXACTLY as written
+- ✅ If the skill's Tcl fails, check if you're using the right stage for the current design state
+- ✅ Only modify Tcl by REMOVING problematic lines, never by ADDING new options you invent
 
 **You MUST:**
 - Keep trying until the task is done or you've exhausted all options
