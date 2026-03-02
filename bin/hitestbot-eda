@@ -50,13 +50,16 @@ for i in 1 2 3 4 5; do
   sleep $((i * 5))
 done
 
+# Pass HITESTBOT_MAX_WAIT from local environment (convert to seconds for display)
+MAX_WAIT_MS="${HITESTBOT_MAX_WAIT:-300000}"
+
 sshpass -e ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=15 -o ServerAliveCountMax=3 \
   "$SSH_HOST" "
   export HIPILOT_EDA_SERVER=1
   export PATH=${NODE_PATH}:\$PATH
   export HIPILOT_SESSION=\${HIPILOT_SESSION:-hipilot}
   export DISPLAY=:0
-  export HITESTBOT_MAX_WAIT=\${HITESTBOT_MAX_WAIT:-300000}
+  export HITESTBOT_MAX_WAIT=${MAX_WAIT_MS}
   cd $DEPLOYED_HIPILOT
   node src/hitestbot/tests/FlowCertificationTest.js \"$COMMAND\"
 "
