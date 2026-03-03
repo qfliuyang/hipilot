@@ -133,7 +133,7 @@ if { $delay_type eq "max" || $delay_type eq "both" } {
     # Build report_timing command based on parameters
     set rt_cmd "report_timing"
     append rt_cmd " -max_paths $max_paths"
-    append rt_cmd " -delay_type max"
+    append rt_cmd " -late"
     if { $path_group ne "" } {
         append rt_cmd " -path_group $path_group"
     }
@@ -158,7 +158,7 @@ if { $delay_type eq "max" || $delay_type eq "both" } {
     if { $path_group ne "" } {
         report_timing \
             -max_paths          $max_paths \
-            -delay_type         max \
+            -late \
             -path_group         $path_group \
             -slack_lesser_than  $slack_threshold \
             -format             $timing_format \
@@ -166,7 +166,7 @@ if { $delay_type eq "max" || $delay_type eq "both" } {
     } else {
         report_timing \
             -max_paths          $max_paths \
-            -delay_type         max \
+            -late \
             -slack_lesser_than  $slack_threshold \
             -format             $timing_format \
             > $setup_vio_rpt
@@ -185,7 +185,7 @@ if { $delay_type eq "min" || $delay_type eq "both" } {
 
     set rt_cmd "report_timing"
     append rt_cmd " -max_paths $max_paths"
-    append rt_cmd " -delay_type min"
+    append rt_cmd " -early"
     if { $path_group ne "" } {
         append rt_cmd " -path_group $path_group"
     }
@@ -208,7 +208,7 @@ if { $delay_type eq "min" || $delay_type eq "both" } {
     if { $path_group ne "" } {
         report_timing \
             -max_paths          $max_paths \
-            -delay_type         min \
+            -early \
             -path_group         $path_group \
             -slack_lesser_than  $slack_threshold \
             -format             $timing_format \
@@ -216,7 +216,7 @@ if { $delay_type eq "min" || $delay_type eq "both" } {
     } else {
         report_timing \
             -max_paths          $max_paths \
-            -delay_type         min \
+            -early \
             -slack_lesser_than  $slack_threshold \
             -format             $timing_format \
             > $hold_vio_rpt
@@ -290,7 +290,7 @@ foreach pg $all_groups {
     # Setup (max)
     set pg_setup [report_timing \
         -max_paths  5 \
-        -delay_type max \
+        -late \
         -path_group $pg \
         -format     {instance delay arrival slack} \
         -collection]
@@ -299,7 +299,7 @@ foreach pg $all_groups {
     # Hold (min)
     set pg_hold [report_timing \
         -max_paths  5 \
-        -delay_type min \
+        -early \
         -path_group $pg \
         -format     {instance delay arrival slack} \
         -collection]

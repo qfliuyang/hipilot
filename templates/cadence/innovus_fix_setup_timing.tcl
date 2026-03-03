@@ -90,14 +90,14 @@ puts "\nINFO: ---- Step 1: Baseline timing report ----"
 if { $path_group eq "" } {
     report_timing \
         -max_paths      $max_paths \
-        -delay_type     max \
+        -late \
         -slack_lesser_than $slack_threshold \
         -format         {instance arc cell slew load delay arrival slack} \
         > "${report_prefix}_before.rpt"
 } else {
     report_timing \
         -max_paths      $max_paths \
-        -delay_type     max \
+        -late \
         -slack_lesser_than $slack_threshold \
         -path_group     $path_group \
         -format         {instance arc cell slew load delay arrival slack} \
@@ -170,7 +170,7 @@ if { $allow_cell_upsize } {
     # Get violating path endpoints
     set vio_paths [report_timing \
         -max_paths      $max_paths \
-        -delay_type     max \
+        -late \
         -slack_lesser_than $slack_threshold \
         -collection]
 
@@ -258,14 +258,14 @@ puts "\nINFO: ---- Step 7: Post-fix timing report ----"
 if { $path_group eq "" } {
     report_timing \
         -max_paths      $max_paths \
-        -delay_type     max \
+        -late \
         -slack_lesser_than $slack_threshold \
         -format         {instance arc cell slew load delay arrival slack} \
         > "${report_prefix}_after.rpt"
 } else {
     report_timing \
         -max_paths      $max_paths \
-        -delay_type     max \
+        -late \
         -slack_lesser_than $slack_threshold \
         -path_group     $path_group \
         -format         {instance arc cell slew load delay arrival slack} \

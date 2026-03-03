@@ -99,7 +99,7 @@ puts "\nINFO: ---- Step 1: Baseline hold timing report ----"
 
 report_timing \
     -max_paths          $max_paths \
-    -delay_type         min \
+    -early \
     -slack_lesser_than  $slack_threshold \
     -format             {instance arc cell slew load delay arrival slack} \
     > "${report_prefix}_hold_before.rpt"
@@ -107,7 +107,7 @@ report_timing \
 # Also capture baseline setup WNS/TNS so we can check for degradation later
 report_timing \
     -max_paths          $max_paths \
-    -delay_type         max \
+    -late \
     -format             {instance arc cell slew load delay arrival slack} \
     > "${report_prefix}_setup_before.rpt"
 
@@ -272,14 +272,14 @@ puts "\nINFO: ---- Step 7: Final hold timing report ----"
 
 report_timing \
     -max_paths          $max_paths \
-    -delay_type         min \
+    -early \
     -slack_lesser_than  $slack_threshold \
     -format             {instance arc cell slew load delay arrival slack} \
     > "${report_prefix}_hold_after.rpt"
 
 report_timing \
     -max_paths          $max_paths \
-    -delay_type         max \
+    -late \
     -format             {instance arc cell slew load delay arrival slack} \
     > "${report_prefix}_setup_after.rpt"
 
