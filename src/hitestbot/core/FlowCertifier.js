@@ -732,12 +732,21 @@ export class FlowCertifier {
     const claudeLines = claude.split('\n').filter(l => l.trim());
     const lastLine = claudeLines[claudeLines.length - 1] || '';
 
+    // Check EDA pane for tool prompt (innovus N>, icc2_shell>, $)
+    const edaLines = eda.split('\n').filter(l => l.trim());
+    const edaLastLine = edaLines[edaLines.length - 1] || '';
+    const edaPromptReady = /innovus\s*\d+>/i.test(edaLastLine) ||
+      /icc2_shell>/i.test(edaLastLine) ||
+      /pt_shell>/i.test(edaLastLine) ||
+      /\$\s*$/.test(edaLastLine);
+
     // Check for fatal errors first — a human would notice and stop
     for (const pat of EARLY_ABORT_PATTERNS) {
       if (pat.test(claude)) return { state: 'error', detail: claude.match(pat)[0] };
     }
 
-    // Check for bypass permissions prompt (Claude Code dangerous mode)
+    // Check for bypass permissions prompt (Claude Code dangerous mode) — CRITICAL
+    // This must be checked BEFORE thinking/working states
     if (/bypass permissions|Dangerous mode|⏵⏵/.test(claude)) {
       return { state: 'bypass_permissions' };
     }
@@ -762,14 +771,6 @@ export class FlowCertifier {
     // Check if Claude is actively thinking (spinner visible)
     const claudeThinking = /thinking|Drizzling|Working|Generating/i.test(lastLine) ||
       /[⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏✶●◉⠿]/.test(lastLine);
-
-    // Check EDA pane for tool prompt (innovus N>, icc2_shell>, $)
-    const edaLines = eda.split('\n').filter(l => l.trim());
-    const edaLastLine = edaLines[edaLines.length - 1] || '';
-    const edaPromptReady = /innovus\s*\d+>/i.test(edaLastLine) ||
-      /icc2_shell>/i.test(edaLastLine) ||
-      /pt_shell>/i.test(edaLastLine) ||
-      /\$\s*$/.test(edaLastLine);
 
     // Check for stage completion message - a human would see "STAGE X COMPLETE"
     const stageComplete = /STAGE\s+\d+\s+COMPLETE|stage.*complete/i.test(claude);
@@ -818,6 +819,11 @@ export class FlowCertifier {
     // Left pane idle but right pane changing — EDA tool is executing
     if (!claudeChanged && edaChanged) {
       return { state: 'waiting_for_eda', detail: edaPromptReady ? 'EDA prompt returned' : 'EDA running' };
+    }
+
+    // Both panes idle but EDA prompt not ready — EDA is still running
+    if (!claudeChanged && !edaChanged && !edaPromptReady) {
+      return { state: 'waiting_for_eda', detail: 'EDA running (no prompt yet)' };
     }
 
     // Both panes idle. Check if EITHER has a ready prompt — that's a strong signal
