@@ -1,0 +1,257 @@
+End delay calculation (fullDC). (MEM=1169.31 CPU=0:00:02.8 REAL=0:00:03.0)
+*** Done Building Timing Graph (cpu=0:00:03.8 real=0:00:04.0 totSessionCpu=0:02:29 mem=1169.3M)
+
+------------------------------------------------------------
+             Initial Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+
+|     Setup mode     |   all   |
++--------------------+---------+
+|           WNS (ns):| -32.007 |
+|           TNS (ns):|-49177.1 |
+|    Violating Paths:|  1908   |
+|          All Paths:|  7573   |
++--------------------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |    204 (204)     |   -0.625   |    205 (205)     |
+|   max_tran     |    886 (8811)    |  -16.752   |    891 (8846)    |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 39.776%
+------------------------------------------------------------
+**optDesign ... cpu = 0:00:11, real = 0:00:11, mem = 926.6M, totSessionCpu=0:02:29 **
+** INFO : this run is activating medium effort placeOptDesign flow
+*** Starting optimizing excluded clock nets MEM= 1123.3M) ***
+*info: No excluded clock nets to be optimized.
+*** Finished optimizing excluded clock nets (CPU Time= 0:00:00.0  MEM= 1123.3M) ***
+The useful skew maximum allowed delay is: 0.3
+Info: 2 clock nets excluded from IPO operation.
+*** AreaOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:02:30.2/0:02:40.5 (0.9
+), mem = 1123.3M
+
+Footprint cell information for calculating maxBufDist
+*info: There are 13 candidate Buffer cells
+*info: There are 13 candidate Inverter cells
+
+
+Netlist preparation processing...
+Removed 0 instance
+*info: Marking 0 isolation instances dont touch
+*info: Marking 0 level shifter instances dont touch
+*** AreaOpt [finish] : cpu/real = 0:00:03.7/0:00:03.7 (1.0), totSession cpu/real = 0:02:33.9/0:02:44.3 (0.
+9), mem = 1225.4M
+Begin: GigaOpt high fanout net optimization
+GigaOpt HFN: use maxLocalDensity 1.2
+GigaOpt Checkpoint: Internal optDRV -useLevelizedBufferTreeOnly -auxMaxFanoutCountLimit 500 -largeScaleFix
+ing -maxIter 1 -maxLocalDensity 1.2 -numThreads 1 -preCTS -preRouteDontEndWithRefinePlaceIncrSteinerRouteD
+C
+Info: 2 clock nets excluded from IPO operation.
+*** DrvOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:02:34.1/0:02:44.4 (0.9)
+, mem = 1164.4M
++----------+---------+--------+----------+------------+--------+
+| Density  | Commits |  WNS   |   TNS    |    Real    |  Mem   |
++----------+---------+--------+----------+------------+--------+
+|    39.78%|        -| -32.007|-49177.111|   0:00:00.0| 1183.5M|
+|    39.92%|      103| -32.007|-49177.110|   0:00:01.0| 1234.1M|
++----------+---------+--------+----------+------------+--------+
+
+*** Finish pre-CTS High Fanout Net Fixing (cpu=0:00:01.2 real=0:00:01.0 mem=1234.1M) ***
+Bottom Preferred Layer:
+    None
+Via Pillar Rule:
+    None
+*** DrvOpt [finish] : cpu/real = 0:00:06.1/0:00:06.1 (1.0), totSession cpu/real = 0:02:40.1/0:02:50.5 (0.9
+), mem = 1215.1M
+GigaOpt HFN: restore maxLocalDensity to 0.98
+End: GigaOpt high fanout net optimization
+Begin: GigaOpt DRV Optimization
+GigaOpt Checkpoint: Internal optDRV -max_tran -max_cap -maxLocalDensity 3.0 -numThreads 1 -largeScaleFixin
+g -maxIter 2 -preCTS -preRouteDontEndWithRefinePlaceIncrSteinerRouteDC
+Info: 2 clock nets excluded from IPO operation.
+*** DrvOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:02:40.2/0:02:50.6 (0.9)
+, mem = 1215.1M
++---------------------------------------------------------------------------------------------------------
+----------------------------------------------+
+|        max-tran       |        max-cap        |  max-fanout |  max-length |       setup       |        |
+        |        |       |          |         |
++---------------------------------------------------------------------------------------------------------
+----------------------------------------------+
+| nets | terms|  wViol  | nets | terms|  wViol  | nets | terms| nets | terms|   WNS   |   TNS   |  #Buf  |
+  #Inv  | #Resize|Density|   Real   |   Mem   |
++---------------------------------------------------------------------------------------------------------
+----------------------------------------------+
+|  1066| 11907|   -17.05|   314|   314|    -0.64|     0|     0|     0|     0|   -32.01|-49177.11|       0|
+       0|       0|  39.92|          |         |
+|     0|     0|     0.00|     0|     0|     0.00|     0|     0|     0|     0|   -12.82|-16789.21|     232|
+       0|     147|  40.34| 0:00:07.0|  1234.1M|
+|     0|     0|     0.00|     0|     0|     0.00|     0|     0|     0|     0|   -12.82|-16789.21|       0|
+       0|       0|  40.34| 0:00:00.0|  1234.1M|
++---------------------------------------------------------------------------------------------------------
+----------------------------------------------+
+Bottom Preferred Layer:
+    None
+Via Pillar Rule:
+    None
+
+*** Finish DRV Fixing (cpu=0:00:07.5 real=0:00:07.0 mem=1234.1M) ***
+
+*** DrvOpt [finish] : cpu/real = 0:00:10.1/0:00:10.2 (1.0), totSession cpu/real = 0:02:50.3/0:03:00.7 (0.9
+), mem = 1215.1M
+End: GigaOpt DRV Optimization
+GigaOpt DRV: restore maxLocalDensity to 0.98
+**optDesign ... cpu = 0:00:32, real = 0:00:32, mem = 994.0M, totSessionCpu=0:02:50 **
+
+Active setup views:
+ max_view
+  Dominating endpoints: 0
+  Dominating TNS: -0.000
+
+Begin: GigaOpt Global Optimization
+*info: use new DP (enabled)
+GigaOpt Checkpoint: Internal globalOpt -maxLocalDensity 1.2 -numThreads 1 -preCTS -rebufferAll -preRouteDo
+ntEndWithRefinePlaceIncrSteinerRouteDC -enableHighLayerOpt -maxIter 50 -maxIterForLEPG 50
+Info: 2 clock nets excluded from IPO operation.
+*** SetupOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:02:50.5/0:03:00.9 (0.
+9), mem = 1173.1M
+*info: 2 clock nets excluded
+*info: 2 special nets excluded.
+*info: 132 no-driver nets excluded.
+** GigaOpt Global Opt WNS Slack -12.816  TNS Slack -16789.206
++--------+----------+----------+------------+--------+----------+---------+-------------------------------
+---------------------+
+|  WNS   |   TNS    | Density  |    Real    |  Mem   |Worst View|Pathgroup|                     End Point
+                     |
++--------+----------+----------+------------+--------+----------+---------+-------------------------------
+---------------------+
+| -12.816|-16789.206|    40.34%|   0:00:00.0| 1192.1M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/rdata_q_reg[59]/D
+                     |
+Dumping Information for Job 0 **WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M4M5_PR' in
+ Cap table or LEF or OA files. The default value of 4.0 ohms is being assigned. To avoid this, check the C
+ap table and LEF and OA files, provide the resistance and read the files again.
+
+|  -7.295| -8307.441|    40.70%|   0:00:07.0| 1246.9M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -5.995| -5758.880|    41.28%|   0:00:06.0| 1255.7M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -5.995| -5758.880|    41.28%|   0:00:01.0| 1255.7M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -3.426| -2755.481|    41.75%|   0:00:10.0| 1255.7M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -3.105| -1988.269|    41.85%|   0:00:06.0| 1274.8M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -3.013| -1764.068|    42.03%|   0:00:04.0| 1272.8M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -3.013| -1764.068|    42.03%|   0:00:00.0| 1272.8M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -2.186| -1133.452|    42.17%|   0:00:02.0| 1272.8M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -2.252| -1162.826|    42.17%|   0:00:05.0| 1274.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -2.252| -1151.093|    42.25%|   0:00:02.0| 1274.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -2.252| -1151.093|    42.25%|   0:00:01.0| 1274.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.820|  -574.698|    42.33%|   0:00:01.0| 1274.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -2.034|  -822.822|    42.35%|   0:00:03.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.765|  -481.033|    42.40%|   0:00:01.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.765|  -481.033|    42.40%|   0:00:00.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.684|  -372.268|    42.44%|   0:00:01.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.689|  -321.799|    42.44%|   0:00:02.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.689|  -309.398|    42.50%|   0:00:01.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.689|  -309.398|    42.50%|   0:00:00.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -280.993|    42.53%|   0:00:01.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -279.150|    42.55%|   0:00:02.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -278.798|    42.56%|   0:00:00.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -278.798|    42.56%|   0:00:00.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -278.483|    42.58%|   0:00:01.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -279.394|    42.57%|   0:00:01.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -277.721|    42.58%|   0:00:00.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -277.721|    42.58%|   0:00:00.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -277.679|    42.59%|   0:00:01.0| 1293.5M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+

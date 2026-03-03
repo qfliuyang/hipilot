@@ -1,0 +1,57 @@
+[EDA@EDA2035 current]$ clear
+[EDA@EDA2035 current]$ echo '  EDA Tool Pane'
+  EDA Tool Pane
+───────────' current]$ echo '  ───
+  ──────────────
+[EDA@EDA2035 current]$ echo '  Start your EDA tool:'
+  Start your EDA tool:
+[EDA@EDA2035 current]$ echo '    icc2_shell    (Synopsys ICC2)'
+    icc2_shell    (Synopsys ICC2)
+[EDA@EDA2035 current]$ echo '    innovus       (Cadence Innovus)'
+    innovus       (Cadence Innovus)
+[EDA@EDA2035 current]$ echo '    pt_shell      (Synopsys PrimeTime)'
+    pt_shell      (Synopsys PrimeTime)
+[EDA@EDA2035 current]$ echo ''
+
+al mode active (default)'ho '  🔒 Manu
+  🔒 Manual mode active (default)
+[EDA@EDA2035 current]$ echo '  HiPilot Tcl commands require approval.'
+  HiPilot Tcl commands require approval.
+[EDA@EDA2035 current]$ cd /home/EDA/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$ innovus -no_gui
+C: unknown locale
+
+Cadence Innovus(TM) Implementation System.
+Copyright 2020 Cadence Design Systems, Inc. All rights reserved worldwide.
+
+Version:	v20.10-p004_1, built Thu May 7 20:02:41 PDT 2020
+Options:	-no_gui
+Date:		Tue Mar  3 20:19:15 2026
+Host:		EDA2035 (x86_64 w/Linux 3.10.0-1160.119.1.el7.x86_64) (3cores*6cpus*Intel(R) Core(TM) i7-8
+559U CPU @ 2.70GHz 8192KB)
+OS:		CentOS Linux release 7.9.2009 (Core)
+
+License:
+		invs	Innovus Implementation System	20.1	checkout succeeded
+		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required
+CPU count.
+**WARN: (IMPOPT-801):	Genus executable not found in PATH. Install Genus, add the path to the genus execu
+table in the PATH variable and rerun Innovus.
+Create and set the environment variable TMPDIR to /tmp/innovus_temp_118634_EDA2035_EDA_5a4NYA.
+
+The soft stacksize limit is either up to the hard limit or larger than 0.2% of RAM. No change is needed.
+
+**INFO:  MMMC transition support version v31-84
+
+innovus 1>
+
+
+
+
+
+
+
+
+
+
+

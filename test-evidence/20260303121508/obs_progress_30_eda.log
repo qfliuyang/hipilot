@@ -1,0 +1,257 @@
+current mem=699.8M)
+Reading congestion map file /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.route.co
+ngmap.gz ...
+% Begin Load SymbolTable ... (date=03/03 20:21:10, mem=700.1M)
+Suppress "**WARN ..." messages.
+Un-suppress "**WARN ..." messages.
+% End Load SymbolTable ... (date=03/03 20:21:10, total cpu=0:00:00.1, real=0:00:00.0, peak res=702.3M, cur
+rent mem=702.3M)
+Loading place ...
+% Begin Load placement data ... (date=03/03 20:21:10, mem=702.3M)
+Reading placement file - /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.place.gz.
+** Reading stdCellPlacement_binary (Created by Innovus v20.10-p004_1 on Mon Mar  2 23:41:08 2026, version#
+ 2) ...
+Read Views for adaptive view pruning ...
+Read 0 views from Binary DB for adaptive view pruning
+*** Completed restorePlace (cpu=0:00:00.0 real=0:00:00.0 mem=811.7M) ***
+Total net length = 4.381e+05 (2.132e+05 2.249e+05) (ext = 3.365e+04)
+% End Load placement data ... (date=03/03 20:21:10, total cpu=0:00:00.1, real=0:00:00.0, peak res=705.3M,
+current mem=705.0M)
+Reading PG file /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.pg.gz, version#2, (C
+reated by Innovus v20.10-p004_1 on       Mon Mar  2 23:41:08 2026)
+*** Completed restorePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=807.7M) ***
+% Begin Load routing data ... (date=03/03 20:21:10, mem=705.6M)
+Reading routing file - /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.route.gz.
+Reading Innovus routing data (Created by Innovus v20.10-p004_1 on Mon Mar  2 23:41:09 2026 Format: 20.1) .
+..
+*** Total 11883 nets are successfully restored.
+*** Completed restoreRoute (cpu=0:00:00.2 real=0:00:01.0 mem=834.7M) ***
+% End Load routing data ... (date=03/03 20:21:11, total cpu=0:00:00.2, real=0:00:01.0, peak res=733.0M, cu
+rrent mem=732.1M)
+Loading Drc markers ...
+... 1005 markers are loaded ...
+... 0 geometry drc markers are loaded ...
+... 5 antenna drc markers are loaded ...
+TAT_INFO: restoreCongMap REAL = 0 : CPU = 0 : MEM = 0.
+Reading property file /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.prop
+*** Completed restoreProperty (cpu=0:00:00.0 real=0:00:00.0 mem=840.7M) ***
+Reading dirtyarea snapshot file /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.db.d
+a.gz (Create by Innovus v20.10-p004_1 on Mon Mar  2 23:41:09 2026, version: 4).
+Set Default Input Pin Transition as 0.1 ps.
+Extraction setup Started
+Initializing multi-corner RC extraction with 2 active RC Corners ...
+**WARN: (IMPEXT-2773):	The via resistance between layers POLY and M1 could not be determined from the LEF
+ technology file because the via resistance specification is missing. A default of 4 Ohms will be used as
+via resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M1 and M2 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M2 and M3 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M3 and M4 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M4 and M5 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M5 and M6 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M1 is not defined in the cap table. Therefore, the
+LEF value 12.2 will be used instead. To avoid this message, update the relevant cap table to include the s
+heet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M2 is not defined in the cap table. Therefore, the
+LEF value 0.125 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M3 is not defined in the cap table. Therefore, the
+LEF value 0.125 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M4 is not defined in the cap table. Therefore, the
+LEF value 0.047 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M5 is not defined in the cap table. Therefore, the
+LEF value 0.047 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M6 is not defined in the cap table. Therefore, the
+LEF value 0.0285 will be used instead. To avoid this message, update the relevant cap table to include the
+ sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2773):	The via resistance between layers POLY and M1 could not be determined from the LEF
+ technology file because the via resistance specification is missing. A default of 4 Ohms will be used as
+via resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M1 and M2 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M2 and M3 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M3 and M4 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M4 and M5 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M5 and M6 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M1 is not defined in the cap table. Therefore, the
+LEF value 12.2 will be used instead. To avoid this message, update the relevant cap table to include the s
+heet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M2 is not defined in the cap table. Therefore, the
+LEF value 0.125 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M3 is not defined in the cap table. Therefore, the
+LEF value 0.125 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M4 is not defined in the cap table. Therefore, the
+LEF value 0.047 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M5 is not defined in the cap table. Therefore, the
+LEF value 0.047 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M6 is not defined in the cap table. Therefore, the
+LEF value 0.0285 will be used instead. To avoid this message, update the relevant cap table to include the
+ sheet resistance for the specified layer and read it back in.
+Summary of Active RC-Corners :
+
+ Analysis View: max_view
+    RC-Corner Name        : rc_max
+    RC-Corner Index       : 0
+    RC-Corner Temperature : 25 Celsius
+    RC-Corner Cap Table   : ''
+    RC-Corner PreRoute Res Factor         : 1.05
+    RC-Corner PreRoute Cap Factor         : 1.05
+    RC-Corner PostRoute Res Factor        : 1.05 {1.05 1 1}
+    RC-Corner PostRoute Cap Factor        : 1.05 {1.05 1 1}
+    RC-Corner PostRoute XCap Factor       : 1 {1 1 1}
+    RC-Corner PreRoute Clock Res Factor   : 1.05	[Derived from Cap Table]
+    RC-Corner PreRoute Clock Cap Factor   : 1.05	[Derived from Cap Table]
+    RC-Corner PostRoute Clock Cap Factor  : 1.05 {1.05 1 1} 	[Derived from postRoute_cap (effortLevel l
+ow)]
+    RC-Corner PostRoute Clock Res Factor  : 1.05 {1.05 1 1} 	[Derived from postRoute_res (effortLevel l
+ow)]
+
+ Analysis View: min_view
+    RC-Corner Name        : rc_min
+    RC-Corner Index       : 1
+    RC-Corner Temperature : 25 Celsius
+    RC-Corner Cap Table   : ''
+    RC-Corner PreRoute Res Factor         : 1
+    RC-Corner PreRoute Cap Factor         : 1
+    RC-Corner PostRoute Res Factor        : 1 {1 1 1}
+    RC-Corner PostRoute Cap Factor        : 1 {1 1 1}
+    RC-Corner PostRoute XCap Factor       : 1 {1 1 1}
+    RC-Corner PreRoute Clock Res Factor   : 1	[Derived from Cap Table]
+    RC-Corner PreRoute Clock Cap Factor   : 1	[Derived from Cap Table]
+    RC-Corner PostRoute Clock Cap Factor  : 1 {1 1 1} 	[Derived from postRoute_cap (effortLevel low)]
+    RC-Corner PostRoute Clock Res Factor  : 1 {1 1 1} 	[Derived from postRoute_res (effortLevel low)]
+Initializing multi-corner resistance tables ...
+Start generating vias ..
+#Skip building auto via since it is not turned on.
+Extracting standard cell pins and blockage ......
+Pin and blockage extraction finished
+Via generation completed.
+% Begin Load power constraints ... (date=03/03 20:21:13, mem=741.8M)
+source /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core_power_constraints.tcl
+'set_default_switching_activity' finished successfully.
+% End Load power constraints ... (date=03/03 20:21:13, total cpu=0:00:00.0, real=0:00:00.0, peak res=748.2
+M, current mem=748.2M)
+% Begin load AAE data ... (date=03/03 20:21:13, mem=790.9M)
+**WARN: (IMPESI-3505):	setDelayCalMode -eng_copyNetPropToNewNet true (default=false) will be obsoleted al
+ong with its sgs2set equivalent.  This parameter will continue to be supported in the current release, but
+ will be removed in the next major release of the software.
+AAE DB initialization (MEM=917.805 CPU=0:00:00.0 REAL=0:00:00.0)
+% End load AAE data ... (date=03/03 20:21:13, total cpu=0:00:00.5, real=0:00:00.0, peak res=797.1M, curren
+t mem=797.1M)
+Restoring CCOpt config...
+  Extracting original clock gating for core_clock...
+    clock_tree core_clock contains 1941 sinks and 1 clock gates.
+    Extraction for core_clock complete.
+  Extracting original clock gating for core_clock done.
+  The skew group core_clock/common was created. It contains 1941 sinks and 1 sources.
+  Added 1 ignore pin (of 1 specified) to skew group 1. Skew group now contains 1 ignore pin.
+  The skew group core_clock/common was created. It contains 1941 sinks and 1 sources.
+Restoring CCOpt config done.
+Total number of combinational cells: 329
+Total number of sequential cells: 68
+Total number of tristate cells: 13
+Total number of level shifter cells: 7
+Total number of power gating cells: 0
+Total number of isolation cells: 11
+Total number of power switch cells: 0
+Total number of pulse generator cells: 0
+Total number of always on buffers: 0
+Total number of retention cells: 0
+List of usable buffers: sky130_fd_sc_hd__buf_1 sky130_fd_sc_hd__buf_12 sky130_fd_sc_hd__buf_16 sky130_fd_s
+c_hd__buf_2 sky130_fd_sc_hd__buf_4 sky130_fd_sc_hd__buf_6 sky130_fd_sc_hd__buf_8 sky130_fd_sc_hd__clkbuf_1
+ sky130_fd_sc_hd__clkbuf_16 sky130_fd_sc_hd__clkbuf_2 sky130_fd_sc_hd__clkbuf_4 sky130_fd_sc_hd__clkbuf_8
+sky130_fd_sc_hd__dlymetal6s2s_1 sky130_fd_sc_hd__probe_p_8
+Total number of usable buffers: 14
+List of unusable buffers: sky130_fd_sc_hd__probec_p_8
+Total number of unusable buffers: 1
+List of usable inverters: sky130_fd_sc_hd__bufinv_16 sky130_fd_sc_hd__clkinv_1 sky130_fd_sc_hd__bufinv_8 s
+ky130_fd_sc_hd__clkinv_16 sky130_fd_sc_hd__clkinv_2 sky130_fd_sc_hd__clkinv_4 sky130_fd_sc_hd__clkinv_8 sk
+y130_fd_sc_hd__inv_1 sky130_fd_sc_hd__clkinvlp_2 sky130_fd_sc_hd__clkinvlp_4 sky130_fd_sc_hd__inv_12 sky13
+0_fd_sc_hd__inv_16 sky130_fd_sc_hd__inv_2 sky130_fd_sc_hd__inv_4 sky130_fd_sc_hd__inv_6 sky130_fd_sc_hd__i
+nv_8
+Total number of usable inverters: 16
+List of unusable inverters:
+Total number of unusable inverters: 0
+List of identified usable delay cells: sky130_fd_sc_hd__bufbuf_16 sky130_fd_sc_hd__bufbuf_8 sky130_fd_sc_h
+d__clkdlybuf4s15_1 sky130_fd_sc_hd__clkdlybuf4s15_2 sky130_fd_sc_hd__clkdlybuf4s18_1 sky130_fd_sc_hd__clkd
+lybuf4s18_2 sky130_fd_sc_hd__clkdlybuf4s25_1 sky130_fd_sc_hd__clkdlybuf4s50_1 sky130_fd_sc_hd__clkdlybuf4s
+25_2 sky130_fd_sc_hd__clkdlybuf4s50_2 sky130_fd_sc_hd__dlygate4sd2_1 sky130_fd_sc_hd__dlygate4sd1_1 sky130
+_fd_sc_hd__dlygate4sd3_1 sky130_fd_sc_hd__dlymetal6s6s_1 sky130_fd_sc_hd__dlymetal6s4s_1
+Total number of identified usable delay cells: 15
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+**WARN: (IMPCTE-107):	The following globals have been obsoleted since version 20.10-p004_1. They will be
+ removed in the next release.
+timing_enable_default_delay_arc
+% End load design ... (date=03/03 20:21:14, total cpu=0:00:04.9, real=0:00:08.0, peak res=821.4M, current
+mem=804.4M)
+Chip loaded successfully
+**ERROR: (TCLCMD-168):	Invalid max_slack value 'max'
+**ERROR: (TCLCMD-981):	Unsupported extra argument '-fields' in command 'report_timing'.
+**ERROR: (TCLCMD-981):	Unsupported extra argument 'slew cap input nets fanout' in command 'report_timing'
+.
+**ERROR: (TCLCMD-842):	option -delay_limit must be used with option -unconstrained
+expected floating-point number but got "max"
+innovus 5> source /tmp/hipilot-EDA/exec/hipilot_exec_1772540483121.tcl
+
+*** Memory Usage v#1 (Current mem = 924.273M, initial mem = 249.227M) ***
+*** Message Summary: 162 warning(s), 7 error(s)
+
+--- Ending "Innovus" (totcpu=0:00:31.7, real=0:01:22, mem=924.3M) ---
+
+[EDA@EDA2035 ibex_work_upload]$ cd /home/EDA/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$ innovus -no_gui
+C: unknown locale
+
+Cadence Innovus(TM) Implementation System.
+Copyright 2020 Cadence Design Systems, Inc. All rights reserved worldwide.
+
+Version:	v20.10-p004_1, built Thu May 7 20:02:41 PDT 2020
+Options:	-no_gui
+Date:		Tue Mar  3 20:21:32 2026
+Host:		EDA2035 (x86_64 w/Linux 3.10.0-1160.119.1.el7.x86_64) (3cores*6cpus*Intel(R) Core(TM) i7-8
+559U CPU @ 2.70GHz 8192KB)
+OS:		CentOS Linux release 7.9.2009 (Core)
+
+License:
+		invs	Innovus Implementation System	20.1	checkout succeeded
+		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required
+CPU count.
+

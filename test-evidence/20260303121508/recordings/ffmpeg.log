@@ -1,0 +1,1412 @@
+ffmpeg version 2.8.15 Copyright (c) 2000-2018 the FFmpeg developers
+  built with gcc 4.8.5 (GCC) 20150623 (Red Hat 4.8.5-36)
+  configuration: --prefix=/usr --bindir=/usr/bin --datadir=/usr/share/ffmpeg --incdir=/usr/include/ffmpeg --libdir=/usr/lib64 --mandir=/usr/share/man --arch=x86_64 --optflags='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic' --extra-ldflags='-Wl,-z,relro ' --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-version3 --enable-bzlib --disable-crystalhd --enable-gnutls --enable-ladspa --enable-libass --enable-libcdio --enable-libdc1394 --enable-libfdk-aac --enable-nonfree --disable-indev=jack --enable-libfreetype --enable-libgsm --enable-libmp3lame --enable-openal --enable-libopenjpeg --enable-libopus --enable-libpulse --enable-libschroedinger --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libvorbis --enable-libv4l2 --enable-libx264 --enable-libx265 --enable-libxvid --enable-x11grab --enable-avfilter --enable-avresample --enable-postproc --enable-pthreads --disable-static --enable-shared --enable-gpl --disable-debug --disable-stripping --shlibdir=/usr/lib64 --enable-runtime-cpudetect
+  libavutil      54. 31.100 / 54. 31.100
+  libavcodec     56. 60.100 / 56. 60.100
+  libavformat    56. 40.101 / 56. 40.101
+  libavdevice    56.  4.100 / 56.  4.100
+  libavfilter     5. 40.101 /  5. 40.101
+  libavresample   2.  1.  0 /  2.  1.  0
+  libswscale      3.  1.101 /  3.  1.101
+  libswresample   1.  2.101 /  1.  2.101
+  libpostproc    53.  3.100 / 53.  3.100
+Input #0, x11grab, from ':0':
+  Duration: N/A, start: 1772540222.896690, bitrate: N/A
+    Stream #0:0: Video: rawvideo (BGR[0] / 0x524742), bgr0, 2560x1542, 10 fps, 10 tbr, 1000k tbn, 10 tbc
+[libx264 @ 0xe98420] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX AVX2 FMA3 LZCNT BMI2
+[libx264 @ 0xe98420] profile High, level 5.0
+[libx264 @ 0xe98420] 264 - core 142 r2495 6a301b6 - H.264/MPEG-4 AVC codec - Copyleft 2003-2014 - http://www.videolan.org/x264.html - options: cabac=1 ref=2 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=6 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=9 lookahead_threads=1 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=1 keyint=250 keyint_min=10 scenecut=40 intra_refresh=0 rc_lookahead=30 rc=crf mbtree=1 crf=25.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to '/tmp/hipilot-test-evidence/20260303121508/recordings/test_recording.mp4':
+  Metadata:
+    encoder         : Lavf56.40.101
+    Stream #0:0: Video: h264 (libx264) ([33][0][0][0] / 0x0021), yuv420p, 2560x1542, q=-1--1, 10 fps, 10240 tbn, 10 tbc
+    Metadata:
+      encoder         : Lavc56.60.100 libx264
+Stream mapping:
+  Stream #0:0 -> #0:0 (rawvideo (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+frame=    7 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A    frame=   13 fps= 12 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A    frame=   18 fps= 11 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A    Past duration 0.815025 too large
+Past duration 0.998650 too large
+frame=   24 fps= 11 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=1 drop=0    Past duration 0.999809 too large
+Past duration 0.999886 too large
+Past duration 0.999031 too large
+Past duration 0.999687 too large
+frame=   30 fps= 11 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=1 drop=0    Past duration 0.999962 too large
+Past duration 0.999275 too large
+Past duration 0.999825 too large
+frame=   35 fps= 11 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=1 drop=0    Past duration 0.999809 too large
+Past duration 0.999687 too large
+Past duration 0.999962 too large
+frame=   41 fps= 11 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=1 drop=0    Past duration 0.999596 too large
+Past duration 0.999336 too large
+Past duration 0.999016 too large
+frame=   47 fps= 11 q=27.0 size=     106kB time=00:00:00.20 bitrate=4340.6kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999474 too large
+Past duration 0.999443 too large
+Past duration 0.999779 too large
+frame=   53 fps= 11 q=27.0 size=     107kB time=00:00:00.80 bitrate=1095.2kbits/s dup=1 drop=0    Past duration 0.999672 too large
+Past duration 0.999748 too large
+Past duration 0.999962 too large
+Past duration 0.999687 too large
+Past duration 0.999916 too large
+frame=   58 fps= 11 q=27.0 size=     108kB time=00:00:01.30 bitrate= 677.9kbits/s dup=1 drop=0    Past duration 0.999931 too large
+frame=   64 fps= 10 q=27.0 size=     108kB time=00:00:01.90 bitrate= 467.2kbits/s dup=1 drop=0    Past duration 0.999825 too large
+Past duration 0.999657 too large
+frame=   69 fps= 10 q=27.0 size=     109kB time=00:00:02.40 bitrate= 371.9kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.999855 too large
+Past duration 0.999886 too large
+Past duration 0.999840 too large
+frame=   75 fps= 10 q=27.0 size=     110kB time=00:00:03.00 bitrate= 299.4kbits/s dup=1 drop=0    Past duration 0.999992 too large
+Past duration 0.999413 too large
+Past duration 0.999519 too large
+Past duration 0.999931 too large
+frame=   80 fps= 10 q=27.0 size=     110kB time=00:00:03.50 bitrate= 258.0kbits/s dup=1 drop=0    Past duration 0.999626 too large
+Past duration 0.999870 too large
+Past duration 0.999855 too large
+frame=   85 fps= 10 q=27.0 size=     111kB time=00:00:04.00 bitrate= 227.0kbits/s dup=1 drop=0    Past duration 0.999687 too large
+Past duration 0.999275 too large
+Past duration 0.998909 too large
+frame=   90 fps= 10 q=27.0 size=     111kB time=00:00:04.50 bitrate= 202.8kbits/s dup=1 drop=0    Past duration 0.999565 too large
+Past duration 0.999977 too large
+Past duration 0.999672 too large
+Past duration 0.999428 too large
+frame=   96 fps= 10 q=27.0 size=     112kB time=00:00:05.10 bitrate= 180.1kbits/s dup=1 drop=0    Past duration 0.999428 too large
+Past duration 0.999916 too large
+Past duration 0.999825 too large
+Past duration 0.999886 too large
+frame=  102 fps= 10 q=27.0 size=     113kB time=00:00:05.70 bitrate= 162.1kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999947 too large
+Past duration 0.999687 too large
+frame=  107 fps= 10 q=27.0 size=     113kB time=00:00:06.20 bitrate= 149.8kbits/s dup=1 drop=0    Past duration 0.999962 too large
+Past duration 0.999886 too large
+Past duration 0.999809 too large
+frame=  113 fps= 10 q=27.0 size=     114kB time=00:00:06.80 bitrate= 137.5kbits/s dup=1 drop=0    Past duration 0.999504 too large
+Past duration 0.999718 too large
+Past duration 0.999550 too large
+frame=  118 fps= 10 q=27.0 size=     115kB time=00:00:07.30 bitrate= 128.7kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999916 too large
+Past duration 0.999382 too large
+frame=  124 fps= 10 q=27.0 size=     115kB time=00:00:07.90 bitrate= 119.7kbits/s dup=1 drop=0    Past duration 0.999748 too large
+Past duration 0.999840 too large
+Past duration 0.999687 too large
+frame=  129 fps= 10 q=27.0 size=     116kB time=00:00:08.40 bitrate= 113.1kbits/s dup=1 drop=0    Past duration 0.999657 too large
+Past duration 0.999809 too large
+frame=  135 fps= 10 q=27.0 size=     117kB time=00:00:09.00 bitrate= 106.2kbits/s dup=1 drop=0    Past duration 0.999107 too large
+Past duration 0.999519 too large
+Past duration 0.999748 too large
+    Last message repeated 1 times
+frame=  140 fps= 10 q=27.0 size=     117kB time=00:00:09.50 bitrate= 101.1kbits/s dup=1 drop=0    Past duration 0.999748 too large
+Past duration 0.999992 too large
+Past duration 0.999825 too large
+Past duration 0.999763 too large
+Past duration 0.999809 too large
+Past duration 0.999367 too large
+frame=  146 fps= 10 q=27.0 size=     118kB time=00:00:10.10 bitrate=  95.7kbits/s dup=1 drop=0    Past duration 0.998955 too large
+Past duration 0.998558 too large
+Past duration 0.999641 too large
+Past duration 0.999489 too large
+frame=  151 fps= 10 q=27.0 size=     119kB time=00:00:10.60 bitrate=  91.6kbits/s dup=1 drop=0    Past duration 0.999931 too large
+    Last message repeated 1 times
+Past duration 0.999550 too large
+Past duration 0.999748 too large
+frame=  156 fps= 10 q=27.0 size=     119kB time=00:00:11.10 bitrate=  87.9kbits/s dup=1 drop=0    Past duration 0.999306 too large
+Past duration 0.999886 too large
+Past duration 0.999855 too large
+Past duration 0.999748 too large
+Past duration 0.999947 too large
+frame=  162 fps= 10 q=27.0 size=     120kB time=00:00:11.70 bitrate=  83.9kbits/s dup=1 drop=0    Past duration 0.999229 too large
+Past duration 0.999352 too large
+Past duration 0.999855 too large
+Past duration 0.998878 too large
+Past duration 0.999626 too large
+frame=  167 fps= 10 q=27.0 size=     120kB time=00:00:12.20 bitrate=  80.9kbits/s dup=1 drop=0    Past duration 0.999916 too large
+Past duration 0.999748 too large
+Past duration 0.999367 too large
+Past duration 0.999733 too large
+frame=  173 fps= 10 q=27.0 size=     121kB time=00:00:12.80 bitrate=  77.5kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999657 too large
+frame=  178 fps= 10 q=27.0 size=     122kB time=00:00:13.30 bitrate=  75.0kbits/s dup=1 drop=0    Past duration 0.999779 too large
+Past duration 0.999748 too large
+Past duration 0.999458 too large
+frame=  184 fps= 10 q=27.0 size=     122kB time=00:00:13.90 bitrate=  72.2kbits/s dup=1 drop=0    Past duration 0.999397 too large
+Past duration 0.999870 too large
+Past duration 0.999489 too large
+Past duration 0.999611 too large
+Past duration 0.999870 too large
+frame=  189 fps= 10 q=27.0 size=     123kB time=00:00:14.40 bitrate=  70.0kbits/s dup=1 drop=0    Past duration 0.999794 too large
+Past duration 0.999779 too large
+frame=  195 fps= 10 q=27.0 size=     124kB time=00:00:15.00 bitrate=  67.6kbits/s dup=1 drop=0    Past duration 0.999199 too large
+Past duration 0.999855 too large
+Past duration 0.999931 too large
+Past duration 0.999886 too large
+Past duration 0.999916 too large
+frame=  201 fps= 10 q=27.0 size=     124kB time=00:00:15.60 bitrate=  65.3kbits/s dup=1 drop=0    Past duration 0.999748 too large
+Past duration 0.999962 too large
+Past duration 0.999611 too large
+frame=  206 fps= 10 q=27.0 size=     125kB time=00:00:16.10 bitrate=  63.6kbits/s dup=1 drop=0    Past duration 0.999428 too large
+Past duration 0.998909 too large
+Past duration 0.999855 too large
+Past duration 0.999565 too large
+Past duration 0.999046 too large
+frame=  212 fps= 10 q=27.0 size=     126kB time=00:00:16.70 bitrate=  61.7kbits/s dup=1 drop=0    Past duration 0.999794 too large
+Past duration 0.999916 too large
+Past duration 0.999031 too large
+frame=  218 fps= 10 q=27.0 size=     126kB time=00:00:17.30 bitrate=  59.9kbits/s dup=1 drop=0    Past duration 0.999428 too large
+Past duration 0.999855 too large
+Past duration 0.998940 too large
+frame=  224 fps= 10 q=27.0 size=     127kB time=00:00:17.90 bitrate=  58.2kbits/s dup=1 drop=0    Past duration 0.999565 too large
+Past duration 0.999718 too large
+frame=  229 fps= 10 q=27.0 size=     128kB time=00:00:18.40 bitrate=  56.9kbits/s dup=1 drop=0    Past duration 0.999931 too large
+Past duration 0.997948 too large
+Past duration 0.998604 too large
+Past duration 0.999840 too large
+Past duration 0.999641 too large
+Past duration 0.999840 too large
+frame=  235 fps= 10 q=27.0 size=     128kB time=00:00:19.00 bitrate=  55.4kbits/s dup=1 drop=0    Past duration 0.999657 too large
+Past duration 0.999748 too large
+Past duration 0.999886 too large
+frame=  241 fps= 10 q=27.0 size=     129kB time=00:00:19.60 bitrate=  54.0kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999290 too large
+Past duration 0.999199 too large
+frame=  246 fps= 10 q=27.0 size=     130kB time=00:00:20.10 bitrate=  52.9kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999947 too large
+frame=  252 fps= 10 q=27.0 size=     130kB time=00:00:20.70 bitrate=  51.6kbits/s dup=1 drop=0    Past duration 0.999687 too large
+Past duration 0.999947 too large
+Past duration 0.998680 too large
+frame=  257 fps= 10 q=27.0 size=     131kB time=00:00:21.20 bitrate=  50.6kbits/s dup=1 drop=0    Past duration 0.999916 too large
+Past duration 0.999977 too large
+frame=  263 fps= 10 q=27.0 size=     132kB time=00:00:21.80 bitrate=  49.5kbits/s dup=1 drop=0    Past duration 0.999809 too large
+frame=  268 fps= 10 q=27.0 size=     132kB time=00:00:22.30 bitrate=  48.6kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999779 too large
+Past duration 0.999596 too large
+frame=  274 fps= 10 q=27.0 size=     133kB time=00:00:22.90 bitrate=  47.6kbits/s dup=1 drop=0    Past duration 0.999290 too large
+Past duration 0.999870 too large
+Past duration 0.998909 too large
+Past duration 0.999977 too large
+Past duration 0.999428 too large
+frame=  279 fps= 10 q=27.0 size=     134kB time=00:00:23.40 bitrate=  46.8kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.999870 too large
+frame=  285 fps= 10 q=27.0 size=     134kB time=00:00:24.00 bitrate=  45.8kbits/s dup=1 drop=0    Past duration 0.999397 too large
+Past duration 0.999474 too large
+Past duration 0.999977 too large
+frame=  290 fps= 10 q=27.0 size=     135kB time=00:00:24.50 bitrate=  45.1kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.999916 too large
+Past duration 0.999901 too large
+Past duration 0.999168 too large
+Past duration 0.999901 too large
+frame=  295 fps= 10 q=27.0 size=     253kB time=00:00:25.00 bitrate=  83.1kbits/s dup=1 drop=0    Past duration 0.999260 too large
+Past duration 0.999763 too large
+Past duration 0.999809 too large
+frame=  301 fps= 10 q=27.0 size=     255kB time=00:00:25.60 bitrate=  81.5kbits/s dup=1 drop=0    Past duration 0.999779 too large
+Past duration 0.999855 too large
+Past duration 0.999947 too large
+frame=  306 fps= 10 q=27.0 size=     255kB time=00:00:26.10 bitrate=  80.1kbits/s dup=1 drop=0    Past duration 0.999733 too large
+Past duration 0.999763 too large
+Past duration 0.999687 too large
+frame=  312 fps= 10 q=27.0 size=     256kB time=00:00:26.70 bitrate=  78.5kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999855 too large
+frame=  317 fps= 10 q=27.0 size=     256kB time=00:00:27.20 bitrate=  77.2kbits/s dup=1 drop=0    Past duration 0.999733 too large
+Past duration 0.999794 too large
+Past duration 0.999870 too large
+Past duration 0.999901 too large
+frame=  323 fps= 10 q=27.0 size=     257kB time=00:00:27.80 bitrate=  75.8kbits/s dup=1 drop=0    Past duration 0.999550 too large
+Past duration 0.999855 too large
+frame=  328 fps= 10 q=27.0 size=     258kB time=00:00:28.30 bitrate=  74.6kbits/s dup=1 drop=0    Past duration 0.999397 too large
+Past duration 0.999809 too large
+Past duration 0.999901 too large
+Past duration 0.999779 too large
+Past duration 0.999367 too large
+frame=  334 fps= 10 q=27.0 size=     258kB time=00:00:28.90 bitrate=  73.3kbits/s dup=1 drop=0    Past duration 0.999901 too large
+Past duration 0.999992 too large
+Past duration 0.999504 too large
+Past duration 0.999626 too large
+frame=  339 fps= 10 q=27.0 size=     259kB time=00:00:29.40 bitrate=  72.2kbits/s dup=1 drop=0    Past duration 0.999794 too large
+Past duration 0.999962 too large
+Past duration 0.999855 too large
+Past duration 0.999779 too large
+Past duration 0.999931 too large
+frame=  345 fps= 10 q=27.0 size=     260kB time=00:00:30.00 bitrate=  70.9kbits/s dup=1 drop=0    Past duration 0.999657 too large
+Past duration 0.999840 too large
+Past duration 0.999916 too large
+    Last message repeated 1 times
+frame=  351 fps= 10 q=27.0 size=     260kB time=00:00:30.60 bitrate=  69.7kbits/s dup=1 drop=0    Past duration 0.999290 too large
+frame=  357 fps= 10 q=27.0 size=     261kB time=00:00:31.20 bitrate=  68.6kbits/s dup=1 drop=0    Past duration 0.999413 too large
+Past duration 0.999825 too large
+Past duration 0.999855 too large
+frame=  363 fps= 10 q=27.0 size=     262kB time=00:00:31.80 bitrate=  67.4kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999825 too large
+Past duration 0.999565 too large
+frame=  368 fps= 10 q=27.0 size=     262kB time=00:00:32.30 bitrate=  66.6kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999931 too large
+Past duration 0.999748 too large
+Past duration 0.999474 too large
+Past duration 0.999748 too large
+frame=  374 fps= 10 q=27.0 size=     263kB time=00:00:32.90 bitrate=  65.5kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999168 too large
+Past duration 0.999611 too large
+Past duration 0.999474 too large
+    Last message repeated 1 times
+frame=  379 fps= 10 q=27.0 size=     264kB time=00:00:33.40 bitrate=  64.7kbits/s dup=1 drop=0    Past duration 0.999489 too large
+frame=  385 fps= 10 q=27.0 size=     264kB time=00:00:34.00 bitrate=  63.7kbits/s dup=1 drop=0    Past duration 0.999504 too large
+Past duration 0.999550 too large
+Past duration 0.999763 too large
+frame=  390 fps= 10 q=27.0 size=     265kB time=00:00:34.50 bitrate=  62.9kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.999794 too large
+Past duration 0.998756 too large
+Past duration 0.999565 too large
+Past duration 0.999596 too large
+frame=  396 fps= 10 q=27.0 size=     266kB time=00:00:35.10 bitrate=  62.0kbits/s dup=1 drop=0    Past duration 0.999565 too large
+Past duration 0.999260 too large
+Past duration 0.999947 too large
+Past duration 0.999458 too large
+frame=  402 fps= 10 q=27.0 size=     266kB time=00:00:35.70 bitrate=  61.1kbits/s dup=1 drop=0    Past duration 0.999779 too large
+Past duration 0.999489 too large
+Past duration 0.999886 too large
+Past duration 0.999672 too large
+frame=  407 fps= 10 q=27.0 size=     267kB time=00:00:36.20 bitrate=  60.4kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999947 too large
+Past duration 0.999809 too large
+Past duration 0.999779 too large
+frame=  413 fps= 10 q=27.0 size=     268kB time=00:00:36.80 bitrate=  59.6kbits/s dup=1 drop=0    Past duration 0.999809 too large
+Past duration 0.999596 too large
+Past duration 0.999672 too large
+Past duration 0.999718 too large
+frame=  418 fps= 10 q=27.0 size=     268kB time=00:00:37.30 bitrate=  58.9kbits/s dup=1 drop=0    Past duration 0.999199 too large
+Past duration 0.999947 too large
+Past duration 0.994164 too large
+frame=  423 fps= 10 q=27.0 size=     269kB time=00:00:37.80 bitrate=  58.3kbits/s dup=1 drop=0    Past duration 0.999992 too large
+Past duration 0.999855 too large
+    Last message repeated 1 times
+frame=  429 fps= 10 q=27.0 size=     270kB time=00:00:38.40 bitrate=  57.5kbits/s dup=1 drop=0    Past duration 0.999763 too large
+Past duration 0.999840 too large
+Past duration 0.999901 too large
+Past duration 0.999687 too large
+Past duration 0.999809 too large
+Past duration 0.999916 too large
+frame=  435 fps= 10 q=27.0 size=     270kB time=00:00:39.00 bitrate=  56.8kbits/s dup=1 drop=0    Past duration 0.999535 too large
+Past duration 0.999397 too large
+Past duration 0.999611 too large
+frame=  440 fps= 10 q=27.0 size=     271kB time=00:00:39.50 bitrate=  56.2kbits/s dup=1 drop=0    Past duration 0.999672 too large
+Past duration 0.998589 too large
+Past duration 0.999748 too large
+Past duration 0.999840 too large
+    Last message repeated 1 times
+Past duration 0.999397 too large
+frame=  446 fps= 10 q=27.0 size=     272kB time=00:00:40.10 bitrate=  55.5kbits/s dup=1 drop=0    Past duration 0.999214 too large
+frame=  451 fps= 10 q=27.0 size=     272kB time=00:00:40.60 bitrate=  54.9kbits/s dup=1 drop=0    Past duration 0.999397 too large
+frame=  456 fps= 10 q=27.0 size=     273kB time=00:00:41.10 bitrate=  54.4kbits/s dup=1 drop=0    Past duration 0.999336 too large
+Past duration 0.999962 too large
+Past duration 0.999977 too large
+frame=  462 fps= 10 q=27.0 size=     273kB time=00:00:41.70 bitrate=  53.7kbits/s dup=1 drop=0    Past duration 0.999901 too large
+Past duration 0.999596 too large
+Past duration 0.998985 too large
+frame=  467 fps= 10 q=27.0 size=     274kB time=00:00:42.20 bitrate=  53.2kbits/s dup=1 drop=0    Past duration 0.999489 too large
+Past duration 0.999931 too large
+Past duration 0.999947 too large
+frame=  473 fps= 10 q=27.0 size=     275kB time=00:00:42.80 bitrate=  52.6kbits/s dup=1 drop=0    Past duration 0.999413 too large
+frame=  478 fps= 10 q=27.0 size=     275kB time=00:00:43.30 bitrate=  52.1kbits/s dup=1 drop=0    Past duration 0.999672 too large
+Past duration 0.999687 too large
+frame=  484 fps= 10 q=27.0 size=     276kB time=00:00:43.90 bitrate=  51.5kbits/s dup=1 drop=0    Past duration 0.999840 too large
+    Last message repeated 1 times
+Past duration 0.999870 too large
+Past duration 0.999855 too large
+frame=  489 fps= 10 q=27.0 size=     277kB time=00:00:44.40 bitrate=  51.0kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999931 too large
+Past duration 0.999916 too large
+Past duration 0.999840 too large
+frame=  495 fps= 10 q=27.0 size=     277kB time=00:00:45.00 bitrate=  50.5kbits/s dup=1 drop=0    Past duration 0.999413 too large
+frame=  500 fps= 10 q=27.0 size=     278kB time=00:00:45.50 bitrate=  50.0kbits/s dup=1 drop=0    Past duration 0.999519 too large
+Past duration 0.999855 too large
+    Last message repeated 1 times
+Past duration 0.999626 too large
+Past duration 0.999580 too large
+frame=  506 fps= 10 q=27.0 size=     279kB time=00:00:46.10 bitrate=  49.5kbits/s dup=1 drop=0    Past duration 0.999443 too large
+Past duration 0.999931 too large
+frame=  512 fps= 10 q=27.0 size=     279kB time=00:00:46.70 bitrate=  49.0kbits/s dup=1 drop=0    Past duration 0.999718 too large
+Past duration 0.999886 too large
+frame=  517 fps= 10 q=27.0 size=     280kB time=00:00:47.20 bitrate=  48.6kbits/s dup=1 drop=0    Past duration 0.999550 too large
+Past duration 0.999916 too large
+Past duration 0.999886 too large
+Past duration 0.999748 too large
+Past duration 0.999413 too large
+frame=  523 fps= 10 q=27.0 size=     281kB time=00:00:47.80 bitrate=  48.1kbits/s dup=1 drop=0    frame=  528 fps= 10 q=27.0 size=     281kB time=00:00:48.30 bitrate=  47.7kbits/s dup=1 drop=0    Past duration 0.999855 too large
+frame=  534 fps= 10 q=27.0 size=     282kB time=00:00:48.90 bitrate=  47.2kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999107 too large
+Past duration 0.999947 too large
+frame=  539 fps= 10 q=27.0 size=     282kB time=00:00:49.40 bitrate=  46.8kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.993675 too large
+Past duration 0.620079 too large
+frame=  544 fps= 10 q=27.0 size=     399kB time=00:00:49.90 bitrate=  65.5kbits/s dup=1 drop=0    Past duration 0.999748 too large
+Past duration 0.999306 too large
+Past duration 0.999596 too large
+Past duration 0.999901 too large
+frame=  550 fps= 10 q=27.0 size=     402kB time=00:00:50.50 bitrate=  65.2kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.958473 too large
+Past duration 0.999840 too large
+Past duration 0.999947 too large
+Past duration 0.999840 too large
+frame=  555 fps= 10 q=27.0 size=     403kB time=00:00:51.00 bitrate=  64.7kbits/s dup=1 drop=0    Past duration 0.999825 too large
+frame=  560 fps= 10 q=27.0 size=     403kB time=00:00:51.50 bitrate=  64.2kbits/s dup=1 drop=0    Past duration 0.999199 too large
+frame=  565 fps= 10 q=27.0 size=     404kB time=00:00:52.00 bitrate=  63.6kbits/s dup=1 drop=0    Past duration 0.999870 too large
+Past duration 0.999336 too large
+Past duration 0.999657 too large
+Past duration 0.998665 too large
+frame=  571 fps= 10 q=27.0 size=     405kB time=00:00:52.60 bitrate=  63.0kbits/s dup=1 drop=0    Past duration 0.999565 too large
+Past duration 0.999931 too large
+frame=  576 fps= 10 q=27.0 size=     405kB time=00:00:53.10 bitrate=  62.5kbits/s dup=1 drop=0    Past duration 0.999596 too large
+Past duration 0.999977 too large
+Past duration 0.999916 too large
+Past duration 0.999779 too large
+frame=  582 fps= 10 q=27.0 size=     406kB time=00:00:53.70 bitrate=  61.9kbits/s dup=1 drop=0    Past duration 0.999489 too large
+frame=  587 fps= 10 q=27.0 size=     406kB time=00:00:54.20 bitrate=  61.4kbits/s dup=1 drop=0    Past duration 0.999504 too large
+Past duration 0.999947 too large
+Past duration 0.999565 too large
+frame=  593 fps= 10 q=27.0 size=     407kB time=00:00:54.80 bitrate=  60.9kbits/s dup=1 drop=0    Past duration 0.998177 too large
+Past duration 0.999855 too large
+Past duration 0.999947 too large
+frame=  598 fps= 10 q=27.0 size=     408kB time=00:00:55.30 bitrate=  60.4kbits/s dup=1 drop=0    Past duration 0.999748 too large
+Past duration 0.999611 too large
+Past duration 0.999809 too large
+Past duration 0.999519 too large
+frame=  604 fps= 10 q=27.0 size=     408kB time=00:00:55.90 bitrate=  59.9kbits/s dup=1 drop=0    Past duration 0.999916 too large
+Past duration 0.999840 too large
+Past duration 0.999748 too large
+Past duration 0.999458 too large
+frame=  609 fps= 10 q=27.0 size=     409kB time=00:00:56.40 bitrate=  59.4kbits/s dup=1 drop=0    Past duration 0.999916 too large
+Past duration 0.999611 too large
+Past duration 0.999901 too large
+Past duration 0.999931 too large
+Past duration 0.999672 too large
+frame=  615 fps= 10 q=27.0 size=     410kB time=00:00:57.00 bitrate=  58.9kbits/s dup=1 drop=0    Past duration 0.999229 too large
+Past duration 0.999596 too large
+Past duration 0.998726 too large
+frame=  620 fps= 10 q=27.0 size=     410kB time=00:00:57.50 bitrate=  58.5kbits/s dup=1 drop=0    Past duration 0.999123 too large
+Past duration 0.999855 too large
+Past duration 0.999779 too large
+Past duration 0.999901 too large
+Past duration 0.999306 too large
+frame=  626 fps= 10 q=27.0 size=     411kB time=00:00:58.10 bitrate=  58.0kbits/s dup=1 drop=0    Past duration 0.999275 too large
+Past duration 0.999123 too large
+frame=  631 fps= 10 q=27.0 size=     412kB time=00:00:58.60 bitrate=  57.6kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999626 too large
+Past duration 0.999779 too large
+Past duration 0.999855 too large
+Past duration 0.998817 too large
+frame=  637 fps= 10 q=27.0 size=     412kB time=00:00:59.20 bitrate=  57.1kbits/s dup=1 drop=0    Past duration 0.999947 too large
+Past duration 0.999229 too large
+Past duration 0.999718 too large
+Past duration 0.999992 too large
+Past duration 0.999458 too large
+frame=  643 fps= 10 q=27.0 size=     413kB time=00:00:59.80 bitrate=  56.6kbits/s dup=1 drop=0    Past duration 0.999916 too large
+Past duration 0.999962 too large
+Past duration 0.999916 too large
+frame=  648 fps= 10 q=27.0 size=     414kB time=00:01:00.30 bitrate=  56.2kbits/s dup=1 drop=0    Past duration 0.999062 too large
+Past duration 0.999825 too large
+Past duration 0.999748 too large
+Past duration 0.999184 too large
+frame=  654 fps= 10 q=27.0 size=     414kB time=00:01:00.90 bitrate=  55.8kbits/s dup=1 drop=0    Past duration 0.998985 too large
+frame=  659 fps= 10 q=27.0 size=     415kB time=00:01:01.40 bitrate=  55.4kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.999565 too large
+Past duration 0.999702 too large
+Past duration 0.999916 too large
+frame=  665 fps= 10 q=27.0 size=     416kB time=00:01:02.00 bitrate=  54.9kbits/s dup=1 drop=0    Past duration 0.999763 too large
+Past duration 0.999214 too large
+Past duration 0.999886 too large
+Past duration 0.999779 too large
+frame=  671 fps= 10 q=27.0 size=     416kB time=00:01:02.60 bitrate=  54.5kbits/s dup=1 drop=0    Past duration 0.999458 too large
+Past duration 0.999916 too large
+frame=  676 fps= 10 q=27.0 size=     417kB time=00:01:03.10 bitrate=  54.1kbits/s dup=1 drop=0    Past duration 0.999275 too large
+Past duration 0.999886 too large
+Past duration 0.999840 too large
+frame=  682 fps= 10 q=27.0 size=     418kB time=00:01:03.70 bitrate=  53.7kbits/s dup=1 drop=0    Past duration 0.999748 too large
+Past duration 0.998848 too large
+Past duration 0.999886 too large
+Past duration 0.999046 too large
+Past duration 0.999886 too large
+frame=  687 fps= 10 q=27.0 size=     418kB time=00:01:04.20 bitrate=  53.4kbits/s dup=1 drop=0    Past duration 0.999580 too large
+Past duration 0.999794 too large
+Past duration 0.999260 too large
+frame=  693 fps= 10 q=27.0 size=     419kB time=00:01:04.80 bitrate=  53.0kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.999397 too large
+Past duration 0.999336 too large
+Past duration 0.999901 too large
+frame=  698 fps= 10 q=27.0 size=     420kB time=00:01:05.30 bitrate=  52.6kbits/s dup=1 drop=0    Past duration 0.999825 too large
+Past duration 0.999855 too large
+Past duration 0.999657 too large
+Past duration 0.999397 too large
+frame=  704 fps= 10 q=27.0 size=     420kB time=00:01:05.90 bitrate=  52.2kbits/s dup=1 drop=0    Past duration 0.999641 too large
+Past duration 0.999352 too large
+Past duration 0.999611 too large
+Past duration 0.999733 too large
+frame=  709 fps= 10 q=27.0 size=     421kB time=00:01:06.40 bitrate=  51.9kbits/s dup=1 drop=0    Past duration 0.999916 too large
+Past duration 0.999779 too large
+Past duration 0.999870 too large
+Past duration 0.999947 too large
+Past duration 0.999718 too large
+Past duration 0.999657 too large
+frame=  715 fps= 10 q=27.0 size=     422kB time=00:01:07.00 bitrate=  51.5kbits/s dup=1 drop=0    Past duration 0.999931 too large
+Past duration 0.999565 too large
+Past duration 0.999229 too large
+frame=  720 fps= 10 q=27.0 size=     422kB time=00:01:07.50 bitrate=  51.2kbits/s dup=1 drop=0    Past duration 0.999947 too large
+Past duration 0.999687 too large
+Past duration 0.999931 too large
+Past duration 0.999855 too large
+Past duration 0.999657 too large
+Past duration 0.999306 too large
+frame=  726 fps= 10 q=27.0 size=     423kB time=00:01:08.10 bitrate=  50.9kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999504 too large
+Past duration 0.999748 too large
+Past duration 0.999916 too large
+Past duration 0.999977 too large
+frame=  732 fps= 10 q=27.0 size=     424kB time=00:01:08.70 bitrate=  50.5kbits/s dup=1 drop=0    Past duration 0.999748 too large
+Past duration 0.999596 too large
+Past duration 0.999931 too large
+Past duration 0.999809 too large
+Past duration 0.999901 too large
+frame=  737 fps= 10 q=27.0 size=     424kB time=00:01:09.20 bitrate=  50.2kbits/s dup=1 drop=0    Past duration 0.999809 too large
+Past duration 0.999763 too large
+Past duration 0.999840 too large
+Past duration 0.999947 too large
+Past duration 0.999428 too large
+Past duration 0.999474 too large
+frame=  743 fps= 10 q=27.0 size=     425kB time=00:01:09.80 bitrate=  49.9kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999657 too large
+Past duration 0.999672 too large
+Past duration 0.999855 too large
+Past duration 0.999489 too large
+frame=  748 fps= 10 q=27.0 size=     425kB time=00:01:10.30 bitrate=  49.6kbits/s dup=1 drop=0    Past duration 0.998695 too large
+Past duration 0.999733 too large
+Past duration 0.999840 too large
+Past duration 0.999672 too large
+frame=  754 fps= 10 q=27.0 size=     426kB time=00:01:10.90 bitrate=  49.2kbits/s dup=1 drop=0    Past duration 0.999687 too large
+Past duration 0.999809 too large
+frame=  759 fps= 10 q=27.0 size=     427kB time=00:01:11.40 bitrate=  49.0kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999855 too large
+Past duration 0.999321 too large
+Past duration 0.999763 too large
+Past duration 0.999855 too large
+frame=  765 fps= 10 q=27.0 size=     427kB time=00:01:12.00 bitrate=  48.6kbits/s dup=1 drop=0    Past duration 0.999962 too large
+Past duration 0.999916 too large
+Past duration 0.999519 too large
+frame=  770 fps= 10 q=27.0 size=     428kB time=00:01:12.50 bitrate=  48.4kbits/s dup=1 drop=0    Past duration 0.999565 too large
+Past duration 0.999474 too large
+Past duration 0.999886 too large
+Past duration 0.999840 too large
+frame=  775 fps= 10 q=27.0 size=     429kB time=00:01:13.00 bitrate=  48.1kbits/s dup=1 drop=0    Past duration 0.999748 too large
+Past duration 0.999580 too large
+Past duration 0.999886 too large
+frame=  780 fps= 10 q=27.0 size=     429kB time=00:01:13.50 bitrate=  47.8kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999794 too large
+Past duration 0.999748 too large
+Past duration 0.999840 too large
+Past duration 0.999901 too large
+frame=  786 fps= 10 q=24.0 size=     430kB time=00:01:14.10 bitrate=  47.5kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999062 too large
+Past duration 0.999855 too large
+    Last message repeated 1 times
+frame=  792 fps= 10 q=27.0 size=     431kB time=00:01:14.70 bitrate=  47.2kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999748 too large
+Past duration 0.999657 too large
+Past duration 0.999916 too large
+frame=  797 fps= 10 q=27.0 size=     549kB time=00:01:15.20 bitrate=  59.8kbits/s dup=1 drop=0    Past duration 0.999779 too large
+Past duration 0.999931 too large
+Past duration 0.999733 too large
+Past duration 0.999840 too large
+frame=  803 fps= 10 q=27.0 size=     550kB time=00:01:15.80 bitrate=  59.5kbits/s dup=1 drop=0    Past duration 0.999901 too large
+Past duration 0.999840 too large
+Past duration 0.999550 too large
+Past duration 0.999504 too large
+frame=  808 fps= 10 q=27.0 size=     551kB time=00:01:16.30 bitrate=  59.2kbits/s dup=1 drop=0    Past duration 0.999870 too large
+Past duration 0.999916 too large
+Past duration 0.999931 too large
+Past duration 0.999916 too large
+frame=  814 fps= 10 q=27.0 size=     552kB time=00:01:16.90 bitrate=  58.8kbits/s dup=1 drop=0    Past duration 0.999794 too large
+Past duration 0.999336 too large
+Past duration 0.999107 too large
+frame=  819 fps= 10 q=27.0 size=     552kB time=00:01:17.40 bitrate=  58.4kbits/s dup=1 drop=0    Past duration 0.999779 too large
+Past duration 0.999947 too large
+Past duration 0.999718 too large
+Past duration 0.999901 too large
+Past duration 0.999855 too large
+frame=  825 fps= 10 q=27.0 size=     553kB time=00:01:18.00 bitrate=  58.1kbits/s dup=1 drop=0    Past duration 0.999352 too large
+Past duration 0.999245 too large
+Past duration 0.999809 too large
+Past duration 0.999779 too large
+frame=  830 fps= 10 q=27.0 size=     554kB time=00:01:18.50 bitrate=  57.8kbits/s dup=1 drop=0    Past duration 0.999565 too large
+Past duration 0.999138 too large
+Past duration 0.999977 too large
+Past duration 0.999855 too large
+    Last message repeated 1 times
+Past duration 0.999947 too large
+frame=  836 fps= 10 q=27.0 size=     554kB time=00:01:19.10 bitrate=  57.4kbits/s dup=1 drop=0    Past duration 0.999901 too large
+frame=  842 fps= 10 q=27.0 size=     555kB time=00:01:19.70 bitrate=  57.0kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999016 too large
+Past duration 0.999840 too large
+Past duration 0.999977 too large
+Past duration 0.999535 too large
+frame=  847 fps= 10 q=27.0 size=     556kB time=00:01:20.20 bitrate=  56.7kbits/s dup=1 drop=0    Past duration 0.999336 too large
+Past duration 0.999962 too large
+Past duration 0.999977 too large
+Past duration 0.999596 too large
+Past duration 0.998802 too large
+frame=  853 fps= 10 q=27.0 size=     556kB time=00:01:20.80 bitrate=  56.4kbits/s dup=1 drop=0    Past duration 0.998528 too large
+Past duration 0.999626 too large
+frame=  858 fps= 10 q=27.0 size=     557kB time=00:01:21.30 bitrate=  56.1kbits/s dup=1 drop=0    Past duration 0.999931 too large
+Past duration 0.999489 too large
+Past duration 0.999855 too large
+frame=  864 fps= 10 q=27.0 size=     558kB time=00:01:21.90 bitrate=  55.8kbits/s dup=1 drop=0    Past duration 0.999306 too large
+Past duration 0.998482 too large
+frame=  869 fps= 10 q=27.0 size=     558kB time=00:01:22.40 bitrate=  55.5kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.998634 too large
+Past duration 0.999947 too large
+Past duration 0.999809 too large
+Past duration 0.999031 too large
+Past duration 0.999977 too large
+frame=  875 fps= 10 q=27.0 size=     559kB time=00:01:23.00 bitrate=  55.2kbits/s dup=1 drop=0    Past duration 0.999794 too large
+Past duration 0.999672 too large
+Past duration 0.999855 too large
+frame=  880 fps= 10 q=27.0 size=     559kB time=00:01:23.50 bitrate=  54.9kbits/s dup=1 drop=0    Past duration 0.999809 too large
+Past duration 0.999794 too large
+Past duration 0.999931 too large
+Past duration 0.999657 too large
+Past duration 0.999779 too large
+frame=  886 fps= 10 q=27.0 size=     560kB time=00:01:24.10 bitrate=  54.6kbits/s dup=1 drop=0    Past duration 0.999962 too large
+Past duration 0.999123 too large
+Past duration 0.999840 too large
+frame=  892 fps= 10 q=27.0 size=     561kB time=00:01:24.70 bitrate=  54.2kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999367 too large
+Past duration 0.999840 too large
+Past duration 0.999901 too large
+frame=  897 fps= 10 q=27.0 size=     561kB time=00:01:25.20 bitrate=  54.0kbits/s dup=1 drop=0    Past duration 0.999687 too large
+Past duration 0.999794 too large
+frame=  902 fps= 10 q=27.0 size=     562kB time=00:01:25.70 bitrate=  53.7kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999641 too large
+Past duration 0.999611 too large
+frame=  907 fps= 10 q=27.0 size=     563kB time=00:01:26.20 bitrate=  53.5kbits/s dup=1 drop=0    Past duration 0.999565 too large
+Past duration 0.999809 too large
+Past duration 0.999626 too large
+Past duration 0.999916 too large
+Past duration 0.999840 too large
+frame=  913 fps= 10 q=27.0 size=     563kB time=00:01:26.80 bitrate=  53.2kbits/s dup=1 drop=0    Past duration 0.999870 too large
+Past duration 0.999367 too large
+Past duration 0.999580 too large
+Past duration 0.999474 too large
+frame=  918 fps= 10 q=27.0 size=     564kB time=00:01:27.30 bitrate=  52.9kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999489 too large
+Past duration 0.999519 too large
+Past duration 0.998940 too large
+frame=  924 fps= 10 q=27.0 size=     565kB time=00:01:27.90 bitrate=  52.6kbits/s dup=1 drop=0    Past duration 0.999535 too large
+Past duration 0.999825 too large
+Past duration 0.998940 too large
+Past duration 0.999397 too large
+frame=  929 fps= 10 q=27.0 size=     565kB time=00:01:28.40 bitrate=  52.4kbits/s dup=1 drop=0    Past duration 0.999657 too large
+Past duration 0.999809 too large
+    Last message repeated 1 times
+Past duration 0.999886 too large
+Past duration 0.999702 too large
+frame=  935 fps= 10 q=27.0 size=     566kB time=00:01:29.00 bitrate=  52.1kbits/s dup=1 drop=0    Past duration 0.999794 too large
+Past duration 0.999107 too large
+Past duration 0.999001 too large
+Past duration 0.999855 too large
+Past duration 0.999886 too large
+frame=  941 fps= 10 q=27.0 size=     567kB time=00:01:29.60 bitrate=  51.8kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.999947 too large
+Past duration 0.999809 too large
+Past duration 0.999794 too large
+Past duration 0.999855 too large
+frame=  946 fps= 10 q=27.0 size=     567kB time=00:01:30.10 bitrate=  51.6kbits/s dup=1 drop=0    Past duration 0.999916 too large
+Past duration 0.999870 too large
+Past duration 0.999916 too large
+frame=  952 fps= 10 q=27.0 size=     568kB time=00:01:30.70 bitrate=  51.3kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999855 too large
+Past duration 0.999519 too large
+frame=  958 fps= 10 q=27.0 size=     569kB time=00:01:31.30 bitrate=  51.0kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999870 too large
+Past duration 0.999916 too large
+Past duration 0.999031 too large
+frame=  964 fps= 10 q=27.0 size=     569kB time=00:01:31.90 bitrate=  50.7kbits/s dup=1 drop=0    Past duration 0.999870 too large
+Past duration 0.999840 too large
+Past duration 0.999794 too large
+frame=  969 fps= 10 q=27.0 size=     570kB time=00:01:32.40 bitrate=  50.5kbits/s dup=1 drop=0    Past duration 0.999947 too large
+Past duration 0.999886 too large
+    Last message repeated 1 times
+Past duration 0.999626 too large
+Past duration 0.999916 too large
+frame=  975 fps= 10 q=27.0 size=     571kB time=00:01:33.00 bitrate=  50.3kbits/s dup=1 drop=0    Past duration 0.999931 too large
+Past duration 0.999718 too large
+Past duration 0.999687 too large
+Past duration 0.999046 too large
+frame=  980 fps= 10 q=27.0 size=     571kB time=00:01:33.50 bitrate=  50.0kbits/s dup=1 drop=0    Past duration 0.999596 too large
+Past duration 0.999840 too large
+Past duration 0.999779 too large
+Past duration 0.999840 too large
+Past duration 0.999931 too large
+frame=  986 fps= 10 q=27.0 size=     572kB time=00:01:34.10 bitrate=  49.8kbits/s dup=1 drop=0    Past duration 0.999336 too large
+Past duration 0.999550 too large
+frame=  992 fps= 10 q=27.0 size=     573kB time=00:01:34.70 bitrate=  49.5kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.998756 too large
+frame=  997 fps= 10 q=27.0 size=     573kB time=00:01:35.20 bitrate=  49.3kbits/s dup=1 drop=0    Past duration 0.999031 too large
+Past duration 0.999733 too large
+Past duration 0.999886 too large
+Past duration 0.999916 too large
+frame= 1003 fps= 10 q=27.0 size=     574kB time=00:01:35.80 bitrate=  49.1kbits/s dup=1 drop=0    Past duration 0.998329 too large
+Past duration 0.999809 too large
+Past duration 0.999931 too large
+Past duration 0.999596 too large
+Past duration 0.999672 too large
+frame= 1008 fps= 10 q=27.0 size=     574kB time=00:01:36.30 bitrate=  48.9kbits/s dup=1 drop=0    Past duration 0.998909 too large
+Past duration 0.999870 too large
+Past duration 0.999840 too large
+Past duration 0.999718 too large
+Past duration 0.999474 too large
+frame= 1014 fps= 10 q=27.0 size=     575kB time=00:01:36.90 bitrate=  48.6kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999809 too large
+Past duration 0.999977 too large
+frame= 1019 fps= 10 q=27.0 size=     576kB time=00:01:37.40 bitrate=  48.4kbits/s dup=1 drop=0    Past duration 0.999458 too large
+Past duration 0.999855 too large
+Past duration 0.999626 too large
+Past duration 0.999382 too large
+frame= 1024 fps= 10 q=27.0 size=     576kB time=00:01:37.90 bitrate=  48.2kbits/s dup=1 drop=0    Past duration 0.999901 too large
+Past duration 0.999855 too large
+Past duration 0.999886 too large
+frame= 1029 fps= 10 q=27.0 size=     577kB time=00:01:38.40 bitrate=  48.0kbits/s dup=1 drop=0    Past duration 0.999611 too large
+Past duration 0.999733 too large
+Past duration 0.999382 too large
+Past duration 0.999306 too large
+Past duration 0.999977 too large
+frame= 1035 fps= 10 q=27.0 size=     578kB time=00:01:39.00 bitrate=  47.8kbits/s dup=1 drop=0    Past duration 0.999901 too large
+Past duration 0.999886 too large
+Past duration 0.998528 too large
+Past duration 0.999458 too large
+Past duration 0.999809 too large
+frame= 1041 fps= 10 q=27.0 size=     578kB time=00:01:39.60 bitrate=  47.6kbits/s dup=1 drop=0    Past duration 0.999763 too large
+Past duration 0.999519 too large
+Past duration 0.999184 too large
+Past duration 0.999779 too large
+frame= 1046 fps= 10 q=27.0 size=     697kB time=00:01:40.10 bitrate=  57.0kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999626 too large
+Past duration 0.999901 too large
+frame= 1052 fps= 10 q=27.0 size=     698kB time=00:01:40.70 bitrate=  56.8kbits/s dup=1 drop=0    Past duration 0.999931 too large
+Past duration 0.998543 too large
+Past duration 0.999687 too large
+Past duration 0.999916 too large
+frame= 1057 fps= 10 q=27.0 size=     699kB time=00:01:41.20 bitrate=  56.5kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999947 too large
+Past duration 0.999672 too large
+Past duration 0.999626 too large
+frame= 1062 fps= 10 q=27.0 size=     699kB time=00:01:41.70 bitrate=  56.3kbits/s dup=1 drop=0    Past duration 0.999916 too large
+Past duration 0.998787 too large
+Past duration 0.999947 too large
+Past duration 0.999916 too large
+    Last message repeated 1 times
+frame= 1067 fps= 10 q=27.0 size=     700kB time=00:01:42.20 bitrate=  56.1kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999260 too large
+Past duration 0.999947 too large
+Past duration 0.999916 too large
+Past duration 0.999794 too large
+Past duration 0.999931 too large
+frame= 1073 fps= 10 q=27.0 size=     700kB time=00:01:42.80 bitrate=  55.8kbits/s dup=1 drop=0    Past duration 0.999077 too large
+Past duration 0.999458 too large
+frame= 1078 fps= 10 q=27.0 size=     701kB time=00:01:43.30 bitrate=  55.6kbits/s dup=1 drop=0    Past duration 0.998421 too large
+Past duration 0.999367 too large
+Past duration 0.999916 too large
+Past duration 0.999931 too large
+frame= 1084 fps= 10 q=27.0 size=     702kB time=00:01:43.90 bitrate=  55.3kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.999779 too large
+Past duration 0.999840 too large
+Past duration 0.999245 too large
+frame= 1089 fps= 10 q=27.0 size=     702kB time=00:01:44.40 bitrate=  55.1kbits/s dup=1 drop=0    Past duration 0.999947 too large
+Past duration 0.999672 too large
+Past duration 0.999550 too large
+Past duration 0.999886 too large
+Past duration 0.999428 too large
+Past duration 0.999565 too large
+frame= 1095 fps= 10 q=27.0 size=     703kB time=00:01:45.00 bitrate=  54.8kbits/s dup=1 drop=0    Past duration 0.999489 too large
+Past duration 0.999519 too large
+Past duration 0.999107 too large
+Past duration 0.999947 too large
+frame= 1100 fps= 10 q=27.0 size=     704kB time=00:01:45.50 bitrate=  54.6kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999916 too large
+Past duration 0.999641 too large
+Past duration 0.998970 too large
+Past duration 0.999672 too large
+Past duration 0.999962 too large
+frame= 1106 fps= 10 q=27.0 size=     704kB time=00:01:46.10 bitrate=  54.4kbits/s dup=1 drop=0    Past duration 0.999550 too large
+Past duration 0.999992 too large
+Past duration 0.999947 too large
+Past duration 0.999763 too large
+frame= 1112 fps= 10 q=27.0 size=     705kB time=00:01:46.70 bitrate=  54.1kbits/s dup=1 drop=0    Past duration 0.999901 too large
+Past duration 0.999886 too large
+Past duration 0.999825 too large
+frame= 1117 fps= 10 q=27.0 size=     706kB time=00:01:47.20 bitrate=  53.9kbits/s dup=1 drop=0    frame= 1123 fps= 10 q=27.0 size=     706kB time=00:01:47.80 bitrate=  53.7kbits/s dup=1 drop=0    Past duration 0.999886 too large
+frame= 1128 fps= 10 q=27.0 size=     707kB time=00:01:48.30 bitrate=  53.5kbits/s dup=1 drop=0    Past duration 0.999626 too large
+Past duration 0.999794 too large
+Past duration 0.998497 too large
+frame= 1134 fps= 10 q=27.0 size=     708kB time=00:01:48.90 bitrate=  53.2kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999718 too large
+Past duration 0.999214 too large
+Past duration 0.999886 too large
+frame= 1139 fps= 10 q=27.0 size=     708kB time=00:01:49.40 bitrate=  53.0kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999825 too large
+Past duration 0.999855 too large
+Past duration 0.999016 too large
+Past duration 0.999657 too large
+frame= 1145 fps= 10 q=27.0 size=     709kB time=00:01:50.00 bitrate=  52.8kbits/s dup=1 drop=0    Past duration 0.999718 too large
+Past duration 0.999947 too large
+Past duration 0.998817 too large
+Past duration 0.999687 too large
+Past duration 0.999886 too large
+frame= 1151 fps= 10 q=27.0 size=     710kB time=00:01:50.60 bitrate=  52.6kbits/s dup=1 drop=0    Past duration 0.999809 too large
+Past duration 0.999733 too large
+Past duration 0.999474 too large
+Past duration 0.999596 too large
+Past duration 0.999763 too large
+frame= 1157 fps= 10 q=27.0 size=     710kB time=00:01:51.20 bitrate=  52.3kbits/s dup=1 drop=0    Past duration 0.999260 too large
+Past duration 0.999855 too large
+    Last message repeated 1 times
+Past duration 0.999931 too large
+Past duration 0.999748 too large
+frame= 1163 fps= 10 q=27.0 size=     711kB time=00:01:51.80 bitrate=  52.1kbits/s dup=1 drop=0    Past duration 0.999275 too large
+Past duration 0.999535 too large
+Past duration 0.999367 too large
+Past duration 0.999886 too large
+Past duration 0.999107 too large
+frame= 1168 fps= 10 q=27.0 size=     712kB time=00:01:52.30 bitrate=  51.9kbits/s dup=1 drop=0    Past duration 0.999687 too large
+Past duration 0.999779 too large
+Past duration 0.999748 too large
+frame= 1174 fps= 10 q=27.0 size=     712kB time=00:01:52.90 bitrate=  51.7kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.999397 too large
+Past duration 0.999474 too large
+Past duration 0.999763 too large
+frame= 1180 fps= 10 q=27.0 size=     713kB time=00:01:53.50 bitrate=  51.5kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999718 too large
+Past duration 0.999855 too large
+Past duration 0.999626 too large
+frame= 1185 fps= 10 q=27.0 size=     714kB time=00:01:54.00 bitrate=  51.3kbits/s dup=1 drop=0    Past duration 0.999367 too large
+Past duration 0.999245 too large
+Past duration 0.999962 too large
+frame= 1190 fps= 10 q=27.0 size=     714kB time=00:01:54.50 bitrate=  51.1kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.999901 too large
+Past duration 0.999809 too large
+Past duration 0.998756 too large
+Past duration 0.999138 too large
+Past duration 0.999779 too large
+frame= 1196 fps= 10 q=27.0 size=     715kB time=00:01:55.10 bitrate=  50.9kbits/s dup=1 drop=0    Past duration 0.999596 too large
+Past duration 0.998924 too large
+Past duration 0.999947 too large
+Past duration 0.999916 too large
+Past duration 0.999840 too large
+frame= 1202 fps= 10 q=27.0 size=     716kB time=00:01:55.70 bitrate=  50.7kbits/s dup=1 drop=0    Past duration 0.999413 too large
+Past duration 0.999626 too large
+Past duration 0.999733 too large
+Past duration 0.999840 too large
+Past duration 0.999825 too large
+frame= 1207 fps= 10 q=27.0 size=     716kB time=00:01:56.20 bitrate=  50.5kbits/s dup=1 drop=0    Past duration 0.999672 too large
+Past duration 0.999977 too large
+Past duration 0.999901 too large
+Past duration 0.999916 too large
+    Last message repeated 1 times
+frame= 1213 fps= 10 q=27.0 size=     717kB time=00:01:56.80 bitrate=  50.3kbits/s dup=1 drop=0    Past duration 0.999779 too large
+Past duration 0.999977 too large
+Past duration 0.999855 too large
+frame= 1218 fps= 10 q=27.0 size=     717kB time=00:01:57.30 bitrate=  50.1kbits/s dup=1 drop=0    Past duration 0.998955 too large
+Past duration 0.999870 too large
+Past duration 0.999428 too large
+Past duration 0.999916 too large
+Past duration 0.999672 too large
+frame= 1224 fps= 10 q=27.0 size=     718kB time=00:01:57.90 bitrate=  49.9kbits/s dup=1 drop=0    Past duration 0.999947 too large
+Past duration 0.999901 too large
+Past duration 0.999779 too large
+Past duration 0.999550 too large
+frame= 1229 fps= 10 q=27.0 size=     719kB time=00:01:58.40 bitrate=  49.7kbits/s dup=1 drop=0    Past duration 0.999718 too large
+Past duration 0.999870 too large
+Past duration 0.999809 too large
+Past duration 0.999535 too large
+Past duration 0.999840 too large
+frame= 1235 fps= 10 q=27.0 size=     719kB time=00:01:59.00 bitrate=  49.5kbits/s dup=1 drop=0    Past duration 0.682487 too large
+Past duration 0.998772 too large
+frame= 1240 fps= 10 q=27.0 size=     720kB time=00:01:59.50 bitrate=  49.4kbits/s dup=1 drop=0    Past duration 0.857109 too large
+Past duration 0.999947 too large
+Past duration 0.999718 too large
+frame= 1245 fps= 10 q=27.0 size=     721kB time=00:02:00.00 bitrate=  49.2kbits/s dup=1 drop=0    Past duration 0.869179 too large
+Past duration 0.999779 too large
+Past duration 0.999657 too large
+Past duration 0.999184 too large
+frame= 1252 fps= 10 q=27.0 size=     721kB time=00:02:00.70 bitrate=  49.0kbits/s dup=1 drop=0    Past duration 0.999748 too large
+Past duration 0.999580 too large
+Past duration 0.999550 too large
+frame= 1258 fps= 10 q=27.0 size=     722kB time=00:02:01.30 bitrate=  48.8kbits/s dup=1 drop=0    Past duration 0.999916 too large
+Past duration 0.999809 too large
+Past duration 0.999275 too large
+Past duration 0.999886 too large
+Past duration 0.999733 too large
+Past duration 0.999138 too large
+frame= 1264 fps= 10 q=27.0 size=     723kB time=00:02:01.90 bitrate=  48.6kbits/s dup=1 drop=0    Past duration 0.999535 too large
+Past duration 0.999886 too large
+frame= 1269 fps= 10 q=27.0 size=     723kB time=00:02:02.40 bitrate=  48.4kbits/s dup=1 drop=0    Past duration 0.999962 too large
+Past duration 0.999611 too large
+    Last message repeated 1 times
+frame= 1275 fps= 10 q=27.0 size=     724kB time=00:02:03.00 bitrate=  48.2kbits/s dup=1 drop=0    Past duration 0.998634 too large
+Past duration 0.999733 too large
+frame= 1281 fps= 10 q=27.0 size=     725kB time=00:02:03.60 bitrate=  48.0kbits/s dup=1 drop=0    Past duration 0.869225 too large
+Past duration 0.999779 too large
+Past duration 0.999931 too large
+frame= 1286 fps= 10 q=24.0 size=     726kB time=00:02:04.10 bitrate=  47.9kbits/s dup=1 drop=0    Past duration 0.998726 too large
+Past duration 0.999840 too large
+frame= 1292 fps= 10 q=27.0 size=     735kB time=00:02:04.70 bitrate=  48.3kbits/s dup=1 drop=0    Past duration 0.999504 too large
+Past duration 0.999077 too large
+Past duration 0.999687 too large
+frame= 1298 fps= 10 q=27.0 size=     857kB time=00:02:05.30 bitrate=  56.0kbits/s dup=1 drop=0    Past duration 0.910912 too large
+frame= 1303 fps= 10 q=27.0 size=     858kB time=00:02:05.80 bitrate=  55.9kbits/s dup=1 drop=0    Past duration 0.999916 too large
+frame= 1309 fps= 10 q=27.0 size=     860kB time=00:02:06.40 bitrate=  55.7kbits/s dup=1 drop=0    Past duration 0.999336 too large
+frame= 1315 fps= 10 q=27.0 size=     861kB time=00:02:07.00 bitrate=  55.5kbits/s dup=1 drop=0    Past duration 0.999001 too large
+Past duration 0.999840 too large
+Past duration 0.999245 too large
+Past duration 0.999062 too large
+frame= 1321 fps= 10 q=27.0 size=     862kB time=00:02:07.60 bitrate=  55.3kbits/s dup=1 drop=0    Past duration 0.999550 too large
+Past duration 0.999199 too large
+Past duration 0.999458 too large
+frame= 1327 fps= 10 q=27.0 size=     864kB time=00:02:08.20 bitrate=  55.2kbits/s dup=1 drop=0    frame= 1332 fps= 10 q=27.0 size=     889kB time=00:02:08.70 bitrate=  56.6kbits/s dup=1 drop=0    Past duration 0.999641 too large
+Past duration 0.999565 too large
+Past duration 0.999901 too large
+Past duration 0.999519 too large
+Past duration 0.999428 too large
+Past duration 0.990074 too large
+frame= 1338 fps= 10 q=27.0 size=     925kB time=00:02:09.30 bitrate=  58.6kbits/s dup=1 drop=0    Past duration 0.957314 too large
+Past duration 0.969643 too large
+Past duration 0.990166 too large
+Past duration 0.999580 too large
+Past duration 0.969276 too large
+frame= 1343 fps= 10 q=27.0 size=     928kB time=00:02:09.80 bitrate=  58.6kbits/s dup=1 drop=0    Past duration 0.999336 too large
+Past duration 0.999107 too large
+Past duration 0.999260 too large
+frame= 1349 fps= 10 q=27.0 size=     929kB time=00:02:10.40 bitrate=  58.4kbits/s dup=1 drop=0    Past duration 0.999275 too large
+Past duration 0.999977 too large
+Past duration 0.999825 too large
+frame= 1355 fps= 10 q=27.0 size=     964kB time=00:02:11.00 bitrate=  60.3kbits/s dup=1 drop=0    Past duration 0.999901 too large
+Past duration 0.919884 too large
+frame= 1360 fps= 10 q=27.0 size=     967kB time=00:02:11.50 bitrate=  60.2kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999474 too large
+Past duration 0.999458 too large
+Past duration 0.999855 too large
+frame= 1366 fps= 10 q=27.0 size=     972kB time=00:02:12.10 bitrate=  60.3kbits/s dup=1 drop=0    Past duration 0.999062 too large
+Past duration 0.999229 too large
+Past duration 0.999763 too large
+Past duration 0.999901 too large
+frame= 1371 fps= 10 q=27.0 size=    1023kB time=00:02:12.60 bitrate=  63.2kbits/s dup=1 drop=0    Past duration 0.999519 too large
+Past duration 0.998497 too large
+Past duration 0.999855 too large
+Past duration 0.999229 too large
+frame= 1377 fps= 10 q=27.0 size=    1024kB time=00:02:13.20 bitrate=  63.0kbits/s dup=1 drop=0    Past duration 0.999504 too large
+frame= 1383 fps= 10 q=27.0 size=    1046kB time=00:02:13.80 bitrate=  64.0kbits/s dup=1 drop=0    Past duration 0.989937 too large
+Past duration 0.999367 too large
+Past duration 0.999199 too large
+frame= 1388 fps= 10 q=27.0 size=    1047kB time=00:02:14.30 bitrate=  63.9kbits/s dup=1 drop=0    Past duration 0.988258 too large
+Past duration 0.998055 too large
+Past duration 0.997505 too large
+Past duration 0.999992 too large
+Past duration 0.998756 too large
+Past duration 0.999870 too large
+frame= 1394 fps= 10 q=27.0 size=    1049kB time=00:02:14.90 bitrate=  63.7kbits/s dup=1 drop=0    Past duration 0.998558 too large
+Past duration 0.999825 too large
+frame= 1399 fps= 10 q=27.0 size=    1050kB time=00:02:15.40 bitrate=  63.5kbits/s dup=1 drop=0    Past duration 0.999687 too large
+Past duration 0.999779 too large
+Past duration 0.999580 too large
+Past duration 0.999641 too large
+Past duration 0.999809 too large
+Past duration 0.926628 too large
+frame= 1405 fps= 10 q=27.0 size=    1051kB time=00:02:16.00 bitrate=  63.3kbits/s dup=1 drop=0    Past duration 0.999626 too large
+Past duration 0.999672 too large
+Past duration 0.939705 too large
+Past duration 0.999702 too large
+frame= 1410 fps= 10 q=27.0 size=    1052kB time=00:02:16.50 bitrate=  63.1kbits/s dup=1 drop=0    Past duration 0.999825 too large
+Past duration 0.999046 too large
+Past duration 0.999336 too large
+frame= 1416 fps= 10 q=27.0 size=    1054kB time=00:02:17.10 bitrate=  62.9kbits/s dup=1 drop=0    Past duration 0.999596 too large
+Past duration 0.999306 too large
+Past duration 0.999870 too large
+Past duration 0.999962 too large
+Past duration 0.999794 too large
+frame= 1421 fps= 10 q=27.0 size=    1055kB time=00:02:17.60 bitrate=  62.8kbits/s dup=1 drop=0    Past duration 0.999687 too large
+Past duration 0.999702 too large
+Past duration 0.999596 too large
+frame= 1427 fps= 10 q=27.0 size=    1056kB time=00:02:18.20 bitrate=  62.6kbits/s dup=1 drop=0    Past duration 0.999962 too large
+frame= 1433 fps= 10 q=27.0 size=    1057kB time=00:02:18.80 bitrate=  62.4kbits/s dup=1 drop=0    Past duration 0.999794 too large
+Past duration 0.999199 too large
+Past duration 0.999565 too large
+frame= 1438 fps= 10 q=27.0 size=    1058kB time=00:02:19.30 bitrate=  62.2kbits/s dup=1 drop=0    Past duration 0.999825 too large
+Past duration 0.999901 too large
+Past duration 0.998650 too large
+Past duration 0.999550 too large
+frame= 1444 fps= 10 q=27.0 size=    1060kB time=00:02:19.90 bitrate=  62.1kbits/s dup=1 drop=0    Past duration 0.999870 too large
+frame= 1449 fps= 10 q=27.0 size=    1061kB time=00:02:20.40 bitrate=  61.9kbits/s dup=1 drop=0    Past duration 0.999626 too large
+frame= 1454 fps= 10 q=27.0 size=    1062kB time=00:02:20.90 bitrate=  61.7kbits/s dup=1 drop=0    Past duration 0.996483 too large
+frame= 1459 fps= 10 q=27.0 size=    1063kB time=00:02:21.40 bitrate=  61.6kbits/s dup=1 drop=0    Past duration 0.999748 too large
+frame= 1465 fps= 10 q=27.0 size=    1064kB time=00:02:22.00 bitrate=  61.4kbits/s dup=1 drop=0    Past duration 0.999641 too large
+Past duration 0.999397 too large
+Past duration 0.999519 too large
+Past duration 0.999535 too large
+frame= 1471 fps= 10 q=27.0 size=    1066kB time=00:02:22.60 bitrate=  61.2kbits/s dup=1 drop=0    Past duration 0.999901 too large
+Past duration 0.980171 too large
+Past duration 0.998039 too large
+frame= 1476 fps= 10 q=27.0 size=    1067kB time=00:02:23.10 bitrate=  61.1kbits/s dup=1 drop=0    Past duration 0.999458 too large
+Past duration 0.999229 too large
+Past duration 0.999550 too large
+frame= 1482 fps= 10 q=27.0 size=    1068kB time=00:02:23.70 bitrate=  60.9kbits/s dup=1 drop=0    Past duration 0.999794 too large
+Past duration 0.999809 too large
+Past duration 0.998955 too large
+Past duration 0.999031 too large
+frame= 1488 fps= 10 q=27.0 size=    1069kB time=00:02:24.30 bitrate=  60.7kbits/s dup=1 drop=0    Past duration 0.999809 too large
+Past duration 0.999733 too large
+Past duration 0.999855 too large
+Past duration 0.999565 too large
+frame= 1494 fps= 10 q=27.0 size=    1071kB time=00:02:24.90 bitrate=  60.5kbits/s dup=1 drop=0    Past duration 0.998558 too large
+Past duration 0.999794 too large
+frame= 1499 fps= 10 q=27.0 size=    1072kB time=00:02:25.40 bitrate=  60.4kbits/s dup=1 drop=0    Past duration 0.999626 too large
+Past duration 0.999809 too large
+Past duration 0.999123 too large
+frame= 1505 fps= 10 q=27.0 size=    1073kB time=00:02:26.00 bitrate=  60.2kbits/s dup=1 drop=0    Past duration 0.999199 too large
+Past duration 0.998802 too large
+Past duration 0.999947 too large
+frame= 1511 fps= 10 q=27.0 size=    1075kB time=00:02:26.60 bitrate=  60.1kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.999947 too large
+Past duration 0.999855 too large
+Past duration 0.999519 too large
+frame= 1516 fps= 10 q=27.0 size=    1076kB time=00:02:27.10 bitrate=  59.9kbits/s dup=1 drop=0    Past duration 0.999916 too large
+Past duration 0.998985 too large
+Past duration 0.998909 too large
+Past duration 0.999367 too large
+frame= 1522 fps= 10 q=27.0 size=    1077kB time=00:02:27.70 bitrate=  59.7kbits/s dup=1 drop=0    Past duration 0.972130 too large
+Past duration 0.999855 too large
+Past duration 0.999718 too large
+Past duration 0.999519 too large
+Past duration 0.999809 too large
+frame= 1528 fps= 10 q=27.0 size=    1078kB time=00:02:28.30 bitrate=  59.6kbits/s dup=1 drop=0    Past duration 0.993248 too large
+frame= 1534 fps= 10 q=27.0 size=    1080kB time=00:02:28.90 bitrate=  59.4kbits/s dup=1 drop=0    Past duration 0.991066 too large
+Past duration 0.999748 too large
+frame= 1540 fps= 10 q=27.0 size=    1081kB time=00:02:29.50 bitrate=  59.2kbits/s dup=1 drop=0    Past duration 0.999901 too large
+Past duration 0.999992 too large
+frame= 1546 fps= 10 q=27.0 size=    1366kB time=00:02:30.10 bitrate=  74.6kbits/s dup=1 drop=0    Past duration 0.999245 too large
+Past duration 0.982185 too large
+frame= 1552 fps= 10 q=27.0 size=    1368kB time=00:02:30.70 bitrate=  74.4kbits/s dup=1 drop=0    Past duration 0.976555 too large
+frame= 1557 fps= 10 q=27.0 size=    1387kB time=00:02:31.20 bitrate=  75.1kbits/s dup=1 drop=0    Past duration 0.999001 too large
+frame= 1562 fps= 10 q=27.0 size=    1388kB time=00:02:31.70 bitrate=  75.0kbits/s dup=1 drop=0    Past duration 0.999855 too large
+frame= 1568 fps= 10 q=27.0 size=    1389kB time=00:02:32.30 bitrate=  74.7kbits/s dup=1 drop=0    Past duration 0.999794 too large
+frame= 1573 fps= 10 q=27.0 size=    1422kB time=00:02:32.80 bitrate=  76.2kbits/s dup=1 drop=0    Past duration 0.999840 too large
+frame= 1579 fps= 10 q=27.0 size=    1437kB time=00:02:33.40 bitrate=  76.7kbits/s dup=1 drop=0    Past duration 0.999977 too large
+frame= 1584 fps= 10 q=27.0 size=    1439kB time=00:02:33.90 bitrate=  76.6kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999931 too large
+frame= 1589 fps= 10 q=27.0 size=    1442kB time=00:02:34.40 bitrate=  76.5kbits/s dup=1 drop=0    Past duration 0.999763 too large
+Past duration 0.999870 too large
+Past duration 0.999977 too large
+Past duration 0.999962 too large
+frame= 1595 fps= 10 q=27.0 size=    1480kB time=00:02:35.00 bitrate=  78.2kbits/s dup=1 drop=0    Past duration 0.999275 too large
+frame= 1600 fps= 10 q=27.0 size=    1491kB time=00:02:35.50 bitrate=  78.5kbits/s dup=1 drop=0    Past duration 0.999947 too large
+Past duration 0.999596 too large
+Past duration 0.999840 too large
+frame= 1606 fps= 10 q=27.0 size=    1492kB time=00:02:36.10 bitrate=  78.3kbits/s dup=1 drop=0    Past duration 0.999245 too large
+Past duration 0.999809 too large
+frame= 1612 fps= 10 q=27.0 size=    1494kB time=00:02:36.70 bitrate=  78.1kbits/s dup=1 drop=0    frame= 1617 fps= 10 q=27.0 size=    1496kB time=00:02:37.20 bitrate=  77.9kbits/s dup=1 drop=0    Past duration 0.990059 too large
+Past duration 0.999657 too large
+frame= 1622 fps= 10 q=27.0 size=    1497kB time=00:02:37.70 bitrate=  77.8kbits/s dup=1 drop=0    Past duration 0.999641 too large
+Past duration 0.999550 too large
+frame= 1628 fps= 10 q=27.0 size=    1499kB time=00:02:38.30 bitrate=  77.6kbits/s dup=1 drop=0    Past duration 0.999870 too large
+Past duration 0.999687 too large
+Past duration 0.999916 too large
+Past duration 0.999687 too large
+frame= 1634 fps= 10 q=27.0 size=    1501kB time=00:02:38.90 bitrate=  77.4kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999382 too large
+Past duration 0.999565 too large
+Past duration 0.998116 too large
+frame= 1639 fps= 10 q=27.0 size=    1503kB time=00:02:39.40 bitrate=  77.2kbits/s dup=1 drop=0    Past duration 0.999352 too large
+Past duration 0.999626 too large
+Past duration 0.999565 too large
+Past duration 0.999397 too large
+Past duration 0.999657 too large
+frame= 1645 fps= 10 q=27.0 size=    1505kB time=00:02:40.00 bitrate=  77.0kbits/s dup=1 drop=0    Past duration 0.998787 too large
+Past duration 0.999977 too large
+frame= 1650 fps= 10 q=27.0 size=    1506kB time=00:02:40.50 bitrate=  76.9kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999886 too large
+Past duration 0.999992 too large
+frame= 1656 fps= 10 q=27.0 size=    1508kB time=00:02:41.10 bitrate=  76.7kbits/s dup=1 drop=0    Past duration 0.999550 too large
+Past duration 0.999992 too large
+Past duration 0.999901 too large
+frame= 1662 fps= 10 q=27.0 size=    1510kB time=00:02:41.70 bitrate=  76.5kbits/s dup=1 drop=0    Past duration 0.999809 too large
+Past duration 0.999641 too large
+Past duration 0.990059 too large
+frame= 1667 fps= 10 q=27.0 size=    1512kB time=00:02:42.20 bitrate=  76.3kbits/s dup=1 drop=0    Past duration 0.999687 too large
+frame= 1673 fps= 10 q=27.0 size=    1513kB time=00:02:42.80 bitrate=  76.1kbits/s dup=1 drop=0    Past duration 0.998878 too large
+Past duration 0.999611 too large
+frame= 1678 fps= 10 q=27.0 size=    1514kB time=00:02:43.30 bitrate=  76.0kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.999825 too large
+frame= 1684 fps= 10 q=27.0 size=    1515kB time=00:02:43.90 bitrate=  75.7kbits/s dup=1 drop=0    Past duration 0.999809 too large
+Past duration 0.999596 too large
+frame= 1689 fps= 10 q=27.0 size=    1517kB time=00:02:44.40 bitrate=  75.6kbits/s dup=1 drop=0    Past duration 0.999428 too large
+Past duration 0.999886 too large
+Past duration 0.999931 too large
+Past duration 0.999962 too large
+frame= 1695 fps= 10 q=27.0 size=    1518kB time=00:02:45.00 bitrate=  75.4kbits/s dup=1 drop=0    Past duration 0.906715 too large
+Past duration 0.999550 too large
+Past duration 0.999336 too large
+Past duration 0.998009 too large
+frame= 1700 fps= 10 q=27.0 size=    1519kB time=00:02:45.50 bitrate=  75.2kbits/s dup=1 drop=0    Past duration 0.999840 too large
+frame= 1706 fps= 10 q=27.0 size=    1520kB time=00:02:46.10 bitrate=  75.0kbits/s dup=1 drop=0    Past duration 0.999763 too large
+Past duration 0.999519 too large
+Past duration 0.999825 too large
+frame= 1712 fps= 10 q=27.0 size=    1521kB time=00:02:46.70 bitrate=  74.7kbits/s dup=1 drop=0    Past duration 0.999428 too large
+frame= 1717 fps= 10 q=27.0 size=    1523kB time=00:02:47.20 bitrate=  74.6kbits/s dup=1 drop=0    Past duration 0.999947 too large
+Past duration 0.999962 too large
+frame= 1723 fps= 10 q=27.0 size=    1524kB time=00:02:47.80 bitrate=  74.4kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.999382 too large
+frame= 1728 fps= 10 q=27.0 size=    1524kB time=00:02:48.30 bitrate=  74.2kbits/s dup=1 drop=0    Past duration 0.999794 too large
+Past duration 0.999855 too large
+frame= 1734 fps= 10 q=27.0 size=    1526kB time=00:02:48.90 bitrate=  74.0kbits/s dup=1 drop=0    Past duration 0.999123 too large
+Past duration 0.999352 too large
+Past duration 0.999397 too large
+Past duration 0.995186 too large
+Past duration 0.901833 too large
+frame= 1739 fps= 10 q=27.0 size=    1526kB time=00:02:49.40 bitrate=  73.8kbits/s dup=1 drop=0    Past duration 0.998589 too large
+Past duration 0.999947 too large
+Past duration 0.942574 too large
+frame= 1745 fps= 10 q=27.0 size=    1527kB time=00:02:50.00 bitrate=  73.6kbits/s dup=1 drop=0    Past duration 0.999275 too large
+Past duration 0.999901 too large
+frame= 1751 fps= 10 q=27.0 size=    1528kB time=00:02:50.60 bitrate=  73.4kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999916 too large
+frame= 1756 fps= 10 q=27.0 size=    1529kB time=00:02:51.10 bitrate=  73.2kbits/s dup=1 drop=0    frame= 1761 fps= 10 q=27.0 size=    1530kB time=00:02:51.60 bitrate=  73.1kbits/s dup=1 drop=0    Past duration 0.998970 too large
+frame= 1767 fps= 10 q=27.0 size=    1819kB time=00:02:52.20 bitrate=  86.5kbits/s dup=1 drop=0    frame= 1773 fps= 10 q=27.0 size=    1822kB time=00:02:52.80 bitrate=  86.4kbits/s dup=1 drop=0    Past duration 0.994362 too large
+frame= 1779 fps= 10 q=27.0 size=    1824kB time=00:02:53.40 bitrate=  86.2kbits/s dup=1 drop=0    Past duration 0.999779 too large
+Past duration 0.999809 too large
+Past duration 0.979790 too large
+frame= 1785 fps= 10 q=27.0 size=    1922kB time=00:02:54.00 bitrate=  90.5kbits/s dup=1 drop=0    Past duration 0.999748 too large
+Past duration 0.999336 too large
+Past duration 0.859474 too large
+Past duration 0.999794 too large
+frame= 1790 fps= 10 q=27.0 size=    1924kB time=00:02:54.50 bitrate=  90.3kbits/s dup=1 drop=0    Past duration 0.999107 too large
+Past duration 0.983665 too large
+Past duration 0.999336 too large
+Past duration 0.999840 too large
+frame= 1796 fps= 10 q=27.0 size=    2530kB time=00:02:55.10 bitrate= 118.4kbits/s dup=1 drop=0    Past duration 0.998940 too large
+frame= 1801 fps= 10 q=27.0 size=    2737kB time=00:02:55.60 bitrate= 127.7kbits/s dup=1 drop=0    Past duration 0.994484 too large
+Past duration 0.994240 too large
+Past duration 0.991890 too large
+Past duration 0.998817 too large
+frame= 1807 fps= 10 q=27.0 size=    2738kB time=00:02:56.20 bitrate= 127.3kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999916 too large
+Past duration 0.989723 too large
+frame= 1812 fps= 10 q=27.0 size=    2739kB time=00:02:56.70 bitrate= 127.0kbits/s dup=1 drop=0    Past duration 0.989159 too large
+Past duration 0.999443 too large
+Past duration 0.998695 too large
+Past duration 0.999840 too large
+Past duration 0.999397 too large
+Past duration 0.998665 too large
+frame= 1818 fps= 10 q=27.0 size=    2741kB time=00:02:57.30 bitrate= 126.7kbits/s dup=1 drop=0    Past duration 0.998894 too large
+Past duration 0.999565 too large
+Past duration 0.950645 too large
+Past duration 0.999641 too large
+Past duration 0.987068 too large
+Past duration 0.999580 too large
+frame= 1824 fps= 10 q=27.0 size=    2997kB time=00:02:57.90 bitrate= 138.0kbits/s dup=1 drop=0    Past duration 0.999916 too large
+Past duration 0.999489 too large
+Past duration 0.976479 too large
+Past duration 0.991310 too large
+frame= 1829 fps= 10 q=27.0 size=    3008kB time=00:02:58.40 bitrate= 138.1kbits/s dup=1 drop=0    Past duration 0.970619 too large
+Past duration 0.999199 too large
+Past duration 0.999336 too large
+frame= 1835 fps= 10 q=27.0 size=    3228kB time=00:02:59.00 bitrate= 147.7kbits/s dup=1 drop=0    Past duration 0.990105 too large
+Past duration 0.999992 too large
+frame= 1841 fps= 10 q=27.0 size=    3230kB time=00:02:59.60 bitrate= 147.3kbits/s dup=1 drop=0    Past duration 0.999992 too large
+Past duration 0.999886 too large
+Past duration 0.999428 too large
+Past duration 0.999901 too large
+Past duration 0.999855 too large
+frame= 1847 fps= 10 q=27.0 size=    3499kB time=00:03:00.20 bitrate= 159.0kbits/s dup=1 drop=0    Past duration 0.999931 too large
+Past duration 0.899925 too large
+Past duration 0.990517 too large
+Past duration 0.999596 too large
+Past duration 0.999962 too large
+frame= 1853 fps= 10 q=27.0 size=    3501kB time=00:03:00.80 bitrate= 158.6kbits/s dup=1 drop=0    Past duration 0.999733 too large
+Past duration 0.998650 too large
+Past duration 0.999565 too large
+frame= 1858 fps= 10 q=27.0 size=    3503kB time=00:03:01.30 bitrate= 158.3kbits/s dup=1 drop=0    Past duration 0.976097 too large
+Past duration 0.999138 too large
+frame= 1862 fps= 10 q=27.0 size=    3504kB time=00:03:01.70 bitrate= 158.0kbits/s dup=1 drop=0    Past duration 0.758339 too large
+Past duration 0.999168 too large
+Past duration 0.999855 too large
+Past duration 0.998772 too large
+Past duration 0.990105 too large
+Past duration 0.992241 too large
+frame= 1869 fps= 10 q=27.0 size=    3506kB time=00:03:02.40 bitrate= 157.4kbits/s dup=1 drop=0    Past duration 0.999046 too large
+Past duration 0.641243 too large
+Past duration 0.889153 too large
+frame= 1874 fps= 10 q=27.0 size=    3507kB time=00:03:02.90 bitrate= 157.1kbits/s dup=1 drop=0    Past duration 0.999718 too large
+Past duration 0.990028 too large
+Past duration 0.990166 too large
+Past duration 0.989510 too large
+Past duration 0.999550 too large
+Past duration 0.999367 too large
+frame= 1880 fps= 10 q=27.0 size=    3508kB time=00:03:03.50 bitrate= 156.6kbits/s dup=1 drop=0    Past duration 0.999489 too large
+Past duration 0.998909 too large
+frame= 1886 fps= 10 q=27.0 size=    3511kB time=00:03:04.10 bitrate= 156.3kbits/s dup=1 drop=0    Past duration 0.999580 too large
+Past duration 0.999855 too large
+Past duration 0.999886 too large
+frame= 1892 fps= 10 q=27.0 size=    3513kB time=00:03:04.70 bitrate= 155.8kbits/s dup=1 drop=0    Past duration 0.999535 too large
+Past duration 0.999992 too large
+Past duration 0.945808 too large
+frame= 1898 fps= 10 q=27.0 size=    3515kB time=00:03:05.30 bitrate= 155.4kbits/s dup=1 drop=0    frame= 1904 fps= 10 q=27.0 size=    3516kB time=00:03:05.90 bitrate= 154.9kbits/s dup=1 drop=0    Past duration 0.999474 too large
+Past duration 0.999855 too large
+Past duration 0.999825 too large
+frame= 1909 fps= 10 q=27.0 size=    3517kB time=00:03:06.40 bitrate= 154.6kbits/s dup=1 drop=0    Past duration 0.999840 too large
+frame= 1915 fps= 10 q=27.0 size=    3519kB time=00:03:07.00 bitrate= 154.1kbits/s dup=1 drop=0    Past duration 0.921120 too large
+Past duration 0.999840 too large
+    Last message repeated 1 times
+Past duration 0.999916 too large
+frame= 1920 fps= 10 q=27.0 size=    3520kB time=00:03:07.50 bitrate= 153.8kbits/s dup=1 drop=0    Past duration 0.999748 too large
+Past duration 0.998940 too large
+frame= 1925 fps= 10 q=27.0 size=    3521kB time=00:03:08.00 bitrate= 153.4kbits/s dup=1 drop=0    Past duration 0.999138 too large
+Past duration 0.999855 too large
+Past duration 0.999947 too large
+Past duration 0.999977 too large
+frame= 1931 fps= 10 q=27.0 size=    3523kB time=00:03:08.60 bitrate= 153.0kbits/s dup=1 drop=0    Past duration 0.999931 too large
+Past duration 0.999550 too large
+Past duration 0.999855 too large
+Past duration 0.999901 too large
+frame= 1936 fps= 10 q=27.0 size=    3524kB time=00:03:09.10 bitrate= 152.7kbits/s dup=1 drop=0    Past duration 0.999992 too large
+Past duration 0.999641 too large
+frame= 1941 fps= 10 q=27.0 size=    3526kB time=00:03:09.60 bitrate= 152.3kbits/s dup=1 drop=0    Past duration 0.999550 too large
+Past duration 0.979897 too large
+frame= 1947 fps= 10 q=27.0 size=    3527kB time=00:03:10.20 bitrate= 151.9kbits/s dup=1 drop=0    Past duration 0.999718 too large
+Past duration 0.999840 too large
+Past duration 0.999779 too large
+frame= 1953 fps= 10 q=27.0 size=    3528kB time=00:03:10.80 bitrate= 151.5kbits/s dup=1 drop=0    Past duration 0.999748 too large
+frame= 1958 fps= 10 q=27.0 size=    3529kB time=00:03:11.30 bitrate= 151.1kbits/s dup=1 drop=0    Past duration 0.999809 too large
+    Last message repeated 1 times
+Past duration 0.999916 too large
+frame= 1964 fps= 10 q=27.0 size=    3531kB time=00:03:11.90 bitrate= 150.7kbits/s dup=1 drop=0    Past duration 0.999672 too large
+Past duration 0.999840 too large
+Past duration 0.999733 too large
+frame= 1970 fps= 10 q=27.0 size=    3533kB time=00:03:12.50 bitrate= 150.3kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.999626 too large
+Past duration 0.999748 too large
+frame= 1976 fps= 10 q=27.0 size=    3534kB time=00:03:13.10 bitrate= 149.9kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.999565 too large
+frame= 1981 fps= 10 q=27.0 size=    3536kB time=00:03:13.60 bitrate= 149.6kbits/s dup=1 drop=0    Past duration 0.999306 too large
+Past duration 0.999001 too large
+Past duration 0.999947 too large
+frame= 1986 fps= 10 q=27.0 size=    3553kB time=00:03:14.10 bitrate= 149.9kbits/s dup=1 drop=0    Past duration 0.999489 too large
+Past duration 0.999626 too large
+Past duration 0.999214 too large
+frame= 1992 fps= 10 q=27.0 size=    3554kB time=00:03:14.70 bitrate= 149.6kbits/s dup=1 drop=0    Past duration 0.999596 too large
+Past duration 0.970970 too large
+Past duration 0.999565 too large
+Past duration 0.999641 too large
+frame= 1997 fps= 10 q=27.0 size=    3555kB time=00:03:15.20 bitrate= 149.2kbits/s dup=1 drop=0    Past duration 0.999794 too large
+Past duration 0.999489 too large
+Past duration 0.999794 too large
+frame= 2003 fps= 10 q=27.0 size=    4078kB time=00:03:15.80 bitrate= 170.6kbits/s dup=1 drop=0    Past duration 0.999901 too large
+Past duration 0.999535 too large
+frame= 2008 fps= 10 q=27.0 size=    4081kB time=00:03:16.30 bitrate= 170.3kbits/s dup=1 drop=0    Past duration 0.999092 too large
+frame= 2014 fps= 10 q=27.0 size=    4083kB time=00:03:16.90 bitrate= 169.9kbits/s dup=1 drop=0    frame= 2020 fps= 10 q=27.0 size=    4084kB time=00:03:17.50 bitrate= 169.4kbits/s dup=1 drop=0    Past duration 0.999809 too large
+Past duration 0.997597 too large
+Past duration 0.998375 too large
+Past duration 0.999504 too large
+frame= 2026 fps= 10 q=27.0 size=    4085kB time=00:03:18.10 bitrate= 168.9kbits/s dup=1 drop=0    Past duration 0.999107 too large
+Past duration 0.998924 too large
+frame= 2032 fps= 10 q=27.0 size=    4087kB time=00:03:18.70 bitrate= 168.5kbits/s dup=1 drop=0    Past duration 0.999641 too large
+Past duration 0.999565 too large
+Past duration 0.999870 too large
+Past duration 0.999840 too large
+frame= 2037 fps= 10 q=27.0 size=    4088kB time=00:03:19.20 bitrate= 168.1kbits/s dup=1 drop=0    Past duration 0.955620 too large
+frame= 2043 fps= 10 q=27.0 size=    4089kB time=00:03:19.80 bitrate= 167.7kbits/s dup=1 drop=0    Past duration 0.999229 too large
+Past duration 0.999489 too large
+Past duration 0.999916 too large
+frame= 2049 fps= 10 q=27.0 size=    4734kB time=00:03:20.40 bitrate= 193.5kbits/s dup=1 drop=0    Past duration 0.999886 too large
+frame= 2055 fps= 10 q=27.0 size=    4735kB time=00:03:21.00 bitrate= 193.0kbits/s dup=1 drop=0    Past duration 0.919395 too large
+Past duration 0.990883 too large
+Past duration 0.940727 too large
+frame= 2060 fps= 10 q=27.0 size=    4737kB time=00:03:21.50 bitrate= 192.6kbits/s dup=1 drop=0    Past duration 0.996025 too large
+Past duration 0.999825 too large
+Past duration 0.999840 too large
+Past duration 0.999855 too large
+frame= 2066 fps= 10 q=27.0 size=    4739kB time=00:03:22.10 bitrate= 192.1kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999489 too large
+frame= 2072 fps= 10 q=27.0 size=    4740kB time=00:03:22.70 bitrate= 191.6kbits/s dup=1 drop=0    Past duration 0.998543 too large
+Past duration 0.999458 too large
+Past duration 0.999947 too large
+Past duration 0.999016 too large
+Past duration 0.999763 too large
+frame= 2078 fps= 10 q=27.0 size=    4741kB time=00:03:23.30 bitrate= 191.1kbits/s dup=1 drop=0    Past duration 0.999931 too large
+Past duration 0.999855 too large
+frame= 2084 fps= 10 q=27.0 size=    5034kB time=00:03:23.90 bitrate= 202.3kbits/s dup=1 drop=0    Past duration 0.999733 too large
+frame= 2089 fps= 10 q=27.0 size=    5041kB time=00:03:24.40 bitrate= 202.0kbits/s dup=1 drop=0    Past duration 0.999718 too large
+Past duration 0.999702 too large
+frame= 2095 fps= 10 q=27.0 size=    5043kB time=00:03:25.00 bitrate= 201.5kbits/s dup=1 drop=0    Past duration 0.923027 too large
+Past duration 0.999977 too large
+frame= 2100 fps= 10 q=27.0 size=    5485kB time=00:03:25.50 bitrate= 218.6kbits/s dup=1 drop=0    Past duration 0.999489 too large
+frame= 2106 fps= 10 q=27.0 size=    6585kB time=00:03:26.10 bitrate= 261.7kbits/s dup=1 drop=0    Past duration 0.999565 too large
+Past duration 0.802986 too large
+Past duration 0.999931 too large
+frame= 2112 fps= 10 q=27.0 size=    6589kB time=00:03:26.70 bitrate= 261.1kbits/s dup=1 drop=0    Past duration 0.999657 too large
+frame= 2117 fps= 10 q=27.0 size=    6834kB time=00:03:27.20 bitrate= 270.2kbits/s dup=1 drop=0    Past duration 0.999611 too large
+Past duration 0.954185 too large
+Past duration 0.999947 too large
+Past duration 0.999718 too large
+frame= 2123 fps= 10 q=27.0 size=    6841kB time=00:03:27.80 bitrate= 269.7kbits/s dup=1 drop=0    frame= 2128 fps= 10 q=27.0 size=    6842kB time=00:03:28.30 bitrate= 269.1kbits/s dup=1 drop=0    Past duration 0.999580 too large
+frame= 2133 fps= 10 q=27.0 size=    6843kB time=00:03:28.80 bitrate= 268.5kbits/s dup=1 drop=0    Past duration 0.950508 too large
+frame= 2138 fps= 10 q=27.0 size=    6844kB time=00:03:29.30 bitrate= 267.9kbits/s dup=1 drop=0    Past duration 0.999870 too large
+    Last message repeated 1 times
+frame= 2144 fps= 10 q=27.0 size=    7094kB time=00:03:29.90 bitrate= 276.9kbits/s dup=1 drop=0    Past duration 0.999748 too large
+frame= 2149 fps= 10 q=27.0 size=    7096kB time=00:03:30.40 bitrate= 276.3kbits/s dup=1 drop=0    Past duration 0.999550 too large
+Past duration 0.999748 too large
+frame= 2155 fps= 10 q=27.0 size=    7098kB time=00:03:31.00 bitrate= 275.6kbits/s dup=1 drop=0    frame= 2161 fps= 10 q=27.0 size=    7099kB time=00:03:31.60 bitrate= 274.8kbits/s dup=1 drop=0    Past duration 0.990486 too large
+frame= 2167 fps= 10 q=27.0 size=    7100kB time=00:03:32.20 bitrate= 274.1kbits/s dup=1 drop=0    Past duration 0.999779 too large
+Past duration 0.999687 too large
+frame= 2173 fps= 10 q=27.0 size=    7102kB time=00:03:32.80 bitrate= 273.4kbits/s dup=1 drop=0    Past duration 0.999352 too large
+Past duration 0.954094 too large
+Past duration 0.999519 too large
+Past duration 0.999168 too large
+frame= 2178 fps= 10 q=27.0 size=    7103kB time=00:03:33.30 bitrate= 272.8kbits/s dup=1 drop=0    Past duration 0.999626 too large
+Past duration 0.871239 too large
+frame= 2183 fps= 10 q=27.0 size=    7104kB time=00:03:33.80 bitrate= 272.2kbits/s dup=1 drop=0    Past duration 0.999947 too large
+Past duration 0.999992 too large
+Past duration 0.827553 too large
+Past duration 0.999367 too large
+Past duration 0.999825 too large
+frame= 2189 fps= 10 q=27.0 size=    7105kB time=00:03:34.40 bitrate= 271.5kbits/s dup=1 drop=0    frame= 2195 fps= 10 q=27.0 size=    7361kB time=00:03:35.00 bitrate= 280.5kbits/s dup=1 drop=0    Past duration 0.999611 too large
+frame= 2200 fps= 10 q=27.0 size=    7366kB time=00:03:35.50 bitrate= 280.0kbits/s dup=1 drop=0    Past duration 0.999809 too large
+Past duration 0.999977 too large
+Past duration 0.999718 too large
+Past duration 0.912270 too large
+frame= 2206 fps= 10 q=27.0 size=    8182kB time=00:03:36.10 bitrate= 310.1kbits/s dup=1 drop=0    Past duration 0.999931 too large
+Past duration 0.999733 too large
+Past duration 0.999336 too large
+frame= 2212 fps= 10 q=27.0 size=    8194kB time=00:03:36.70 bitrate= 309.8kbits/s dup=1 drop=0    Past duration 0.999779 too large
+frame= 2217 fps= 10 q=27.0 size=    8213kB time=00:03:37.20 bitrate= 309.8kbits/s dup=1 drop=0    Past duration 0.999519 too large
+Past duration 0.999550 too large
+Past duration 0.999107 too large
+frame= 2222 fps= 10 q=27.0 size=    8438kB time=00:03:37.70 bitrate= 317.5kbits/s dup=1 drop=0    Past duration 0.999870 too large
+frame= 2227 fps= 10 q=27.0 size=    8440kB time=00:03:38.20 bitrate= 316.9kbits/s dup=1 drop=0    Past duration 0.999794 too large
+Past duration 0.998589 too large
+Past duration 0.999077 too large
+frame= 2233 fps= 10 q=27.0 size=    8442kB time=00:03:38.80 bitrate= 316.1kbits/s dup=1 drop=0    Past duration 0.999977 too large
+frame= 2238 fps= 10 q=27.0 size=    8443kB time=00:03:39.30 bitrate= 315.4kbits/s dup=1 drop=0    frame= 2244 fps= 10 q=27.0 size=    8687kB time=00:03:39.90 bitrate= 323.6kbits/s dup=1 drop=0    Past duration 0.999596 too large
+frame= 2250 fps= 10 q=27.0 size=    8688kB time=00:03:40.50 bitrate= 322.8kbits/s dup=1 drop=0    Past duration 0.999260 too large
+frame= 2255 fps= 10 q=27.0 size=    8767kB time=00:03:41.00 bitrate= 325.0kbits/s dup=1 drop=0    Past duration 0.999840 too large
+Past duration 0.999229 too large
+frame= 2261 fps= 10 q=27.0 size=    8772kB time=00:03:41.60 bitrate= 324.3kbits/s dup=1 drop=0    Past duration 0.999947 too large
+Past duration 0.999901 too large
+Past duration 0.999840 too large
+frame= 2266 fps= 10 q=27.0 size=    8773kB time=00:03:42.10 bitrate= 323.6kbits/s dup=1 drop=0    frame= 2271 fps= 10 q=27.0 size=    8774kB time=00:03:42.60 bitrate= 322.9kbits/s dup=1 drop=0    Past duration 0.999565 too large
+Past duration 0.999077 too large
+frame= 2277 fps= 10 q=27.0 size=    8776kB time=00:03:43.20 bitrate= 322.1kbits/s dup=1 drop=0    Past duration 0.999855 too large
+Past duration 0.999352 too large
+Past duration 0.999809 too large
+frame= 2283 fps= 10 q=27.0 size=    8777kB time=00:03:43.80 bitrate= 321.3kbits/s dup=1 drop=0    Past duration 0.999275 too large
+Past duration 0.999977 too large
+frame= 2289 fps= 10 q=27.0 size=    8779kB time=00:03:44.40 bitrate= 320.5kbits/s dup=1 drop=0    Past duration 0.999107 too large
+frame= 2295 fps= 10 q=27.0 size=    8780kB time=00:03:45.00 bitrate= 319.7kbits/s dup=1 drop=0    Past duration 0.999763 too large
+frame= 2300 fps= 10 q=27.0 size=    8782kB time=00:03:45.50 bitrate= 319.0kbits/s dup=1 drop=0    Past duration 0.999290 too large
+Past duration 0.999779 too large
+Past duration 0.999947 too large
+Past duration 0.999565 too large
+frame= 2306 fps= 10 q=27.0 size=    8783kB time=00:03:46.10 bitrate= 318.2kbits/s dup=1 drop=0    Past duration 0.999168 too large
+Past duration 0.999809 too large
+Past duration 0.999886 too large
+frame= 2312 fps= 10 q=27.0 size=    8784kB time=00:03:46.70 bitrate= 317.4kbits/s dup=1 drop=0    Past duration 0.999687 too large
+Past duration 0.999443 too large
+Past duration 0.999626 too large
+frame= 2317 fps= 10 q=27.0 size=    8785kB time=00:03:47.20 bitrate= 316.8kbits/s dup=1 drop=0    Past duration 0.999977 too large
+frame= 2323 fps= 10 q=27.0 size=    8787kB time=00:03:47.80 bitrate= 316.0kbits/s dup=1 drop=0    Past duration 0.999977 too large
+Past duration 0.998955 too large
+frame= 2328 fps= 10 q=27.0 size=    8788kB time=00:03:48.30 bitrate= 315.3kbits/s dup=1 drop=0    Past duration 0.920006 too large
+Past duration 0.999947 too large
+frame= 2334 fps= 10 q=27.0 size=    8790kB time=00:03:48.90 bitrate= 314.6kbits/s dup=1 drop=0    Past duration 0.999931 too large
+Past duration 0.999809 too large
+frame= 2339 fps= 10 q=27.0 size=    8791kB time=00:03:49.40 bitrate= 313.9kbits/s dup=1 drop=0    Past duration 0.999962 too large
+frame= 2345 fps= 10 q=27.0 size=    8792kB time=00:03:50.00 bitrate= 313.2kbits/s dup=1 drop=0    frame= 2350 fps= 10 q=27.0 size=    8793kB time=00:03:50.50 bitrate= 312.5kbits/s dup=1 drop=0    Past duration 0.999565 too large
+Past duration 0.999931 too large
+frame= 2356 fps= 10 q=27.0 size=    8795kB time=00:03:51.10 bitrate= 311.8kbits/s dup=1 drop=0    Past duration 0.999550 too large
+Past duration 0.999397 too large
+frame= 2361 fps= 10 q=27.0 size=    8796kB time=00:03:51.60 bitrate= 311.1kbits/s dup=1 drop=0    Past duration 0.999748 too large
+frame= 2366 fps= 10 q=27.0 size=    8797kB time=00:03:52.10 bitrate= 310.5kbits/s dup=1 drop=0    Past duration 0.999596 too large
+Past duration 0.999443 too large
+Past duration 0.999397 too large
+frame= 2371 fps= 10 q=27.0 size=    8798kB time=00:03:52.60 bitrate= 309.9kbits/s dup=1 drop=0    Past duration 0.968376 too large
+Past duration 0.999931 too large
+frame= 2377 fps= 10 q=27.0 size=    8799kB time=00:03:53.20 bitrate= 309.1kbits/s dup=1 drop=0    Past duration 0.899376 too large
+Past duration 0.999901 too large
+frame= 2383 fps= 10 q=27.0 size=    8801kB time=00:03:53.80 bitrate= 308.4kbits/s dup=1 drop=0    Past duration 0.999718 too large
+Past duration 0.999702 too large
+frame= 2388 fps= 10 q=27.0 size=    8802kB time=00:03:54.30 bitrate= 307.7kbits/s dup=1 drop=0    Past duration 0.999199 too large
+Past duration 0.999992 too large
+Past duration 0.999977 too large
+frame= 2394 fps= 10 q=27.0 size=    8804kB time=00:03:54.90 bitrate= 307.0kbits/s dup=1 drop=0    frame= 2400 fps= 10 q=27.0 size=    8805kB time=00:03:55.50 bitrate= 306.3kbits/s dup=1 drop=0    Past duration 0.999443 too large
+frame= 2405 fps= 10 q=27.0 size=    9023kB time=00:03:56.00 bitrate= 313.2kbits/s dup=1 drop=0    Past duration 0.999626 too large
+Past duration 0.999657 too large
+frame= 2410 fps= 10 q=27.0 size=    9075kB time=00:03:56.50 bitrate= 314.4kbits/s dup=1 drop=0    Past duration 0.999947 too large
+frame= 2416 fps= 10 q=27.0 size=    9381kB time=00:03:57.10 bitrate= 324.1kbits/s dup=1 drop=0    frame= 2422 fps= 10 q=27.0 size=    9411kB time=00:03:57.70 bitrate= 324.3kbits/s dup=1 drop=0    Past duration 0.999794 too large
+Past duration 0.989754 too large
+Past duration 0.999794 too large
+frame= 2427 fps= 10 q=27.0 size=    9416kB time=00:03:58.20 bitrate= 323.8kbits/s dup=1 drop=0    Past duration 0.944084 too large
+Past duration 0.999809 too large
+Past duration 0.999840 too large
+Past duration 0.999687 too large
+frame= 2433 fps= 10 q=27.0 size=    9616kB time=00:03:58.80 bitrate= 329.9kbits/s dup=1 drop=0    Past duration 0.999138 too large
+Past duration 0.999580 too large
+frame= 2438 fps= 10 q=27.0 size=    9618kB time=00:03:59.30 bitrate= 329.2kbits/s dup=1 drop=0    Past duration 0.999596 too large
+Past duration 0.999718 too large
+Past duration 0.987434 too large
+frame= 2443 fps= 10 q=27.0 size=    9619kB time=00:03:59.80 bitrate= 328.6kbits/s dup=1 drop=0    Past duration 0.999687 too large
+frame= 2449 fps= 10 q=27.0 size=    9620kB time=00:04:00.40 bitrate= 327.8kbits/s dup=1 drop=0    Past duration 0.998207 too large
+Past duration 0.999321 too large
+frame= 2454 fps= 10 q=27.0 size=    9627kB time=00:04:00.90 bitrate= 327.4kbits/s dup=1 drop=0    Past duration 0.998909 too large
+Past duration 0.999855 too large
+Past duration 0.999626 too large
+Past duration 0.999306 too large
+frame= 2460 fps= 10 q=27.0 size=   10232kB time=00:04:01.50 bitrate= 347.1kbits/s dup=1 drop=0    Past duration 0.939476 too large
+Past duration 0.990028 too large
+Past duration 0.910591 too large
+Past duration 0.687050 too large
+Past duration 0.970375 too large
+frame= 2465 fps= 10 q=27.0 size=   10233kB time=00:04:02.00 bitrate= 346.4kbits/s dup=1 drop=0    Past duration 0.990959 too large
+Past duration 0.989769 too large
+frame= 2471 fps= 10 q=27.0 size=   10238kB time=00:04:02.60 bitrate= 345.7kbits/s dup=1 drop=0    Past duration 0.997810 too large
+Past duration 0.999779 too large
+frame= 2476 fps= 10 q=27.0 size=   10452kB time=00:04:03.10 bitrate= 352.2kbits/s dup=1 drop=0    Past duration 0.999809 too large
+Past duration 0.968163 too large
+Past duration 0.990349 too large
+Past duration 0.998878 too large
+Past duration 0.999626 too large
+frame= 2482 fps= 10 q=27.0 size=   10454kB time=00:04:03.70 bitrate= 351.4kbits/s dup=1 drop=0    Past duration 0.999931 too large
+Past duration 0.939995 too large
+Past duration 0.999519 too large
+Past duration 0.999413 too large
+Past duration 0.999428 too large
+Past duration 0.999519 too large
+frame= 2488 fps= 10 q=24.0 size=   10842kB time=00:04:04.30 bitrate= 363.6kbits/s dup=1 drop=0    Past duration 0.999886 too large
+Past duration 0.996559 too large
+frame= 2492 fps= 10 q=27.0 size=   11037kB time=00:04:04.70 bitrate= 369.5kbits/s dup=2 drop=0    frame= 2500 fps= 10 q=27.0 size=   11796kB time=00:04:05.50 bitrate= 393.6kbits/s dup=2 drop=0    Past duration 0.647118 too large
+Past duration 0.791817 too large
+frame= 2504 fps= 10 q=27.0 size=   12234kB time=00:04:05.90 bitrate= 407.6kbits/s dup=2 drop=0    Past duration 0.914986 too large
+frame= 2511 fps= 10 q=27.0 size=   13184kB time=00:04:06.60 bitrate= 438.0kbits/s dup=2 drop=0    frame= 2516 fps= 10 q=27.0 size=   13713kB time=00:04:07.10 bitrate= 454.6kbits/s dup=2 drop=0    frame= 2522 fps= 10 q=27.0 size=   14252kB time=00:04:07.70 bitrate= 471.4kbits/s dup=2 drop=0    frame= 2527 fps= 10 q=27.0 size=   14552kB time=00:04:08.20 bitrate= 480.3kbits/s dup=2 drop=0    frame= 2533 fps= 10 q=27.0 size=   15139kB time=00:04:08.80 bitrate= 498.5kbits/s dup=2 drop=0    frame= 2539 fps= 10 q=27.0 size=   15140kB time=00:04:09.40 bitrate= 497.3kbits/s dup=2 drop=0    frame= 2545 fps= 10 q=27.0 size=   15163kB time=00:04:10.00 bitrate= 496.9kbits/s dup=2 drop=0    frame= 2550 fps= 10 q=27.0 size=   15852kB time=00:04:10.50 bitrate= 518.4kbits/s dup=2 drop=0    frame= 2556 fps= 10 q=27.0 size=   15932kB time=00:04:11.10 bitrate= 519.8kbits/s dup=2 drop=0    frame= 2562 fps= 10 q=27.0 size=   16518kB time=00:04:11.70 bitrate= 537.6kbits/s dup=2 drop=0    frame= 2567 fps= 10 q=27.0 size=   16520kB time=00:04:12.20 bitrate= 536.6kbits/s dup=2 drop=0    frame= 2572 fps= 10 q=27.0 size=   16521kB time=00:04:12.70 bitrate= 535.6kbits/s dup=2 drop=0    frame= 2577 fps= 10 q=27.0 size=   16718kB time=00:04:13.20 bitrate= 540.9kbits/s dup=2 drop=0    frame= 2583 fps= 10 q=27.0 size=   16727kB time=00:04:13.80 bitrate= 539.9kbits/s dup=2 drop=0    frame= 2589 fps= 10 q=27.0 size=   16729kB time=00:04:14.40 bitrate= 538.7kbits/s dup=2 drop=0    frame= 2595 fps= 10 q=27.0 size=   16731kB time=00:04:15.00 bitrate= 537.5kbits/s dup=2 drop=0    frame= 2600 fps= 10 q=27.0 size=   16732kB time=00:04:15.50 bitrate= 536.5kbits/s dup=2 drop=0    frame= 2606 fps= 10 q=27.0 size=   16733kB time=00:04:16.10 bitrate= 535.3kbits/s dup=2 drop=0    frame= 2611 fps= 10 q=27.0 size=   16735kB time=00:04:16.60 bitrate= 534.3kbits/s dup=2 drop=0    frame= 2617 fps= 10 q=27.0 size=   16736kB time=00:04:17.20 bitrate= 533.1kbits/s dup=2 drop=0    frame= 2623 fps= 10 q=27.0 size=   16943kB time=00:04:17.80 bitrate= 538.4kbits/s dup=2 drop=0    frame= 2629 fps= 10 q=27.0 size=   16946kB time=00:04:18.40 bitrate= 537.2kbits/s dup=2 drop=0    frame= 2635 fps= 10 q=27.0 size=   16947kB time=00:04:19.00 bitrate= 536.0kbits/s dup=2 drop=0    frame= 2641 fps= 10 q=27.0 size=   16949kB time=00:04:19.60 bitrate= 534.8kbits/s dup=2 drop=0    frame= 2646 fps= 10 q=27.0 size=   16950kB time=00:04:20.10 bitrate= 533.9kbits/s dup=2 drop=0    frame= 2652 fps= 10 q=27.0 size=   17509kB time=00:04:20.70 bitrate= 550.2kbits/s dup=2 drop=0    frame= 2658 fps= 10 q=27.0 size=   17512kB time=00:04:21.30 bitrate= 549.0kbits/s dup=2 drop=0    frame= 2664 fps= 10 q=27.0 size=   17515kB time=00:04:21.90 bitrate= 547.8kbits/s dup=2 drop=0    frame= 2669 fps= 10 q=27.0 size=   17516kB time=00:04:22.40 bitrate= 546.8kbits/s dup=2 drop=0    frame= 2675 fps= 10 q=27.0 size=   17517kB time=00:04:23.00 bitrate= 545.6kbits/s dup=2 drop=0    frame= 2680 fps= 10 q=27.0 size=   17527kB time=00:04:23.50 bitrate= 544.9kbits/s dup=2 drop=0    frame= 2685 fps= 10 q=27.0 size=   17529kB time=00:04:24.00 bitrate= 543.9kbits/s dup=2 drop=0    frame= 2691 fps= 10 q=27.0 size=   17531kB time=00:04:24.60 bitrate= 542.8kbits/s dup=2 drop=0    frame= 2696 fps= 10 q=27.0 size=   17533kB time=00:04:25.10 bitrate= 541.8kbits/s dup=2 drop=0    frame= 2701 fps= 10 q=27.0 size=   17534kB time=00:04:25.60 bitrate= 540.8kbits/s dup=2 drop=0    frame= 2707 fps= 10 q=27.0 size=   17537kB time=00:04:26.20 bitrate= 539.7kbits/s dup=2 drop=0    frame= 2713 fps= 10 q=27.0 size=   17543kB time=00:04:26.80 bitrate= 538.7kbits/s dup=2 drop=0    frame= 2718 fps= 10 q=27.0 size=   17545kB time=00:04:27.30 bitrate= 537.7kbits/s dup=2 drop=0    frame= 2724 fps= 10 q=27.0 size=   17546kB time=00:04:27.90 bitrate= 536.5kbits/s dup=2 drop=0    frame= 2729 fps= 10 q=27.0 size=   17570kB time=00:04:28.40 bitrate= 536.3kbits/s dup=2 drop=0    frame= 2734 fps= 10 q=27.0 size=   17575kB time=00:04:28.90 bitrate= 535.4kbits/s dup=2 drop=0    frame= 2740 fps= 10 q=27.0 size=   17900kB time=00:04:29.50 bitrate= 544.1kbits/s dup=2 drop=0    frame= 2746 fps= 10 q=27.0 size=   18513kB time=00:04:30.10 bitrate= 561.5kbits/s dup=2 drop=0    frame= 2752 fps= 10 q=27.0 size=   18554kB time=00:04:30.70 bitrate= 561.5kbits/s dup=2 drop=0    frame= 2757 fps= 10 q=27.0 size=   18556kB time=00:04:31.20 bitrate= 560.5kbits/s dup=2 drop=0    frame= 2763 fps= 10 q=27.0 size=   18558kB time=00:04:31.80 bitrate= 559.3kbits/s dup=2 drop=0    frame= 2768 fps= 10 q=27.0 size=   18560kB time=00:04:32.30 bitrate= 558.4kbits/s dup=2 drop=0    frame= 2774 fps= 10 q=27.0 size=   18561kB time=00:04:32.90 bitrate= 557.2kbits/s dup=2 drop=0    frame= 2780 fps= 10 q=27.0 size=   18562kB time=00:04:33.50 bitrate= 556.0kbits/s dup=2 drop=0    frame= 2785 fps= 10 q=27.0 size=   18564kB time=00:04:34.00 bitrate= 555.0kbits/s dup=2 drop=0    frame= 2790 fps= 10 q=27.0 size=   18564kB time=00:04:34.50 bitrate= 554.0kbits/s dup=2 drop=0    frame= 2796 fps= 10 q=27.0 size=   18566kB time=00:04:35.10 bitrate= 552.9kbits/s dup=2 drop=0    frame= 2802 fps= 10 q=27.0 size=   18567kB time=00:04:35.70 bitrate= 551.7kbits/s dup=2 drop=0    frame= 2808 fps= 10 q=27.0 size=   18568kB time=00:04:36.30 bitrate= 550.5kbits/s dup=2 drop=0    frame= 2813 fps= 10 q=27.0 size=   18570kB time=00:04:36.80 bitrate= 549.6kbits/s dup=2 drop=0    frame= 2818 fps= 10 q=27.0 size=   18570kB time=00:04:37.30 bitrate= 548.6kbits/s dup=2 drop=0    frame= 2824 fps= 10 q=27.0 size=   18572kB time=00:04:37.90 bitrate= 547.5kbits/s dup=2 drop=0    frame= 2829 fps= 10 q=27.0 size=   18573kB time=00:04:38.40 bitrate= 546.5kbits/s dup=2 drop=0    frame= 2835 fps= 10 q=27.0 size=   18574kB time=00:04:39.00 bitrate= 545.4kbits/s dup=2 drop=0    frame= 2840 fps= 10 q=27.0 size=   18575kB time=00:04:39.50 bitrate= 544.4kbits/s dup=2 drop=0    frame= 2846 fps= 10 q=27.0 size=   18576kB time=00:04:40.10 bitrate= 543.3kbits/s dup=2 drop=0    frame= 2851 fps= 10 q=27.0 size=   18578kB time=00:04:40.60 bitrate= 542.4kbits/s dup=2 drop=0    frame= 2857 fps= 10 q=27.0 size=   18579kB time=00:04:41.20 bitrate= 541.2kbits/s dup=2 drop=0    frame= 2862 fps= 10 q=27.0 size=   18580kB time=00:04:41.70 bitrate= 540.3kbits/s dup=2 drop=0    frame= 2868 fps= 10 q=27.0 size=   18581kB time=00:04:42.30 bitrate= 539.2kbits/s dup=2 drop=0    frame= 2874 fps= 10 q=27.0 size=   18582kB time=00:04:42.90 bitrate= 538.1kbits/s dup=2 drop=0    frame= 2880 fps= 10 q=27.0 size=   18583kB time=00:04:43.50 bitrate= 537.0kbits/s dup=2 drop=0    frame= 2885 fps= 10 q=27.0 size=   18585kB time=00:04:44.00 bitrate= 536.1kbits/s dup=2 drop=0    frame= 2891 fps= 10 q=27.0 size=   18601kB time=00:04:44.60 bitrate= 535.4kbits/s dup=2 drop=0    frame= 2896 fps= 10 q=27.0 size=   18603kB time=00:04:45.10 bitrate= 534.5kbits/s dup=2 drop=0    frame= 2901 fps= 10 q=27.0 size=   18604kB time=00:04:45.60 bitrate= 533.6kbits/s dup=2 drop=0    frame= 2907 fps= 10 q=27.0 size=   18641kB time=00:04:46.20 bitrate= 533.6kbits/s dup=2 drop=0    frame= 2912 fps= 10 q=27.0 size=   18686kB time=00:04:46.70 bitrate= 533.9kbits/s dup=2 drop=0    frame= 2917 fps= 10 q=27.0 size=   18687kB time=00:04:47.20 bitrate= 533.0kbits/s dup=2 drop=0    frame= 2922 fps= 10 q=27.0 size=   18688kB time=00:04:47.70 bitrate= 532.1kbits/s dup=2 drop=0    frame= 2927 fps= 10 q=27.0 size=   18689kB time=00:04:48.20 bitrate= 531.2kbits/s dup=2 drop=0    frame= 2933 fps= 10 q=27.0 size=   18690kB time=00:04:48.80 bitrate= 530.2kbits/s dup=2 drop=0    frame= 2939 fps= 10 q=27.0 size=   18691kB time=00:04:49.40 bitrate= 529.1kbits/s dup=2 drop=0    frame= 2945 fps= 10 q=27.0 size=   18693kB time=00:04:50.00 bitrate= 528.0kbits/s dup=2 drop=0    frame= 2950 fps= 10 q=27.0 size=   18694kB time=00:04:50.50 bitrate= 527.2kbits/s dup=2 drop=0    frame= 2955 fps= 10 q=27.0 size=   18695kB time=00:04:51.00 bitrate= 526.3kbits/s dup=2 drop=0    frame= 2960 fps= 10 q=27.0 size=   18696kB time=00:04:51.50 bitrate= 525.4kbits/s dup=2 drop=0    frame= 2966 fps= 10 q=27.0 size=   18697kB time=00:04:52.10 bitrate= 524.4kbits/s dup=2 drop=0    frame= 2972 fps= 10 q=27.0 size=   18698kB time=00:04:52.70 bitrate= 523.3kbits/s dup=2 drop=0    frame= 2978 fps= 10 q=27.0 size=   18699kB time=00:04:53.30 bitrate= 522.3kbits/s dup=2 drop=0    frame= 2984 fps= 10 q=27.0 size=   18701kB time=00:04:53.90 bitrate= 521.2kbits/s dup=2 drop=0    frame= 2989 fps= 10 q=27.0 size=   18701kB time=00:04:54.40 bitrate= 520.4kbits/s dup=2 drop=0    frame= 2995 fps= 10 q=27.0 size=   18702kB time=00:04:55.00 bitrate= 519.4kbits/s dup=2 drop=0    frame= 3000 fps= 10 q=27.0 size=   19336kB time=00:04:55.50 bitrate= 536.0kbits/s dup=2 drop=0    frame= 3006 fps= 10 q=27.0 size=   19338kB time=00:04:56.10 bitrate= 535.0kbits/s dup=2 drop=0    frame= 3012 fps= 10 q=27.0 size=   19339kB time=00:04:56.70 bitrate= 533.9kbits/s dup=2 drop=0    frame= 3018 fps= 10 q=27.0 size=   19340kB time=00:04:57.30 bitrate= 532.9kbits/s dup=2 drop=0    frame= 3024 fps= 10 q=27.0 size=   19341kB time=00:04:57.90 bitrate= 531.9kbits/s dup=2 drop=0    frame= 3029 fps= 10 q=27.0 size=   19341kB time=00:04:58.40 bitrate= 531.0kbits/s dup=2 drop=0    frame= 3035 fps= 10 q=27.0 size=   19342kB time=00:04:59.00 bitrate= 529.9kbits/s dup=2 drop=0    frame= 3040 fps= 10 q=27.0 size=   19343kB time=00:04:59.50 bitrate= 529.1kbits/s dup=2 drop=0    frame= 3045 fps= 10 q=27.0 size=   19345kB time=00:05:00.00 bitrate= 528.3kbits/s dup=2 drop=0    frame= 3051 fps= 10 q=27.0 size=   19347kB time=00:05:00.60 bitrate= 527.2kbits/s dup=2 drop=0    frame= 3056 fps= 10 q=27.0 size=   19348kB time=00:05:01.10 bitrate= 526.4kbits/s dup=2 drop=0    frame= 3061 fps= 10 q=27.0 size=   19350kB time=00:05:01.60 bitrate= 525.6kbits/s dup=2 drop=0    frame= 3067 fps= 10 q=27.0 size=   19351kB time=00:05:02.20 bitrate= 524.6kbits/s dup=2 drop=0    frame= 3072 fps= 10 q=27.0 size=   19352kB time=00:05:02.70 bitrate= 523.7kbits/s dup=2 drop=0    frame= 3078 fps= 10 q=27.0 size=   19353kB time=00:05:03.30 bitrate= 522.7kbits/s dup=2 drop=0    frame= 3083 fps= 10 q=27.0 size=   19355kB time=00:05:03.80 bitrate= 521.9kbits/s dup=2 drop=0    frame= 3089 fps= 10 q=27.0 size=   19527kB time=00:05:04.40 bitrate= 525.5kbits/s dup=2 drop=0    frame= 3095 fps= 10 q=27.0 size=   19529kB time=00:05:05.00 bitrate= 524.5kbits/s dup=2 drop=0    frame= 3100 fps= 10 q=27.0 size=   19727kB time=00:05:05.50 bitrate= 529.0kbits/s dup=2 drop=0    frame= 3106 fps= 10 q=27.0 size=   19938kB time=00:05:06.10 bitrate= 533.6kbits/s dup=2 drop=0    frame= 3111 fps= 10 q=27.0 size=   20508kB time=00:05:06.60 bitrate= 547.9kbits/s dup=2 drop=0    frame= 3117 fps= 10 q=27.0 size=   21715kB time=00:05:07.20 bitrate= 579.1kbits/s dup=2 drop=0    frame= 3122 fps= 10 q=27.0 size=   22373kB time=00:05:07.70 bitrate= 595.6kbits/s dup=2 drop=0    frame= 3125 fps= 10 q=27.0 size=   22394kB time=00:05:08.00 bitrate= 595.6kbits/s dup=2 drop=0    Past duration 0.603447 too large
+frame= 3132 fps= 10 q=27.0 size=   23421kB time=00:05:08.70 bitrate= 621.5kbits/s dup=2 drop=0    frame= 3136 fps= 10 q=27.0 size=   23442kB time=00:05:09.10 bitrate= 621.3kbits/s dup=2 drop=0    Past duration 0.816994 too large
+frame= 3144 fps= 10 q=27.0 size=   24029kB time=00:05:09.90 bitrate= 635.2kbits/s dup=2 drop=0    frame= 3149 fps= 10 q=27.0 size=   24250kB time=00:05:10.40 bitrate= 640.0kbits/s dup=2 drop=0    frame= 3155 fps= 10 q=27.0 size=   24514kB time=00:05:11.00 bitrate= 645.7kbits/s dup=2 drop=0    frame= 3160 fps= 10 q=27.0 size=   25096kB time=00:05:11.50 bitrate= 660.0kbits/s dup=2 drop=0    frame= 3166 fps= 10 q=27.0 size=   25254kB time=00:05:12.10 bitrate= 662.9kbits/s dup=2 drop=0    frame= 3172 fps= 10 q=27.0 size=   25427kB time=00:05:12.70 bitrate= 666.1kbits/s dup=2 drop=0    frame= 3177 fps= 10 q=27.0 size=   25546kB time=00:05:13.20 bitrate= 668.2kbits/s dup=2 drop=0    frame= 3183 fps= 10 q=27.0 size=   25805kB time=00:05:13.80 bitrate= 673.7kbits/s dup=2 drop=0    frame= 3188 fps= 10 q=27.0 size=   25811kB time=00:05:14.30 bitrate= 672.7kbits/s dup=2 drop=0    frame= 3194 fps= 10 q=27.0 size=   25963kB time=00:05:14.90 bitrate= 675.4kbits/s dup=2 drop=0    frame= 3199 fps= 10 q=27.0 size=   25964kB time=00:05:15.40 bitrate= 674.4kbits/s dup=2 drop=0    frame= 3205 fps= 10 q=27.0 size=   26342kB time=00:05:16.00 bitrate= 682.9kbits/s dup=2 drop=0    frame= 3210 fps= 10 q=27.0 size=   26406kB time=00:05:16.50 bitrate= 683.5kbits/s dup=2 drop=0    frame= 3216 fps= 10 q=27.0 size=   26409kB time=00:05:17.10 bitrate= 682.3kbits/s dup=2 drop=0    frame= 3222 fps= 10 q=27.0 size=   26412kB time=00:05:17.70 bitrate= 681.0kbits/s dup=2 drop=0    frame= 3228 fps= 10 q=27.0 size=   26413kB time=00:05:18.30 bitrate= 679.8kbits/s dup=2 drop=0    frame= 3234 fps= 10 q=27.0 size=   26415kB time=00:05:18.90 bitrate= 678.5kbits/s dup=2 drop=0    frame= 3239 fps= 10 q=27.0 size=   26415kB time=00:05:19.40 bitrate= 677.5kbits/s dup=2 drop=0    frame= 3245 fps= 10 q=27.0 size=   26417kB time=00:05:20.00 bitrate= 676.3kbits/s dup=2 drop=0    frame= 3250 fps= 10 q=27.0 size=   26418kB time=00:05:20.50 bitrate= 675.2kbits/s dup=2 drop=0    frame= 3256 fps= 10 q=27.0 size=   26419kB time=00:05:21.10 bitrate= 674.0kbits/s dup=2 drop=0    frame= 3261 fps= 10 q=27.0 size=   26420kB time=00:05:21.60 bitrate= 673.0kbits/s dup=2 drop=0    frame= 3266 fps= 10 q=27.0 size=   26641kB time=00:05:22.10 bitrate= 677.6kbits/s dup=2 drop=0    frame= 3272 fps= 10 q=27.0 size=   26652kB time=00:05:22.70 bitrate= 676.6kbits/s dup=2 drop=0    frame= 3278 fps= 10 q=27.0 size=   26913kB time=00:05:23.30 bitrate= 681.9kbits/s dup=2 drop=0    frame= 3283 fps= 10 q=27.0 size=   26928kB time=00:05:23.80 bitrate= 681.3kbits/s dup=2 drop=0    frame= 3289 fps= 10 q=27.0 size=   27212kB time=00:05:24.40 bitrate= 687.2kbits/s dup=2 drop=0    frame= 3295 fps= 10 q=27.0 size=   27220kB time=00:05:25.00 bitrate= 686.1kbits/s dup=2 drop=0    frame= 3301 fps= 10 q=27.0 size=   27222kB time=00:05:25.60 bitrate= 684.9kbits/s dup=2 drop=0    frame= 3306 fps= 10 q=27.0 size=   27223kB time=00:05:26.10 bitrate= 683.9kbits/s dup=2 drop=0    frame= 3312 fps= 10 q=27.0 size=   27555kB time=00:05:26.70 bitrate= 690.9kbits/s dup=2 drop=0    frame= 3318 fps= 10 q=27.0 size=   27574kB time=00:05:27.30 bitrate= 690.2kbits/s dup=2 drop=0    frame= 3324 fps= 10 q=27.0 size=   27575kB time=00:05:27.90 bitrate= 688.9kbits/s dup=2 drop=0    frame= 3329 fps= 10 q=27.0 size=   27576kB time=00:05:28.40 bitrate= 687.9kbits/s dup=2 drop=0    frame= 3335 fps= 10 q=27.0 size=   27578kB time=00:05:29.00 bitrate= 686.7kbits/s dup=2 drop=0    frame= 3340 fps= 10 q=27.0 size=   27988kB time=00:05:29.50 bitrate= 695.8kbits/s dup=2 drop=0    frame= 3346 fps= 10 q=27.0 size=   27990kB time=00:05:30.10 bitrate= 694.6kbits/s dup=2 drop=0    frame= 3352 fps= 10 q=27.0 size=   27992kB time=00:05:30.70 bitrate= 693.4kbits/s dup=2 drop=0    frame= 3358 fps= 10 q=24.0 size=   27994kB time=00:05:31.30 bitrate= 692.2kbits/s dup=2 drop=0    frame= 3364 fps= 10 q=27.0 size=   27995kB time=00:05:31.90 bitrate= 691.0kbits/s dup=2 drop=0    frame= 3370 fps= 10 q=27.0 size=   28730kB time=00:05:32.50 bitrate= 707.8kbits/s dup=2 drop=0    frame= 3376 fps= 10 q=27.0 size=   28737kB time=00:05:33.10 bitrate= 706.7kbits/s dup=2 drop=0    frame= 3381 fps= 10 q=27.0 size=   28739kB time=00:05:33.60 bitrate= 705.7kbits/s dup=2 drop=0    frame= 3387 fps= 10 q=27.0 size=   28741kB time=00:05:34.20 bitrate= 704.5kbits/s dup=2 drop=0    frame= 3393 fps= 10 q=27.0 size=   28742kB time=00:05:34.80 bitrate= 703.3kbits/s dup=2 drop=0    frame= 3399 fps= 10 q=27.0 size=   28743kB time=00:05:35.40 bitrate= 702.0kbits/s dup=2 drop=0    frame= 3405 fps= 10 q=27.0 size=   28745kB time=00:05:36.00 bitrate= 700.8kbits/s dup=2 drop=0    frame= 3410 fps= 10 q=27.0 size=   28746kB time=00:05:36.50 bitrate= 699.8kbits/s dup=2 drop=0    frame= 3415 fps= 10 q=27.0 size=   28747kB time=00:05:37.00 bitrate= 698.8kbits/s dup=2 drop=0    frame= 3421 fps= 10 q=27.0 size=   28781kB time=00:05:37.60 bitrate= 698.4kbits/s dup=2 drop=0    frame= 3427 fps= 10 q=27.0 size=   28784kB time=00:05:38.20 bitrate= 697.2kbits/s dup=2 drop=0    frame= 3433 fps= 10 q=27.0 size=   28787kB time=00:05:38.80 bitrate= 696.0kbits/s dup=2 drop=0    frame= 3438 fps= 10 q=27.0 size=   28788kB time=00:05:39.30 bitrate= 695.0kbits/s dup=2 drop=0    frame= 3443 fps= 10 q=27.0 size=   28789kB time=00:05:39.80 bitrate= 694.0kbits/s dup=2 drop=0    frame= 3448 fps= 10 q=27.0 size=   28790kB time=00:05:40.30 bitrate= 693.0kbits/s dup=2 drop=0    frame= 3453 fps= 10 q=27.0 size=   28791kB time=00:05:40.80 bitrate= 692.1kbits/s dup=2 drop=0    frame= 3459 fps= 10 q=27.0 size=   28792kB time=00:05:41.40 bitrate= 690.9kbits/s dup=2 drop=0    frame= 3464 fps= 10 q=27.0 size=   28793kB time=00:05:41.90 bitrate= 689.9kbits/s dup=2 drop=0    frame= 3470 fps= 10 q=27.0 size=   29204kB time=00:05:42.50 bitrate= 698.5kbits/s dup=2 drop=0    frame= 3475 fps= 10 q=27.0 size=   29205kB time=00:05:43.00 bitrate= 697.5kbits/s dup=2 drop=0    frame= 3480 fps= 10 q=27.0 size=   29217kB time=00:05:43.50 bitrate= 696.8kbits/s dup=2 drop=0    frame= 3486 fps= 10 q=27.0 size=   29662kB time=00:05:44.10 bitrate= 706.2kbits/s dup=2 drop=0    frame= 3491 fps= 10 q=27.0 size=   29858kB time=00:05:44.60 bitrate= 709.8kbits/s dup=2 drop=0    frame= 3497 fps= 10 q=27.0 size=   30049kB time=00:05:45.20 bitrate= 713.1kbits/s dup=2 drop=0    frame= 3502 fps= 10 q=27.0 size=   30332kB time=00:05:45.70 bitrate= 718.8kbits/s dup=2 drop=0    frame= 3508 fps= 10 q=27.0 size=   31142kB time=00:05:46.30 bitrate= 736.7kbits/s dup=2 drop=0    frame= 3514 fps= 10 q=27.0 size=   31851kB time=00:05:46.90 bitrate= 752.2kbits/s dup=2 drop=0    frame= 3519 fps= 10 q=27.0 size=   32507kB time=00:05:47.40 bitrate= 766.5kbits/s dup=2 drop=0    frame= 3525 fps= 10 q=27.0 size=   33039kB time=00:05:48.00 bitrate= 777.7kbits/s dup=2 drop=0    frame= 3531 fps= 10 q=27.0 size=   33325kB time=00:05:48.60 bitrate= 783.1kbits/s dup=2 drop=0    frame= 3537 fps= 10 q=27.0 size=   33655kB time=00:05:49.20 bitrate= 789.5kbits/s dup=2 drop=0    frame= 3542 fps= 10 q=27.0 size=   33663kB time=00:05:49.70 bitrate= 788.6kbits/s dup=2 drop=0    frame= 3548 fps= 10 q=27.0 size=   34873kB time=00:05:50.30 bitrate= 815.5kbits/s dup=2 drop=0    frame= 3553 fps= 10 q=27.0 size=   34892kB time=00:05:50.80 bitrate= 814.8kbits/s dup=2 drop=0    frame= 3559 fps= 10 q=27.0 size=   34894kB time=00:05:51.40 bitrate= 813.5kbits/s dup=2 drop=0    frame= 3565 fps= 10 q=27.0 size=   34897kB time=00:05:52.00 bitrate= 812.1kbits/s dup=2 drop=0    frame= 3570 fps= 10 q=27.0 size=   34898kB time=00:05:52.50 bitrate= 811.0kbits/s dup=2 drop=0    frame= 3576 fps= 10 q=27.0 size=   34900kB time=00:05:53.10 bitrate= 809.7kbits/s dup=2 drop=0    frame= 3581 fps= 10 q=27.0 size=   34901kB time=00:05:53.60 bitrate= 808.6kbits/s dup=2 drop=0    frame= 3587 fps= 10 q=27.0 size=   34902kB time=00:05:54.20 bitrate= 807.2kbits/s dup=2 drop=0    frame= 3592 fps= 10 q=27.0 size=   34903kB time=00:05:54.70 bitrate= 806.1kbits/s dup=2 drop=0    frame= 3597 fps= 10 q=27.0 size=   34904kB time=00:05:55.20 bitrate= 805.0kbits/s dup=2 drop=0    frame= 3603 fps= 10 q=27.0 size=   34905kB time=00:05:55.80 bitrate= 803.7kbits/s dup=2 drop=0    frame= 3608 fps= 10 q=24.0 size=   34906kB time=00:05:56.30 bitrate= 802.6kbits/s dup=2 drop=0    frame= 3614 fps= 10 q=27.0 size=   34908kB time=00:05:56.90 bitrate= 801.2kbits/s dup=2 drop=0    frame= 3619 fps= 10 q=27.0 size=   35645kB time=00:05:57.40 bitrate= 817.0kbits/s dup=2 drop=0    frame= 3625 fps= 10 q=27.0 size=   35648kB time=00:05:58.00 bitrate= 815.7kbits/s dup=2 drop=0    frame= 3630 fps= 10 q=27.0 size=   35649kB time=00:05:58.50 bitrate= 814.6kbits/s dup=2 drop=0    frame= 3635 fps= 10 q=27.0 size=   35651kB time=00:05:59.00 bitrate= 813.5kbits/s dup=2 drop=0    frame= 3640 fps= 10 q=27.0 size=   35652kB time=00:05:59.50 bitrate= 812.4kbits/s dup=2 drop=0    frame= 3646 fps= 10 q=27.0 size=   35653kB time=00:06:00.10 bitrate= 811.1kbits/s dup=2 drop=0    frame= 3651 fps= 10 q=27.0 size=   35654kB time=00:06:00.60 bitrate= 810.0kbits/s dup=2 drop=0    frame= 3657 fps= 10 q=27.0 size=   35655kB time=00:06:01.20 bitrate= 808.7kbits/s dup=2 drop=0    frame= 3662 fps= 10 q=27.0 size=   35656kB time=00:06:01.70 bitrate= 807.6kbits/s dup=2 drop=0    frame= 3668 fps= 10 q=27.0 size=   35657kB time=00:06:02.30 bitrate= 806.2kbits/s dup=2 drop=0    frame= 3674 fps= 10 q=27.0 size=   35658kB time=00:06:02.90 bitrate= 804.9kbits/s dup=2 drop=0    frame= 3679 fps= 10 q=27.0 size=   35659kB time=00:06:03.40 bitrate= 803.9kbits/s dup=2 drop=0    frame= 3685 fps= 10 q=27.0 size=   35661kB time=00:06:04.00 bitrate= 802.6kbits/s dup=2 drop=0    frame= 3691 fps= 10 q=27.0 size=   35662kB time=00:06:04.60 bitrate= 801.3kbits/s dup=2 drop=0    frame= 3696 fps= 10 q=27.0 size=   35663kB time=00:06:05.10 bitrate= 800.2kbits/s dup=2 drop=0    frame= 3702 fps= 10 q=27.0 size=   35664kB time=00:06:05.70 bitrate= 798.9kbits/s dup=2 drop=0    frame= 3708 fps= 10 q=27.0 size=   35665kB time=00:06:06.30 bitrate= 797.6kbits/s dup=2 drop=0    frame= 3713 fps= 10 q=27.0 size=   35666kB time=00:06:06.80 bitrate= 796.6kbits/s dup=2 drop=0    frame= 3719 fps= 10 q=27.0 size=   35667kB time=00:06:07.40 bitrate= 795.3kbits/s dup=2 drop=0    frame= 3725 fps= 10 q=27.0 size=   35668kB time=00:06:08.00 bitrate= 794.0kbits/s dup=2 drop=0    frame= 3730 fps= 10 q=27.0 size=   35669kB time=00:06:08.50 bitrate= 792.9kbits/s dup=2 drop=0    frame= 3736 fps= 10 q=27.0 size=   35670kB time=00:06:09.10 bitrate= 791.7kbits/s dup=2 drop=0    frame= 3741 fps= 10 q=27.0 size=   35671kB time=00:06:09.60 bitrate= 790.6kbits/s dup=2 drop=0    frame= 3747 fps= 10 q=27.0 size=   35672kB time=00:06:10.20 bitrate= 789.4kbits/s dup=2 drop=0    frame= 3753 fps= 10 q=27.0 size=   35673kB time=00:06:10.80 bitrate= 788.1kbits/s dup=2 drop=0    frame= 3758 fps= 10 q=27.0 size=   35674kB time=00:06:11.30 bitrate= 787.1kbits/s dup=2 drop=0    frame= 3764 fps= 10 q=27.0 size=   35675kB time=00:06:11.90 bitrate= 785.8kbits/s dup=2 drop=0    frame= 3770 fps= 10 q=27.0 size=   35676kB time=00:06:12.50 bitrate= 784.6kbits/s dup=2 drop=0    frame= 3775 fps= 10 q=27.0 size=   35677kB time=00:06:13.00 bitrate= 783.6kbits/s dup=2 drop=0    frame= 3781 fps= 10 q=27.0 size=   35680kB time=00:06:13.60 bitrate= 782.4kbits/s dup=2 drop=0    frame= 3787 fps= 10 q=27.0 size=   35681kB time=00:06:14.20 bitrate= 781.1kbits/s dup=2 drop=0    frame= 3792 fps= 10 q=27.0 size=   35682kB time=00:06:14.70 bitrate= 780.1kbits/s dup=2 drop=0    frame= 3798 fps= 10 q=27.0 size=   35684kB time=00:06:15.30 bitrate= 778.9kbits/s dup=2 drop=0    frame= 3804 fps= 10 q=27.0 size=   35685kB time=00:06:15.90 bitrate= 777.7kbits/s dup=2 drop=0    frame= 3809 fps= 10 q=27.0 size=   35884kB time=00:06:16.40 bitrate= 781.0kbits/s dup=2 drop=0    frame= 3815 fps= 10 q=27.0 size=   35885kB time=00:06:17.00 bitrate= 779.8kbits/s dup=2 drop=0    frame= 3820 fps= 10 q=27.0 size=   35886kB time=00:06:17.50 bitrate= 778.8kbits/s dup=2 drop=0    frame= 3825 fps= 10 q=27.0 size=   35887kB time=00:06:18.00 bitrate= 777.7kbits/s dup=2 drop=0    frame= 3831 fps= 10 q=27.0 size=   35888kB time=00:06:18.60 bitrate= 776.5kbits/s dup=2 drop=0    frame= 3837 fps= 10 q=27.0 size=   35889kB time=00:06:19.20 bitrate= 775.3kbits/s dup=2 drop=0    frame= 3843 fps= 10 q=27.0 size=   35891kB time=00:06:19.80 bitrate= 774.1kbits/s dup=2 drop=0    frame= 3849 fps= 10 q=27.0 size=   35892kB time=00:06:20.40 bitrate= 773.0kbits/s dup=2 drop=0    frame= 3855 fps= 10 q=27.0 size=   35894kB time=00:06:21.00 bitrate= 771.8kbits/s dup=2 drop=0    frame= 3860 fps= 10 q=27.0 size=   35896kB time=00:06:21.50 bitrate= 770.8kbits/s dup=2 drop=0    frame= 3866 fps= 10 q=27.0 size=   36593kB time=00:06:22.10 bitrate= 784.5kbits/s dup=2 drop=0    frame= 3872 fps= 10 q=27.0 size=   36606kB time=00:06:22.70 bitrate= 783.6kbits/s dup=2 drop=0    frame= 3878 fps= 10 q=27.0 size=   36607kB time=00:06:23.30 bitrate= 782.4kbits/s dup=2 drop=0    frame= 3884 fps= 10 q=27.0 size=   36787kB time=00:06:23.90 bitrate= 785.0kbits/s dup=2 drop=0    frame= 3889 fps= 10 q=27.0 size=   36788kB time=00:06:24.40 bitrate= 784.0kbits/s dup=2 drop=0    frame= 3895 fps= 10 q=27.0 size=   36789kB time=00:06:25.00 bitrate= 782.8kbits/s dup=2 drop=0    frame= 3900 fps= 10 q=27.0 size=   36790kB time=00:06:25.50 bitrate= 781.8kbits/s dup=2 drop=0    frame= 3906 fps= 10 q=27.0 size=   36792kB time=00:06:26.10 bitrate= 780.6kbits/s dup=2 drop=0    frame= 3912 fps= 10 q=27.0 size=   36793kB time=00:06:26.70 bitrate= 779.4kbits/s dup=2 drop=0    frame= 3917 fps= 10 q=27.0 size=   36795kB time=00:06:27.20 bitrate= 778.5kbits/s dup=2 drop=0    frame= 3923 fps= 10 q=27.0 size=   36796kB time=00:06:27.80 bitrate= 777.3kbits/s dup=2 drop=0    frame= 3929 fps= 10 q=27.0 size=   36798kB time=00:06:28.40 bitrate= 776.1kbits/s dup=2 drop=0    frame= 3934 fps= 10 q=27.0 size=   36799kB time=00:06:28.90 bitrate= 775.1kbits/s dup=2 drop=0    frame= 3939 fps= 10 q=27.0 size=   36799kB time=00:06:29.40 bitrate= 774.2kbits/s dup=2 drop=0    frame= 3945 fps= 10 q=27.0 size=   36800kB time=00:06:30.00 bitrate= 773.0kbits/s dup=2 drop=0    frame= 3950 fps= 10 q=27.0 size=   36801kB time=00:06:30.50 bitrate= 772.0kbits/s dup=2 drop=0    frame= 3956 fps= 10 q=27.0 size=   36802kB time=00:06:31.10 bitrate= 770.9kbits/s dup=2 drop=0    frame= 3961 fps= 10 q=27.0 size=   36803kB time=00:06:31.60 bitrate= 769.9kbits/s dup=2 drop=0    frame= 3967 fps= 10 q=27.0 size=   36804kB time=00:06:32.20 bitrate= 768.7kbits/s dup=2 drop=0    frame= 3973 fps= 10 q=27.0 size=   36806kB time=00:06:32.80 bitrate= 767.6kbits/s dup=2 drop=0    frame= 3979 fps= 10 q=27.0 size=   36807kB time=00:06:33.40 bitrate= 766.4kbits/s dup=2 drop=0    frame= 3985 fps= 10 q=27.0 size=   36808kB time=00:06:34.00 bitrate= 765.3kbits/s dup=2 drop=0    frame= 3990 fps= 10 q=27.0 size=   36809kB time=00:06:34.50 bitrate= 764.4kbits/s dup=2 drop=0    frame= 3996 fps= 10 q=27.0 size=   36810kB time=00:06:35.10 bitrate= 763.2kbits/s dup=2 drop=0    frame= 4002 fps= 10 q=27.0 size=   36811kB time=00:06:35.70 bitrate= 762.1kbits/s dup=2 drop=0    frame= 4008 fps= 10 q=27.0 size=   36812kB time=00:06:36.30 bitrate= 760.9kbits/s dup=2 drop=0    frame= 4014 fps= 10 q=27.0 size=   36813kB time=00:06:36.90 bitrate= 759.8kbits/s dup=2 drop=0    frame= 4019 fps= 10 q=27.0 size=   36814kB time=00:06:37.40 bitrate= 758.9kbits/s dup=2 drop=0    frame= 4025 fps= 10 q=27.0 size=   36815kB time=00:06:38.00 bitrate= 757.8kbits/s dup=2 drop=0    frame= 4030 fps= 10 q=27.0 size=   36816kB time=00:06:38.50 bitrate= 756.8kbits/s dup=2 drop=0    frame= 4036 fps= 10 q=27.0 size=   36985kB time=00:06:39.10 bitrate= 759.2kbits/s dup=2 drop=0    frame= 4042 fps= 10 q=27.0 size=   36987kB time=00:06:39.70 bitrate= 758.1kbits/s dup=2 drop=0    frame= 4047 fps= 10 q=27.0 size=   36988kB time=00:06:40.20 bitrate= 757.1kbits/s dup=2 drop=0    frame= 4053 fps= 10 q=27.0 size=   36989kB time=00:06:40.80 bitrate= 756.0kbits/s dup=2 drop=0    frame= 4058 fps= 10 q=27.0 size=   36989kB time=00:06:41.30 bitrate= 755.1kbits/s dup=2 drop=0    frame= 4064 fps= 10 q=27.0 size=   36990kB time=00:06:41.90 bitrate= 754.0kbits/s dup=2 drop=0    frame= 4069 fps= 10 q=27.0 size=   36990kB time=00:06:42.40 bitrate= 753.0kbits/s dup=2 drop=0    frame= 4074 fps= 10 q=27.0 size=   36991kB time=00:06:42.90 bitrate= 752.1kbits/s dup=2 drop=0    frame= 4079 fps= 10 q=27.0 size=   36992kB time=00:06:43.40 bitrate= 751.2kbits/s dup=2 drop=0    frame= 4085 fps= 10 q=27.0 size=   36992kB time=00:06:44.00 bitrate= 750.1kbits/s dup=2 drop=0    frame= 4090 fps= 10 q=27.0 size=   36993kB time=00:06:44.50 bitrate= 749.2kbits/s dup=2 drop=0    frame= 4096 fps= 10 q=27.0 size=   36994kB time=00:06:45.10 bitrate= 748.1kbits/s dup=2 drop=0    frame= 4102 fps= 10 q=27.0 size=   36994kB time=00:06:45.70 bitrate= 747.0kbits/s dup=2 drop=0    frame= 4108 fps= 10 q=24.0 size=   36995kB time=00:06:46.30 bitrate= 745.9kbits/s dup=2 drop=0    frame= 4113 fps= 10 q=27.0 size=   36997kB time=00:06:46.80 bitrate= 745.0kbits/s dup=2 drop=0    frame= 4118 fps= 10 q=27.0 size=   37682kB time=00:06:47.30 bitrate= 757.9kbits/s dup=2 drop=0    frame= 4124 fps= 10 q=27.0 size=   37683kB time=00:06:47.90 bitrate= 756.8kbits/s dup=2 drop=0    frame= 4129 fps= 10 q=27.0 size=   37684kB time=00:06:48.40 bitrate= 755.9kbits/s dup=2 drop=0    frame= 4135 fps= 10 q=27.0 size=   37685kB time=00:06:49.00 bitrate= 754.8kbits/s dup=2 drop=0    frame= 4140 fps= 10 q=27.0 size=   37685kB time=00:06:49.50 bitrate= 753.9kbits/s dup=2 drop=0    frame= 4145 fps= 10 q=27.0 size=   37686kB time=00:06:50.00 bitrate= 753.0kbits/s dup=2 drop=0    frame= 4151 fps= 10 q=27.0 size=   37687kB time=00:06:50.60 bitrate= 751.9kbits/s dup=2 drop=0    frame= 4157 fps= 10 q=27.0 size=   37687kB time=00:06:51.20 bitrate= 750.8kbits/s dup=2 drop=0    frame= 4162 fps= 10 q=27.0 size=   37688kB time=00:06:51.70 bitrate= 749.9kbits/s dup=2 drop=0    frame= 4168 fps= 10 q=27.0 size=   37689kB time=00:06:52.30 bitrate= 748.8kbits/s dup=2 drop=0    frame= 4174 fps= 10 q=27.0 size=   37689kB time=00:06:52.90 bitrate= 747.8kbits/s dup=2 drop=0    frame= 4179 fps= 10 q=27.0 size=   37690kB time=00:06:53.40 bitrate= 746.9kbits/s dup=2 drop=0    frame= 4185 fps= 10 q=27.0 size=   37691kB time=00:06:54.00 bitrate= 745.8kbits/s dup=2 drop=0    frame= 4190 fps= 10 q=27.0 size=   37691kB time=00:06:54.50 bitrate= 744.9kbits/s dup=2 drop=0    frame= 4196 fps= 10 q=27.0 size=   37692kB time=00:06:55.10 bitrate= 743.8kbits/s dup=2 drop=0    frame= 4202 fps= 10 q=27.0 size=   37693kB time=00:06:55.70 bitrate= 742.8kbits/s dup=2 drop=0    frame= 4208 fps= 10 q=27.0 size=   37693kB time=00:06:56.30 bitrate= 741.7kbits/s dup=2 drop=0    frame= 4213 fps= 10 q=27.0 size=   37694kB time=00:06:56.80 bitrate= 740.9kbits/s dup=2 drop=0    frame= 4218 fps= 10 q=27.0 size=   37695kB time=00:06:57.30 bitrate= 740.0kbits/s dup=2 drop=0    frame= 4224 fps= 10 q=27.0 size=   37695kB time=00:06:57.90 bitrate= 738.9kbits/s dup=2 drop=0    frame= 4229 fps= 10 q=27.0 size=   37696kB time=00:06:58.40 bitrate= 738.1kbits/s dup=2 drop=0    frame= 4235 fps= 10 q=27.0 size=   37697kB time=00:06:59.00 bitrate= 737.0kbits/s dup=2 drop=0    frame= 4240 fps= 10 q=27.0 size=   37697kB time=00:06:59.50 bitrate= 736.2kbits/s dup=2 drop=0    frame= 4246 fps= 10 q=27.0 size=   37698kB time=00:07:00.10 bitrate= 735.1kbits/s dup=2 drop=0    frame= 4252 fps= 10 q=27.0 size=   37699kB time=00:07:00.70 bitrate= 734.1kbits/s dup=2 drop=0    frame= 4257 fps= 10 q=27.0 size=   37699kB time=00:07:01.20 bitrate= 733.2kbits/s dup=2 drop=0    frame= 4263 fps= 10 q=27.0 size=   37700kB time=00:07:01.80 bitrate= 732.2kbits/s dup=2 drop=0    frame= 4268 fps= 10 q=27.0 size=   37700kB time=00:07:02.30 bitrate= 731.3kbits/s dup=2 drop=0    frame= 4273 fps= 10 q=27.0 size=   37701kB time=00:07:02.80 bitrate= 730.5kbits/s dup=2 drop=0    frame= 4278 fps= 10 q=27.0 size=   37702kB time=00:07:03.30 bitrate= 729.6kbits/s dup=2 drop=0    frame= 4284 fps= 10 q=27.0 size=   37702kB time=00:07:03.90 bitrate= 728.6kbits/s dup=2 drop=0    frame= 4289 fps= 10 q=27.0 size=   37703kB time=00:07:04.40 bitrate= 727.8kbits/s dup=2 drop=0    frame= 4295 fps= 10 q=27.0 size=   37704kB time=00:07:05.00 bitrate= 726.7kbits/s dup=2 drop=0    frame= 4300 fps= 10 q=27.0 size=   37704kB time=00:07:05.50 bitrate= 725.9kbits/s dup=2 drop=0    frame= 4306 fps= 10 q=27.0 size=   37705kB time=00:07:06.10 bitrate= 724.9kbits/s dup=2 drop=0    frame= 4311 fps= 10 q=27.0 size=   37706kB time=00:07:06.60 bitrate= 724.1kbits/s dup=2 drop=0    frame= 4317 fps= 10 q=27.0 size=   37706kB time=00:07:07.20 bitrate= 723.1kbits/s dup=2 drop=0    frame= 4323 fps= 10 q=27.0 size=   37707kB time=00:07:07.80 bitrate= 722.1kbits/s dup=2 drop=0    frame= 4328 fps= 10 q=27.0 size=   37708kB time=00:07:08.30 bitrate= 721.2kbits/s dup=2 drop=0    frame= 4334 fps= 10 q=27.0 size=   37708kB time=00:07:08.90 bitrate= 720.2kbits/s dup=2 drop=0    frame= 4339 fps= 10 q=27.0 size=   37709kB time=00:07:09.40 bitrate= 719.4kbits/s dup=2 drop=0    frame= 4345 fps= 10 q=27.0 size=   37710kB time=00:07:10.00 bitrate= 718.4kbits/s dup=2 drop=0    frame= 4351 fps= 10 q=27.0 size=   37710kB time=00:07:10.60 bitrate= 717.4kbits/s dup=2 drop=0    frame= 4357 fps= 10 q=27.0 size=   37711kB time=00:07:11.20 bitrate= 716.4kbits/s dup=2 drop=0    frame= 4362 fps= 10 q=27.0 size=   37712kB time=00:07:11.70 bitrate= 715.6kbits/s dup=2 drop=0    frame= 4367 fps= 10 q=27.0 size=   38396kB time=00:07:12.20 bitrate= 727.8kbits/s dup=2 drop=0    frame= 4373 fps= 10 q=27.0 size=   38397kB time=00:07:12.80 bitrate= 726.8kbits/s dup=2 drop=0    frame= 4378 fps= 10 q=27.0 size=   38398kB time=00:07:13.30 bitrate= 726.0kbits/s dup=2 drop=0    frame= 4383 fps= 10 q=27.0 size=   38399kB time=00:07:13.80 bitrate= 725.1kbits/s dup=2 drop=0    frame= 4389 fps= 10 q=27.0 size=   38400kB time=00:07:14.40 bitrate= 724.1kbits/s dup=2 drop=0    frame= 4395 fps= 10 q=27.0 size=   38400kB time=00:07:15.00 bitrate= 723.2kbits/s dup=2 drop=0    frame= 4400 fps= 10 q=27.0 size=   38401kB time=00:07:15.50 bitrate= 722.3kbits/s dup=2 drop=0    frame= 4405 fps= 10 q=27.0 size=   38402kB time=00:07:16.00 bitrate= 721.5kbits/s dup=2 drop=0    frame= 4410 fps= 10 q=27.0 size=   38402kB time=00:07:16.50 bitrate= 720.7kbits/s dup=2 drop=0    frame= 4416 fps= 10 q=27.0 size=   38403kB time=00:07:17.10 bitrate= 719.7kbits/s dup=2 drop=0    frame= 4422 fps= 10 q=27.0 size=   38404kB time=00:07:17.70 bitrate= 718.8kbits/s dup=2 drop=0    frame= 4428 fps= 10 q=27.0 size=   38404kB time=00:07:18.30 bitrate= 717.8kbits/s dup=2 drop=0    frame= 4433 fps= 10 q=27.0 size=   38405kB time=00:07:18.80 bitrate= 717.0kbits/s dup=2 drop=0    frame= 4438 fps= 10 q=27.0 size=   38405kB time=00:07:19.30 bitrate= 716.2kbits/s dup=2 drop=0    frame= 4443 fps= 10 q=27.0 size=   38406kB time=00:07:19.80 bitrate= 715.4kbits/s dup=2 drop=0    frame= 4448 fps= 10 q=27.0 size=   38407kB time=00:07:20.30 bitrate= 714.6kbits/s dup=2 drop=0    frame= 4454 fps= 10 q=27.0 size=   38407kB time=00:07:20.90 bitrate= 713.6kbits/s dup=2 drop=0    frame= 4459 fps= 10 q=27.0 size=   38408kB time=00:07:21.40 bitrate= 712.8kbits/s dup=2 drop=0    frame= 4465 fps= 10 q=27.0 size=   38409kB time=00:07:22.00 bitrate= 711.9kbits/s dup=2 drop=0    frame= 4470 fps= 10 q=27.0 size=   38409kB time=00:07:22.50 bitrate= 711.1kbits/s dup=2 drop=0    frame= 4476 fps= 10 q=27.0 size=   38410kB time=00:07:23.10 bitrate= 710.1kbits/s dup=2 drop=0    frame= 4482 fps= 10 q=27.0 size=   38411kB time=00:07:23.70 bitrate= 709.2kbits/s dup=2 drop=0    frame= 4488 fps= 10 q=27.0 size=   38411kB time=00:07:24.30 bitrate= 708.2kbits/s dup=2 drop=0    frame= 4494 fps= 10 q=27.0 size=   38412kB time=00:07:24.90 bitrate= 707.3kbits/s dup=2 drop=0    frame= 4499 fps= 10 q=27.0 size=   38413kB time=00:07:25.40 bitrate= 706.5kbits/s dup=2 drop=0    frame= 4505 fps= 10 q=27.0 size=   38413kB time=00:07:26.00 bitrate= 705.6kbits/s dup=2 drop=0    frame= 4510 fps= 10 q=27.0 size=   38414kB time=00:07:26.50 bitrate= 704.8kbits/s dup=2 drop=0    frame= 4516 fps= 10 q=27.0 size=   38415kB time=00:07:27.10 bitrate= 703.9kbits/s dup=2 drop=0    frame= 4522 fps= 10 q=27.0 size=   38415kB time=00:07:27.70 bitrate= 702.9kbits/s dup=2 drop=0    frame= 4527 fps= 10 q=27.0 size=   38416kB time=00:07:28.20 bitrate= 702.1kbits/s dup=2 drop=0    frame= 4533 fps= 10 q=27.0 size=   38417kB time=00:07:28.80 bitrate= 701.2kbits/s dup=2 drop=0    frame= 4538 fps= 10 q=27.0 size=   38417kB time=00:07:29.30 bitrate= 700.5kbits/s dup=2 drop=0    frame= 4543 fps= 10 q=27.0 size=   38418kB time=00:07:29.80 bitrate= 699.7kbits/s dup=2 drop=0    frame= 4548 fps= 10 q=27.0 size=   38418kB time=00:07:30.30 bitrate= 698.9kbits/s dup=2 drop=0    frame= 4554 fps= 10 q=27.0 size=   38419kB time=00:07:30.90 bitrate= 698.0kbits/s dup=2 drop=0    frame= 4559 fps= 10 q=27.0 size=   38420kB time=00:07:31.40 bitrate= 697.2kbits/s dup=2 drop=0    frame= 4565 fps= 10 q=27.0 size=   38420kB time=00:07:32.00 bitrate= 696.3kbits/s dup=2 drop=0    frame= 4570 fps= 10 q=27.0 size=   38421kB time=00:07:32.50 bitrate= 695.6kbits/s dup=2 drop=0    frame= 4576 fps= 10 q=27.0 size=   38422kB time=00:07:33.10 bitrate= 694.7kbits/s dup=2 drop=0    frame= 4581 fps= 10 q=27.0 size=   38422kB time=00:07:33.60 bitrate= 693.9kbits/s dup=2 drop=0    frame= 4587 fps= 10 q=27.0 size=   38423kB time=00:07:34.20 bitrate= 693.0kbits/s dup=2 drop=0    frame= 4593 fps= 10 q=27.0 size=   38424kB time=00:07:34.80 bitrate= 692.1kbits/s dup=2 drop=0    frame= 4598 fps= 10 q=27.0 size=   38424kB time=00:07:35.30 bitrate= 691.4kbits/s dup=2 drop=0    frame= 4604 fps= 10 q=27.0 size=   38425kB time=00:07:35.90 bitrate= 690.5kbits/s dup=2 drop=0    frame= 4609 fps= 10 q=27.0 size=   38426kB time=00:07:36.40 bitrate= 689.7kbits/s dup=2 drop=0    frame= 4615 fps= 10 q=27.0 size=   38426kB time=00:07:37.00 bitrate= 688.8kbits/s dup=2 drop=0    frame= 4620 fps= 10 q=27.0 size=   39111kB time=00:07:37.50 bitrate= 700.3kbits/s dup=2 drop=0    frame= 4626 fps= 10 q=27.0 size=   39113kB time=00:07:38.10 bitrate= 699.4kbits/s dup=2 drop=0    frame= 4631 fps= 10 q=27.0 size=   39113kB time=00:07:38.60 bitrate= 698.7kbits/s dup=2 drop=0    frame= 4637 fps= 10 q=27.0 size=   39114kB time=00:07:39.20 bitrate= 697.8kbits/s dup=2 drop=0    frame= 4643 fps= 10 q=27.0 size=   39115kB time=00:07:39.80 bitrate= 696.9kbits/s dup=2 drop=0    frame= 4648 fps= 10 q=27.0 size=   39115kB time=00:07:40.30 bitrate= 696.1kbits/s dup=2 drop=0    frame= 4654 fps= 10 q=27.0 size=   39116kB time=00:07:40.90 bitrate= 695.2kbits/s dup=2 drop=0    frame= 4659 fps= 10 q=27.0 size=   39117kB time=00:07:41.40 bitrate= 694.5kbits/s dup=2 drop=0    frame= 4665 fps= 10 q=27.0 size=   39117kB time=00:07:42.00 bitrate= 693.6kbits/s dup=2 drop=0    frame= 4670 fps= 10 q=27.0 size=   39118kB time=00:07:42.50 bitrate= 692.9kbits/s dup=2 drop=0    frame= 4676 fps= 10 q=27.0 size=   39119kB time=00:07:43.10 bitrate= 692.0kbits/s dup=2 drop=0    frame= 4681 fps= 10 q=27.0 size=   39119kB time=00:07:43.60 bitrate= 691.3kbits/s dup=2 drop=0    frame= 4687 fps= 10 q=27.0 size=   39120kB time=00:07:44.20 bitrate= 690.4kbits/s dup=2 drop=0    frame= 4693 fps= 10 q=27.0 size=   39121kB time=00:07:44.80 bitrate= 689.5kbits/s dup=2 drop=0    frame= 4697 fps= 10 q=27.0 size=   39121kB time=00:07:45.20 bitrate= 688.9kbits/s dup=2 drop=0    frame= 4704 fps= 10 q=27.0 size=   39122kB time=00:07:45.90 bitrate= 687.9kbits/s dup=2 drop=0    frame= 4709 fps= 10 q=27.0 size=   39122kB time=00:07:46.40 bitrate= 687.2kbits/s dup=2 drop=0    frame= 4715 fps= 10 q=27.0 size=   39123kB time=00:07:47.00 bitrate= 686.3kbits/s dup=2 drop=0    frame= 4720 fps= 10 q=27.0 size=   39124kB time=00:07:47.50 bitrate= 685.6kbits/s dup=2 drop=0    frame= 4726 fps= 10 q=27.0 size=   39124kB time=00:07:48.10 bitrate= 684.7kbits/s dup=2 drop=0    frame= 4731 fps= 10 q=27.0 size=   39125kB time=00:07:48.60 bitrate= 684.0kbits/s dup=2 drop=0    frame= 4737 fps= 10 q=27.0 size=   39126kB time=00:07:49.20 bitrate= 683.1kbits/s dup=2 drop=0    frame= 4743 fps= 10 q=27.0 size=   39126kB time=00:07:49.80 bitrate= 682.3kbits/s dup=2 drop=0    frame= 4749 fps= 10 q=27.0 size=   39127kB time=00:07:50.40 bitrate= 681.4kbits/s dup=2 drop=0    frame= 4755 fps= 10 q=27.0 size=   39128kB time=00:07:51.00 bitrate= 680.5kbits/s dup=2 drop=0    frame= 4760 fps= 10 q=27.0 size=   39128kB time=00:07:51.50 bitrate= 679.8kbits/s dup=2 drop=0    frame= 4765 fps= 10 q=27.0 size=   39129kB time=00:07:52.00 bitrate= 679.1kbits/s dup=2 drop=0    frame= 4770 fps= 10 q=27.0 size=   39130kB time=00:07:52.50 bitrate= 678.4kbits/s dup=2 drop=0    frame= 4776 fps= 10 q=27.0 size=   39130kB time=00:07:53.10 bitrate= 677.6kbits/s dup=2 drop=0    frame= 4781 fps= 10 q=27.0 size=   39131kB time=00:07:53.60 bitrate= 676.9kbits/s dup=2 drop=0    frame= 4787 fps= 10 q=27.0 size=   39132kB time=00:07:54.20 bitrate= 676.0kbits/s dup=2 drop=0    frame= 4792 fps= 10 q=27.0 size=   39132kB time=00:07:54.70 bitrate= 675.3kbits/s dup=2 drop=0    frame= 4797 fps= 10 q=27.0 size=   39133kB time=00:07:55.20 bitrate= 674.6kbits/s dup=2 drop=0    frame= 4803 fps= 10 q=27.0 size=   39133kB time=00:07:55.80 bitrate= 673.8kbits/s dup=2 drop=0    frame= 4809 fps= 10 q=27.0 size=   39134kB time=00:07:56.40 bitrate= 672.9kbits/s dup=2 drop=0    frame= 4815 fps= 10 q=27.0 size=   39135kB time=00:07:57.00 bitrate= 672.1kbits/s dup=2 drop=0    frame= 4820 fps= 10 q=27.0 size=   39136kB time=00:07:57.50 bitrate= 671.4kbits/s dup=2 drop=0    frame= 4826 fps= 10 q=27.0 size=   39136kB time=00:07:58.10 bitrate= 670.6kbits/s dup=2 drop=0    frame= 4831 fps= 10 q=27.0 size=   39137kB time=00:07:58.60 bitrate= 669.9kbits/s dup=2 drop=0    frame= 4837 fps= 10 q=27.0 size=   39138kB time=00:07:59.20 bitrate= 669.1kbits/s dup=2 drop=0    frame= 4843 fps= 10 q=27.0 size=   39138kB time=00:07:59.80 bitrate= 668.2kbits/s dup=2 drop=0    frame= 4848 fps= 10 q=27.0 size=   39139kB time=00:08:00.30 bitrate= 667.6kbits/s dup=2 drop=0    frame= 4853 fps= 10 q=27.0 size=   39139kB time=00:08:00.80 bitrate= 666.9kbits/s dup=2 drop=0    frame= 4859 fps= 10 q=27.0 size=   39140kB time=00:08:01.40 bitrate= 666.0kbits/s dup=2 drop=0    frame= 4865 fps= 10 q=27.0 size=   39141kB time=00:08:02.00 bitrate= 665.2kbits/s dup=2 drop=0    frame= 4870 fps= 10 q=27.0 size=   39826kB time=00:08:02.50 bitrate= 676.2kbits/s dup=2 drop=0    frame= 4876 fps= 10 q=27.0 size=   39827kB time=00:08:03.10 bitrate= 675.4kbits/s dup=2 drop=0    frame= 4881 fps= 10 q=27.0 size=   39828kB time=00:08:03.60 bitrate= 674.7kbits/s dup=2 drop=0    frame= 4887 fps= 10 q=27.0 size=   39829kB time=00:08:04.20 bitrate= 673.8kbits/s dup=2 drop=0    frame= 4892 fps= 10 q=27.0 size=   39829kB time=00:08:04.70 bitrate= 673.2kbits/s dup=2 drop=0    frame= 4897 fps= 10 q=27.0 size=   39830kB time=00:08:05.20 bitrate= 672.5kbits/s dup=2 drop=0    frame= 4903 fps= 10 q=27.0 size=   39830kB time=00:08:05.80 bitrate= 671.7kbits/s dup=2 drop=0    frame= 4908 fps= 10 q=27.0 size=   39831kB time=00:08:06.30 bitrate= 671.0kbits/s dup=2 drop=0    frame= 4914 fps= 10 q=27.0 size=   39832kB time=00:08:06.90 bitrate= 670.2kbits/s dup=2 drop=0    frame= 4919 fps= 10 q=27.0 size=   39832kB time=00:08:07.40 bitrate= 669.5kbits/s dup=2 drop=0    frame= 4925 fps= 10 q=27.0 size=   39833kB time=00:08:08.00 bitrate= 668.7kbits/s dup=2 drop=0    frame= 4930 fps= 10 q=27.0 size=   39834kB time=00:08:08.50 bitrate= 668.0kbits/s dup=2 drop=0    frame= 4936 fps= 10 q=27.0 size=   39834kB time=00:08:09.10 bitrate= 667.2kbits/s dup=2 drop=0    frame= 4941 fps= 10 q=27.0 size=   39835kB time=00:08:09.60 bitrate= 666.5kbits/s dup=2 drop=0    frame= 4947 fps= 10 q=27.0 size=   39836kB time=00:08:10.20 bitrate= 665.7kbits/s dup=2 drop=0    frame= 4952 fps= 10 q=27.0 size=   39836kB time=00:08:10.70 bitrate= 665.0kbits/s dup=2 drop=0    frame= 4958 fps= 10 q=27.0 size=   39837kB time=00:08:11.30 bitrate= 664.2kbits/s dup=2 drop=0    frame= 4964 fps= 10 q=27.0 size=   39838kB time=00:08:11.90 bitrate= 663.4kbits/s dup=2 drop=0    frame= 4969 fps= 10 q=27.0 size=   39838kB time=00:08:12.40 bitrate= 662.8kbits/s dup=2 drop=0    frame= 4974 fps= 10 q=27.0 size=   39839kB time=00:08:12.90 bitrate= 662.1kbits/s dup=2 drop=0    frame= 4979 fps= 10 q=27.0 size=   39839kB time=00:08:13.40 bitrate= 661.5kbits/s dup=2 drop=0    frame= 4985 fps= 10 q=27.0 size=   39840kB time=00:08:14.00 bitrate= 660.7kbits/s dup=2 drop=0    frame= 4990 fps= 10 q=27.0 size=   39841kB time=00:08:14.50 bitrate= 660.0kbits/s dup=2 drop=0    frame= 4996 fps= 10 q=27.0 size=   39841kB time=00:08:15.10 bitrate= 659.2kbits/s dup=2 drop=0    frame= 5002 fps= 10 q=27.0 size=   39842kB time=00:08:15.70 bitrate= 658.4kbits/s dup=2 drop=0    frame= 5007 fps= 10 q=27.0 size=   39843kB time=00:08:16.20 bitrate= 657.8kbits/s dup=2 drop=0    frame= 5012 fps= 10 q=27.0 size=   39843kB time=00:08:16.70 bitrate= 657.1kbits/s dup=2 drop=0    frame= 5018 fps= 10 q=27.0 size=   39844kB time=00:08:17.30 bitrate= 656.3kbits/s dup=2 drop=0    frame= 5024 fps= 10 q=27.0 size=   39845kB time=00:08:17.90 bitrate= 655.6kbits/s dup=2 drop=0    frame= 5029 fps= 10 q=27.0 size=   39845kB time=00:08:18.40 bitrate= 654.9kbits/s dup=2 drop=0    frame= 5035 fps= 10 q=27.0 size=   39846kB time=00:08:19.00 bitrate= 654.1kbits/s dup=2 drop=0    frame= 5040 fps= 10 q=27.0 size=   39847kB time=00:08:19.50 bitrate= 653.5kbits/s dup=2 drop=0    frame= 5046 fps= 10 q=27.0 size=   39847kB time=00:08:20.10 bitrate= 652.7kbits/s dup=2 drop=0    frame= 5052 fps= 10 q=27.0 size=   39848kB time=00:08:20.70 bitrate= 652.0kbits/s dup=2 drop=0    frame= 5058 fps= 10 q=27.0 size=   39849kB time=00:08:21.30 bitrate= 651.2kbits/s dup=2 drop=0    frame= 5063 fps= 10 q=27.0 size=   39849kB time=00:08:21.80 bitrate= 650.5kbits/s dup=2 drop=0    frame= 5069 fps= 10 q=27.0 size=   39850kB time=00:08:22.40 bitrate= 649.8kbits/s dup=2 drop=0    frame= 5075 fps= 10 q=27.0 size=   39851kB time=00:08:23.00 bitrate= 649.0kbits/s dup=2 drop=0    frame= 5080 fps= 10 q=27.0 size=   39851kB time=00:08:23.50 bitrate= 648.4kbits/s dup=2 drop=0    frame= 5086 fps= 10 q=27.0 size=   39852kB time=00:08:24.10 bitrate= 647.6kbits/s dup=2 drop=0    frame= 5091 fps= 10 q=27.0 size=   39853kB time=00:08:24.60 bitrate= 647.0kbits/s dup=2 drop=0    frame= 5097 fps= 10 q=27.0 size=   39853kB time=00:08:25.20 bitrate= 646.2kbits/s dup=2 drop=0    frame= 5103 fps= 10 q=27.0 size=   39854kB time=00:08:25.80 bitrate= 645.5kbits/s dup=2 drop=0    frame= 5108 fps= 10 q=24.0 size=   39855kB time=00:08:26.30 bitrate= 644.9kbits/s dup=2 drop=0    frame= 5114 fps= 10 q=27.0 size=   39855kB time=00:08:26.90 bitrate= 644.1kbits/s dup=2 drop=0    frame= 5119 fps= 10 q=27.0 size=   40540kB time=00:08:27.40 bitrate= 654.5kbits/s dup=2 drop=0    frame= 5125 fps= 10 q=27.0 size=   40542kB time=00:08:28.00 bitrate= 653.8kbits/s dup=2 drop=0    frame= 5130 fps= 10 q=27.0 size=   40542kB time=00:08:28.50 bitrate= 653.1kbits/s dup=2 drop=0    frame= 5136 fps= 10 q=27.0 size=   40543kB time=00:08:29.10 bitrate= 652.4kbits/s dup=2 drop=0    frame= 5141 fps= 10 q=27.0 size=   40543kB time=00:08:29.60 bitrate= 651.8kbits/s dup=2 drop=0    frame= 5146 fps= 10 q=27.0 size=   40544kB time=00:08:30.10 bitrate= 651.1kbits/s dup=2 drop=0    frame= 5152 fps= 10 q=27.0 size=   40545kB time=00:08:30.70 bitrate= 650.4kbits/s dup=2 drop=0    frame= 5158 fps= 10 q=27.0 size=   40545kB time=00:08:31.30 bitrate= 649.6kbits/s dup=2 drop=0    frame= 5164 fps= 10 q=27.0 size=   40546kB time=00:08:31.90 bitrate= 648.9kbits/s dup=2 drop=0    frame= 5169 fps= 10 q=27.0 size=   40547kB time=00:08:32.40 bitrate= 648.2kbits/s dup=2 drop=0    frame= 5175 fps= 10 q=27.0 size=   40547kB time=00:08:33.00 bitrate= 647.5kbits/s dup=2 drop=0    frame= 5180 fps= 10 q=27.0 size=   40548kB time=00:08:33.50 bitrate= 646.9kbits/s dup=2 drop=0    frame= 5186 fps= 10 q=27.0 size=   40549kB time=00:08:34.10 bitrate= 646.1kbits/s dup=2 drop=0    frame= 5192 fps= 10 q=27.0 size=   40549kB time=00:08:34.70 bitrate= 645.4kbits/s dup=2 drop=0    frame= 5197 fps= 10 q=27.0 size=   40550kB time=00:08:35.20 bitrate= 644.8kbits/s dup=2 drop=0    frame= 5203 fps= 10 q=27.0 size=   40551kB time=00:08:35.80 bitrate= 644.0kbits/s dup=2 drop=0    frame= 5209 fps= 10 q=27.0 size=   40551kB time=00:08:36.40 bitrate= 643.3kbits/s dup=2 drop=0    frame= 5215 fps= 10 q=27.0 size=   40552kB time=00:08:37.00 bitrate= 642.6kbits/s dup=2 drop=0    frame= 5220 fps= 10 q=27.0 size=   40553kB time=00:08:37.50 bitrate= 641.9kbits/s dup=2 drop=0    frame= 5226 fps= 10 q=27.0 size=   40553kB time=00:08:38.10 bitrate= 641.2kbits/s dup=2 drop=0    frame= 5231 fps= 10 q=27.0 size=   40554kB time=00:08:38.60 bitrate= 640.6kbits/s dup=2 drop=0    frame= 5237 fps= 10 q=27.0 size=   40555kB time=00:08:39.20 bitrate= 639.9kbits/s dup=2 drop=0    frame= 5242 fps= 10 q=27.0 size=   40555kB time=00:08:39.70 bitrate= 639.3kbits/s dup=2 drop=0    frame= 5247 fps= 10 q=27.0 size=   40556kB time=00:08:40.20 bitrate= 638.7kbits/s dup=2 drop=0    frame= 5252 fps= 10 q=27.0 size=   40557kB time=00:08:40.70 bitrate= 638.1kbits/s dup=2 drop=0    frame= 5257 fps= 10 q=27.0 size=   40557kB time=00:08:41.20 bitrate= 637.5kbits/s dup=2 drop=0    frame= 5263 fps= 10 q=27.0 size=   40558kB time=00:08:41.80 bitrate= 636.7kbits/s dup=2 drop=0    frame= 5268 fps= 10 q=27.0 size=   40558kB time=00:08:42.30 bitrate= 636.1kbits/s dup=2 drop=0    frame= 5274 fps= 10 q=27.0 size=   40559kB time=00:08:42.90 bitrate= 635.4kbits/s dup=2 drop=0    frame= 5279 fps= 10 q=27.0 size=   40560kB time=00:08:43.40 bitrate= 634.8kbits/s dup=2 drop=0    frame= 5285 fps= 10 q=27.0 size=   40560kB time=00:08:44.00 bitrate= 634.1kbits/s dup=2 drop=0    frame= 5290 fps= 10 q=27.0 size=   40561kB time=00:08:44.50 bitrate= 633.5kbits/s dup=2 drop=0    frame= 5296 fps= 10 q=27.0 size=   40562kB time=00:08:45.10 bitrate= 632.8kbits/s dup=2 drop=0    frame= 5302 fps= 10 q=27.0 size=   40562kB time=00:08:45.70 bitrate= 632.1kbits/s dup=2 drop=0    frame= 5307 fps= 10 q=27.0 size=   40563kB time=00:08:46.20 bitrate= 631.5kbits/s dup=2 drop=0    frame= 5313 fps= 10 q=27.0 size=   40564kB time=00:08:46.80 bitrate= 630.8kbits/s dup=2 drop=0    frame= 5318 fps= 10 q=27.0 size=   40564kB time=00:08:47.30 bitrate= 630.2kbits/s dup=2 drop=0    frame= 5324 fps= 10 q=27.0 size=   40565kB time=00:08:47.90 bitrate= 629.5kbits/s dup=2 drop=0    frame= 5329 fps= 10 q=27.0 size=   40566kB time=00:08:48.40 bitrate= 628.9kbits/s dup=2 drop=0    frame= 5335 fps= 10 q=27.0 size=   40566kB time=00:08:49.00 bitrate= 628.2kbits/s dup=2 drop=0    frame= 5340 fps= 10 q=27.0 size=   40567kB time=00:08:49.50 bitrate= 627.6kbits/s dup=2 drop=0    frame= 5346 fps= 10 q=27.0 size=   40568kB time=00:08:50.10 bitrate= 626.9kbits/s dup=2 drop=0    frame= 5351 fps= 10 q=27.0 size=   40568kB time=00:08:50.60 bitrate= 626.3kbits/s dup=2 drop=0    frame= 5356 fps= 10 q=27.0 size=   40569kB time=00:08:51.10 bitrate= 625.8kbits/s dup=2 drop=0    frame= 5362 fps= 10 q=27.0 size=   40569kB time=00:08:51.70 bitrate= 625.1kbits/s dup=2 drop=0    frame= 5367 fps= 10 q=27.0 size=   41254kB time=00:08:52.20 bitrate= 635.0kbits/s dup=2 drop=0    frame= 5373 fps= 10 q=27.0 size=   41255kB time=00:08:52.80 bitrate= 634.3kbits/s dup=2 drop=0    frame= 5378 fps= 10 q=27.0 size=   41256kB time=00:08:53.30 bitrate= 633.7kbits/s dup=2 drop=0    frame= 5384 fps= 10 q=27.0 size=   41257kB time=00:08:53.90 bitrate= 633.0kbits/s dup=2 drop=0    frame= 5389 fps= 10 q=27.0 size=   41258kB time=00:08:54.40 bitrate= 632.5kbits/s dup=2 drop=0    frame= 5395 fps= 10 q=27.0 size=   41258kB time=00:08:55.00 bitrate= 631.8kbits/s dup=2 drop=0    frame= 5400 fps= 10 q=27.0 size=   41259kB time=00:08:55.50 bitrate= 631.2kbits/s dup=2 drop=0    frame= 5406 fps= 10 q=27.0 size=   41260kB time=00:08:56.10 bitrate= 630.5kbits/s dup=2 drop=0    frame= 5411 fps= 10 q=27.0 size=   41260kB time=00:08:56.60 bitrate= 629.9kbits/s dup=2 drop=0    frame= 5417 fps= 10 q=27.0 size=   41261kB time=00:08:57.20 bitrate= 629.2kbits/s dup=2 drop=0    frame= 5423 fps= 10 q=27.0 size=   41262kB time=00:08:57.80 bitrate= 628.5kbits/s dup=2 drop=0    frame= 5429 fps= 10 q=27.0 size=   41262kB time=00:08:58.40 bitrate= 627.8kbits/s dup=2 drop=0    frame= 5435 fps= 10 q=27.0 size=   41263kB time=00:08:59.00 bitrate= 627.1kbits/s dup=2 drop=0    frame= 5441 fps= 10 q=27.0 size=   41264kB time=00:08:59.60 bitrate= 626.5kbits/s dup=2 drop=0    frame= 5447 fps= 10 q=27.0 size=   41265kB time=00:09:00.20 bitrate= 625.8kbits/s dup=2 drop=0    frame= 5452 fps= 10 q=27.0 size=   41265kB time=00:09:00.70 bitrate= 625.2kbits/s dup=2 drop=0    frame= 5458 fps= 10 q=27.0 size=   41266kB time=00:09:01.30 bitrate= 624.5kbits/s dup=2 drop=0    frame= 5463 fps= 10 q=27.0 size=   41266kB time=00:09:01.80 bitrate= 623.9kbits/s dup=2 drop=0    frame= 5468 fps= 10 q=27.0 size=   41267kB time=00:09:02.30 bitrate= 623.4kbits/s dup=2 drop=0    frame= 5474 fps= 10 q=27.0 size=   41268kB time=00:09:02.90 bitrate= 622.7kbits/s dup=2 drop=0    frame= 5479 fps= 10 q=27.0 size=   41268kB time=00:09:03.40 bitrate= 622.1kbits/s dup=2 drop=0    frame= 5485 fps= 10 q=27.0 size=   41269kB time=00:09:04.00 bitrate= 621.5kbits/s dup=2 drop=0    frame= 5490 fps= 10 q=27.0 size=   41270kB time=00:09:04.50 bitrate= 620.9kbits/s dup=2 drop=0    frame= 5496 fps= 10 q=27.0 size=   41270kB time=00:09:05.10 bitrate= 620.2kbits/s dup=2 drop=0    frame= 5502 fps= 10 q=27.0 size=   41271kB time=00:09:05.70 bitrate= 619.6kbits/s dup=2 drop=0    frame= 5508 fps= 10 q=27.0 size=   41272kB time=00:09:06.30 bitrate= 618.9kbits/s dup=2 drop=0    frame= 5514 fps= 10 q=27.0 size=   41272kB time=00:09:06.90 bitrate= 618.2kbits/s dup=2 drop=0    frame= 5519 fps= 10 q=27.0 size=   41273kB time=00:09:07.40 bitrate= 617.7kbits/s dup=2 drop=0    frame= 5525 fps= 10 q=27.0 size=   41274kB time=00:09:08.00 bitrate= 617.0kbits/s dup=2 drop=0    frame= 5530 fps= 10 q=27.0 size=   41274kB time=00:09:08.50 bitrate= 616.4kbits/s dup=2 drop=0    frame= 5536 fps= 10 q=27.0 size=   41275kB time=00:09:09.10 bitrate= 615.8kbits/s dup=2 drop=0    frame= 5541 fps= 10 q=27.0 size=   41276kB time=00:09:09.60 bitrate= 615.2kbits/s dup=2 drop=0    frame= 5547 fps= 10 q=27.0 size=   41276kB time=00:09:10.20 bitrate= 614.6kbits/s dup=2 drop=0    frame= 5553 fps= 10 q=27.0 size=   41277kB time=00:09:10.80 bitrate= 613.9kbits/s dup=2 drop=0    frame= 5558 fps= 10 q=27.0 size=   41278kB time=00:09:11.30 bitrate= 613.4kbits/s dup=2 drop=0    frame= 5564 fps= 10 q=27.0 size=   41278kB time=00:09:11.90 bitrate= 612.7kbits/s dup=2 drop=0    frame= 5569 fps= 10 q=27.0 size=   41279kB time=00:09:12.40 bitrate= 612.2kbits/s dup=2 drop=0    frame= 5575 fps= 10 q=27.0 size=   41280kB time=00:09:13.00 bitrate= 611.5kbits/s dup=2 drop=0    frame= 5580 fps= 10 q=27.0 size=   41280kB time=00:09:13.50 bitrate= 611.0kbits/s dup=2 drop=0    frame= 5586 fps= 10 q=27.0 size=   41281kB time=00:09:14.10 bitrate= 610.3kbits/s dup=2 drop=0    frame= 5591 fps= 10 q=27.0 size=   41282kB time=00:09:14.60 bitrate= 609.8kbits/s dup=2 drop=0    frame= 5597 fps= 10 q=27.0 size=   41282kB time=00:09:15.20 bitrate= 609.1kbits/s dup=2 drop=0    frame= 5602 fps= 10 q=27.0 size=   41283kB time=00:09:15.70 bitrate= 608.6kbits/s dup=2 drop=0    frame= 5608 fps= 10 q=24.0 size=   41284kB time=00:09:16.30 bitrate= 607.9kbits/s dup=2 drop=0    frame= 5613 fps= 10 q=27.0 size=   41284kB time=00:09:16.80 bitrate= 607.4kbits/s dup=2 drop=0    frame= 5619 fps= 10 q=27.0 size=   41969kB time=00:09:17.40 bitrate= 616.8kbits/s dup=2 drop=0    frame= 5625 fps= 10 q=27.0 size=   41971kB time=00:09:18.00 bitrate= 616.2kbits/s dup=2 drop=0    frame= 5629 fps= 10 q=27.0 size=   41971kB time=00:09:18.40 bitrate= 615.7kbits/s dup=2 drop=0    frame= 5636 fps= 10 q=27.0 size=   41972kB time=00:09:19.10 bitrate= 615.0kbits/s dup=2 drop=0    frame= 5642 fps= 10 q=27.0 size=   41973kB time=00:09:19.70 bitrate= 614.3kbits/s dup=2 drop=0    frame= 5648 fps= 10 q=27.0 size=   41973kB time=00:09:20.30 bitrate= 613.7kbits/s dup=2 drop=0    frame= 5654 fps= 10 q=27.0 size=   41974kB time=00:09:20.90 bitrate= 613.0kbits/s dup=2 drop=0    frame= 5659 fps= 10 q=27.0 size=   41975kB time=00:09:21.40 bitrate= 612.5kbits/s dup=2 drop=0    frame= 5664 fps= 10 q=27.0 size=   41975kB time=00:09:21.90 bitrate= 612.0kbits/s dup=2 drop=0    frame= 5669 fps= 10 q=27.0 size=   41976kB time=00:09:22.40 bitrate= 611.4kbits/s dup=2 drop=0    frame= 5675 fps= 10 q=27.0 size=   41976kB time=00:09:23.00 bitrate= 610.8kbits/s dup=2 drop=0    frame= 5681 fps= 10 q=27.0 size=   41977kB time=00:09:23.60 bitrate= 610.1kbits/s dup=2 drop=0    frame= 5687 fps= 10 q=27.0 size=   41978kB time=00:09:24.20 bitrate= 609.5kbits/s dup=2 drop=0    frame= 5693 fps= 10 q=27.0 size=   41979kB time=00:09:24.80 bitrate= 608.9kbits/s dup=2 drop=0    frame= 5699 fps= 10 q=27.0 size=   41979kB time=00:09:25.40 bitrate= 608.2kbits/s dup=2 drop=0    frame= 5705 fps= 10 q=27.0 size=   41980kB time=00:09:26.00 bitrate= 607.6kbits/s dup=2 drop=0    frame= 5710 fps= 10 q=27.0 size=   41981kB time=00:09:26.50 bitrate= 607.1kbits/s dup=2 drop=0    frame= 5715 fps= 10 q=27.0 size=   41981kB time=00:09:27.00 bitrate= 606.5kbits/s dup=2 drop=0    frame= 5720 fps= 10 q=27.0 size=   41982kB time=00:09:27.50 bitrate= 606.0kbits/s dup=2 drop=0    frame= 5726 fps= 10 q=27.0 size=   41982kB time=00:09:28.10 bitrate= 605.4kbits/s dup=2 drop=0    frame= 5731 fps= 10 q=27.0 size=   41983kB time=00:09:28.60 bitrate= 604.9kbits/s dup=2 drop=0    frame= 5737 fps= 10 q=27.0 size=   41984kB time=00:09:29.20 bitrate= 604.2kbits/s dup=2 drop=0    frame= 5742 fps= 10 q=27.0 size=   41984kB time=00:09:29.70 bitrate= 603.7kbits/s dup=2 drop=0    frame= 5748 fps= 10 q=27.0 size=   41985kB time=00:09:30.30 bitrate= 603.1kbits/s dup=2 drop=0    frame= 5754 fps= 10 q=27.0 size=   41986kB time=00:09:30.90 bitrate= 602.5kbits/s dup=2 drop=0    frame= 5759 fps= 10 q=27.0 size=   41986kB time=00:09:31.40 bitrate= 601.9kbits/s dup=2 drop=0    frame= 5765 fps= 10 q=27.0 size=   41987kB time=00:09:32.00 bitrate= 601.3kbits/s dup=2 drop=0    frame= 5770 fps= 10 q=27.0 size=   41988kB time=00:09:32.50 bitrate= 600.8kbits/s dup=2 drop=0    frame= 5776 fps= 10 q=27.0 size=   41989kB time=00:09:33.10 bitrate= 600.2kbits/s dup=2 drop=0    frame= 5782 fps= 10 q=27.0 size=   41989kB time=00:09:33.70 bitrate= 599.6kbits/s dup=2 drop=0    frame= 5787 fps= 10 q=27.0 size=   41990kB time=00:09:34.20 bitrate= 599.1kbits/s dup=2 drop=0    frame= 5792 fps= 10 q=27.0 size=   41991kB time=00:09:34.70 bitrate= 598.5kbits/s dup=2 drop=0    frame= 5798 fps= 10 q=27.0 size=   41991kB time=00:09:35.30 bitrate= 597.9kbits/s dup=2 drop=0    frame= 5804 fps= 10 q=27.0 size=   41992kB time=00:09:35.90 bitrate= 597.3kbits/s dup=2 drop=0    frame= 5809 fps= 10 q=27.0 size=   41993kB time=00:09:36.40 bitrate= 596.8kbits/s dup=2 drop=0    frame= 5814 fps= 10 q=27.0 size=   41993kB time=00:09:36.90 bitrate= 596.3kbits/s dup=2 drop=0    frame= 5819 fps= 10 q=27.0 size=   41994kB time=00:09:37.40 bitrate= 595.8kbits/s dup=2 drop=0    frame= 5825 fps= 10 q=27.0 size=   41994kB time=00:09:38.00 bitrate= 595.2kbits/s dup=2 drop=0    frame= 5830 fps= 10 q=27.0 size=   41995kB time=00:09:38.50 bitrate= 594.7kbits/s dup=2 drop=0    frame= 5836 fps= 10 q=27.0 size=   41996kB time=00:09:39.10 bitrate= 594.1kbits/s dup=2 drop=0    frame= 5841 fps= 10 q=27.0 size=   41996kB time=00:09:39.60 bitrate= 593.6kbits/s dup=2 drop=0    frame= 5847 fps= 10 q=27.0 size=   41997kB time=00:09:40.20 bitrate= 593.0kbits/s dup=2 drop=0    frame= 5853 fps= 10 q=27.0 size=   41998kB time=00:09:40.80 bitrate= 592.4kbits/s dup=2 drop=0    frame= 5858 fps= 10 q=24.0 size=   41998kB time=00:09:41.30 bitrate= 591.9kbits/s dup=2 drop=0    frame= 5864 fps= 10 q=27.0 size=   41999kB time=00:09:41.90 bitrate= 591.3kbits/s dup=2 drop=0    frame= 5869 fps= 10 q=27.0 size=   42684kB time=00:09:42.40 bitrate= 600.4kbits/s dup=2 drop=0    frame= 5875 fps= 10 q=27.0 size=   42685kB time=00:09:43.00 bitrate= 599.8kbits/s dup=2 drop=0    frame= 5880 fps= 10 q=27.0 size=   42686kB time=00:09:43.50 bitrate= 599.3kbits/s dup=2 drop=0    frame= 5886 fps= 10 q=27.0 size=   42687kB time=00:09:44.10 bitrate= 598.7kbits/s dup=2 drop=0    frame= 5891 fps= 10 q=27.0 size=   42687kB time=00:09:44.60 bitrate= 598.2kbits/s dup=2 drop=0    frame= 5897 fps= 10 q=27.0 size=   42688kB time=00:09:45.20 bitrate= 597.6kbits/s dup=2 drop=0    frame= 5903 fps= 10 q=27.0 size=   42689kB time=00:09:45.80 bitrate= 597.0kbits/s dup=2 drop=0    frame= 5908 fps= 10 q=27.0 size=   42689kB time=00:09:46.30 bitrate= 596.5kbits/s dup=2 drop=0    frame= 5914 fps= 10 q=27.0 size=   42690kB time=00:09:46.90 bitrate= 595.9kbits/s dup=2 drop=0    frame= 5919 fps= 10 q=27.0 size=   42691kB time=00:09:47.40 bitrate= 595.4kbits/s dup=2 drop=0    frame= 5925 fps= 10 q=27.0 size=   42691kB time=00:09:48.00 bitrate= 594.8kbits/s dup=2 drop=0    frame= 5930 fps= 10 q=27.0 size=   42692kB time=00:09:48.50 bitrate= 594.3kbits/s dup=2 drop=0    frame= 5936 fps= 10 q=27.0 size=   42693kB time=00:09:49.10 bitrate= 593.7kbits/s dup=2 drop=0    frame= 5941 fps= 10 q=27.0 size=   42693kB time=00:09:49.60 bitrate= 593.2kbits/s dup=2 drop=0    frame= 5945 fps= 10 q=27.0 size=   42694kB time=00:09:50.00 bitrate= 592.8kbits/s dup=2 drop=0    frame= 5952 fps= 10 q=27.0 size=   42694kB time=00:09:50.70 bitrate= 592.1kbits/s dup=2 drop=0    frame= 5958 fps= 10 q=27.0 size=   42695kB time=00:09:51.30 bitrate= 591.5kbits/s dup=2 drop=0    frame= 5964 fps= 10 q=27.0 size=   42696kB time=00:09:51.90 bitrate= 590.9kbits/s dup=2 drop=0    frame= 5969 fps= 10 q=27.0 size=   42696kB time=00:09:52.40 bitrate= 590.4kbits/s dup=2 drop=0    frame= 5975 fps= 10 q=27.0 size=   42697kB time=00:09:53.00 bitrate= 589.8kbits/s dup=2 drop=0    frame= 5981 fps= 10 q=27.0 size=   42698kB time=00:09:53.60 bitrate= 589.3kbits/s dup=2 drop=0    frame= 5986 fps= 10 q=27.0 size=   42698kB time=00:09:54.10 bitrate= 588.8kbits/s dup=2 drop=0    frame= 5991 fps= 10 q=27.0 size=   42699kB time=00:09:54.60 bitrate= 588.3kbits/s dup=2 drop=0    frame= 5997 fps= 10 q=27.0 size=   42700kB time=00:09:55.20 bitrate= 587.7kbits/s dup=2 drop=0    frame= 6003 fps= 10 q=27.0 size=   42700kB time=00:09:55.80 bitrate= 587.1kbits/s dup=2 drop=0    frame= 6008 fps= 10 q=27.0 size=   42701kB time=00:09:56.30 bitrate= 586.6kbits/s dup=2 drop=0    frame= 6014 fps= 10 q=27.0 size=   42702kB time=00:09:56.90 bitrate= 586.0kbits/s dup=2 drop=0    frame= 6019 fps= 10 q=27.0 size=   42702kB time=00:09:57.40 bitrate= 585.6kbits/s dup=2 drop=0    frame= 6025 fps= 10 q=27.0 size=   42703kB time=00:09:58.00 bitrate= 585.0kbits/s dup=2 drop=0    frame= 6030 fps= 10 q=27.0 size=   42704kB time=00:09:58.50 bitrate= 584.5kbits/s dup=2 drop=0    frame= 6036 fps= 10 q=27.0 size=   42704kB time=00:09:59.10 bitrate= 583.9kbits/s dup=2 drop=0    frame= 6041 fps= 10 q=27.0 size=   42705kB time=00:09:59.60 bitrate= 583.5kbits/s dup=2 drop=0    frame= 6047 fps= 10 q=27.0 size=   42706kB time=00:10:00.20 bitrate= 582.9kbits/s dup=2 drop=0    frame= 6052 fps= 10 q=27.0 size=   42706kB time=00:10:00.70 bitrate= 582.4kbits/s dup=2 drop=0    frame= 6058 fps= 10 q=27.0 size=   42707kB time=00:10:01.30 bitrate= 581.8kbits/s dup=2 drop=0    frame= 6064 fps= 10 q=27.0 size=   42708kB time=00:10:01.90 bitrate= 581.3kbits/s dup=2 drop=0    frame= 6069 fps= 10 q=27.0 size=   42708kB time=00:10:02.40 bitrate= 580.8kbits/s dup=2 drop=0    frame= 6075 fps= 10 q=27.0 size=   42709kB time=00:10:03.00 bitrate= 580.2kbits/s dup=2 drop=0    frame= 6080 fps= 10 q=27.0 size=   42710kB time=00:10:03.50 bitrate= 579.7kbits/s dup=2 drop=0    frame= 6086 fps= 10 q=27.0 size=   42710kB time=00:10:04.10 bitrate= 579.2kbits/s dup=2 drop=0    frame= 6091 fps= 10 q=27.0 size=   42711kB time=00:10:04.60 bitrate= 578.7kbits/s dup=2 drop=0    frame= 6097 fps= 10 q=27.0 size=   42712kB time=00:10:05.20 bitrate= 578.1kbits/s dup=2 drop=0    frame= 6103 fps= 10 q=27.0 size=   42712kB time=00:10:05.80 bitrate= 577.6kbits/s dup=2 drop=0    frame= 6109 fps= 10 q=27.0 size=   42713kB time=00:10:06.40 bitrate= 577.0kbits/s dup=2 drop=0    frame= 6115 fps= 10 q=27.0 size=   42714kB time=00:10:07.00 bitrate= 576.5kbits/s dup=2 drop=0    frame= 6120 fps= 10 q=27.0 size=   43398kB time=00:10:07.50 bitrate= 585.2kbits/s dup=2 drop=0    frame= 6126 fps= 10 q=27.0 size=   43400kB time=00:10:08.10 bitrate= 584.7kbits/s dup=2 drop=0    frame= 6131 fps= 10 q=27.0 size=   43401kB time=00:10:08.60 bitrate= 584.2kbits/s dup=2 drop=0    frame= 6137 fps= 10 q=27.0 size=   43401kB time=00:10:09.20 bitrate= 583.6kbits/s dup=2 drop=0    frame= 6142 fps= 10 q=27.0 size=   43402kB time=00:10:09.70 bitrate= 583.2kbits/s dup=2 drop=0    frame= 6147 fps= 10 q=27.0 size=   43402kB time=00:10:10.20 bitrate= 582.7kbits/s dup=2 drop=0    frame= 6152 fps= 10 q=27.0 size=   43403kB time=00:10:10.70 bitrate= 582.2kbits/s dup=2 drop=0    frame= 6158 fps= 10 q=27.0 size=   43404kB time=00:10:11.30 bitrate= 581.7kbits/s dup=2 drop=0    frame= 6164 fps= 10 q=27.0 size=   43404kB time=00:10:11.90 bitrate= 581.1kbits/s dup=2 drop=0    frame= 6169 fps= 10 q=27.0 size=   43405kB time=00:10:12.40 bitrate= 580.6kbits/s dup=2 drop=0    frame= 6175 fps= 10 q=27.0 size=   43406kB time=00:10:13.00 bitrate= 580.1kbits/s dup=2 drop=0    frame= 6181 fps= 10 q=27.0 size=   43407kB time=00:10:13.60 bitrate= 579.5kbits/s dup=2 drop=0    frame= 6186 fps= 10 q=27.0 size=   43407kB time=00:10:14.10 bitrate= 579.0kbits/s dup=2 drop=0    frame= 6191 fps= 10 q=27.0 size=   43408kB time=00:10:14.60 bitrate= 578.6kbits/s dup=2 drop=0    frame= 6197 fps= 10 q=27.0 size=   43408kB time=00:10:15.20 bitrate= 578.0kbits/s dup=2 drop=0    frame= 6203 fps= 10 q=27.0 size=   43409kB time=00:10:15.80 bitrate= 577.5kbits/s dup=2 drop=0    frame= 6208 fps= 10 q=27.0 size=   43410kB time=00:10:16.30 bitrate= 577.0kbits/s dup=2 drop=0    frame= 6214 fps= 10 q=27.0 size=   43410kB time=00:10:16.90 bitrate= 576.5kbits/s dup=2 drop=0    frame= 6219 fps= 10 q=27.0 size=   43411kB time=00:10:17.40 bitrate= 576.0kbits/s dup=2 drop=0    frame= 6225 fps= 10 q=27.0 size=   43412kB time=00:10:18.00 bitrate= 575.5kbits/s dup=2 drop=0    frame= 6230 fps= 10 q=27.0 size=   43412kB time=00:10:18.50 bitrate= 575.0kbits/s dup=2 drop=0    frame= 6236 fps= 10 q=27.0 size=   43413kB time=00:10:19.10 bitrate= 574.4kbits/s dup=2 drop=0    frame= 6241 fps= 10 q=27.0 size=   43414kB time=00:10:19.60 bitrate= 574.0kbits/s dup=2 drop=0    frame= 6246 fps= 10 q=27.0 size=   43414kB time=00:10:20.10 bitrate= 573.5kbits/s dup=2 drop=0    frame= 6251 fps= 10 q=27.0 size=   43415kB time=00:10:20.60 bitrate= 573.1kbits/s dup=2 drop=0    frame= 6257 fps= 10 q=27.0 size=   43415kB time=00:10:21.20 bitrate= 572.5kbits/s dup=2 drop=0    frame= 6262 fps= 10 q=27.0 size=   43416kB time=00:10:21.70 bitrate= 572.1kbits/s dup=2 drop=0    frame= 6268 fps= 10 q=27.0 size=   43417kB time=00:10:22.30 bitrate= 571.5kbits/s dup=2 drop=0    frame= 6274 fps= 10 q=27.0 size=   43417kB time=00:10:22.90 bitrate= 571.0kbits/s dup=2 drop=0    frame= 6279 fps= 10 q=27.0 size=   43418kB time=00:10:23.40 bitrate= 570.5kbits/s dup=2 drop=0    frame= 6285 fps= 10 q=27.0 size=   43419kB time=00:10:24.00 bitrate= 570.0kbits/s dup=2 drop=0    frame= 6290 fps= 10 q=27.0 size=   43419kB time=00:10:24.50 bitrate= 569.6kbits/s dup=2 drop=0    frame= 6296 fps= 10 q=27.0 size=   43420kB time=00:10:25.10 bitrate= 569.0kbits/s dup=2 drop=0    frame= 6302 fps= 10 q=27.0 size=   43421kB time=00:10:25.70 bitrate= 568.5kbits/s dup=2 drop=0    frame= 6307 fps= 10 q=27.0 size=   43421kB time=00:10:26.20 bitrate= 568.0kbits/s dup=2 drop=0    frame= 6313 fps= 10 q=27.0 size=   43422kB time=00:10:26.80 bitrate= 567.5kbits/s dup=2 drop=0    frame= 6318 fps= 10 q=27.0 size=   43423kB time=00:10:27.30 bitrate= 567.1kbits/s dup=2 drop=0    frame= 6324 fps= 10 q=27.0 size=   43423kB time=00:10:27.90 bitrate= 566.5kbits/s dup=2 drop=0    frame= 6329 fps= 10 q=27.0 size=   43424kB time=00:10:28.40 bitrate= 566.1kbits/s dup=2 drop=0    frame= 6334 fps= 10 q=27.0 size=   43425kB time=00:10:28.90 bitrate= 565.6kbits/s dup=2 drop=0    frame= 6339 fps= 10 q=27.0 size=   43425kB time=00:10:29.40 bitrate= 565.2kbits/s dup=2 drop=0    frame= 6345 fps= 10 q=27.0 size=   43426kB time=00:10:30.00 bitrate= 564.7kbits/s dup=2 drop=0    frame= 6350 fps= 10 q=27.0 size=   43426kB time=00:10:30.50 bitrate= 564.2kbits/s dup=2 drop=0    frame= 6356 fps= 10 q=27.0 size=   43427kB time=00:10:31.10 bitrate= 563.7kbits/s dup=2 drop=0    frame= 6361 fps= 10 q=27.0 size=   43428kB time=00:10:31.60 bitrate= 563.3kbits/s dup=2 drop=0    frame= 6367 fps= 10 q=27.0 size=   44112kB time=00:10:32.20 bitrate= 571.6kbits/s dup=2 drop=0    frame= 6372 fps= 10 q=27.0 size=   44114kB time=00:10:32.70 bitrate= 571.2kbits/s dup=2 drop=0    frame= 6378 fps= 10 q=27.0 size=   44115kB time=00:10:33.30 bitrate= 570.6kbits/s dup=2 drop=0    frame= 6384 fps= 10 q=27.0 size=   44115kB time=00:10:33.90 bitrate= 570.1kbits/s dup=2 drop=0    frame= 6389 fps= 10 q=27.0 size=   44116kB time=00:10:34.40 bitrate= 569.7kbits/s dup=2 drop=0    frame= 6395 fps= 10 q=27.0 size=   44117kB time=00:10:35.00 bitrate= 569.1kbits/s dup=2 drop=0    frame= 6400 fps= 10 q=27.0 size=   44117kB time=00:10:35.50 bitrate= 568.7kbits/s dup=2 drop=0    frame= 6406 fps= 10 q=27.0 size=   44118kB time=00:10:36.10 bitrate= 568.2kbits/s dup=2 drop=0    frame= 6411 fps= 10 q=27.0 size=   44119kB time=00:10:36.60 bitrate= 567.7kbits/s dup=2 drop=0    frame= 6417 fps= 10 q=27.0 size=   44119kB time=00:10:37.20 bitrate= 567.2kbits/s dup=2 drop=0    frame= 6422 fps= 10 q=27.0 size=   44120kB time=00:10:37.70 bitrate= 566.8kbits/s dup=2 drop=0    frame= 6428 fps= 10 q=27.0 size=   44121kB time=00:10:38.30 bitrate= 566.2kbits/s dup=2 drop=0    frame= 6434 fps= 10 q=27.0 size=   44121kB time=00:10:38.90 bitrate= 565.7kbits/s dup=2 drop=0    frame= 6439 fps= 10 q=27.0 size=   44122kB time=00:10:39.40 bitrate= 565.3kbits/s dup=2 drop=0    frame= 6445 fps= 10 q=27.0 size=   44123kB time=00:10:40.00 bitrate= 564.8kbits/s dup=2 drop=0    frame= 6450 fps= 10 q=27.0 size=   44123kB time=00:10:40.50 bitrate= 564.3kbits/s dup=2 drop=0    frame= 6456 fps= 10 q=27.0 size=   44124kB time=00:10:41.10 bitrate= 563.8kbits/s dup=2 drop=0    frame= 6462 fps= 10 q=27.0 size=   44125kB time=00:10:41.70 bitrate= 563.3kbits/s dup=2 drop=0    frame= 6467 fps= 10 q=27.0 size=   44125kB time=00:10:42.20 bitrate= 562.9kbits/s dup=2 drop=0    frame= 6473 fps= 10 q=27.0 size=   44126kB time=00:10:42.80 bitrate= 562.4kbits/s dup=2 drop=0    frame= 6478 fps= 10 q=27.0 size=   44127kB time=00:10:43.30 bitrate= 561.9kbits/s dup=2 drop=0    frame= 6484 fps= 10 q=27.0 size=   44127kB time=00:10:43.90 bitrate= 561.4kbits/s dup=2 drop=0    frame= 6489 fps= 10 q=27.0 size=   44128kB time=00:10:44.40 bitrate= 561.0kbits/s dup=2 drop=0    frame= 6495 fps= 10 q=27.0 size=   44129kB time=00:10:45.00 bitrate= 560.5kbits/s dup=2 drop=0    frame= 6500 fps= 10 q=27.0 size=   44129kB time=00:10:45.50 bitrate= 560.0kbits/s dup=2 drop=0    frame= 6506 fps= 10 q=27.0 size=   44130kB time=00:10:46.10 bitrate= 559.5kbits/s dup=2 drop=0    frame= 6511 fps= 10 q=27.0 size=   44130kB time=00:10:46.60 bitrate= 559.1kbits/s dup=2 drop=0    frame= 6516 fps= 10 q=27.0 size=   44131kB time=00:10:47.10 bitrate= 558.7kbits/s dup=2 drop=0    frame= 6521 fps= 10 q=27.0 size=   44132kB time=00:10:47.60 bitrate= 558.3kbits/s dup=2 drop=0    frame= 6527 fps= 10 q=27.0 size=   44132kB time=00:10:48.20 bitrate= 557.7kbits/s dup=2 drop=0    frame= 6533 fps= 10 q=27.0 size=   44133kB time=00:10:48.80 bitrate= 557.2kbits/s dup=2 drop=0    frame= 6538 fps= 10 q=27.0 size=   44134kB time=00:10:49.30 bitrate= 556.8kbits/s dup=2 drop=0    frame= 6544 fps= 10 q=27.0 size=   44134kB time=00:10:49.90 bitrate= 556.3kbits/s dup=2 drop=0    frame= 6549 fps= 10 q=27.0 size=   44135kB time=00:10:50.40 bitrate= 555.9kbits/s dup=2 drop=0    frame= 6555 fps= 10 q=27.0 size=   44136kB time=00:10:51.00 bitrate= 555.4kbits/s dup=2 drop=0    frame= 6560 fps= 10 q=27.0 size=   44136kB time=00:10:51.50 bitrate= 555.0kbits/s dup=2 drop=0    frame= 6565 fps= 10 q=27.0 size=   44137kB time=00:10:52.00 bitrate= 554.6kbits/s dup=2 drop=0    frame= 6571 fps= 10 q=27.0 size=   44137kB time=00:10:52.60 bitrate= 554.1kbits/s dup=2 drop=0    frame= 6577 fps= 10 q=27.0 size=   44138kB time=00:10:53.20 bitrate= 553.6kbits/s dup=2 drop=0    frame= 6583 fps= 10 q=27.0 size=   44139kB time=00:10:53.80 bitrate= 553.1kbits/s dup=2 drop=0    frame= 6588 fps= 10 q=27.0 size=   44139kB time=00:10:54.30 bitrate= 552.6kbits/s dup=2 drop=0    frame= 6594 fps= 10 q=27.0 size=   44140kB time=00:10:54.90 bitrate= 552.1kbits/s dup=2 drop=0    frame= 6599 fps= 10 q=27.0 size=   44141kB time=00:10:55.40 bitrate= 551.7kbits/s dup=2 drop=0    frame= 6605 fps= 10 q=27.0 size=   44141kB time=00:10:56.00 bitrate= 551.2kbits/s dup=2 drop=0    frame= 6610 fps= 10 q=27.0 size=   44142kB time=00:10:56.50 bitrate= 550.8kbits/s dup=2 drop=0    frame= 6616 fps= 10 q=27.0 size=   44816kB time=00:10:57.10 bitrate= 558.7kbits/s dup=2 drop=0    frame= 6622 fps= 10 q=27.0 size=   44828kB time=00:10:57.70 bitrate= 558.4kbits/s dup=2 drop=0    frame= 6627 fps= 10 q=27.0 size=   44829kB time=00:10:58.20 bitrate= 557.9kbits/s dup=2 drop=0    frame= 6632 fps= 10 q=27.0 size=   44830kB time=00:10:58.70 bitrate= 557.5kbits/s dup=2 drop=0    frame= 6638 fps= 10 q=27.0 size=   44831kB time=00:10:59.30 bitrate= 557.0kbits/s dup=2 drop=0    frame= 6644 fps= 10 q=27.0 size=   44831kB time=00:10:59.90 bitrate= 556.5kbits/s dup=2 drop=0    frame= 6649 fps= 10 q=27.0 size=   44832kB time=00:11:00.40 bitrate= 556.1kbits/s dup=2 drop=0    frame= 6654 fps= 10 q=27.0 size=   44833kB time=00:11:00.90 bitrate= 555.7kbits/s dup=2 drop=0    frame= 6660 fps= 10 q=27.0 size=   44833kB time=00:11:01.50 bitrate= 555.2kbits/s dup=2 drop=0    frame= 6666 fps= 10 q=27.0 size=   44834kB time=00:11:02.10 bitrate= 554.7kbits/s dup=2 drop=0    frame= 6671 fps= 10 q=27.0 size=   44835kB time=00:11:02.60 bitrate= 554.3kbits/s dup=2 drop=0    frame= 6676 fps= 10 q=27.0 size=   44835kB time=00:11:03.10 bitrate= 553.9kbits/s dup=2 drop=0    frame= 6682 fps= 10 q=27.0 size=   44836kB time=00:11:03.70 bitrate= 553.4kbits/s dup=2 drop=0    frame= 6687 fps= 10 q=27.0 size=   44836kB time=00:11:04.20 bitrate= 553.0kbits/s dup=2 drop=0    frame= 6693 fps= 10 q=27.0 size=   44837kB time=00:11:04.80 bitrate= 552.5kbits/s dup=2 drop=0    frame= 6698 fps= 10 q=27.0 size=   44838kB time=00:11:05.30 bitrate= 552.1kbits/s dup=2 drop=0    frame= 6703 fps= 10 q=27.0 size=   44838kB time=00:11:05.80 bitrate= 551.7kbits/s dup=2 drop=0    frame= 6708 fps= 10 q=27.0 size=   44839kB time=00:11:06.30 bitrate= 551.3kbits/s dup=2 drop=0    frame= 6714 fps= 10 q=27.0 size=   44840kB time=00:11:06.90 bitrate= 550.8kbits/s dup=2 drop=0    frame= 6719 fps= 10 q=27.0 size=   44840kB time=00:11:07.40 bitrate= 550.4kbits/s dup=2 drop=0    frame= 6725 fps= 10 q=27.0 size=   44841kB time=00:11:08.00 bitrate= 549.9kbits/s dup=2 drop=0    frame= 6730 fps= 10 q=27.0 size=   44841kB time=00:11:08.50 bitrate= 549.5kbits/s dup=2 drop=0    frame= 6736 fps= 10 q=27.0 size=   44842kB time=00:11:09.10 bitrate= 549.0kbits/s dup=2 drop=0    frame= 6741 fps= 10 q=27.0 size=   44843kB time=00:11:09.60 bitrate= 548.6kbits/s dup=2 drop=0    frame= 6746 fps= 10 q=27.0 size=   44843kB time=00:11:10.10 bitrate= 548.2kbits/s dup=2 drop=0    frame= 6751 fps= 10 q=27.0 size=   44844kB time=00:11:10.60 bitrate= 547.8kbits/s dup=2 drop=0    frame= 6756 fps= 10 q=27.0 size=   44845kB time=00:11:11.10 bitrate= 547.4kbits/s dup=2 drop=0    frame= 6762 fps= 10 q=27.0 size=   44845kB time=00:11:11.70 bitrate= 546.9kbits/s dup=2 drop=0    frame= 6768 fps= 10 q=27.0 size=   44846kB time=00:11:12.30 bitrate= 546.4kbits/s dup=2 drop=0    frame= 6774 fps= 10 q=27.0 size=   44847kB time=00:11:12.90 bitrate= 546.0kbits/s dup=2 drop=0    frame= 6780 fps= 10 q=27.0 size=   44847kB time=00:11:13.50 bitrate= 545.5kbits/s dup=2 drop=0    frame= 6786 fps= 10 q=27.0 size=   44848kB time=00:11:14.10 bitrate= 545.0kbits/s dup=2 drop=0    frame= 6791 fps= 10 q=27.0 size=   44849kB time=00:11:14.60 bitrate= 544.6kbits/s dup=2 drop=0    frame= 6797 fps= 10 q=27.0 size=   44849kB time=00:11:15.20 bitrate= 544.1kbits/s dup=2 drop=0    frame= 6802 fps= 10 q=27.0 size=   44850kB time=00:11:15.70 bitrate= 543.7kbits/s dup=2 drop=0    frame= 6808 fps= 10 q=27.0 size=   44851kB time=00:11:16.30 bitrate= 543.3kbits/s dup=2 drop=0    frame= 6814 fps= 10 q=27.0 size=   44851kB time=00:11:16.90 bitrate= 542.8kbits/s dup=2 drop=0    frame= 6819 fps= 10 q=27.0 size=   44852kB time=00:11:17.40 bitrate= 542.4kbits/s dup=2 drop=0    frame= 6825 fps= 10 q=27.0 size=   44853kB time=00:11:18.00 bitrate= 541.9kbits/s dup=2 drop=0    frame= 6830 fps= 10 q=27.0 size=   44853kB time=00:11:18.50 bitrate= 541.5kbits/s dup=2 drop=0    frame= 6836 fps= 10 q=27.0 size=   44854kB time=00:11:19.10 bitrate= 541.1kbits/s dup=2 drop=0    frame= 6841 fps= 10 q=27.0 size=   44855kB time=00:11:19.60 bitrate= 540.7kbits/s dup=2 drop=0    frame= 6847 fps= 10 q=27.0 size=   44855kB time=00:11:20.20 bitrate= 540.2kbits/s dup=2 drop=0    frame= 6853 fps= 10 q=27.0 size=   44856kB time=00:11:20.80 bitrate= 539.7kbits/s dup=2 drop=0    frame= 6858 fps= 10 q=24.0 size=   44857kB time=00:11:21.30 bitrate= 539.4kbits/s dup=2 drop=0    frame= 6864 fps= 10 q=27.0 size=   44857kB time=00:11:21.90 bitrate= 538.9kbits/s dup=2 drop=0    frame= 6869 fps= 10 q=27.0 size=   45542kB time=00:11:22.40 bitrate= 546.7kbits/s dup=2 drop=0    frame= 6875 fps= 10 q=27.0 size=   45544kB time=00:11:23.00 bitrate= 546.3kbits/s dup=2 drop=0    frame= 6881 fps= 10 q=27.0 size=   45544kB time=00:11:23.60 bitrate= 545.8kbits/s dup=2 drop=0    frame= 6887 fps= 10 q=27.0 size=   45545kB time=00:11:24.20 bitrate= 545.3kbits/s dup=2 drop=0    frame= 6892 fps= 10 q=27.0 size=   45546kB time=00:11:24.70 bitrate= 544.9kbits/s dup=2 drop=0    frame= 6898 fps= 10 q=27.0 size=   45546kB time=00:11:25.30 bitrate= 544.5kbits/s dup=2 drop=0    frame= 6904 fps= 10 q=27.0 size=   45547kB time=00:11:25.90 bitrate= 544.0kbits/s dup=2 drop=0    frame= 6909 fps= 10 q=27.0 size=   45548kB time=00:11:26.40 bitrate= 543.6kbits/s dup=2 drop=0    frame= 6915 fps= 10 q=27.0 size=   45548kB time=00:11:27.00 bitrate= 543.1kbits/s dup=2 drop=0    frame= 6920 fps= 10 q=27.0 size=   45549kB time=00:11:27.50 bitrate= 542.7kbits/s dup=2 drop=0    frame= 6926 fps= 10 q=27.0 size=   45550kB time=00:11:28.10 bitrate= 542.3kbits/s dup=2 drop=0    frame= 6931 fps= 10 q=27.0 size=   45550kB time=00:11:28.60 bitrate= 541.9kbits/s dup=2 drop=0    frame= 6937 fps= 10 q=27.0 size=   45551kB time=00:11:29.20 bitrate= 541.4kbits/s dup=2 drop=0    frame= 6942 fps= 10 q=27.0 size=   45551kB time=00:11:29.70 bitrate= 541.0kbits/s dup=2 drop=0    frame= 6948 fps= 10 q=27.0 size=   45552kB time=00:11:30.30 bitrate= 540.6kbits/s dup=2 drop=0    frame= 6954 fps= 10 q=27.0 size=   45553kB time=00:11:30.90 bitrate= 540.1kbits/s dup=2 drop=0    frame= 6959 fps= 10 q=27.0 size=   45553kB time=00:11:31.40 bitrate= 539.7kbits/s dup=2 drop=0    frame= 6965 fps= 10 q=27.0 size=   45554kB time=00:11:32.00 bitrate= 539.3kbits/s dup=2 drop=0    frame= 6970 fps= 10 q=27.0 size=   45555kB time=00:11:32.50 bitrate= 538.9kbits/s dup=2 drop=0    frame= 6976 fps= 10 q=27.0 size=   45555kB time=00:11:33.10 bitrate= 538.4kbits/s dup=2 drop=0    frame= 6981 fps= 10 q=27.0 size=   45556kB time=00:11:33.60 bitrate= 538.1kbits/s dup=2 drop=0    frame= 6987 fps= 10 q=27.0 size=   45557kB time=00:11:34.20 bitrate= 537.6kbits/s dup=2 drop=0    frame= 6993 fps= 10 q=27.0 size=   45557kB time=00:11:34.80 bitrate= 537.1kbits/s dup=2 drop=0    frame= 6998 fps= 10 q=27.0 size=   45558kB time=00:11:35.30 bitrate= 536.8kbits/s dup=2 drop=0    frame= 7004 fps= 10 q=27.0 size=   45559kB time=00:11:35.90 bitrate= 536.3kbits/s dup=2 drop=0    frame= 7009 fps= 10 q=27.0 size=   45559kB time=00:11:36.40 bitrate= 535.9kbits/s dup=2 drop=0    frame= 7015 fps= 10 q=27.0 size=   45560kB time=00:11:37.00 bitrate= 535.5kbits/s dup=2 drop=0    frame= 7020 fps= 10 q=27.0 size=   45561kB time=00:11:37.50 bitrate= 535.1kbits/s dup=2 drop=0    frame= 7026 fps= 10 q=27.0 size=   45561kB time=00:11:38.10 bitrate= 534.6kbits/s dup=2 drop=0    frame= 7031 fps= 10 q=27.0 size=   45562kB time=00:11:38.60 bitrate= 534.3kbits/s dup=2 drop=0    frame= 7037 fps= 10 q=27.0 size=   45563kB time=00:11:39.20 bitrate= 533.8kbits/s dup=2 drop=0    frame= 7042 fps= 10 q=27.0 size=   45563kB time=00:11:39.70 bitrate= 533.4kbits/s dup=2 drop=0    frame= 7048 fps= 10 q=27.0 size=   45564kB time=00:11:40.30 bitrate= 533.0kbits/s dup=2 drop=0    frame= 7053 fps= 10 q=27.0 size=   45565kB time=00:11:40.80 bitrate= 532.6kbits/s dup=2 drop=0    frame= 7058 fps= 10 q=27.0 size=   45565kB time=00:11:41.30 bitrate= 532.3kbits/s dup=2 drop=0    frame= 7064 fps= 10 q=27.0 size=   45566kB time=00:11:41.90 bitrate= 531.8kbits/s dup=2 drop=0    frame= 7069 fps= 10 q=27.0 size=   45566kB time=00:11:42.40 bitrate= 531.4kbits/s dup=2 drop=0    frame= 7075 fps= 10 q=27.0 size=   45567kB time=00:11:43.00 bitrate= 531.0kbits/s dup=2 drop=0    frame= 7080 fps= 10 q=27.0 size=   45568kB time=00:11:43.50 bitrate= 530.6kbits/s dup=2 drop=0    frame= 7086 fps= 10 q=27.0 size=   45568kB time=00:11:44.10 bitrate= 530.2kbits/s dup=2 drop=0    frame= 7091 fps= 10 q=27.0 size=   45569kB time=00:11:44.60 bitrate= 529.8kbits/s dup=2 drop=0    frame= 7096 fps= 10 q=27.0 size=   45570kB time=00:11:45.10 bitrate= 529.4kbits/s dup=2 drop=0    frame= 7102 fps= 10 q=27.0 size=   45570kB time=00:11:45.70 bitrate= 529.0kbits/s dup=2 drop=0    frame= 7107 fps= 10 q=27.0 size=   45571kB time=00:11:46.20 bitrate= 528.6kbits/s dup=2 drop=0    frame= 7113 fps= 10 q=27.0 size=   45572kB time=00:11:46.80 bitrate= 528.2kbits/s dup=2 drop=0    frame= 7118 fps= 10 q=27.0 size=   46256kB time=00:11:47.30 bitrate= 535.7kbits/s dup=2 drop=0    frame= 7124 fps= 10 q=27.0 size=   46257kB time=00:11:47.90 bitrate= 535.3kbits/s dup=2 drop=0    frame= 7129 fps= 10 q=27.0 size=   46258kB time=00:11:48.40 bitrate= 534.9kbits/s dup=2 drop=0    frame= 7135 fps= 10 q=27.0 size=   46259kB time=00:11:49.00 bitrate= 534.5kbits/s dup=2 drop=0    frame= 7140 fps= 10 q=27.0 size=   46260kB time=00:11:49.50 bitrate= 534.1kbits/s dup=2 drop=0    frame= 7146 fps= 10 q=27.0 size=   46260kB time=00:11:50.10 bitrate= 533.7kbits/s dup=2 drop=0    frame= 7151 fps= 10 q=27.0 size=   46261kB time=00:11:50.60 bitrate= 533.3kbits/s dup=2 drop=0    frame= 7157 fps= 10 q=27.0 size=   46262kB time=00:11:51.20 bitrate= 532.9kbits/s dup=2 drop=0    frame= 7163 fps= 10 q=27.0 size=   46262kB time=00:11:51.80 bitrate= 532.4kbits/s dup=2 drop=0    frame= 7168 fps= 10 q=27.0 size=   46263kB time=00:11:52.30 bitrate= 532.1kbits/s dup=2 drop=0    frame= 7174 fps= 10 q=27.0 size=   46264kB time=00:11:52.90 bitrate= 531.6kbits/s dup=2 drop=0    frame= 7179 fps= 10 q=27.0 size=   46264kB time=00:11:53.40 bitrate= 531.3kbits/s dup=2 drop=0    frame= 7185 fps= 10 q=27.0 size=   46265kB time=00:11:54.00 bitrate= 530.8kbits/s dup=2 drop=0    frame= 7190 fps= 10 q=27.0 size=   46266kB time=00:11:54.50 bitrate= 530.5kbits/s dup=2 drop=0    frame= 7197 fps= 10 q=27.0 size=   46266kB time=00:11:55.20 bitrate= 529.9kbits/s dup=2 drop=0    frame= 7203 fps= 10 q=27.0 size=   46267kB time=00:11:55.80 bitrate= 529.5kbits/s dup=2 drop=0    frame= 7209 fps= 10 q=27.0 size=   46268kB time=00:11:56.40 bitrate= 529.1kbits/s dup=2 drop=0    frame= 7215 fps= 10 q=27.0 size=   46269kB time=00:11:57.00 bitrate= 528.6kbits/s dup=2 drop=0    frame= 7220 fps= 10 q=27.0 size=   46269kB time=00:11:57.50 bitrate= 528.3kbits/s dup=2 drop=0    frame= 7226 fps= 10 q=27.0 size=   46270kB time=00:11:58.10 bitrate= 527.8kbits/s dup=2 drop=0    frame= 7231 fps= 10 q=27.0 size=   46271kB time=00:11:58.60 bitrate= 527.5kbits/s dup=2 drop=0    frame= 7237 fps= 10 q=27.0 size=   46271kB time=00:11:59.20 bitrate= 527.0kbits/s dup=2 drop=0    frame= 7243 fps= 10 q=27.0 size=   46272kB time=00:11:59.80 bitrate= 526.6kbits/s dup=2 drop=0    frame= 7249 fps= 10 q=27.0 size=   46273kB time=00:12:00.40 bitrate= 526.2kbits/s dup=2 drop=0    frame= 7255 fps= 10 q=27.0 size=   46273kB time=00:12:01.00 bitrate= 525.8kbits/s dup=2 drop=0    frame= 7261 fps= 10 q=27.0 size=   46274kB time=00:12:01.60 bitrate= 525.3kbits/s dup=2 drop=0    frame= 7267 fps= 10 q=27.0 size=   46275kB time=00:12:02.20 bitrate= 524.9kbits/s dup=2 drop=0    frame= 7272 fps= 10 q=27.0 size=   46275kB time=00:12:02.70 bitrate= 524.5kbits/s dup=2 drop=0    frame= 7278 fps= 10 q=27.0 size=   46276kB time=00:12:03.30 bitrate= 524.1kbits/s dup=2 drop=0    frame= 7284 fps= 10 q=27.0 size=   46277kB time=00:12:03.90 bitrate= 523.7kbits/s dup=2 drop=0    frame= 7289 fps= 10 q=27.0 size=   46277kB time=00:12:04.40 bitrate= 523.3kbits/s dup=2 drop=0    frame= 7295 fps= 10 q=27.0 size=   46278kB time=00:12:05.00 bitrate= 522.9kbits/s dup=2 drop=0    frame= 7300 fps= 10 q=27.0 size=   46279kB time=00:12:05.50 bitrate= 522.6kbits/s dup=2 drop=0    frame= 7306 fps= 10 q=27.0 size=   46279kB time=00:12:06.10 bitrate= 522.1kbits/s dup=2 drop=0    frame= 7307 fps= 10 q=-1.0 Lsize=   46371kB time=00:12:10.50 bitrate= 520.0kbits/s dup=2 drop=0    
+video:46284kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.186938%
+[libx264 @ 0xe98420] frame I:31    Avg QP:12.52  size:537879
+[libx264 @ 0xe98420] frame P:1981  Avg QP:20.55  size: 13299
+[libx264 @ 0xe98420] frame B:5295  Avg QP:26.83  size:   826
+[libx264 @ 0xe98420] consecutive B-frames:  2.8%  1.6%  0.7% 94.9%
+[libx264 @ 0xe98420] mb I  I16..4: 53.9% 14.3% 31.9%
+[libx264 @ 0xe98420] mb P  I16..4:  0.2%  0.3%  0.8%  P16..4:  0.7%  0.1%  0.1%  0.0%  0.0%    skip:97.8%
+[libx264 @ 0xe98420] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8:  0.1%  0.0%  0.0%  direct: 0.0%  skip:99.7%  L0:52.4% L1:44.3% BI: 3.3%
+[libx264 @ 0xe98420] 8x8 transform intra:16.0% inter:10.2%
+[libx264 @ 0xe98420] coded y,uvDC,uvAC intra: 32.1% 47.1% 46.4% inter: 0.1% 0.1% 0.1%
+[libx264 @ 0xe98420] i16 v,h,dc,p: 73% 26%  1%  0%
+[libx264 @ 0xe98420] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 47% 13% 38%  0%  0%  0%  0%  0%  1%
+[libx264 @ 0xe98420] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 37% 21% 15%  3%  3%  6%  5%  5%  5%
+[libx264 @ 0xe98420] i8c dc,h,v,p: 69% 18% 11%  2%
+[libx264 @ 0xe98420] Weighted P-Frames: Y:0.0% UV:0.0%
+[libx264 @ 0xe98420] ref P L0: 72.7% 27.3%
+[libx264 @ 0xe98420] ref B L0: 78.6% 21.4%
+[libx264 @ 0xe98420] ref B L1: 95.1%  4.9%
+[libx264 @ 0xe98420] kb/s:518.90
+Exiting normally, received signal 2.

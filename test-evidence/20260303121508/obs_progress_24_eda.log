@@ -1,0 +1,257 @@
+**WARN: (IMPLF-201):	Pin 'HI' in macro 'sky130_fd_sc_hd__conb_1' has no ANTENNADIFFAREA value defined.
+The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-201' for more detail.
+**WARN: (IMPLF-201):	Pin 'LO' in macro 'sky130_fd_sc_hd__conb_1' has no ANTENNADIFFAREA value defined.
+The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-201' for more detail.
+**WARN: (IMPLF-200):	Pin 'DIODE' in macro 'sky130_ef_sc_hd__fakediode_2' has no ANTENNAGATEAREA value d
+efined. The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-200' for more detail.
+**WARN: (IMPLF-200):	Pin 'VNB' in macro 'sky130_ef_sc_hd__decap_12' has no ANTENNAGATEAREA value define
+d. The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-200' for more detail.
+**WARN: (IMPLF-200):	Pin 'VPB' in macro 'sky130_ef_sc_hd__decap_12' has no ANTENNAGATEAREA value define
+d. The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-200' for more detail.
+
+viaInitial starts at Tue Mar  3 20:21:08 2026
+viaInitial ends at Tue Mar  3 20:21:08 2026
+
+##  Check design process and node:
+##  Both design process and tech node are not set.
+
+Loading view definition file from /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/viewDefiniti
+on.tcl
+Reading lib_set_max timing library '/home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__t
+t_025C_1v80.lib' ...
+**WARN: (TECHLIB-1161):	The library level attribute default_operating_conditions on line 173158 is defined
+ after at least one cell definition. The attribute will be ignored. (File /home/EDA/ibex_work_upload/desig
+ns/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.lib)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__lpflow_decapkapwr_8'. The cell will
+ only be used for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_
+025C_1v80.lib)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__lpflow_decapkapwr_6'. The cell will
+ only be used for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_
+025C_1v80.lib)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__lpflow_decapkapwr_4'. The cell will
+ only be used for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_
+025C_1v80.lib)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__lpflow_decapkapwr_3'. The cell will
+ only be used for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_
+025C_1v80.lib)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__lpflow_decapkapwr_12'. The cell wil
+l only be used for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt
+_025C_1v80.lib)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__lpflow_bleeder_1'. The cell will on
+ly be used for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025
+C_1v80.lib)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__diode_2'. The cell will only be use
+d for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.li
+b)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__decap_8'. The cell will only be use
+d for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.li
+b)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__decap_6'. The cell will only be use
+d for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.li
+b)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__decap_4'. The cell will only be use
+d for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.li
+b)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__decap_3'. The cell will only be use
+d for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.li
+b)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__decap_12'. The cell will only be us
+ed for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.l
+ib)
+Read 428 cells in library 'sky130_fd_sc_hd__tt_025C_1v80'
+*** End library_loading (cpu=0.01min, real=0.00min, mem=8.5M, fe_cpu=0.47min, fe_real=1.12min, fe_mem=621.
+2M) ***
+% Begin Load netlist data ... (date=03/03 20:21:08, mem=505.5M)
+*** Begin netlist parsing (mem=621.2M) ***
+Created 428 new cells from 1 timing libraries.
+Reading netlist ...
+Backslashed names will retain backslash and a trailing blank character.
+Reading verilogBinary netlist '/home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.v.bin
+'
+Reading binary database version 2 in 1-threaded mode
+
+*** Memory Usage v#1 (Current mem = 628.195M, initial mem = 249.227M) ***
+*** End netlist parsing (cpu=0:00:00.1, real=0:00:00.0, mem=628.2M) ***
+% End Load netlist data ... (date=03/03 20:21:08, total cpu=0:00:00.1, real=0:00:00.0, peak res=511.1M, cu
+rrent mem=511.1M)
+Set top cell to ibex_core.
+Hooked 428 DB cells to tlib cells.
+Starting recursive module instantiation check.
+No recursion found.
+Building hierarchical netlist for Cell ibex_core ...
+*** Netlist is unique.
+** info: there are 443 modules.
+** info: there are 11575 stdCell insts.
+
+*** Memory Usage v#1 (Current mem = 633.109M, initial mem = 249.227M) ***
+*info: set bottom ioPad orient R0
+**WARN: (IMPFP-3961):	The techSite 'unithddbl' has no related standard cells in LEF/OA library. Cannot m
+ake calculations for this site type unless standard cell models of this type exist in the LEF/OA library.
+If the SITE is not used by the library you can ignore this warning or remove the SITE definition from the
+LEF/OA to avoid this message.
+Type 'man IMPFP-3961' for more detail.
+Adjust met3 preferred direction offset from 0.34 to 0.17.
+Adjust met4 preferred direction offset from 0.46 to 0.23.
+Adjust met5 preferred direction offset from 1.7 to 0.17.
+Generated pitch 3.66 in met5 is different from 3.4 defined in technology file in preferred direction.
+Generated pitch 0.69 in met4 is different from 0.92 defined in technology file in preferred direction.
+Generated pitch 0.61 in met3 is different from 0.68 defined in technology file in preferred direction.
+Set Default Net Delay as 1000 ps.
+Set Default Net Load as 0.5 pF.
+Set Default Input Pin Transition as 0.1 ps.
+Loading preference file /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/gui.pref.tcl ...
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+Ignoring {in2reg reg2out feedthr} groups for Hold optimization.
+**WARN: (IMPOPT-3602):	The specified path group name reg2reg is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <high> specified for reg2reg path_group
+**WARN: (IMPOPT-3602):	The specified path group name reg2out is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <low> specified for reg2out path_group
+**WARN: (IMPOPT-3602):	The specified path group name in2reg is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <low> specified for in2reg path_group
+**WARN: (IMPOPT-3602):	The specified path group name feedthr is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <low> specified for feedthr path_group
+**WARN: (IMPTCM-77):	Option "-drouteStartIteration" for command setNanoRouteMode is obsolete and will b
+e removed in a future release. The obsolete option still works in this release but to avoid this warning a
+nd to ensure compatibility with future releases, remove the obsolete option from your script.
+#WARNING (NRIF-90) Option setNanoRouteMode -routeBottomRoutingLayer is obsolete. It will continue to work
+for the current release. To ensure compatibility with future releases, use option setDesignMode -bottomRou
+tingLayer instead.
+#WARNING (NRIF-91) Option setNanoRouteMode -routeTopRoutingLayer is obsolete. It will continue to work for
+ the current release. To ensure compatibility with future releases, use option setDesignMode -topRoutingLa
+yer instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+Change floorplan default-technical-site to 'unithd'.
+**WARN: analysis view max_view not found, use default_view_setup
+**WARN: analysis view min_view not found, use default_view_setup
+*Info: initialize multi-corner CTS.
+Total number of combinational cells: 329
+Total number of sequential cells: 68
+Total number of tristate cells: 13
+Total number of level shifter cells: 7
+Total number of power gating cells: 0
+Total number of isolation cells: 11
+Total number of power switch cells: 0
+Total number of pulse generator cells: 0
+Total number of always on buffers: 0
+Total number of retention cells: 0
+List of usable buffers: sky130_fd_sc_hd__buf_1 sky130_fd_sc_hd__buf_12 sky130_fd_sc_hd__buf_16 sky130_fd_s
+c_hd__buf_2 sky130_fd_sc_hd__buf_4 sky130_fd_sc_hd__buf_6 sky130_fd_sc_hd__buf_8 sky130_fd_sc_hd__clkbuf_1
+ sky130_fd_sc_hd__clkbuf_16 sky130_fd_sc_hd__clkbuf_2 sky130_fd_sc_hd__clkbuf_4 sky130_fd_sc_hd__clkbuf_8
+sky130_fd_sc_hd__dlymetal6s2s_1 sky130_fd_sc_hd__probec_p_8 sky130_fd_sc_hd__probe_p_8
+Total number of usable buffers: 15
+List of unusable buffers:
+Total number of unusable buffers: 0
+List of usable inverters: sky130_fd_sc_hd__bufinv_16 sky130_fd_sc_hd__clkinv_1 sky130_fd_sc_hd__bufinv_8 s
+ky130_fd_sc_hd__clkinv_16 sky130_fd_sc_hd__clkinv_2 sky130_fd_sc_hd__clkinv_4 sky130_fd_sc_hd__clkinv_8 sk
+y130_fd_sc_hd__inv_1 sky130_fd_sc_hd__clkinvlp_2 sky130_fd_sc_hd__clkinvlp_4 sky130_fd_sc_hd__inv_12 sky13
+0_fd_sc_hd__inv_16 sky130_fd_sc_hd__inv_2 sky130_fd_sc_hd__inv_4 sky130_fd_sc_hd__inv_6 sky130_fd_sc_hd__i
+nv_8
+Total number of usable inverters: 16
+List of unusable inverters:
+Total number of unusable inverters: 0
+List of identified usable delay cells: sky130_fd_sc_hd__bufbuf_16 sky130_fd_sc_hd__bufbuf_8 sky130_fd_sc_h
+d__clkdlybuf4s15_1 sky130_fd_sc_hd__clkdlybuf4s15_2 sky130_fd_sc_hd__clkdlybuf4s18_1 sky130_fd_sc_hd__clkd
+lybuf4s18_2 sky130_fd_sc_hd__clkdlybuf4s25_1 sky130_fd_sc_hd__clkdlybuf4s50_1 sky130_fd_sc_hd__clkdlybuf4s
+25_2 sky130_fd_sc_hd__clkdlybuf4s50_2 sky130_fd_sc_hd__dlygate4sd2_1 sky130_fd_sc_hd__dlygate4sd1_1 sky130
+_fd_sc_hd__dlygate4sd3_1 sky130_fd_sc_hd__dlymetal6s6s_1 sky130_fd_sc_hd__dlymetal6s4s_1
+Total number of identified usable delay cells: 15
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+% Begin Load MMMC data ... (date=03/03 20:21:09, mem=697.2M)
+% End Load MMMC data ... (date=03/03 20:21:09, total cpu=0:00:00.0, real=0:00:00.0, peak res=697.2M, curre
+nt mem=697.2M)
+Reading floorplan file - /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.fp.gz (mem
+= 800.7M).
+% Begin Load floorplan data ... (date=03/03 20:21:09, mem=697.3M)
+*info: reset 12013 existing net BottomPreferredLayer and AvoidDetour
+Deleting old partition specification.
+Set FPlanBox to (0 0 524400 521560)
+**WARN: (IMPFP-3961):	The techSite 'unithddbl' has no related standard cells in LEF/OA library. Cannot m
+ake calculations for this site type unless standard cell models of this type exist in the LEF/OA library.
+If the SITE is not used by the library you can ignore this warning or remove the SITE definition from the
+LEF/OA to avoid this message.
+Type 'man IMPFP-3961' for more detail.
+Adjust met3 preferred direction offset from 0.34 to 0.17.
+Adjust met4 preferred direction offset from 0.46 to 0.23.
+Adjust met5 preferred direction offset from 1.7 to 0.17.
+Generated pitch 3.66 in met5 is different from 3.4 defined in technology file in preferred direction.
+Generated pitch 0.69 in met4 is different from 0.92 defined in technology file in preferred direction.
+Generated pitch 0.61 in met3 is different from 0.68 defined in technology file in preferred direction.
+ ... processed partition successfully.
+Reading binary special route file /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.fp
+.spr.gz (Created by Innovus v20.10-p004_1 on Mon Mar  2 23:41:08 2026, version: 1)
+Ending "Read special route file" (total cpu=0:00:00.0, real=0:00:00.0, peak res=698.7M, current mem=698.7M
+)
+There are 58 nets with weight being set
+There are 58 nets with bottomPreferredRoutingLayer being set
+There are 58 nets with avoidDetour being set
+Extracting standard cell pins and blockage ......
+Pin and blockage extraction finished
+Delete all existing relative floorplan constraints.
+% End Load floorplan data ... (date=03/03 20:21:10, total cpu=0:00:00.1, real=0:00:01.0, peak res=699.8M,
+current mem=699.8M)
+Reading congestion map file /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.route.co
+ngmap.gz ...
+% Begin Load SymbolTable ... (date=03/03 20:21:10, mem=700.1M)
+Suppress "**WARN ..." messages.
+Un-suppress "**WARN ..." messages.
+% End Load SymbolTable ... (date=03/03 20:21:10, total cpu=0:00:00.1, real=0:00:00.0, peak res=702.3M, cur
+rent mem=702.3M)
+Loading place ...
+% Begin Load placement data ... (date=03/03 20:21:10, mem=702.3M)
+Reading placement file - /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.place.gz.
+** Reading stdCellPlacement_binary (Created by Innovus v20.10-p004_1 on Mon Mar  2 23:41:08 2026, version#
+ 2) ...
+Read Views for adaptive view pruning ...
+Read 0 views from Binary DB for adaptive view pruning
+*** Completed restorePlace (cpu=0:00:00.0 real=0:00:00.0 mem=811.7M) ***
+Total net length = 4.381e+05 (2.132e+05 2.249e+05) (ext = 3.365e+04)
+% End Load placement data ... (date=03/03 20:21:10, total cpu=0:00:00.1, real=0:00:00.0, peak res=705.3M,
+current mem=705.0M)
+Reading PG file /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.pg.gz, version#2, (C
+reated by Innovus v20.10-p004_1 on       Mon Mar  2 23:41:08 2026)
+*** Completed restorePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=807.7M) ***
+% Begin Load routing data ... (date=03/03 20:21:10, mem=705.6M)
+Reading routing file - /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.route.gz.
+Reading Innovus routing data (Created by Innovus v20.10-p004_1 on Mon Mar  2 23:41:09 2026 Format: 20.1) .
+..
+*** Total 11883 nets are successfully restored.
+*** Completed restoreRoute (cpu=0:00:00.2 real=0:00:01.0 mem=834.7M) ***
+% End Load routing data ... (date=03/03 20:21:11, total cpu=0:00:00.2, real=0:00:01.0, peak res=733.0M, cu
+rrent mem=732.1M)
+Loading Drc markers ...
+... 1005 markers are loaded ...
+... 0 geometry drc markers are loaded ...
+... 5 antenna drc markers are loaded ...
+TAT_INFO: restoreCongMap REAL = 0 : CPU = 0 : MEM = 0.
+Reading property file /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.prop
+*** Completed restoreProperty (cpu=0:00:00.0 real=0:00:00.0 mem=840.7M) ***
+Reading dirtyarea snapshot file /home/EDA/ibex_work_upload/result/pr/data/chip_done.enc.dat/ibex_core.db.d
+a.gz (Create by Innovus v20.10-p004_1 on Mon Mar  2 23:41:09 2026, version: 4).
+

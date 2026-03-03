@@ -1,0 +1,27 @@
+{
+  "test_name": "/rtl2gds",
+  "timestamp": "20260303103341",
+  "duration_s": 603,
+  "total_stages": 1,
+  "completed_stages": 0,
+  "progress_pct": 0,
+  "total_score": 1.5,
+  "max_score": 5,
+  "blocking_stage": "full_flow",
+  "blocking_category": "HIPILOT_BUG",
+  "stages": [
+    {
+      "name": "full_flow",
+      "score": 1.5,
+      "status": "fail",
+      "failure_category": "HIPILOT_BUG",
+      "scores": {
+        "L1_prompt_delivery": 1,
+        "L2_intent_recognition": 0,
+        "L3_mcp_tool_usage": 0.5,
+        "L4_eda_execution": 0,
+        "L5_qor_assessment": 0
+      }
+    }
+  ]
+}
