@@ -728,7 +728,7 @@ export class FlowCertifier {
    *   'error'           — Something fundamentally broken (MCP not found, etc.)
    *   'idle'            — Both panes idle, no prompt detected
    */
-  _detectState(claude, eda, claudeChanged, edaChanged) {
+  _detectState(claude, eda, claudeChanged, edaChanged, recentClaudeOutputs = []) {
     const claudeLines = claude.split('\n').filter(l => l.trim());
     const lastLine = claudeLines[claudeLines.length - 1] || '';
 
@@ -771,14 +771,48 @@ export class FlowCertifier {
       /pt_shell>/i.test(edaLastLine) ||
       /\$\s*$/.test(edaLastLine);
 
-    // If Claude shows prompt AND Claude pane didn't just change → done
-    if (claudePromptReady && !claudeChanged) {
+    // Check for stage completion message - a human would see "STAGE X COMPLETE"
+    const stageComplete = /STAGE\s+\d+\s+COMPLETE|stage.*complete/i.test(claude);
+
+    // Check if Claude is just monitoring (only doing eda.peek/get_status)
+    // A human would recognize this pattern: repeated "👁️ EDA Pane Snapshot" with similar content
+    const isMonitoringPattern = recentClaudeOutputs.length >= 3 &&
+      recentClaudeOutputs.every(out => /👁️.*EDA Pane Snapshot|eda\.(peek|get_status)/i.test(out));
+
+    // If Claude shows prompt AND (pane didn't change OR only monitoring) → done
+    if (claudePromptReady && (!claudeChanged || isMonitoringPattern)) {
       return { state: 'done', detail: `Claude prompt: "${lastLine.trim()}"` };
     }
 
-    // Claude is actively producing output or thinking
-    if (claudeChanged || claudeThinking) {
-      return { state: 'working', detail: claudeThinking ? 'thinking' : 'output changing' };
+    // If EDA prompt is back AND Claude has been only monitoring → EDA done, Claude should respond
+    if (edaPromptReady && isMonitoringPattern && !claudeThinking) {
+      return { state: 'done', detail: 'EDA complete, Claude monitoring finished' };
+    }
+
+    // Stage completion is a strong signal of done
+    if (stageComplete && !claudeThinking) {
+      return { state: 'done', detail: 'Stage completion detected' };
+    }
+
+    // Claude is actively thinking — definitely working
+    if (claudeThinking) {
+      return { state: 'working', detail: 'thinking' };
+    }
+
+    // If only doing monitoring pattern, consider it "waiting" not "working"
+    if (isMonitoringPattern) {
+      if (edaChanged) {
+        return { state: 'waiting_for_eda', detail: 'Claude monitoring, EDA running' };
+      }
+      if (edaPromptReady) {
+        return { state: 'done', detail: 'EDA prompt ready, Claude monitoring' };
+      }
+      return { state: 'idle', detail: 'Claude monitoring, waiting for EDA' };
+    }
+
+    // Claude pane changed with real work (not just monitoring)
+    if (claudeChanged) {
+      return { state: 'working', detail: 'output changing' };
     }
 
     // Left pane idle but right pane changing — EDA tool is executing
@@ -808,6 +842,10 @@ export class FlowCertifier {
     let pollCount = 0;
     let lastState = 'working';
 
+    // Track recent Claude outputs to detect monitoring pattern (eda.peek loops)
+    const recentClaudeOutputs = [];
+    const MONITORING_WINDOW = 5; // Keep last 5 outputs to detect pattern
+
     while (Date.now() - start < maxWaitMs) {
       await this._sleep(POLL_INTERVAL_MS);
       pollCount++;
@@ -821,8 +859,16 @@ export class FlowCertifier {
       if (claudeChanged) { lastClaudeChangeTime = Date.now(); lastClaudeOutput = panes.claude; }
       if (edaChanged) { lastEdaChangeTime = Date.now(); lastEdaOutput = panes.eda; }
 
+      // Track recent outputs for monitoring pattern detection
+      if (claudeChanged) {
+        recentClaudeOutputs.push(panes.claude);
+        if (recentClaudeOutputs.length > MONITORING_WINDOW) {
+          recentClaudeOutputs.shift();
+        }
+      }
+
       // Detect state — what would a human see?
-      const { state, detail } = this._detectState(panes.claude, panes.eda, claudeChanged, edaChanged);
+      const { state, detail } = this._detectState(panes.claude, panes.eda, claudeChanged, edaChanged, recentClaudeOutputs);
 
       if (state !== lastState) {
         this._runLog(`State: ${lastState} → ${state}${detail ? ` (${detail})` : ''}`);
