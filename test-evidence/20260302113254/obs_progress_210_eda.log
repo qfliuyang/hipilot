@@ -1,0 +1,257 @@
+45.020004) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 275.019989) (554.760010, 2
+75.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 305.019989) (554.760010, 3
+05.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 335.019989) (554.760010, 3
+35.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 365.019989) (554.760010, 3
+65.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 395.019989) (554.760010, 3
+95.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 425.019989) (554.760010, 4
+25.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 455.019989) (554.760010, 4
+55.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 485.019989) (554.760010, 4
+85.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 515.020020) (554.760010, 5
+15.020020) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 545.020020) (554.760010, 5
+45.020020) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 13.020000) (554.760010, 13
+.020000) because same wire already exists.
+**WARN: (EMS-27):	Message (IMPPP-170) has exceeded the current message display limit of 20.
+To increase the message display limit, refer to the product command reference manual.
+Stripe generation is complete.
+#% End addStripe (date=03/02 19:50:30, total cpu=0:00:00.0, real=0:00:00.0, peak res=736.6M, current mem=7
+36.6M)
+#% Begin sroute (date=03/02 19:50:30, mem=736.6M)
+*** Begin SPECIAL ROUTE on Mon Mar  2 19:50:30 2026 ***
+SPECIAL ROUTE ran on directory: /home/EDA/ibex_work_upload
+SPECIAL ROUTE ran on machine: EDA2035 (Linux 3.10.0-1160.119.1.el7.x86_64 x86_64 2.71Ghz)
+
+Begin option processing ...
+srouteConnectPowerBump set to false
+routeSelectNet set to "VDD VSS"
+routeSpecial set to true
+srouteBottomLayerLimit set to 1
+srouteBottomTargetLayerLimit set to 1
+srouteConnectBlockPin set to false
+srouteConnectConverterPin set to false
+srouteConnectPadPin set to false
+srouteConnectStripe set to false
+srouteCrossoverViaBottomLayer set to 1
+srouteCrossoverViaTopLayer set to 5
+srouteFollowCorePinEnd set to 3
+srouteFollowPadPin set to false
+srouteJogControl set to "preferWithChanges differentLayer"
+sroutePadPinAllPorts set to true
+sroutePreserveExistingRoutes set to true
+srouteRoutePowerBarPortOnBothDir set to true
+srouteStopSCPin set to true
+srouteTopLayerLimit set to 5
+srouteTopTargetLayerLimit set to 5
+End option processing: cpu: 0:00:00, real: 0:00:00, peak: 1870.00 megs.
+
+Reading DB technology information...
+Finished reading DB technology information.
+Reading floorplan and netlist information...
+Finished reading floorplan and netlist information.
+Read in 12 layers, 6 routing layers, 0 overlap layer
+Read in 440 macros, 91 used
+Read in 90 components
+  90 core components: 90 unplaced, 0 placed, 0 fixed
+Read in 264 physical pins
+  264 physical pins: 0 unplaced, 264 placed, 0 fixed
+Read in 2 logical pins
+Read in 266 nets
+Read in 2 special nets, 2 routed
+Read in 264 terminals
+2 nets selected.
+
+Begin power routing ...
+**WARN: (IMPSR-1253):	Cannot find any standard cell pin connected to net VDD.
+Run globalNetConnect command or change CPF file to make sure that the netlist reflects the correct power g
+round connections. The standard cell pins must be defined as 'USE POWER' or 'USE GROUND'.
+**WARN: (IMPSR-1253):	Cannot find any standard cell pin connected to net VSS.
+Run globalNetConnect command or change CPF file to make sure that the netlist reflects the correct power g
+round connections. The standard cell pins must be defined as 'USE POWER' or 'USE GROUND'.
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+CPU time for FollowPin 0 seconds
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+CPU time for FollowPin 0 seconds
+  Number of Core ports routed: 0
+End power routing: cpu: 0:00:00, real: 0:00:00, peak: 1870.00 megs.
+
+
+
+ Begin updating DB with routing results ...
+ Updating DB with 264 io pins ...
+ Updating DB with 0 via definition ...
+sroute created 0 wire.
+ViaGen created 0 via, deleted 0 via to avoid violation.
+#% End sroute (date=03/02 19:50:31, total cpu=0:00:00.2, real=0:00:01.0, peak res=737.6M, current mem=737.
+6M)
+POWER COMPLETE
+Defining scan chain...
+
+Usage: specifyScanChain [-help] <scanChainName> -start {ftname|instPinName} -stop {ftname|instPinName}
+
+**ERROR: (IMPTCM-48):	"-floating" is not a legal option for command "specifyScanChain". Either the curre
+nt option or an option prior to it is not specified correctly.
+Could not define scan chain:
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+**ERROR: (IMPSP-9099):	Scan chains exist in this design but are not defined for 99.95% flops. Placement a
+nd timing QoR can be severely impacted in this case!
+It is highly recommend to define scan chains either through input scan def (preferred) or specifyScanChain
+.
+Placement error (continuing):
+PLACEMENT COMPLETE
+**ERROR: (TCLCMD-1022):	Property 'is_placed' is not supported for object type 'db instance'
+Placed cells count: 0
+ERROR: Cells not placed
+#% Begin save design ... (date=03/02 19:50:31, mem=738.1M)
+% Begin Save ccopt configuration ... (date=03/02 19:50:31, mem=741.1M)
+% End Save ccopt configuration ... (date=03/02 19:50:31, total cpu=0:00:00.1, real=0:00:00.0, peak res=742
+.3M, current mem=742.3M)
+% Begin Save netlist data ... (date=03/02 19:50:31, mem=742.4M)
+Writing Binary DB to result/pr/data/pre_placement.enc.dat/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/02 19:50:31, total cpu=0:00:00.0, real=0:00:00.0, peak res=742.4M, cu
+rrent mem=742.4M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/pre_placement.enc.dat/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/02 19:50:31, mem=742.6M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/02 19:50:31, total cpu=0:00:00.0, real=0:00:00.0, peak res=742.6M, curren
+t mem=742.6M)
+Saving preference file result/pr/data/pre_placement.enc.dat/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 19:50:32, mem=743.9M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 19:50:32, total cpu=0:00:00.0, real=0:00:00.0, peak res=743.9M,
+current mem=743.9M)
+Saving PG file result/pr/data/pre_placement.enc.dat/ibex_core.pg.gz, version#2, (Created by Innovus v20.10
+-p004_1 on Mon Mar  2 19:50:32 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=850.5M) ***
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 19:50:32, mem=744.4M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 19:50:32, total cpu=0:00:00.0, real=0:00:00.0, peak res=744.4M,
+current mem=744.4M)
+% Begin Save routing data ... (date=03/02 19:50:32, mem=744.4M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.0 real=0:00:00.0 mem=850.5M) ***
+% End Save routing data ... (date=03/02 19:50:32, total cpu=0:00:00.0, real=0:00:00.0, peak res=744.5M, cu
+rrent mem=744.5M)
+Saving property file result/pr/data/pre_placement.enc.dat/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=853.5M) ***
+% Begin Save power constraints data ... (date=03/02 19:50:32, mem=745.1M)
+% End Save power constraints data ... (date=03/02 19:50:32, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+745.2M, current mem=745.2M)
+Generated self-contained design pre_placement.enc.dat
+#% End save design ... (date=03/02 19:50:37, total cpu=0:00:05.6, real=0:00:06.0, peak res=748.2M, current
+ mem=748.2M)
+
+*** Memory Usage v#1 (Current mem = 888.750M, initial mem = 249.227M) ***
+*** Message Summary: 234 warning(s), 16 error(s)
+
+--- Ending "Innovus" (totcpu=0:00:39.7, real=0:03:05, mem=888.8M) ---
+
+[EDA@EDA2035 ibex_work_upload]$ source /tmp/hipilot-EDA/exec/hipilot_exec_1772452280233.tcl
+bash: puts: command not found...
+bash: puts: command not found...
+bash: puts: command not found...
+-bash: /tmp/hipilot-EDA/exec/hipilot_exec_1772452280233.tcl: line 24: syntax error near unexpected token `
+}'
+-bash: /tmp/hipilot-EDA/exec/hipilot_exec_1772452280233.tcl: line 24: `    }'
+[EDA@EDA2035 ibex_work_upload]$ cd /home/EDA/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$ innovus -no_gui
+C: unknown locale
+
+Cadence Innovus(TM) Implementation System.
+Copyright 2020 Cadence Design Systems, Inc. All rights reserved worldwide.
+
+Version:	v20.10-p004_1, built Thu May 7 20:02:41 PDT 2020
+Options:	-no_gui
+Date:		Mon Mar  2 19:51:32 2026
+Host:		EDA2035 (x86_64 w/Linux 3.10.0-1160.119.1.el7.x86_64) (3cores*6cpus*Intel(R) Core(TM) i7-8
+559U CPU @ 2.70GHz 8192KB)
+OS:		CentOS Linux release 7.9.2009 (Core)
+
+License:
+		invs	Innovus Implementation System	20.1	checkout succeeded
+		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required
+CPU count.
+**WARN: (IMPOPT-801):	Genus executable not found in PATH. Install Genus, add the path to the genus execu
+table in the PATH variable and rerun Innovus.
+Create and set the environment variable TMPDIR to /tmp/innovus_temp_106256_EDA2035_EDA_Ax8TwE.
+
+The soft stacksize limit is either up to the hard limit or larger than 0.2% of RAM. No change is needed.
+
+**INFO:  MMMC transition support version v31-84
+
+innovus 1> source /tmp/hipilot-EDA/exec/hipilot_exec_1772452321590.tcl
+Checking existing chip_done.enc checkpoint...
+chip_done.enc size: 575 bytes
+Checking for GDS file...
+GDS file exists: 1
+GDS file size: 18640150 bytes
+
+===== RTL-TO-GDS FLOW ALREADY COMPLETE =====
+GDS output: result/pr/data/ibex_core.gds
+Checkpoint: result/pr/data/chip_done.enc
+
+*** Memory Usage v#1 (Current mem = 570.281M, initial mem = 249.227M) ***
+*** Message Summary: 1 warning(s), 0 error(s)
+
+--- Ending "Innovus" (totcpu=0:00:27.1, real=0:00:29.0, mem=570.3M) ---
+
+[EDA@EDA2035 ibex_work_upload]$

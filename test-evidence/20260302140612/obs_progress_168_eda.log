@@ -1,0 +1,257 @@
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+innovus 6> exit
+
+*** Memory Usage v#1 (Current mem = 845.945M, initial mem = 249.227M) ***
+*** Message Summary: 110 warning(s), 4 error(s)
+
+--- Ending "Innovus" (totcpu=0:00:31.2, real=0:04:12, mem=845.9M) ---
+
+[EDA@EDA2035 ibex_work_upload]$ cd /home/EDA/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$ innovus -no_gui
+C: unknown locale
+
+Cadence Innovus(TM) Implementation System.
+Copyright 2020 Cadence Design Systems, Inc. All rights reserved worldwide.
+
+Version:	v20.10-p004_1, built Thu May 7 20:02:41 PDT 2020
+Options:	-no_gui
+Date:		Mon Mar  2 22:25:47 2026
+Host:		EDA2035 (x86_64 w/Linux 3.10.0-1160.119.1.el7.x86_64) (3cores*6cpus*Intel(R) Core(TM) i7-8
+559U CPU @ 2.70GHz 8192KB)
+OS:		CentOS Linux release 7.9.2009 (Core)
+
+License:
+		invs	Innovus Implementation System	20.1	checkout succeeded
+		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required
+CPU count.
+**WARN: (IMPOPT-801):	Genus executable not found in PATH. Install Genus, add the path to the genus execu
+table in the PATH variable and rerun Innovus.
+Create and set the environment variable TMPDIR to /tmp/innovus_temp_90738_EDA2035_EDA_LbglnL.
+
+The soft stacksize limit is either up to the hard limit or larger than 0.2% of RAM. No change is needed.
+
+**INFO:  MMMC transition support version v31-84
+
+innovus 1> source /tmp/hipilot-EDA/exec/hipilot_exec_1772461581375.tcl
+#% Begin load design ... (date=03/02 22:26:21, mem=463.8M)
+Set Default Input Pin Transition as 0.1 ps.
+Loading design 'ibex_core' saved by 'Innovus' '20.10-p004_1' on 'Mon Mar 2 22:24:41 2026'.
+% Begin Load MMMC data ... (date=03/02 22:26:21, mem=463.7M)
+% End Load MMMC data ... (date=03/02 22:26:21, total cpu=0:00:00.0, real=0:00:00.0, peak res=463.9M, curre
+nt mem=463.9M)
+
+Loading LEF file /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/libs/lef/sky130_fd_sc_hd.tl
+ef ...
+
+Loading LEF file /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/libs/lef/sky130_fd_sc_hd_me
+rged.lef ...
+**WARN: (IMPLF-108):	There is no overlap layer defined in any LEF file
+so you are unable to create rectilinear partition in a hierarchical flow.
+Set DBUPerIGU to M1 pitch 460.
+**WARN: (IMPLF-201):	Pin 'LO' in macro 'sky130_fd_sc_hd__macro_sparecell' has no ANTENNADIFFAREA value
+defined. The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-201' for more detail.
+**WARN: (IMPLF-200):	Pin 'DIODE' in macro 'sky130_fd_sc_hd__diode_2' has no ANTENNAGATEAREA value defin
+ed. The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-200' for more detail.
+**WARN: (IMPLF-201):	Pin 'HI' in macro 'sky130_fd_sc_hd__conb_1' has no ANTENNADIFFAREA value defined.
+The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-201' for more detail.
+**WARN: (IMPLF-201):	Pin 'LO' in macro 'sky130_fd_sc_hd__conb_1' has no ANTENNADIFFAREA value defined.
+The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-201' for more detail.
+**WARN: (IMPLF-200):	Pin 'DIODE' in macro 'sky130_ef_sc_hd__fakediode_2' has no ANTENNAGATEAREA value d
+efined. The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-200' for more detail.
+**WARN: (IMPLF-200):	Pin 'VNB' in macro 'sky130_ef_sc_hd__decap_12' has no ANTENNAGATEAREA value define
+d. The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-200' for more detail.
+**WARN: (IMPLF-200):	Pin 'VPB' in macro 'sky130_ef_sc_hd__decap_12' has no ANTENNAGATEAREA value define
+d. The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-200' for more detail.
+
+viaInitial starts at Mon Mar  2 22:26:21 2026
+viaInitial ends at Mon Mar  2 22:26:21 2026
+
+##  Check design process and node:
+##  Both design process and tech node are not set.
+
+Loading view definition file from /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/viewDefini
+tion.tcl
+*** End library_loading (cpu=0.00min, real=0.00min, mem=0.0M, fe_cpu=0.45min, fe_real=0.57min, fe_mem=590.
+1M) ***
+% Begin Load netlist data ... (date=03/02 22:26:21, mem=473.0M)
+*** Begin netlist parsing (mem=590.1M) ***
+Created 0 new cells from 0 timing libraries.
+Reading netlist ...
+Backslashed names will retain backslash and a trailing blank character.
+Reading verilogBinary netlist '/home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core.v.b
+in'
+Reading binary database version 2 in 1-threaded mode
+
+*** Memory Usage v#1 (Current mem = 601.109M, initial mem = 249.230M) ***
+*** End netlist parsing (cpu=0:00:00.0, real=0:00:01.0, mem=601.1M) ***
+% End Load netlist data ... (date=03/02 22:26:22, total cpu=0:00:00.1, real=0:00:01.0, peak res=480.6M, cu
+rrent mem=479.2M)
+Set top cell to ibex_core.
+Hooked 0 DB cells to tlib cells.
+Starting recursive module instantiation check.
+No recursion found.
+Building hierarchical netlist for Cell ibex_core ...
+*** Netlist is unique.
+** info: there are 443 modules.
+** info: there are 11078 stdCell insts.
+
+*** Memory Usage v#1 (Current mem = 619.047M, initial mem = 249.230M) ***
+*info: set bottom ioPad orient R0
+**WARN: (IMPFP-3961):	The techSite 'unithddbl' has no related standard cells in LEF/OA library. Cannot m
+ake calculations for this site type unless standard cell models of this type exist in the LEF/OA library.
+If the SITE is not used by the library you can ignore this warning or remove the SITE definition from the
+LEF/OA to avoid this message.
+Type 'man IMPFP-3961' for more detail.
+Adjust met3 preferred direction offset from 0.34 to 0.17.
+Adjust met4 preferred direction offset from 0.46 to 0.23.
+Adjust met5 preferred direction offset from 1.7 to 0.17.
+Generated pitch 3.66 in met5 is different from 3.4 defined in technology file in preferred direction.
+Generated pitch 0.69 in met4 is different from 0.92 defined in technology file in preferred direction.
+Generated pitch 0.61 in met3 is different from 0.68 defined in technology file in preferred direction.
+Set Default Net Delay as 1000 ps.
+Set Default Net Load as 0.5 pF.
+Set Default Input Pin Transition as 0.1 ps.
+Loading preference file /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/gui.pref.tcl ...
+Change floorplan default-technical-site to 'unithd'.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__xor3_1; Check the timi
+ng library (.lib) file and make sure the timing information exists for the cell and you can run the checkT
+imingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__xor2_1; Check the timi
+ng library (.lib) file and make sure the timing information exists for the cell and you can run the checkT
+imingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__xnor2_1; Check the tim
+ing library (.lib) file and make sure the timing information exists for the cell and you can run the check
+TimingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__sdfxtp_2; Check the ti
+ming library (.lib) file and make sure the timing information exists for the cell and you can run the chec
+kTimingLibrary command to verify if the timing library has complete information after the design is loaded
+.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__sdfxtp_1; Check the ti
+ming library (.lib) file and make sure the timing information exists for the cell and you can run the chec
+kTimingLibrary command to verify if the timing library has complete information after the design is loaded
+.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__sdfstp_1; Check the ti
+ming library (.lib) file and make sure the timing information exists for the cell and you can run the chec
+kTimingLibrary command to verify if the timing library has complete information after the design is loaded
+.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__sdfrtp_2; Check the ti
+ming library (.lib) file and make sure the timing information exists for the cell and you can run the chec
+kTimingLibrary command to verify if the timing library has complete information after the design is loaded
+.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__sdfrtp_1; Check the ti
+ming library (.lib) file and make sure the timing information exists for the cell and you can run the chec
+kTimingLibrary command to verify if the timing library has complete information after the design is loaded
+.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__or4_4; Check the timin
+g library (.lib) file and make sure the timing information exists for the cell and you can run the checkTi
+mingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__or4_1; Check the timin
+g library (.lib) file and make sure the timing information exists for the cell and you can run the checkTi
+mingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__or3_1; Check the timin
+g library (.lib) file and make sure the timing information exists for the cell and you can run the checkTi
+mingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__or2_2; Check the timin
+g library (.lib) file and make sure the timing information exists for the cell and you can run the checkTi
+mingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__or2_1; Check the timin
+g library (.lib) file and make sure the timing information exists for the cell and you can run the checkTi
+mingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__or2_0; Check the timin
+g library (.lib) file and make sure the timing information exists for the cell and you can run the checkTi
+mingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o221ai_1; Check the ti
+ming library (.lib) file and make sure the timing information exists for the cell and you can run the chec
+kTimingLibrary command to verify if the timing library has complete information after the design is loaded
+.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o211ai_1; Check the ti
+ming library (.lib) file and make sure the timing information exists for the cell and you can run the chec
+kTimingLibrary command to verify if the timing library has complete information after the design is loaded
+.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o32ai_1; Check the tim
+ing library (.lib) file and make sure the timing information exists for the cell and you can run the check
+TimingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o31ai_1; Check the tim
+ing library (.lib) file and make sure the timing information exists for the cell and you can run the check
+TimingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o31a_1; Check the timi
+ng library (.lib) file and make sure the timing information exists for the cell and you can run the checkT
+imingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o22ai_2; Check the tim
+ing library (.lib) file and make sure the timing information exists for the cell and you can run the check
+TimingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (EMS-27):	Message (IMPSYC-2) has exceeded the current message display limit of 20.
+To increase the message display limit, refer to the product command reference manual.
+Reading floorplan file - /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core.fp.gz (me
+m = 788.8M).
+% Begin Load floorplan data ... (date=03/02 22:26:22, mem=666.0M)
+*info: reset 11519 existing net BottomPreferredLayer and AvoidDetour
+Deleting old partition specification.
+ ... processed partition successfully.
+Reading binary special route file /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core.
+fp.spr.gz (Created by Innovus v20.10-p004_1 on Mon Mar  2 22:24:36 2026, version: 1)
+Ending "Read special route file" (total cpu=0:00:00.0, real=0:00:00.0, peak res=666.7M, current mem=666.7M
+)
+Extracting standard cell pins and blockage ......
+Pin and blockage extraction finished
+Delete all existing relative floorplan constraints.
+% End Load floorplan data ... (date=03/02 22:26:22, total cpu=0:00:00.1, real=0:00:00.0, peak res=667.9M,
+current mem=667.9M)
+% Begin Load SymbolTable ... (date=03/02 22:26:22, mem=668.1M)
+Reading congestion map file /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core.route.
+congmap.gz ...
+% End Load SymbolTable ... (date=03/02 22:26:23, total cpu=0:00:00.0, real=0:00:01.0, peak res=669.6M, cur
+rent mem=669.6M)
+Loading place ...
+% Begin Load placement data ... (date=03/02 22:26:23, mem=669.6M)
+Reading placement file - /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core.place.gz.
+** Reading stdCellPlacement_binary (Created by Innovus v20.10-p004_1 on Mon Mar  2 22:24:36 2026, version#
+ 2) ...
+Read Views for adaptive view pruning ...
+Read 0 views from Binary DB for adaptive view pruning
+*** Completed restorePlace (cpu=0:00:00.0 real=0:00:00.0 mem=793.8M) ***
+Total net length = 2.276e+01 (1.138e+01 1.138e+01) (ext = 5.160e-01)
+% End Load placement data ... (date=03/02 22:26:23, total cpu=0:00:00.0, real=0:00:00.0, peak res=669.7M,
+current mem=669.6M)
+% Begin Load routing data ... (date=03/02 22:26:23, mem=669.7M)
+Reading routing file - /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core.route.gz.
+Reading Innovus routing data (Created by Innovus v20.10-p004_1 on Mon Mar  2 22:24:36 2026 Format: 20.1) .
+..
+*** Total 11389 nets are successfully restored.
+*** Completed restoreRoute (cpu=0:00:00.0 real=0:00:00.0 mem=790.8M) ***
+% End Load routing data ... (date=03/02 22:26:23, total cpu=0:00:00.0, real=0:00:00.0, peak res=671.1M, cu
+rrent mem=670.1M)
+TAT_INFO: restoreCongMap REAL = 1 : CPU = 0 : MEM = 0.
+Reading property file /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core.prop
+*** Completed restoreProperty (cpu=0:00:00.0 real=0:00:00.0 mem=795.8M) ***
+Set Default Input Pin Transition as 0.1 ps.
+

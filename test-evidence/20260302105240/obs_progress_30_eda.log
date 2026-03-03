@@ -1,0 +1,257 @@
+ing library (.lib) file and make sure the timing information exists for the cell and you can run the check
+TimingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o31a_1; Check the timi
+ng library (.lib) file and make sure the timing information exists for the cell and you can run the checkT
+imingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o22ai_2; Check the tim
+ing library (.lib) file and make sure the timing information exists for the cell and you can run the check
+TimingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (EMS-27):	Message (IMPSYC-2) has exceeded the current message display limit of 20.
+To increase the message display limit, refer to the product command reference manual.
+Reading floorplan file - /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core.fp.gz (me
+m = 780.7M).
+% Begin Load floorplan data ... (date=03/02 18:59:01, mem=663.8M)
+*info: reset 11519 existing net BottomPreferredLayer and AvoidDetour
+Deleting old partition specification.
+Set FPlanBox to (0 0 556140 551480)
+**WARN: (IMPFP-3961):	The techSite 'unithddbl' has no related standard cells in LEF/OA library. Cannot m
+ake calculations for this site type unless standard cell models of this type exist in the LEF/OA library.
+If the SITE is not used by the library you can ignore this warning or remove the SITE definition from the
+LEF/OA to avoid this message.
+Type 'man IMPFP-3961' for more detail.
+Adjust met3 preferred direction offset from 0.34 to 0.17.
+Adjust met4 preferred direction offset from 0.46 to 0.23.
+Adjust met5 preferred direction offset from 1.7 to 0.17.
+Generated pitch 3.66 in met5 is different from 3.4 defined in technology file in preferred direction.
+Generated pitch 0.69 in met4 is different from 0.92 defined in technology file in preferred direction.
+Generated pitch 0.61 in met3 is different from 0.68 defined in technology file in preferred direction.
+ ... processed partition successfully.
+Reading binary special route file /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core.
+fp.spr.gz (Created by Innovus v20.10-p004_1 on Mon Mar  2 18:49:58 2026, version: 1)
+Ending "Read special route file" (total cpu=0:00:00.7, real=0:00:00.0, peak res=665.2M, current mem=665.2M
+)
+Extracting standard cell pins and blockage ......
+Pin and blockage extraction finished
+Delete all existing relative floorplan constraints.
+% End Load floorplan data ... (date=03/02 18:59:03, total cpu=0:00:01.1, real=0:00:02.0, peak res=666.6M,
+current mem=666.6M)
+% Begin Load SymbolTable ... (date=03/02 18:59:03, mem=666.9M)
+Reading congestion map file /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core.route.
+congmap.gz ...
+% End Load SymbolTable ... (date=03/02 18:59:03, total cpu=0:00:00.1, real=0:00:00.0, peak res=668.2M, cur
+rent mem=668.2M)
+Loading place ...
+% Begin Load placement data ... (date=03/02 18:59:03, mem=668.2M)
+Reading placement file - /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core.place.gz.
+** Reading stdCellPlacement_binary (Created by Innovus v20.10-p004_1 on Mon Mar  2 18:49:58 2026, version#
+ 2) ...
+Read Views for adaptive view pruning ...
+Read 0 views from Binary DB for adaptive view pruning
+*** Completed restorePlace (cpu=0:00:00.0 real=0:00:00.0 mem=786.8M) ***
+Total net length = 2.225e+01 (1.112e+01 1.112e+01) (ext = 4.000e-03)
+% End Load placement data ... (date=03/02 18:59:03, total cpu=0:00:00.0, real=0:00:00.0, peak res=668.3M,
+current mem=668.3M)
+Reading PG file /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core.pg.gz, version#2,
+(Created by Innovus v20.10-p004_1 on       Mon Mar  2 18:49:58 2026)
+*** Completed restorePGFile (cpu=0:00:00.0 real=0:00:01.0 mem=782.8M) ***
+% Begin Load routing data ... (date=03/02 18:59:04, mem=668.8M)
+Reading routing file - /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core.route.gz.
+Reading Innovus routing data (Created by Innovus v20.10-p004_1 on Mon Mar  2 18:49:58 2026 Format: 20.1) .
+..
+*** Total 11389 nets are successfully restored.
+*** Completed restoreRoute (cpu=0:00:00.0 real=0:00:00.0 mem=784.8M) ***
+% End Load routing data ... (date=03/02 18:59:04, total cpu=0:00:00.1, real=0:00:00.0, peak res=670.2M, cu
+rrent mem=669.2M)
+TAT_INFO: restoreCongMap REAL = 0 : CPU = 0 : MEM = 0.
+Reading property file /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core.prop
+*** Completed restoreProperty (cpu=0:00:00.0 real=0:00:00.0 mem=789.8M) ***
+Set Default Input Pin Transition as 0.1 ps.
+Extraction setup Started
+Start generating vias ..
+#Skip building auto via since it is not turned on.
+Extracting standard cell pins and blockage ......
+Pin and blockage extraction finished
+Via generation completed.
+Extraction setup Started
+% Begin Load power constraints ... (date=03/02 18:59:05, mem=674.4M)
+source /home/EDA/ibex_work_upload/result/pr/data/init_design.enc.dat/ibex_core_power_constraints.tcl
+% End Load power constraints ... (date=03/02 18:59:05, total cpu=0:00:00.0, real=0:00:00.0, peak res=674.5
+M, current mem=674.5M)
+**WARN: (IMPSYT-709):	Innovus use the Multi-Mode/Multi-Corner (MMMC) architecture exclusively for
+configuration and control of some software features. The current configuration is
+obsoleted, please migrate your design to an MMMC style configuration. You can refer to
+the What's New document for this release for additional information on the
+11.1 migration to MMMC. In addition, you can run restoreDesign with the
+-showEolWarnings option to identify specific command and configuration
+options that will no longer be supported.
+% Begin load AAE data ... (date=03/02 18:59:05, mem=674.5M)
+% End load AAE data ... (date=03/02 18:59:05, total cpu=0:00:00.0, real=0:00:00.0, peak res=674.5M, curren
+t mem=674.5M)
+Total number of combinational cells: 0
+Total number of sequential cells: 0
+Total number of tristate cells: 0
+Total number of level shifter cells: 0
+Total number of power gating cells: 0
+Total number of isolation cells: 0
+Total number of power switch cells: 0
+Total number of pulse generator cells: 0
+Total number of always on buffers: 0
+Total number of retention cells: 0
+List of usable buffers:
+Total number of usable buffers: 0
+List of unusable buffers:
+Total number of unusable buffers: 0
+List of usable inverters:
+Total number of usable inverters: 0
+List of unusable inverters:
+Total number of unusable inverters: 0
+List of identified usable delay cells:
+Total number of identified usable delay cells: 0
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+No delay cells were detected in the set of buffers. Buffers will be used to fix hold violations.
+**WARN: (IMPCTE-107):	The following globals have been obsoleted since version 20.10-p004_1. They will be
+ removed in the next release.
+timing_enable_default_delay_arc
+#% End load design ... (date=03/02 18:59:05, total cpu=0:00:03.2, real=0:00:05.0, peak res=676.4M, current
+ mem=674.3M)
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPLF-200            4  Pin '%s' in macro '%s' has no ANTENNAGAT...
+WARNING   IMPLF-201            3  Pin '%s' in macro '%s' has no ANTENNADIF...
+WARNING   IMPLF-108            1  There is no overlap layer defined in any...
+WARNING   IMPFP-3961           2  The techSite '%s' has no related standar...
+WARNING   IMPSYT-709           1  Innovus use the Multi-Mode/Multi-Corner ...
+WARNING   IMPSYC-2            90  Timing information is not defined for ce...
+WARNING   IMPCTE-107           1  The following globals have been obsolete...
+*** Message Summary: 102 warning(s), 0 error(s)
+
+
+
+ERROR : The MMMC configuration specified is incomplete  - a set_analysis_view command
+       was not found in the configuration. The software requires at least 1 setup
+       and 1 hold analysis view to be defined.  You should remedy this problem and
+       restart the software.
+
+3
+innovus 4> source /tmp/hipilot-EDA/exec/hipilot_exec_1772449154555.tcl
+Adjusting coreMargin left    to finFet grid (PlacementGrid) : after adjusting :1.38
+Adjusting coreMargin bottom  to finFet grid (PlacementGrid) : after adjusting :1.02
+Adjusting coreMargin right   to finFet grid (PlacementGrid) : after adjusting :1.38
+Adjusting coreMargin top     to finFet grid (PlacementGrid) : after adjusting :1.02
+Adjusting core size to PlacementGrid : width :553.38 height : 549.44
+**WARN: (IMPFP-3961):	The techSite 'unithddbl' has no related standard cells in LEF/OA library. Cannot m
+ake calculations for this site type unless standard cell models of this type exist in the LEF/OA library.
+If the SITE is not used by the library you can ignore this warning or remove the SITE definition from the
+LEF/OA to avoid this message.
+Type 'man IMPFP-3961' for more detail.
+Adjust met3 preferred direction offset from 0.34 to 0.17.
+Adjust met4 preferred direction offset from 0.46 to 0.23.
+Adjust met5 preferred direction offset from 1.7 to 0.17.
+Generated pitch 3.66 in met5 is different from 3.4 defined in technology file in preferred direction.
+Generated pitch 0.69 in met4 is different from 0.92 defined in technology file in preferred direction.
+Generated pitch 0.61 in met3 is different from 0.68 defined in technology file in preferred direction.
+Reading IO assignment file "/home/EDA/ibex_work_upload/designs/sky130hd/ibex/io.file" ...
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__probec_p_8'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__probec_p_8'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_bleeder_1'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_bleeder_1'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_1'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_1'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_16'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_16'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_2'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_2'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_4'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_4'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_8'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_8'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_1'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_1'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_16'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_16'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_2'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_2'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_4'
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_8'
+#% Begin save design ... (date=03/02 18:59:14, mem=677.2M)
+% Begin Save ccopt configuration ... (date=03/02 18:59:14, mem=680.3M)
+% End Save ccopt configuration ... (date=03/02 18:59:14, total cpu=0:00:00.0, real=0:00:00.0, peak res=681
+.0M, current mem=681.0M)
+% Begin Save netlist data ... (date=03/02 18:59:14, mem=700.7M)
+Writing Binary DB to result/pr/data/floor_plan.enc.dat.tmp/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/02 18:59:14, total cpu=0:00:00.1, real=0:00:00.0, peak res=705.9M, cu
+rrent mem=704.5M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/floor_plan.enc.dat.tmp/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/02 18:59:15, mem=704.8M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/02 18:59:15, total cpu=0:00:00.0, real=0:00:00.0, peak res=704.8M, curren
+t mem=704.8M)
+Saving preference file result/pr/data/floor_plan.enc.dat.tmp/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 18:59:15, mem=705.3M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 18:59:15, total cpu=0:00:00.0, real=0:00:00.0, peak res=705.4M,
+current mem=705.4M)
+Saving PG file result/pr/data/floor_plan.enc.dat.tmp/ibex_core.pg.gz, version#2, (Created by Innovus v20.1
+0-p004_1 on Mon Mar  2 18:59:15 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=817.8M) ***
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 18:59:15, mem=705.7M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 18:59:15, total cpu=0:00:00.0, real=0:00:00.0, peak res=706.0M,
+current mem=705.9M)
+% Begin Save routing data ... (date=03/02 18:59:15, mem=705.9M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.0 real=0:00:01.0 mem=817.8M) ***
+% End Save routing data ... (date=03/02 18:59:16, total cpu=0:00:00.0, real=0:00:01.0, peak res=707.1M, cu
+rrent mem=706.1M)
+Saving property file result/pr/data/floor_plan.enc.dat.tmp/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=820.8M) ***
+% Begin Save power constraints data ... (date=03/02 18:59:16, mem=706.6M)
+% End Save power constraints data ... (date=03/02 18:59:16, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+706.7M, current mem=706.7M)
+Generated self-contained design floor_plan.enc.dat.tmp
+#% End save design ... (date=03/02 18:59:21, total cpu=0:00:05.3, real=0:00:07.0, peak res=710.4M, current
+ mem=707.1M)
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+ERROR     TCLCMD-917           1  Cannot find '%s' that match '%s'
+*** Message Summary: 0 warning(s), 1 error(s)
+
+Writing DEF file 'result/pr/data/ibex.floorplan.def', current time is Mon Mar  2 18:59:21 2026 ...
+unitPerMicron=1000, dbgMicronPerDBU=0.001000, unitPerDBU=1.000000
+DEF file 'result/pr/data/ibex.floorplan.def' is written, current time is Mon Mar  2 18:59:21 2026 ...
+STAGE 2 COMPLETE: Floorplan saved
+innovus 5>

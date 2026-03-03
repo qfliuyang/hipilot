@@ -1,0 +1,40 @@
+[
+  {
+    "stage": "full_flow",
+    "scores": {
+      "L1_prompt_delivery": {
+        "score": 1,
+        "detail": "Claude responded to the command"
+      },
+      "L2_intent_recognition": {
+        "score": 1,
+        "detail": "Claude understood the task (mentions: design, innovus, flow, stage, placement, routing, cts)"
+      },
+      "L3_mcp_tool_usage": {
+        "score": 0.5,
+        "detail": "Partial: MCP(none), EDA(active)"
+      },
+      "L4_eda_execution": {
+        "score": 0.5,
+        "detail": "EDA tool active: floorplan"
+      },
+      "L5_qor_assessment": {
+        "score": 0.5,
+        "detail": "Claude discussed metrics (timing, pass) but no WNS/TNS numbers"
+      }
+    },
+    "total_score": 3.5,
+    "max_score": 5,
+    "status": "partial",
+    "failure_classification": {
+      "category": "AI_BEHAVIOR",
+      "summary": "Score 3.5/5.0",
+      "action": "Review Claude behavior in evidence"
+    },
+    "mcp_calls_count": null,
+    "evidence_summary": {
+      "claude_output_lines": 50,
+      "eda_output_lines": 50
+    }
+  }
+]

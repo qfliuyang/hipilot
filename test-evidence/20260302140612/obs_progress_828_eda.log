@@ -1,0 +1,257 @@
+
+  -------------------------------------------------------------
+  Name                          Type        Inst     Inst Area
+                                            Count    (um^2)
+  -------------------------------------------------------------
+  sky130_fd_sc_hd__clkinv_16    inverter     48       1441.382
+  sky130_fd_sc_hd__clkinv_8     inverter      6         97.594
+  sky130_fd_sc_hd__clkinv_4     inverter      1          8.758
+  sky130_fd_sc_hd__clkinv_2     inverter      1          5.005
+  sky130_fd_sc_hd__and2_4       nicg          1          8.758
+  -------------------------------------------------------------
+
+
+  Primary reporting skew groups summary at end of CTS:
+  ====================================================
+
+  --------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------
+  Half-corner             Skew Group           Min ID    Max ID    Skew     Skew target    Wire skew    Wo
+rst sink skew    Average ID    Std.Dev    Skew window occupancy
+  --------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------
+  delay_max:setup.late    core_clock/common    0.640     0.764     0.124       0.153         0.019
+   0.013           0.698        0.042     100% {0.640, 0.764}
+  --------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------
+
+
+  Skew group summary at end of CTS:
+  =================================
+
+  --------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------
+  Half-corner             Skew Group           Min ID    Max ID    Skew     Skew target    Wire skew    Wo
+rst sink skew    Average ID    Std.Dev    Skew window occupancy
+  --------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------
+  delay_max:setup.late    core_clock/common    0.640     0.764     0.124       0.153         0.019
+   0.013           0.698        0.042     100% {0.640, 0.764}
+  --------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------
+
+
+  Found a total of 0 clock tree pins with a slew violation.
+
+  Post-balance tidy up or trial balance steps done. (took cpu=0:00:00.1 real=0:00:00.1)
+Synthesizing clock trees done.
+Tidy Up And Update Timing...
+External - Set all clocks to propagated mode...
+Innovus updating I/O latencies
+#################################################################################
+# Design Stage: PreRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC Non-OCV
+# Parasitics Mode: No SPEF/RCDB
+# Signoff Settings: SI Off
+#################################################################################
+Start delay calculation (fullDC) (1 T). (MEM=1120.6)
+Total number of fetched objects 11855
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+Total number of fetched objects 11855
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+End delay calculation. (MEM=1207.93 CPU=0:00:00.7 REAL=0:00:01.0)
+End delay calculation (fullDC). (MEM=1180.85 CPU=0:00:01.7 REAL=0:00:02.0)
+	Clock: core_clock, View: min_view, Ideal Latency: 0, Propagated Latency: 0.675698
+	 Executing: set_clock_latency -source -early -max -rise -0.675698 [get_pins clk_i]
+	Clock: core_clock, View: min_view, Ideal Latency: 0, Propagated Latency: 0.675698
+	 Executing: set_clock_latency -source -late -max -rise -0.675698 [get_pins clk_i]
+	Clock: core_clock, View: min_view, Ideal Latency: 0, Propagated Latency: 0.64508
+	 Executing: set_clock_latency -source -early -max -fall -0.64508 [get_pins clk_i]
+	Clock: core_clock, View: min_view, Ideal Latency: 0, Propagated Latency: 0.64508
+	 Executing: set_clock_latency -source -late -max -fall -0.64508 [get_pins clk_i]
+	Clock: core_clock, View: max_view, Ideal Latency: 0, Propagated Latency: 0.677451
+	 Executing: set_clock_latency -source -early -max -rise -0.677451 [get_pins clk_i]
+	Clock: core_clock, View: max_view, Ideal Latency: 0, Propagated Latency: 0.677451
+	 Executing: set_clock_latency -source -late -max -rise -0.677451 [get_pins clk_i]
+	Clock: core_clock, View: max_view, Ideal Latency: 0, Propagated Latency: 0.647623
+	 Executing: set_clock_latency -source -early -max -fall -0.647623 [get_pins clk_i]
+	Clock: core_clock, View: max_view, Ideal Latency: 0, Propagated Latency: 0.647623
+	 Executing: set_clock_latency -source -late -max -fall -0.647623 [get_pins clk_i]
+Setting all clocks to propagated mode.
+External - Set all clocks to propagated mode done. (took cpu=0:00:03.7 real=0:00:03.7)
+Clock DAG stats after update timingGraph:
+  cell counts      : b=0, i=56, icg=0, nicg=1, l=0, total=57
+  cell areas       : b=0.000um^2, i=1552.739um^2, icg=0.000um^2, nicg=8.758um^2, l=0.000um^2, total=1561.4
+98um^2
+  cell capacitance : b=0.000pF, i=2.085pF, icg=0.000pF, nicg=0.002pF, l=0.000pF, total=2.087pF
+  sink capacitance : count=1941, total=3.633pF, avg=0.002pF, sd=0.000pF, min=0.002pF, max=0.002pF
+  wire capacitance : top=0.000pF, trunk=0.486pF, leaf=2.273pF, total=2.758pF
+  wire lengths     : top=0.000um, trunk=2965.190um, leaf=16100.210um, total=19065.400um
+  hp wire lengths  : top=0.000um, trunk=2056.680um, leaf=5887.320um, total=7944.000um
+Clock DAG net violations after update timingGraph: none
+Clock DAG primary half-corner transition distribution after update timingGraph:
+  Trunk : target=0.133ns count=23 avg=0.097ns sd=0.022ns min=0.029ns max=0.132ns {2 <= 0.080ns, 14 <= 0.10
+6ns, 5 <= 0.120ns, 1 <= 0.126ns, 1 <= 0.133ns}
+  Leaf  : target=0.133ns count=35 avg=0.120ns sd=0.007ns min=0.105ns max=0.131ns {0 <= 0.080ns, 2 <= 0.106
+ns, 15 <= 0.120ns, 12 <= 0.126ns, 6 <= 0.133ns}
+Clock DAG library cell distribution after update timingGraph {count}:
+   Invs: sky130_fd_sc_hd__clkinv_16: 48 sky130_fd_sc_hd__clkinv_8: 6 sky130_fd_sc_hd__clkinv_4: 1 sky130_f
+d_sc_hd__clkinv_2: 1
+  NICGs: sky130_fd_sc_hd__and2_4: 1
+Primary reporting skew groups after update timingGraph:
+  skew_group core_clock/common: insertion delay [min=0.640, max=0.764, avg=0.698, sd=0.042], skew [0.124 v
+s 0.153], 100% {0.640, 0.764} (wid=0.044 ws=0.019) (gid=0.720 gs=0.105)
+Skew group summary after update timingGraph:
+  skew_group core_clock/common: insertion delay [min=0.640, max=0.764, avg=0.698, sd=0.042], skew [0.124 v
+s 0.153], 100% {0.640, 0.764} (wid=0.044 ws=0.019) (gid=0.720 gs=0.105)
+Logging CTS constraint violations...
+  No violations found.
+Logging CTS constraint violations done.
+Tidy Up And Update Timing done. (took cpu=0:00:03.8 real=0:00:03.8)
+Runtime done. (took cpu=0:00:56.2 real=0:00:57.4)
+Runtime Summary
+===============
+Clock Runtime:  (36%) Core CTS          20.79 (Init 2.00, Construction 6.40, Implementation 9.04, eGRPC 1.
+95, PostConditioning 0.81, Other 0.60)
+Clock Runtime:  (52%) CTS services      29.88 (RefinePlace 2.35, EarlyGlobalClock 1.80, NanoRoute 25.11, E
+xtractRC 0.62, TimingAnalysis 0.00)
+Clock Runtime:  (11%) Other CTS          6.63 (Init 1.28, CongRepair/EGR-DP 1.63, TimingUpdate 3.72, Other
+ 0.00)
+Clock Runtime: (100%) Total             57.31
+
+Synthesizing clock trees with CCOpt done.
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPEXT-6197          3  The Cap table file is not specified. Thi...
+WARNING   IMPEXT-2882          5  Unable to find the resistance for via '%...
+WARNING   IMPCCOPT-1183        1  The library has no usable balanced %ss f...
+ERROR     IMPCCOPT-1209        1  Non-leaf slew time target of %s%s is too...
+WARNING   IMPTCM-77            1  Option "%s" for command %s is obsolete a...
+*** Message Summary: 10 warning(s), 1 error(s)
+
+#% End ccopt_design (date=03/02 23:30:58, total cpu=0:00:56.3, real=0:00:58.0, peak res=948.7M, current me
+m=868.2M)
+#% Begin save design ... (date=03/02 23:30:58, mem=868.4M)
+% Begin Save ccopt configuration ... (date=03/02 23:30:58, mem=871.4M)
+% End Save ccopt configuration ... (date=03/02 23:30:58, total cpu=0:00:00.1, real=0:00:00.0, peak res=872
+.2M, current mem=872.2M)
+% Begin Save netlist data ... (date=03/02 23:30:58, mem=872.3M)
+Writing Binary DB to result/pr/data/cts.enc.dat/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/02 23:30:58, total cpu=0:00:00.1, real=0:00:00.0, peak res=872.5M, cu
+rrent mem=872.5M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/cts.enc.dat/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/02 23:30:59, mem=873.1M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/02 23:30:59, total cpu=0:00:00.0, real=0:00:00.0, peak res=873.2M, curren
+t mem=873.2M)
+Saving preference file result/pr/data/cts.enc.dat/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 23:30:59, mem=874.2M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 23:30:59, total cpu=0:00:00.0, real=0:00:00.0, peak res=874.5M,
+current mem=874.5M)
+Saving PG file result/pr/data/cts.enc.dat/ibex_core.pg.gz, version#2, (Created by Innovus v20.10-p004_1 on
+ Mon Mar  2 23:30:59 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=1047.3M) ***
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 23:30:59, mem=874.9M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 23:30:59, total cpu=0:00:00.0, real=0:00:00.0, peak res=875.0M,
+current mem=875.0M)
+% Begin Save routing data ... (date=03/02 23:30:59, mem=875.0M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.1 real=0:00:01.0 mem=1047.3M) ***
+% End Save routing data ... (date=03/02 23:31:00, total cpu=0:00:00.2, real=0:00:01.0, peak res=875.0M, cu
+rrent mem=873.4M)
+Saving property file result/pr/data/cts.enc.dat/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=1050.3M) ***
+#Saving pin access data to file result/pr/data/cts.enc.dat/ibex_core.apa ...
+#
+% Begin Save power constraints data ... (date=03/02 23:31:01, mem=873.9M)
+% End Save power constraints data ... (date=03/02 23:31:01, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+873.9M, current mem=873.9M)
+Generated self-contained design cts.enc.dat
+#% End save design ... (date=03/02 23:31:05, total cpu=0:00:06.0, real=0:00:08.0, peak res=877.8M, current
+ mem=877.8M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+STAGE 5 COMPLETE
+=========================================
+STAGE 6: Post-CTS Optimization
+=========================================
+**optDesign ... cpu = 0:00:00, real = 0:00:00, mem = 877.9M, totSessionCpu=0:01:38 **
+**INFO: User settings:
+setDesignMode -process                            130
+setExtractRCMode -coupling_c_th                   0.4
+setExtractRCMode -engine                          preRoute
+setExtractRCMode -relative_c_th                   1
+setExtractRCMode -total_c_th                      0
+setDelayCalMode -enable_high_fanout               true
+setDelayCalMode -eng_copyNetPropToNewNet          true
+setDelayCalMode -engine                           aae
+setDelayCalMode -ignoreNetLoad                    false
+setOptMode -activeHoldViews                       { min_view }
+setOptMode -activeSetupViews                      { max_view }
+setOptMode -autoSetupViews                        { max_view}
+setOptMode -autoTDGRSetupViews                    { max_view}
+setOptMode -drcMargin                             0
+setOptMode -fixDrc                                true
+setOptMode -fixFanoutLoad                         true
+setOptMode -ignorePathGroupsForHold               {in2reg reg2out feedthr}
+setOptMode -optimizeFF                            true
+setOptMode -preserveAllSequential                 false
+setOptMode -setupTargetSlack                      0
+setPlaceMode -place_detail_legalization_inst_gap  2
+setPlaceMode -place_global_ignore_scan            true
+setPlaceMode -place_global_place_io_pins          false
+setPlaceMode -place_global_reorder_scan           false
+setAnalysisMode -analysisType                     single
+setAnalysisMode -checkType                        setup
+setAnalysisMode -clkSrcPath                       true
+setAnalysisMode -clockPropagation                 sdcControl
+setAnalysisMode -cppr                             both
+setAnalysisMode -usefulSkew                       true
+setRouteMode -earlyGlobalMaxRouteLayer            5
+setRouteMode -earlyGlobalMinRouteLayer            2
+
+**INFO: setDesignMode -flowEffort standard -> setting 'setOptMode -allEndPoints true' for the duration of
+this command.
+info: unfix 1 clock instance placement location
+info: this clock instance will be remarked as fixed at the end of optimiztion
+Need call spDPlaceInit before registerPrioInstLoc.
+GigaOpt running with 1 threads.
+**optDesign ... cpu = 0:00:03, real = 0:00:02, mem = 905.8M, totSessionCpu=0:01:41 **
+*** optDesign -postCTS ***
+DRC Margin: user margin 0.0; extra margin 0.2
+Hold Target Slack: user slack 0
+Setup Target Slack: user slack 0; extra slack 0.0
+setUsefulSkewMode -ecoRoute false
+INFO****: The delay profiles based on paritioning incorrect, turning off vt filtering
+Start to check current routing status for nets...
+All nets are already routed correctly.
+End to check current routing status for nets (mem=1105.9M)
+
+Footprint cell information for calculating maxBufDist
+*info: There are 13 candidate Buffer cells
+*info: There are 13 candidate Inverter cells
+
+Compute RC Scale Done ...
+Starting delay calculation for Setup views
+#################################################################################
+# Design Stage: PreRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC Non-OCV
+# Parasitics Mode: No SPEF/RCDB
+# Signoff Settings: SI Off
+#################################################################################
+Calculate delays in Single mode...
+Start delay calculation (fullDC) (1 T). (MEM=1185.17)
+

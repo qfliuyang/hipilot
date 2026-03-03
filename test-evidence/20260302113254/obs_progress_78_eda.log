@@ -1,0 +1,257 @@
+_fd_sc_hd__dlygate4sd3_1 sky130_fd_sc_hd__dlymetal6s6s_1 sky130_fd_sc_hd__dlymetal6s4s_1
+Total number of identified usable delay cells: 15
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPLF-200            4  Pin '%s' in macro '%s' has no ANTENNAGAT...
+WARNING   IMPLF-201            3  Pin '%s' in macro '%s' has no ANTENNADIF...
+WARNING   IMPLF-108            1  There is no overlap layer defined in any...
+WARNING   IMPFP-3961           1  The techSite '%s' has no related standar...
+WARNING   IMPEXT-2766         12  The sheet resistance for layer %s is not...
+WARNING   IMPEXT-2773         12  The via resistance between layers %s and...
+WARNING   TECHLIB-302         12  No function defined for cell '%s'. The c...
+WARNING   TECHLIB-1161         1  The library level attribute %s on line %...
+*** Message Summary: 46 warning(s), 0 error(s)
+
+Adjusting coreMargin left    to finFet grid (PlacementGrid) : after adjusting :1.38
+Adjusting coreMargin bottom  to finFet grid (PlacementGrid) : after adjusting :1.02
+Adjusting coreMargin right   to finFet grid (PlacementGrid) : after adjusting :1.38
+Adjusting coreMargin top     to finFet grid (PlacementGrid) : after adjusting :1.02
+Adjusting core size to PlacementGrid : width :553.38 height : 549.44
+**WARN: (IMPFP-3961):	The techSite 'unithddbl' has no related standard cells in LEF/OA library. Cannot m
+ake calculations for this site type unless standard cell models of this type exist in the LEF/OA library.
+If the SITE is not used by the library you can ignore this warning or remove the SITE definition from the
+LEF/OA to avoid this message.
+Type 'man IMPFP-3961' for more detail.
+Adjust met3 preferred direction offset from 0.34 to 0.17.
+Adjust met4 preferred direction offset from 0.46 to 0.23.
+Adjust met5 preferred direction offset from 1.7 to 0.17.
+Generated pitch 3.66 in met5 is different from 3.4 defined in technology file in preferred direction.
+Generated pitch 0.69 in met4 is different from 0.92 defined in technology file in preferred direction.
+Generated pitch 0.61 in met3 is different from 0.68 defined in technology file in preferred direction.
+**WARN: (IMPFP-325):	Floorplan of the design is resized. All current floorplan objects are automaticall
+y derived based on specified new floorplan. This may change blocks, fixed standard cells, existing routes
+and blockages.
+Reading IO assignment file "/home/EDA/ibex_work_upload/designs/sky130hd/ibex/io.file" ...
+**ERROR: (IMPDB-1221):	A global net connection rule was specified to connect power pins with the name pat
+tern 'VPB VPWR' to a global net.  But the connections cannot be made because there is no such power pin wi
+th name matching the pattern in any cell.  Check the pin name in Lef or liberty and make sure it is correc
+t.
+**ERROR: (IMPDB-1221):	A global net connection rule was specified to connect ground pins with the name pa
+ttern 'VGND VNB' to a global net.  But the connections cannot be made because there is no such ground pin
+with name matching the pattern in any cell.  Check the pin name in Lef or liberty and make sure it is corr
+ect.
+#% Begin addStripe (date=03/02 19:44:18, mem=744.9M)
+
+Initialize fgc environment(mem: 855.5M) ...  fail and won't use fgc to check drc(cpu: 0:00:00.0, real: 0:0
+0:00.0, peak mem: 855.5M)
+Loading cell geometries (cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Loading wires (cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Loading via instances (cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Starting stripe generation ...
+Non-Default Mode Option Settings :
+  NONE
+The core ring for VSS is incomplete. The core ring will not be used as a boundary for stripes. In this sit
+uation, the power planner will generate stripes only within the core area.
+The core ring for VDD is incomplete. The core ring will not be used as a boundary for stripes. In this sit
+uation, the power planner will generate stripes only within the core area.
+Completing 10% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 20% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 30% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 40% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 50% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 60% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 70% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 80% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 90% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 100% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Stripe generation is complete.
+vias are now being generated.
+addStripe created 37 wires.
+ViaGen created 0 via, deleted 0 via to avoid violation.
++--------+----------------+----------------+
+|  Layer |     Created    |     Deleted    |
++--------+----------------+----------------+
+|  met4  |       37       |       NA       |
++--------+----------------+----------------+
+#% End addStripe (date=03/02 19:44:18, total cpu=0:00:00.0, real=0:00:00.0, peak res=747.0M, current mem=7
+47.0M)
+#% Begin addStripe (date=03/02 19:44:18, mem=747.0M)
+
+Initialize fgc environment(mem: 855.5M) ...  fail and won't use fgc to check drc(cpu: 0:00:00.0, real: 0:0
+0:00.0, peak mem: 855.5M)
+Loading cell geometries (cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Loading wires (cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Loading via instances (cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Starting stripe generation ...
+Non-Default Mode Option Settings :
+  NONE
+The core ring for VSS is incomplete. The core ring will not be used as a boundary for stripes. In this sit
+uation, the power planner will generate stripes only within the core area.
+The core ring for VDD is incomplete. The core ring will not be used as a boundary for stripes. In this sit
+uation, the power planner will generate stripes only within the core area.
+Completing 10% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 20% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 30% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 40% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 50% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 60% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 70% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 80% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 90% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Completing 100% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 855.5M)
+Stripe generation is complete.
+vias are now being generated.
+addStripe created 37 wires.
+ViaGen created 685 vias, deleted 0 via to avoid violation.
++--------+----------------+----------------+
+|  Layer |     Created    |     Deleted    |
++--------+----------------+----------------+
+|  via4  |       685      |        0       |
+|  met5  |       37       |       NA       |
++--------+----------------+----------------+
+#% End addStripe (date=03/02 19:44:18, total cpu=0:00:00.1, real=0:00:00.0, peak res=747.7M, current mem=7
+47.7M)
+#% Begin sroute (date=03/02 19:44:18, mem=747.7M)
+*** Begin SPECIAL ROUTE on Mon Mar  2 19:44:19 2026 ***
+SPECIAL ROUTE ran on directory: /home/EDA/ibex_work_upload
+SPECIAL ROUTE ran on machine: EDA2035 (Linux 3.10.0-1160.119.1.el7.x86_64 x86_64 2.71Ghz)
+
+Begin option processing ...
+srouteConnectPowerBump set to false
+routeSelectNet set to "VDD VSS"
+routeSpecial set to true
+srouteBottomLayerLimit set to 1
+srouteBottomTargetLayerLimit set to 1
+srouteConnectBlockPin set to false
+srouteConnectConverterPin set to false
+srouteConnectPadPin set to false
+srouteConnectStripe set to false
+srouteCrossoverViaBottomLayer set to 1
+srouteCrossoverViaTopLayer set to 5
+srouteFollowCorePinEnd set to 3
+srouteFollowPadPin set to false
+srouteJogControl set to "preferWithChanges differentLayer"
+sroutePadPinAllPorts set to true
+sroutePreserveExistingRoutes set to true
+srouteRoutePowerBarPortOnBothDir set to true
+srouteStopSCPin set to true
+srouteTopLayerLimit set to 5
+srouteTopTargetLayerLimit set to 5
+End option processing: cpu: 0:00:00, real: 0:00:00, peak: 1855.00 megs.
+
+Reading DB technology information...
+Finished reading DB technology information.
+Reading floorplan and netlist information...
+Finished reading floorplan and netlist information.
+Read in 12 layers, 6 routing layers, 0 overlap layer
+Read in 440 macros, 91 used
+Read in 90 components
+  90 core components: 90 unplaced, 0 placed, 0 fixed
+Read in 264 physical pins
+  264 physical pins: 0 unplaced, 264 placed, 0 fixed
+Read in 2 logical pins
+Read in 266 nets
+Read in 2 special nets, 2 routed
+Read in 264 terminals
+2 nets selected.
+
+Begin power routing ...
+**WARN: (IMPSR-1253):	Cannot find any standard cell pin connected to net VDD.
+Run globalNetConnect command or change CPF file to make sure that the netlist reflects the correct power g
+round connections. The standard cell pins must be defined as 'USE POWER' or 'USE GROUND'.
+**WARN: (IMPSR-1253):	Cannot find any standard cell pin connected to net VSS.
+Run globalNetConnect command or change CPF file to make sure that the netlist reflects the correct power g
+round connections. The standard cell pins must be defined as 'USE POWER' or 'USE GROUND'.
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+CPU time for FollowPin 0 seconds
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+CPU time for FollowPin 0 seconds
+  Number of Core ports routed: 0
+  Number of Followpin connections: 203
+End power routing: cpu: 0:00:01, real: 0:00:01, peak: 1870.00 megs.
+
+
+
+ Begin updating DB with routing results ...
+ Updating DB with 264 io pins ...
+ Updating DB with 0 via definition ...Extracting standard cell pins and blockage ......
+Pin and blockage extraction finished
+
+sroute created 203 wires.
+ViaGen created 11265 vias, deleted 0 via to avoid violation.
++--------+----------------+----------------+
+|  Layer |     Created    |     Deleted    |
++--------+----------------+----------------+
+|  met1  |       203      |       NA       |
+|   via  |      3755      |        0       |
+|  via2  |      3755      |        0       |
+|  via3  |      3755      |        0       |
++--------+----------------+----------------+
+#% End sroute (date=03/02 19:44:20, total cpu=0:00:01.5, real=0:00:01.0, peak res=766.3M, current mem=757.
+2M)
+Effort level <high> specified for reg2reg path_group
+**WARN: (IMPOPT-3602):	The specified path group name reg2cg is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <high> specified for reg2cg path_group
+Effort level <low> specified for in2reg path_group
+Effort level <low> specified for reg2out path_group
+Effort level <low> specified for feedthr path_group
+Ignoring {in2reg reg2out feedthr} groups for Hold optimization.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+**ERROR: (IMPSP-9099):	Scan chains exist in this design but are not defined for 99.95% flops. Placement a
+nd timing QoR can be severely impacted in this case!
+It is highly recommend to define scan chains either through input scan def (preferred) or specifyScanChain
+.
+
+innovus 2>

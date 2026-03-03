@@ -1,0 +1,257 @@
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[24]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[25]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[26]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[27]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[28]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[29]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[31]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[0]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[1]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[2]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[3]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[4]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[5]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[6]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[7]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to load_store_unit_i/pmp_err_q_reg' which no longer exi
+sts.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to if_stage_i/pc_id_o_reg[0]' which no longer exists.
+(TIM-179)
+Warning: 'group_path' constraint made a reference 'to if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/rda
+ta_pmp_err_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/rda
+ta_pmp_err_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[0]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[1]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[2]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[3]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[4]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[5]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/mcountinhibit_q_reg[1]' which no long
+er exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[3]' which no l
+onger exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[4]' which no l
+onger exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[5]' which no l
+onger exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[9]' which no l
+onger exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[10]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[14]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[16]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[17]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[18]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[19]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[20]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[21]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[22]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[23]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[24]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[25]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[26]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[27]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[28]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[29]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[31]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[0]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[1]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[2]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[3]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[4]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[5]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[6]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[7]' which no
+longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to load_store_unit_i/pmp_err_q_reg' which no longer exi
+sts.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to if_stage_i/pc_id_o_reg[0]' which no longer exists.
+(TIM-179)
+Warning: 'group_path' constraint made a reference 'to if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/rda
+ta_pmp_err_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/rda
+ta_pmp_err_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[0]' which
+ no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[1]' which
+ no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[2]' which
+ no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[3]' which
+ no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[4]' which
+ no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[5]' which
+ no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/mcountinhibit_q_reg[1]' which no lo
+nger exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[3]' which no
+ longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[4]' which no
+ longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[5]' which no
+ longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[9]' which no
+ longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[10]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[14]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[16]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[17]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[18]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[19]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[20]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[21]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[22]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[23]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[24]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[25]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[26]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[27]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[28]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[29]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[31]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[0]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[1]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[2]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[3]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[4]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[5]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[6]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[7]' which n
+o longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from load_store_unit_i/pmp_err_q_reg' which no longer e
+xists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from if_stage_i/pc_id_o_reg[0]' which no longer exists.
+  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/r
+data_pmp_err_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/r
+data_pmp_err_q_reg[1]' which no longer exists.  (TIM-179)
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+Information: The library cell 'sky130_fd_sc_hd__macro_sparecell' in the library 'sky130_fd_sc_hd__tt_025C_
+1v80' is not characterized for internal power. (PWR-536)
+Information: The library cell 'sky130_fd_sc_hd__conb_1' in the library 'sky130_fd_sc_hd__tt_025C_1v80' is
+not characterized for internal power. (PWR-536)
+Information: The target library(s) contains cell(s), other than black boxes, that are not characterized fo
+r internal power. (PWR-24)
+Information: Automatic shift-register identification is enabled for scan. Not all registers will be scan-r
+eplaced. (OPT-467)
+Warning: No scan equivalent exists for cell core_clock_gate_i/en_latch_reg (sky130_fd_sc_hd__dlxtn_1). (TE
+ST-120)
+Information: Complementing port 'nmi_mode_i' in design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_0000
+0028_0_00000000_00000004_0_2'.
+	 The new name of the port is 'nmi_mode_i_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[16]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[16]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[17]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[17]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[18]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[18]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[19]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[19]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[20]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[20]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[21]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[21]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[22]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[22]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[23]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[23]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[24]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[24]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[25]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[25]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[26]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[26]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[27]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[27]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[28]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[28]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[29]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[29]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[30]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[30]_BAR'. (OPT-319)
+Information: The register 'cs_registers_i/u_depc_csr/rdata_q_reg[0]' is a constant and will be removed. (O
+PT-1206)
+Information: The register 'cs_registers_i/u_mepc_csr/rdata_q_reg[0]' is a constant and will be removed. (O
+PT-1206)
+Information: The register 'cs_registers_i/u_mstack_epc_csr/rdata_q_reg[0]' is a constant and will be remov
+ed. (OPT-1206)
+Information: The register 'cs_registers_i/u_dcsr_csr/rdata_q_reg[30]' is a constant and will be removed. (
+OPT-1206)
+
+  Beginning Mapping Optimizations  (Ultra High effort)
+  -------------------------------
+

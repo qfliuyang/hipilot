@@ -1,0 +1,20 @@
+{
+  "test_id": "20260302125153",
+  "timestamp": "2026-03-02T12:51:55.767Z",
+  "phase": null,
+  "purpose": "/rtl2gds",
+  "command": "/rtl2gds",
+  "evidence_dir": "/tmp/hipilot-test-evidence/20260302125153",
+  "test_work_dir": "/home/EDA/hipilot_test/runs/20260302125153",
+  "design_dir": "/home/EDA/hipilot_test/runs/20260302125153/ibex_work_upload",
+  "design_tarball": "/home/EDA/ibex_demo.tar",
+  "session": "hipilot",
+  "display": ":0",
+  "hostname": "unknown",
+  "user": "EDA",
+  "status": "completed",
+  "started_at": "2026-03-02T12:51:55.767Z",
+  "completed_at": "2026-03-02T13:25:59.485Z",
+  "result": "PARTIAL",
+  "total_score": 2.5
+}

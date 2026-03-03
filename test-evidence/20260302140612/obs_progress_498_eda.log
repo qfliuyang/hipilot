@@ -1,0 +1,257 @@
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:01.0 mem=916.0M) ***
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 22:40:37, mem=764.7M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 22:40:37, total cpu=0:00:00.0, real=0:00:00.0, peak res=764.7M,
+current mem=764.7M)
+% Begin Save routing data ... (date=03/02 22:40:37, mem=764.7M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.0 real=0:00:00.0 mem=916.0M) ***
+% End Save routing data ... (date=03/02 22:40:37, total cpu=0:00:00.0, real=0:00:00.0, peak res=764.8M, cu
+rrent mem=764.8M)
+Saving property file result/pr/data/powerplan.enc.dat.tmp/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=919.0M) ***
+% Begin Save power constraints data ... (date=03/02 22:40:37, mem=764.8M)
+% End Save power constraints data ... (date=03/02 22:40:37, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+764.8M, current mem=764.8M)
+Generated self-contained design powerplan.enc.dat.tmp
+#% End save design ... (date=03/02 22:40:41, total cpu=0:00:05.0, real=0:00:07.0, peak res=794.7M, current
+ mem=762.8M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+STAGE 3 COMPLETE
+=========================================
+STAGE 4: Placement (ignoring scan chains)
+=========================================
+Effort level <high> specified for reg2reg path_group
+**WARN: (IMPOPT-3602):	The specified path group name reg2cg is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <high> specified for reg2cg path_group
+Effort level <low> specified for in2reg path_group
+Effort level <low> specified for reg2out path_group
+Effort level <low> specified for feedthr path_group
+Ignoring {in2reg reg2out feedthr} groups for Hold optimization.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/*_scan*'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/*_scan*'
+**ERROR: (IMPOPT-695):	Cell name is not correctly specified.
+
+innovus 2> source /tmp/hipilot-EDA/exec/hipilot_exec_1772462624704.tcl
+=========================================
+STAGE 4: Placement (retry)
+=========================================
+Effort level <high> specified for reg2reg path_group
+Effort level <high> specified for reg2cg path_group
+Effort level <low> specified for in2reg path_group
+Effort level <low> specified for reg2out path_group
+Effort level <low> specified for feedthr path_group
+Ignoring {in2reg reg2out feedthr} groups for Hold optimization.
+-place_detail_legalization_inst_gap 0
+-place_global_reorder_scan true
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+No user sequential activity specified, applying default sequential activity of "0.2" for Dynamic Power rep
+orting.
+'set_default_switching_activity' finished successfully.
+*** Starting GigaPlace ***
+**INFO: User settings:
+setDesignMode -process                            130
+setExtractRCMode -coupling_c_th                   0.4
+setExtractRCMode -relative_c_th                   1
+setExtractRCMode -total_c_th                      0
+setDelayCalMode -engine                           aae
+setOptMode -ignorePathGroupsForHold               {in2reg reg2out feedthr}
+setPlaceMode -place_detail_legalization_inst_gap  2
+setPlaceMode -place_global_ignore_scan            true
+setPlaceMode -place_global_place_io_pins          false
+setPlaceMode -place_global_reorder_scan           false
+setAnalysisMode -analysisType                     single
+setAnalysisMode -cppr                             both
+setRouteMode -earlyGlobalMaxRouteLayer            5
+setRouteMode -earlyGlobalMinRouteLayer            2
+
+#optDebug: fT-E <X 2 3 1 0>
+**ERROR: (IMPSP-9099):	Scan chains exist in this design but are not defined for 99.95% flops. Placement a
+nd timing QoR can be severely impacted in this case!
+It is highly recommend to define scan chains either through input scan def (preferred) or specifyScanChain
+.
+
+innovus 3> source /tmp/hipilot-EDA/exec/hipilot_exec_1772462968668.tcl
+**WARN: (IMPSYC-1699):	0x22 is neither an FTerm nor an instance pin in DB.
+**WARN: (IMPSYC-1699):	0x23 is neither an FTerm nor an instance pin in DB.
+**WARN: (IMPSYC-1705):	Failed to create scan group chain1 due to incorrect start-pin 0x22.
+-place_detail_legalization_inst_gap 0
+-place_global_reorder_scan true
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+
+Usage: place_opt_design [-help] [-expanded_views] [-incremental] [-incremental_timing]
+                        [-out_dir <string>] [-prefix <string>] [-timing_debug_report]
+
+**ERROR: (IMPTCM-48):	"-noPrePlaceOpt" is not a legal option for command "place_opt_design". Either the
+current option or an option prior to it is not specified correctly.
+
+innovus 4> source /tmp/hipilot-EDA/exec/hipilot_exec_1772463067016.tcl
+**WARN: (IMPSYC-1699):	0x25 is neither an FTerm nor an instance pin in DB.
+**WARN: (IMPSYC-1699):	0x26 is neither an FTerm nor an instance pin in DB.
+**WARN: (IMPSYC-1705):	Failed to create scan group chain1 due to incorrect start-pin 0x25.
+-place_detail_legalization_inst_gap 0
+-place_global_ignore_scan true
+-place_global_reorder_scan true
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+*** Starting GigaPlace ***
+**INFO: User settings:
+setDesignMode -process                            130
+setExtractRCMode -coupling_c_th                   0.4
+setExtractRCMode -relative_c_th                   1
+setExtractRCMode -total_c_th                      0
+setDelayCalMode -engine                           aae
+setOptMode -ignorePathGroupsForHold               {in2reg reg2out feedthr}
+setPlaceMode -place_detail_legalization_inst_gap  2
+setPlaceMode -place_global_ignore_scan            false
+setPlaceMode -place_global_place_io_pins          false
+setPlaceMode -place_global_reorder_scan           false
+setAnalysisMode -analysisType                     single
+setAnalysisMode -cppr                             both
+setRouteMode -earlyGlobalMaxRouteLayer            5
+setRouteMode -earlyGlobalMinRouteLayer            2
+
+#optDebug: fT-E <X 2 3 1 0>
+**DIAG[/icd/cm_t1nb_001/INNOVUS201/Rel/20.10/main/lnx86_64_opt/20.10-p004_1/fe/src/sp/spTestCmds.c:1440:sp
+iStartCacheCMUCmd]: Failed to start caching CMU. Caching already started.
+**ERROR: (IMPSP-9100):	Scan chains exist in this design but are not defined for 99.95% flops and -place_g
+lobal_ignore_scan is set to false. Placement and timing QoR can be severely impacted in this case!
+It is highly recommend to keep -place_global_ignore_scan option as its default value 'true' with scan chai
+ns definition.
+
+innovus 5> source /tmp/hipilot-EDA/exec/hipilot_exec_1772463201926.tcl
+-place_detail_legalization_inst_gap 0
+-place_global_ignore_scan true
+-place_global_reorder_scan true
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+
+Usage: place_opt_design [-help] [-expanded_views] [-incremental] [-incremental_timing]
+                        [-out_dir <string>] [-prefix <string>] [-timing_debug_report]
+
+**ERROR: (IMPTCM-48):	"-continue" is not a legal option for command "place_opt_design". Either the curre
+nt option or an option prior to it is not specified correctly.
+
+innovus 6> source /tmp/hipilot-EDA/exec/hipilot_exec_1772463400410.tcl
+-place_detail_legalization_inst_gap 0
+-place_global_reorder_scan true
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+**ERROR: (IMPSP-9099):	Scan chains exist in this design but are not defined for 99.95% flops. Placement a
+nd timing QoR can be severely impacted in this case!
+It is highly recommend to define scan chains either through input scan def (preferred) or specifyScanChain
+.
+
+innovus 7>

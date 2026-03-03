@@ -1,0 +1,57 @@
+[EDA@EDA2035 current]$ clear
+echo '  EDA Tool Pane'[EDA@EDA2035 currePane'echo '  EDA Tool
+  EDA Tool Pane
+───────────' current]$ echo '  ───
+  ──────────────
+[EDA@EDA2035 current]$ echo '  Start your EDA tool:'
+  Start your EDA tool:
+[EDA@EDA2035 current]$ echo '    icc2_shell    (Synopsys ICC2)'
+    icc2_shell    (Synopsys ICC2)
+[EDA@EDA2035 current]$ echo '    innovus       (Cadence Innovus)'
+    innovus       (Cadence Innovus)
+[EDA@EDA2035 current]$ echo '    pt_shell      (Synopsys PrimeTime)'
+    pt_shell      (Synopsys PrimeTime)
+[EDA@EDA2035 current]$ echo ''
+
+al mode active (default)'ho '  🔒 Manu
+  🔒 Manual mode active (default)
+[EDA@EDA2035 current]$ echo '  HiPilot Tcl commands require approval.'
+  HiPilot Tcl commands require approval.
+[EDA@EDA2035 current]$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

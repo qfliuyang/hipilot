@@ -1,0 +1,257 @@
+**WARN: (IMPREPO-200):	There are 8 Floating Ports in the top design.
+**WARN: (IMPREPO-202):	There are 258 Ports connected to core instances.
+
+------ Design Rule Checking:
+
+Number of Output Pins connect to Power/Ground *: 0
+Number of Insts with Input Pins tied together ?: 1230
+Number of TieHi/Lo term nets not connected to instance's PG terms ?: 0
+Number of Input/InOut Floating Pins            : 0
+Number of Output Floating Pins                 : 0
+Number of Output Term Marked TieHi/Lo         *: 0
+
+**WARN: (IMPREPO-216):	There are 1230 Instances with input pins tied together.
+Number of nets with tri-state drivers          : 0
+Number of nets with parallel drivers           : 0
+Number of nets with multiple drivers           : 0
+Number of nets with no driver (No FanIn)       : 0
+Number of Output Floating nets (No FanOut)     : 137
+Number of High Fanout nets (>50)               : 68
+**WARN: (IMPREPO-227):	There are 68 High Fanout nets (>50).
+Design check done.
+
+
+---
+--- Please refer to file result/pr/report/check_data_init.report for detailed report.
+---
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPREPO-227          1  There are %d High Fanout nets (>50).
+WARNING   IMPREPO-200          1  There are %d Floating Ports in the top d...
+WARNING   IMPREPO-202          1  There are %d Ports connected to core ins...
+WARNING   IMPREPO-216          1  There are %d Instances with input pins t...
+*** Message Summary: 4 warning(s), 0 error(s)
+
+**ERROR: (IMPOPT-6029):	Timing Library is not loaded yet.
+
+innovus 3> source /tmp/hipilot-EDA/exec/hipilot_exec_1772451544260.tcl
+#% Begin load design ... (date=03/02 19:39:04, mem=667.1M)
+
+
+ERROR: **ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+
+**ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+    while executing
+"error $catchMsg"
+    (procedure "restoreDesign" line 31)
+
+
+
+ERROR : The MMMC configuration specified is incomplete  - a set_analysis_view command
+       was not found in the configuration. The software requires at least 1 setup
+       and 1 hold analysis view to be defined.  You should remedy this problem and
+       restart the software.
+
+**ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+innovus 4> source /tmp/hipilot-EDA/exec/hipilot_exec_1772451556180.tcl
+**ERROR: (GLOBAL-105):	Unknown global 'restore_db_stop_at_design_in_memory' specified
+% Begin load design ... (date=03/02 19:39:16, mem=667.2M)
+
+
+ERROR: **ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+
+**ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+    while executing
+"error $catchMsg"
+    (procedure "restoreDesign" line 31)
+
+
+
+ERROR : The MMMC configuration specified is incomplete  - a set_analysis_view command
+       was not found in the configuration. The software requires at least 1 setup
+       and 1 hold analysis view to be defined.  You should remedy this problem and
+       restart the software.
+
+**ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+innovus 5> source /tmp/hipilot-EDA/exec/hipilot_exec_1772451575829.tcl
+**WARN: (IMPSYT-7329):	Cannot load design with init_design, after design is already in memory.  This comm
+and is skipped.
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPSYT-7329          1  Cannot load design with init_design, aft...
+*** Message Summary: 1 warning(s), 0 error(s)
+
+Adjusting coreMargin left    to finFet grid (PlacementGrid) : after adjusting :1.38
+Adjusting coreMargin bottom  to finFet grid (PlacementGrid) : after adjusting :1.02
+Adjusting coreMargin right   to finFet grid (PlacementGrid) : after adjusting :1.38
+Adjusting coreMargin top     to finFet grid (PlacementGrid) : after adjusting :1.02
+Adjusting core size to PlacementGrid : width :553.38 height : 549.44
+**WARN: (IMPFP-3961):	The techSite 'unithddbl' has no related standard cells in LEF/OA library. Cannot m
+ake calculations for this site type unless standard cell models of this type exist in the LEF/OA library.
+If the SITE is not used by the library you can ignore this warning or remove the SITE definition from the
+LEF/OA to avoid this message.
+Type 'man IMPFP-3961' for more detail.
+Adjust met3 preferred direction offset from 0.34 to 0.17.
+Adjust met4 preferred direction offset from 0.46 to 0.23.
+Adjust met5 preferred direction offset from 1.7 to 0.17.
+Generated pitch 3.66 in met5 is different from 3.4 defined in technology file in preferred direction.
+Generated pitch 0.69 in met4 is different from 0.92 defined in technology file in preferred direction.
+Generated pitch 0.61 in met3 is different from 0.68 defined in technology file in preferred direction.
+**WARN: (IMPFP-325):	Floorplan of the design is resized. All current floorplan objects are automaticall
+y derived based on specified new floorplan. This may change blocks, fixed standard cells, existing routes
+and blockages.
+Reading IO assignment file "/home/EDA/ibex_work_upload/designs/sky130hd/ibex/io.file" ...
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__probec_p_8'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__probec_p_8'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_bleeder_1'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_bleeder_1'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_1'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_1'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_16'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_16'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_2'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_2'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_4'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_4'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_8'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkbufkapwr_8'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_1'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_1'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_16'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_16'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_2'
+**ERROR: (TCLCMD-917):	Cannot find 'library cells' that match '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_2'
+**ERROR: (TCLCMD-917):	Cannot find 'modules, or cells' that match ''
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_4'
+**WARN: (TCLCMD-513):	The software could not find a matching object of the specified type for the patter
+n '*/sky130_fd_sc_hd__lpflow_clkinvkapwr_8'
+% Begin save design ... (date=03/02 19:39:36, mem=669.9M)
+% Begin Save ccopt configuration ... (date=03/02 19:39:36, mem=673.0M)
+% End Save ccopt configuration ... (date=03/02 19:39:36, total cpu=0:00:00.0, real=0:00:00.0, peak res=673
+.8M, current mem=673.8M)
+% Begin Save netlist data ... (date=03/02 19:39:36, mem=693.5M)
+Writing Binary DB to result/pr/data/floor_plan.enc.dat.tmp/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/02 19:39:36, total cpu=0:00:00.1, real=0:00:00.0, peak res=695.5M, cu
+rrent mem=694.1M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/floor_plan.enc.dat.tmp/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/02 19:39:36, mem=694.9M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/02 19:39:36, total cpu=0:00:00.0, real=0:00:00.0, peak res=694.9M, curren
+t mem=694.9M)
+Saving preference file result/pr/data/floor_plan.enc.dat.tmp/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 19:39:36, mem=696.0M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 19:39:36, total cpu=0:00:00.0, real=0:00:00.0, peak res=696.0M,
+current mem=696.0M)
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 19:39:36, mem=696.1M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 19:39:36, total cpu=0:00:00.0, real=0:00:00.0, peak res=696.4M,
+current mem=696.3M)
+% Begin Save routing data ... (date=03/02 19:39:36, mem=696.3M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.0 real=0:00:01.0 mem=810.8M) ***
+% End Save routing data ... (date=03/02 19:39:37, total cpu=0:00:00.0, real=0:00:01.0, peak res=697.5M, cu
+rrent mem=696.5M)
+Saving property file result/pr/data/floor_plan.enc.dat.tmp/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=813.8M) ***
+% Begin Save power constraints data ... (date=03/02 19:39:37, mem=697.1M)
+% End Save power constraints data ... (date=03/02 19:39:37, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+697.2M, current mem=697.2M)
+Generated self-contained design floor_plan.enc.dat.tmp
+% End save design ... (date=03/02 19:39:42, total cpu=0:00:05.3, real=0:00:06.0, peak res=700.7M, current
+mem=700.7M)
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+ERROR     TCLCMD-917           1  Cannot find '%s' that match '%s'
+*** Message Summary: 0 warning(s), 1 error(s)
+
+Writing DEF file 'result/pr/data/ibex.floorplan.def', current time is Mon Mar  2 19:39:42 2026 ...
+unitPerMicron=1000, dbgMicronPerDBU=0.001000, unitPerDBU=1.000000
+DEF file 'result/pr/data/ibex.floorplan.def' is written, current time is Mon Mar  2 19:39:42 2026 ...
+STAGE 1+2 COMPLETE — checkpoint saved at result/pr/data/floor_plan.enc
+
+*** Memory Usage v#1 (Current mem = 851.125M, initial mem = 249.227M) ***
+*** Message Summary: 120 warning(s), 28 error(s)
+
+--- Ending "Innovus" (totcpu=0:00:34.2, real=0:02:27, mem=851.1M) ---
+
+[EDA@EDA2035 ibex_work_upload]$ cd /home/EDA/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$ innovus -no_gui
+C: unknown locale
+
+Cadence Innovus(TM) Implementation System.
+Copyright 2020 Cadence Design Systems, Inc. All rights reserved worldwide.
+
+Version:	v20.10-p004_1, built Thu May 7 20:02:41 PDT 2020
+Options:	-no_gui
+Date:		Mon Mar  2 19:39:54 2026
+Host:		EDA2035 (x86_64 w/Linux 3.10.0-1160.119.1.el7.x86_64) (3cores*6cpus*Intel(R) Core(TM) i7-8
+559U CPU @ 2.70GHz 8192KB)
+OS:		CentOS Linux release 7.9.2009 (Core)
+
+License:
+		invs	Innovus Implementation System	20.1	checkout succeeded
+		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required
+CPU count.
+**WARN: (IMPOPT-801):	Genus executable not found in PATH. Install Genus, add the path to the genus execu
+table in the PATH variable and rerun Innovus.
+Create and set the environment variable TMPDIR to /tmp/innovus_temp_98639_EDA2035_EDA_SRpjS0.
+
+The soft stacksize limit is either up to the hard limit or larger than 0.2% of RAM. No change is needed.
+
+**INFO:  MMMC transition support version v31-84
+
+innovus 1>

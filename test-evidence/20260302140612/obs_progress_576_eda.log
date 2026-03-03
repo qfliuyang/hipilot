@@ -1,0 +1,257 @@
+**INFO: setDesignMode -flowEffort standard -> setting 'setOptMode -allEndPoints true' for the duration of
+this command.
+GigaOpt running with 1 threads.
+Updating RC grid for preRoute extraction ...
+Initializing multi-corner resistance tables ...
+Setting timing_disable_library_data_to_data_checks to 'true'.
+Setting timing_disable_user_data_to_data_checks to 'true'.
+**optDesign ... cpu = 0:00:03, real = 0:00:03, mem = 893.4M, totSessionCpu=0:01:59 **
+*** optDesign -preCTS ***
+DRC Margin: user margin 0.0; extra margin 0.2
+Setup Target Slack: user slack 0; extra slack 0.0
+Hold Target Slack: user slack 0
+INFO****: The delay profiles based on paritioning incorrect, turning off vt filtering
+**WARN: (IMPOPT-3195):	Analysis mode has changed.
+Type 'man IMPOPT-3195' for more detail.
+[NR-eGR] Started Early Global Route kernel ( Curr Mem: 1096.71 MB )
+[NR-eGR] Num Prerouted Nets = 0  Num Prerouted Wires = 0
+[NR-eGR] Read numTotalNets=11200  numIgnoredNets=0
+[NR-eGR] There are 2 clock nets ( 0 with NDR ).
+[NR-eGR] ============ Routing rule table ============
+[NR-eGR] Rule id: 0  Nets: 11200
+[NR-eGR] ========================================
+[NR-eGR]
+[NR-eGR] Layer group 1: route 11200 net(s) in layer range [2, 5]
+[NR-eGR] Early Global Route overflow of layer group 1: 2.35% H + 2.89% V. EstWL: 5.214458e+05um
+[NR-eGR] Overflow after Early Global Route (GR compatible) 0.61% H + 1.45% V
+[NR-eGR] Overflow after Early Global Route 0.76% H + 1.56% V
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR]    li1  (1F) length: 0.000000e+00um, number of vias: 43498
+[NR-eGR]   met1  (2H) length: 1.919949e+05um, number of vias: 76188
+[NR-eGR]   met2  (3V) length: 2.228743e+05um, number of vias: 6459
+[NR-eGR]   met3  (4H) length: 7.780909e+04um, number of vias: 3574
+[NR-eGR]   met4  (5V) length: 5.039660e+04um, number of vias: 0
+[NR-eGR] Total length: 5.430749e+05um, number of vias: 129719
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR] Total eGR-routed clock nets wire length: 1.628079e+04um
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR] Finished Early Global Route kernel ( CPU: 0.71 sec, Real: 0.72 sec, Curr Mem: 1105.82 MB )
+Extraction called for design 'ibex_core' of instances=10895 and nets=11339 using extraction engine 'preRou
+te' .
+PreRoute RC Extraction called for design ibex_core.
+RC Extraction called in multi-corner(2) mode.
+**WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy
+when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to gener
+ate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_r
+c_corner/update_rc_corner -cap_table'.
+Type 'man IMPEXT-6197' for more detail.
+RCMode: PreRoute
+      RC Corner Indexes            0       1
+Capacitance Scaling Factor   : 1.05000 1.00000
+Resistance Scaling Factor    : 1.05000 1.00000
+Clock Cap. Scaling Factor    : 1.05000 1.00000
+Clock Res. Scaling Factor    : 1.05000 1.00000
+Shrink Factor                : 1.00000
+PreRoute extraction is honoring NDR/Shielding/ExtraSpace for clock nets.
+Updating RC grid for preRoute extraction ...
+Initializing multi-corner resistance tables ...
+PreRoute RC Extraction DONE (CPU Time: 0:00:00.1  Real Time: 0:00:00.0  MEM: 1105.820M)
+Starting delay calculation for Setup views
+#################################################################################
+# Design Stage: PreRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC Non-OCV
+# Parasitics Mode: No SPEF/RCDB
+# Signoff Settings: SI Off
+#################################################################################
+Calculate delays in Single mode...
+Start delay calculation (fullDC) (1 T). (MEM=1106.5)
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'L1M1_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M1M2_PR_M' in Cap table or LEF or OA files.
+ The default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files,
+ provide the resistance and read the files again.
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M2M3_PR_R' in Cap table or LEF or OA files.
+ The default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files,
+ provide the resistance and read the files again.
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M3M4_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+Total number of fetched objects 11203
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+End delay calculation. (MEM=1212.68 CPU=0:00:02.0 REAL=0:00:02.0)
+End delay calculation (fullDC). (MEM=1185.6 CPU=0:00:02.5 REAL=0:00:02.0)
+*** Done Building Timing Graph (cpu=0:00:03.4 real=0:00:03.0 totSessionCpu=0:02:05 mem=1185.6M)
+
+------------------------------------------------------------
+             Initial Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+
+|     Setup mode     |   all   |
++--------------------+---------+
+|           WNS (ns):| -28.444 |
+|           TNS (ns):|-46238.0 |
+|    Violating Paths:|  1908   |
+|          All Paths:|  3692   |
++--------------------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |    150 (150)     |   -0.560   |    151 (151)     |
+|   max_tran     |    677 (7359)    |  -14.933   |    695 (7386)    |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 39.869%
+------------------------------------------------------------
+**optDesign ... cpu = 0:00:10, real = 0:00:10, mem = 935.8M, totSessionCpu=0:02:06 **
+** INFO : this run is activating medium effort placeOptDesign flow
+*** Starting optimizing excluded clock nets MEM= 1139.6M) ***
+*info: No excluded clock nets to be optimized.
+*** Finished optimizing excluded clock nets (CPU Time= 0:00:00.0  MEM= 1139.6M) ***
+The useful skew maximum allowed delay is: 0.3
+Info: 2 clock nets excluded from IPO operation.
+*** AreaOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:02:06.6/0:02:35.2 (0.8
+), mem = 1139.6M
+
+Footprint cell information for calculating maxBufDist
+*info: There are 13 candidate Buffer cells
+*info: There are 13 candidate Inverter cells
+
+
+Netlist preparation processing...
+Removed 0 instance
+*info: Marking 0 isolation instances dont touch
+*info: Marking 0 level shifter instances dont touch
+*** AreaOpt [finish] : cpu/real = 0:00:03.8/0:00:03.8 (1.0), totSession cpu/real = 0:02:10.3/0:02:39.0 (0.
+8), mem = 1241.7M
+Begin: GigaOpt high fanout net optimization
+GigaOpt HFN: use maxLocalDensity 1.2
+GigaOpt Checkpoint: Internal optDRV -useLevelizedBufferTreeOnly -auxMaxFanoutCountLimit 500 -largeScaleFix
+ing -maxIter 1 -maxLocalDensity 1.2 -numThreads 1 -preCTS -preRouteDontEndWithRefinePlaceIncrSteinerRouteD
+C
+Info: 2 clock nets excluded from IPO operation.
+*** DrvOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:02:10.6/0:02:39.2 (0.8)
+, mem = 1180.7M
++----------+---------+--------+----------+------------+--------+
+| Density  | Commits |  WNS   |   TNS    |    Real    |  Mem   |
++----------+---------+--------+----------+------------+--------+
+|    39.87%|        -| -28.444|-46237.955|   0:00:00.0| 1199.8M|
+|    39.95%|       52| -28.444|-46237.959|   0:00:01.0| 1250.4M|
++----------+---------+--------+----------+------------+--------+
+
+*** Finish pre-CTS High Fanout Net Fixing (cpu=0:00:00.8 real=0:00:01.0 mem=1250.4M) ***
+Bottom Preferred Layer:
+    None
+Via Pillar Rule:
+    None
+*** DrvOpt [finish] : cpu/real = 0:00:05.2/0:00:05.2 (1.0), totSession cpu/real = 0:02:15.8/0:02:44.4 (0.8
+), mem = 1231.4M
+GigaOpt HFN: restore maxLocalDensity to 0.98
+End: GigaOpt high fanout net optimization
+Begin: GigaOpt DRV Optimization
+GigaOpt Checkpoint: Internal optDRV -max_tran -max_cap -maxLocalDensity 3.0 -numThreads 1 -largeScaleFixin
+g -maxIter 2 -preCTS -preRouteDontEndWithRefinePlaceIncrSteinerRouteDC
+Info: 2 clock nets excluded from IPO operation.
+*** DrvOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:02:15.8/0:02:44.4 (0.8)
+, mem = 1231.4M
++---------------------------------------------------------------------------------------------------------
+----------------------------------------------+
+|        max-tran       |        max-cap        |  max-fanout |  max-length |       setup       |        |
+        |        |       |          |         |
++---------------------------------------------------------------------------------------------------------
+----------------------------------------------+
+| nets | terms|  wViol  | nets | terms|  wViol  | nets | terms| nets | terms|   WNS   |   TNS   |  #Buf  |
+  #Inv  | #Resize|Density|   Real   |   Mem   |
++---------------------------------------------------------------------------------------------------------
+----------------------------------------------+
+|   991|  9836|   -15.23|   237|   237|    -0.57|     0|     0|     0|     0|   -28.44|-46237.96|       0|
+       0|       0|  39.95|          |         |
+|     0|     0|     0.00|     0|     0|     0.00|     0|     0|     0|     0|   -11.79|-16277.40|     204|
+       0|     109|  40.33| 0:00:05.0|  1250.4M|
+|     0|     0|     0.00|     0|     0|     0.00|     0|     0|     0|     0|   -11.79|-16277.40|       0|
+       0|       0|  40.33| 0:00:00.0|  1250.4M|
++---------------------------------------------------------------------------------------------------------
+----------------------------------------------+
+Bottom Preferred Layer:
+    None
+Via Pillar Rule:
+    None
+
+*** Finish DRV Fixing (cpu=0:00:05.6 real=0:00:05.0 mem=1250.4M) ***
+
+*** DrvOpt [finish] : cpu/real = 0:00:07.9/0:00:07.9 (1.0), totSession cpu/real = 0:02:23.7/0:02:52.4 (0.8
+), mem = 1231.4M
+End: GigaOpt DRV Optimization
+GigaOpt DRV: restore maxLocalDensity to 0.98
+**optDesign ... cpu = 0:00:28, real = 0:00:28, mem = 1007.5M, totSessionCpu=0:02:24 **
+
+Active setup views:
+ max_view
+  Dominating endpoints: 0
+  Dominating TNS: -0.000
+
+Begin: GigaOpt Global Optimization
+*info: use new DP (enabled)
+GigaOpt Checkpoint: Internal globalOpt -maxLocalDensity 1.2 -numThreads 1 -preCTS -rebufferAll -preRouteDo
+ntEndWithRefinePlaceIncrSteinerRouteDC -enableHighLayerOpt -maxIter 50 -maxIterForLEPG 50
+Info: 2 clock nets excluded from IPO operation.
+*** SetupOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:02:23.9/0:02:52.5 (0.
+8), mem = 1189.4M
+*info: 2 clock nets excluded
+*info: 2 special nets excluded.
+*info: 130 no-driver nets excluded.
+** GigaOpt Global Opt WNS Slack -11.794  TNS Slack -16277.402
++--------+----------+----------+------------+--------+----------+---------+-------------------------------
+---------------------+
+|  WNS   |   TNS    | Density  |    Real    |  Mem   |Worst View|Pathgroup|                     End Point
+                     |
++--------+----------+----------+------------+--------+----------+---------+-------------------------------
+---------------------+
+| -11.794|-16277.402|    40.33%|   0:00:00.0| 1208.4M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/rdata_q_reg[54]/D
+                     |
+Dumping Information for Job 0 **WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M4M5_PR' in
+ Cap table or LEF or OA files. The default value of 4.0 ohms is being assigned. To avoid this, check the C
+ap table and LEF and OA files, provide the resistance and read the files again.
+
+|  -6.508| -6400.399|    40.70%|   0:00:06.0| 1272.1M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[30]/D
+                     |
+|  -5.603| -4449.132|    41.10%|   0:00:06.0| 1277.9M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[30]/D
+                     |
+|  -5.603| -4449.132|    41.10%|   0:00:01.0| 1279.7M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[30]/D
+                     |
+|  -2.832| -1246.065|    41.48%|   0:00:08.0| 1279.7M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[30]/D
+                     |
+|  -2.487|  -940.057|    41.52%|   0:00:05.0| 1298.8M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[30]/D
+                     |
+|  -2.383|  -709.317|    41.70%|   0:00:03.0| 1298.8M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[30]/D
+                     |
+|  -2.383|  -709.317|    41.70%|   0:00:00.0| 1298.8M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[30]/D
+                     |
+

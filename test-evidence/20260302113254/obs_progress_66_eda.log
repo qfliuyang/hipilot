@@ -1,0 +1,257 @@
+Type 'man IMPOPT-3602' for more detail.
+Effort level <high> specified for reg2reg path_group
+**WARN: (IMPOPT-3602):	The specified path group name reg2cg is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <high> specified for reg2cg path_group
+Effort level <low> specified for in2reg path_group
+Effort level <low> specified for reg2out path_group
+Effort level <low> specified for feedthr path_group
+Ignoring {in2reg reg2out feedthr} groups for Hold optimization.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+No user sequential activity specified, applying default sequential activity of "0.2" for Dynamic Power rep
+orting.
+'set_default_switching_activity' finished successfully.
+*** Starting GigaPlace ***
+**INFO: User settings:
+setDesignMode -process                            130
+setExtractRCMode -coupling_c_th                   0.4
+setExtractRCMode -engine                          preRoute
+setExtractRCMode -relative_c_th                   1
+setExtractRCMode -total_c_th                      0
+setDelayCalMode -engine                           aae
+setOptMode -ignorePathGroupsForHold               {in2reg reg2out feedthr}
+setPlaceMode -place_detail_legalization_inst_gap  2
+setPlaceMode -place_global_ignore_scan            true
+setPlaceMode -place_global_place_io_pins          false
+setPlaceMode -place_global_reorder_scan           false
+setAnalysisMode -analysisType                     bcwc
+setAnalysisMode -cppr                             both
+setRouteMode -earlyGlobalMaxRouteLayer            5
+setRouteMode -earlyGlobalMinRouteLayer            2
+
+#optDebug: fT-E <X 2 3 1 0>
+**WARN: (IMPSP-9513):	Timing constraint file does not exist
+**WARN: (IMPSP-9514):	Non-TimingDriven placement will be performed.
+Deleted 0 physical inst  (cell - / prefix -).
+INFO: #ExclusiveGroups=0
+INFO: There are no Exclusive Groups.
+No user-set net weight.
+Net fanout histogram:
+2		: 6715 (59.0%) nets
+3		: 1135 (10.0%) nets
+4     -	14	: 3132 (27.5%) nets
+15    -	39	: 322 (2.8%) nets
+40    -	79	: 57 (0.5%) nets
+80    -	159	: 13 (0.1%) nets
+160   -	319	: 0 (0.0%) nets
+320   -	639	: 0 (0.0%) nets
+640   -	1279	: 4 (0.0%) nets
+1280  -	2559	: 0 (0.0%) nets
+2560  -	5119	: 0 (0.0%) nets
+5120+		: 0 (0.0%) nets
+Options: clkGateAware ignoreScan pinGuide congEffort=auto gpeffort=medium
+**WARN: (IMPSP-9042):	Scan chains were not defined, -place_global_ignore_scan option will be ignored.
+Define the scan chains before using this option.
+Type 'man IMPSP-9042' for more detail.
+#std cell=11078 (0 fixed + 11078 movable) #buf cell=0 #inv cell=0 #block=0 (0 floating + 0 preplaced)
+#ioInst=0 #net=11378 #term=48727 #term/net=4.28, #fixedIo=264, #floatIo=0, #fixedPin=0, #floatPin=258
+stdCell: 11078 single + 0 double + 0 multi
+Total standard cell length = 44.7120 (mm), area = 0.1216 (mm^2)
+Average module density = 0.406.
+Density for the design = 0.406.
+       = stdcell_area 97200 sites (121617 um^2) / alloc_area 239554 sites (299731 um^2).
+Pin Density = 0.2005.
+            = total # of pins 48727 / total area 243006.
+=== lastAutoLevel = 9
+**WARN: (IMPSP-9531):	Turning off clkGateAware when timingDriven is off
+Init WL Bound For Global Placement...
+Iteration  1: Total net bbox = 2.044e+05 (1.03e+05 1.01e+05)
+              Est.  stn bbox = 2.275e+05 (1.15e+05 1.13e+05)
+              cpu = 0:00:00.1 real = 0:00:01.0 mem = 914.2M
+Iteration  2: Total net bbox = 2.044e+05 (1.03e+05 1.01e+05)
+              Est.  stn bbox = 2.275e+05 (1.15e+05 1.13e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 914.2M
+Iteration  3: Total net bbox = 1.937e+05 (9.61e+04 9.77e+04)
+              Est.  stn bbox = 2.342e+05 (1.16e+05 1.19e+05)
+              cpu = 0:00:01.1 real = 0:00:01.0 mem = 935.9M
+Iteration  4: Total net bbox = 3.818e+05 (2.23e+05 1.59e+05)
+              Est.  stn bbox = 4.908e+05 (2.91e+05 2.00e+05)
+              cpu = 0:00:02.8 real = 0:00:03.0 mem = 935.9M
+Iteration  5: Total net bbox = 4.565e+05 (2.36e+05 2.21e+05)
+              Est.  stn bbox = 6.080e+05 (3.15e+05 2.93e+05)
+              cpu = 0:00:03.8 real = 0:00:04.0 mem = 936.9M
+Iteration  6: Total net bbox = 4.743e+05 (2.37e+05 2.37e+05)
+              Est.  stn bbox = 6.379e+05 (3.18e+05 3.20e+05)
+              cpu = 0:00:06.8 real = 0:00:07.0 mem = 941.1M
+
+Iteration  7: Total net bbox = 5.259e+05 (2.74e+05 2.52e+05)
+              Est.  stn bbox = 7.095e+05 (3.71e+05 3.38e+05)
+              cpu = 0:00:04.9 real = 0:00:05.0 mem = 946.4M
+Iteration  8: Total net bbox = 5.259e+05 (2.74e+05 2.52e+05)
+              Est.  stn bbox = 7.095e+05 (3.71e+05 3.38e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 946.4M
+Iteration  9: Total net bbox = 5.679e+05 (2.84e+05 2.84e+05)
+              Est.  stn bbox = 7.681e+05 (3.86e+05 3.82e+05)
+              cpu = 0:00:10.5 real = 0:00:11.0 mem = 946.4M
+Iteration 10: Total net bbox = 5.679e+05 (2.84e+05 2.84e+05)
+              Est.  stn bbox = 7.681e+05 (3.86e+05 3.82e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 946.4M
+Iteration 11: Total net bbox = 5.417e+05 (2.70e+05 2.72e+05)
+              Est.  stn bbox = 7.287e+05 (3.65e+05 3.64e+05)
+              cpu = 0:00:02.4 real = 0:00:02.0 mem = 944.4M
+Iteration 12: Total net bbox = 5.509e+05 (2.79e+05 2.72e+05)
+              Est.  stn bbox = 7.385e+05 (3.74e+05 3.65e+05)
+              cpu = 0:00:17.6 real = 0:00:17.0 mem = 944.4M
+Iteration 13: Total net bbox = 5.509e+05 (2.79e+05 2.72e+05)
+              Est.  stn bbox = 7.385e+05 (3.74e+05 3.65e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 944.4M
+Iteration 14: Total net bbox = 5.509e+05 (2.79e+05 2.72e+05)
+              Est.  stn bbox = 7.385e+05 (3.74e+05 3.65e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 944.4M
+Finished Global Placement (cpu=0:00:47.8, real=0:00:50.0, mem=944.4M)
+*** Starting refinePlace (0:01:18 mem=944.4M) ***
+Total net bbox length = 5.511e+05 (2.788e+05 2.722e+05) (ext = 2.167e+04)
+Move report: Detail placement moves 11078 insts, mean move: 1.72 um, max move: 50.22 um
+	Max move on inst (gen_regfile_ff.register_file_i/U2687): (215.00, 187.62) --> (214.82, 237.66)
+	Runtime: CPU: 0:00:02.0 REAL: 0:00:03.0 MEM: 952.5MB
+Summary Report:
+Instances move: 11078 (out of 11078 movable)
+Instances flipped: 0
+Mean displacement: 1.72 um
+Max displacement: 50.22 um (Instance: gen_regfile_ff.register_file_i/U2687) (214.998, 187.621) -> (214.82,
+ 237.66)
+	Length: 3 sites, height: 1 rows, site name: unithd, cell type: sky130_fd_sc_hd__buf_1
+Total net bbox length = 5.393e+05 (2.664e+05 2.730e+05) (ext = 2.149e+04)
+Runtime: CPU: 0:00:02.0 REAL: 0:00:03.0 MEM: 952.5MB
+*** Finished refinePlace (0:01:20 mem=952.5M) ***
+*** Finished Initial Placement (cpu=0:00:50.2, real=0:00:53.0, mem=952.5M) ***
+
+*** Start incrementalPlace ***
+Init WL Bound for IncrIp in placeDesign ...
+No Views given, use default active views for adaptive view pruning
+SKP will enable view:
+  default_view_setup
+[NR-eGR] Num Prerouted Nets = 0  Num Prerouted Wires = 0
+[NR-eGR] Read numTotalNets=11377  numIgnoredNets=0
+[NR-eGR] ============ Routing rule table ============
+[NR-eGR] Rule id: 0  Nets: 11377
+[NR-eGR] ========================================
+[NR-eGR]
+[NR-eGR] Layer group 1: route 11377 net(s) in layer range [2, 5]
+[NR-eGR] Early Global Route overflow of layer group 1: 4.44% H + 4.76% V. EstWL: 6.922373e+05um
+[NR-eGR] Overflow after Early Global Route (GR compatible) 1.25% H + 2.36% V
+[NR-eGR] Overflow after Early Global Route 1.53% H + 2.67% V
+Early Global Route congestion estimation runtime: 0.40 seconds, mem = 952.5M
+Local HotSpot Analysis: normalized max congestion hotspot area = 4.44, normalized total congestion hotspot
+ area = 21.33 (area is in unit of 4 std-cell row bins)
+Skipped repairing congestion.
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR]    li1  (1F) length: 0.000000e+00um, number of vias: 47763
+[NR-eGR]   met1  (2H) length: 2.459244e+05um, number of vias: 85783
+[NR-eGR]   met2  (3V) length: 2.878719e+05um, number of vias: 8721
+[NR-eGR]   met3  (4H) length: 1.119678e+05um, number of vias: 5385
+[NR-eGR]   met4  (5V) length: 7.121618e+04um, number of vias: 0
+[NR-eGR] Total length: 7.169802e+05um, number of vias: 147652
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR] Total eGR-routed clock nets wire length: 0.000000e+00um
+[NR-eGR] --------------------------------------------------------------------------
+Early Global Route wiring runtime: 0.41 seconds, mem = 952.5M
+Tdgp not successfully inited but do clear! skip clearing
+
+*** Finished incrementalPlace (cpu=0:00:00.8, real=0:00:00.0)***
+***** Total cpu  0:0:52
+***** Total real time  0:0:53
+Tdgp not successfully inited but do clear! skip clearing
+**placeDesign ... cpu = 0: 0:52, real = 0: 0:54, mem = 935.5M **
+**optDesign ... cpu = 0:00:00, real = 0:00:00, mem = 795.3M, totSessionCpu=0:01:21 **
+**WARN: (IMPOPT-576):	2 nets have unplaced terms.
+Type 'man IMPOPT-576' for more detail.
+**INFO: setDesignMode -flowEffort standard -> setting 'setOptMode -allEndPoints true' for the duration of
+this command.
+GigaOpt running with 1 threads.
+**WARN: (IMPOPT-3000):	Buffer footprint is not defined or is an invalid buffer footprint.
+Type 'man IMPOPT-3000' for more detail.
+**WARN: (IMPOPT-3001):	Inverter footprint is not defined or is an invalid inverter footprint.
+Type 'man IMPOPT-3001' for more detail.
+**WARN: No usable buffer/inverter becasue of dont-use/dont-touch setting.
+Updating RC grid for preRoute extraction ...
+**DIAG[/icd/cm_t1nb_001/INNOVUS201/Rel/20.10/main/lnx86_64_opt/20.10-p004_1/fe/src/op/opUtil.c:7018:update
+]: Assert "powerView != toCteGetDefaultAnalysisView()"
+Total number of combinational cells: 0
+Total number of sequential cells: 0
+Total number of tristate cells: 0
+Total number of level shifter cells: 0
+Total number of power gating cells: 0
+Total number of isolation cells: 0
+Total number of power switch cells: 0
+Total number of pulse generator cells: 0
+Total number of always on buffers: 0
+Total number of retention cells: 0
+List of usable buffers:
+Total number of usable buffers: 0
+List of unusable buffers:
+Total number of unusable buffers: 0
+List of usable inverters:
+Total number of usable inverters: 0
+List of unusable inverters:
+Total number of unusable inverters: 0
+List of identified usable delay cells:
+Total number of identified usable delay cells: 0
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+No delay cells were detected in the set of buffers. Buffers will be used to fix hold violations.
+**DIAG[/icd/cm_t1nb_001/INNOVUS201/Rel/20.10/main/lnx86_64_opt/20.10-p004_1/fe/src/op/opUtil.c:7029:update
+]: Assert "powerViewTlc"
+**DIAG[/icd/cm_t1nb_001/INNOVUS201/Rel/20.10/main/lnx86_64_opt/20.10-p004_1/fe/src/op/opUtil.c:7018:update
+]: Assert "powerView != toCteGetDefaultAnalysisView()"
+**DIAG[/icd/cm_t1nb_001/INNOVUS201/Rel/20.10/main/lnx86_64_opt/20.10-p004_1/fe/src/op/opUtil.c:7029:update
+]: Assert "powerViewTlc"
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+**WARN: (IMPOPT-3000):	Buffer footprint is not defined or is an invalid buffer footprint.
+Type 'man IMPOPT-3000' for more detail.
+**WARN: (IMPOPT-3001):	Inverter footprint is not defined or is an invalid inverter footprint.
+Type 'man IMPOPT-3001' for more detail.
+**DIAG[/icd/cm_t1nb_001/INNOVUS201/Rel/20.10/main/lnx86_64_opt/20.10-p004_1/fe/src/op/opUtil.c:7018:update
+]: Assert "powerView != toCteGetDefaultAnalysisView()"
+**DIAG[/icd/cm_t1nb_001/INNOVUS201/Rel/20.10/main/lnx86_64_opt/20.10-p004_1/fe/src/op/opUtil.c:7029:update
+]: Assert "powerViewTlc"
+**WARN: (IMPOPT-665):	test_si : Net has unplaced terms or is connected to uplaced instances in design.
+Type 'man IMPOPT-665' for more detail.
+**WARN: (IMPOPT-665):	test_so : Net has unplaced terms or is connected to uplaced instances in design.
+Type 'man IMPOPT-665' for more detail.
+AAE DB initialization (MEM=958.391 CPU=0:00:00.0 REAL=0:00:00.0)
+Setting timing_disable_library_data_to_data_checks to 'true'.
+Setting timing_disable_user_data_to_data_checks to 'true'.
+**optDesign ... cpu = 0:00:01, real = 0:00:00, mem = 803.3M, totSessionCpu=0:01:21 **
+**ERROR: (IMPOPT-6029):	Timing Library is not loaded yet.
+
+innovus 4>

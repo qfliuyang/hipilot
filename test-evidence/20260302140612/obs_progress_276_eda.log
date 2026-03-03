@@ -1,0 +1,257 @@
+End option processing: cpu: 0:00:00, real: 0:00:00, peak: 1899.00 megs.
+
+Reading DB technology information...
+Finished reading DB technology information.
+Reading floorplan and netlist information...
+Finished reading floorplan and netlist information.
+Read in 12 layers, 6 routing layers, 0 overlap layer
+Read in 440 macros, 91 used
+Read in 90 components
+  90 core components: 90 unplaced, 0 placed, 0 fixed
+Read in 264 physical pins
+  264 physical pins: 0 unplaced, 264 placed, 0 fixed
+Read in 2 logical pins
+Read in 266 nets
+Read in 2 special nets, 2 routed
+Read in 264 terminals
+2 nets selected.
+
+Begin power routing ...
+**WARN: (IMPSR-1253):	Cannot find any standard cell pin connected to net VDD.
+Run globalNetConnect command or change CPF file to make sure that the netlist reflects the correct power g
+round connections. The standard cell pins must be defined as 'USE POWER' or 'USE GROUND'.
+**WARN: (IMPSR-1253):	Cannot find any standard cell pin connected to net VSS.
+Run globalNetConnect command or change CPF file to make sure that the netlist reflects the correct power g
+round connections. The standard cell pins must be defined as 'USE POWER' or 'USE GROUND'.
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+CPU time for FollowPin 0 seconds
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+CPU time for FollowPin 0 seconds
+  Number of Core ports routed: 0
+  Number of Followpin connections: 203
+End power routing: cpu: 0:00:01, real: 0:00:01, peak: 1912.00 megs.
+
+
+
+ Begin updating DB with routing results ...
+ Updating DB with 264 io pins ...
+ Updating DB with 0 via definition ...Extracting standard cell pins and blockage ......
+Pin and blockage extraction finished
+
+sroute created 203 wires.
+ViaGen created 11265 vias, deleted 0 via to avoid violation.
++--------+----------------+----------------+
+|  Layer |     Created    |     Deleted    |
++--------+----------------+----------------+
+|  met1  |       203      |       NA       |
+|   via  |      3755      |        0       |
+|  via2  |      3755      |        0       |
+|  via3  |      3755      |        0       |
++--------+----------------+----------------+
+#% End sroute (date=03/02 22:32:42, total cpu=0:00:00.9, real=0:00:01.0, peak res=767.2M, current mem=767.
+2M)
+#% Begin save design ... (date=03/02 22:32:42, mem=767.2M)
+% Begin Save ccopt configuration ... (date=03/02 22:32:42, mem=767.2M)
+% End Save ccopt configuration ... (date=03/02 22:32:42, total cpu=0:00:00.0, real=0:00:00.0, peak res=767
+.2M, current mem=765.5M)
+% Begin Save netlist data ... (date=03/02 22:32:42, mem=765.5M)
+Writing Binary DB to result/pr/data/powerplan.enc.dat.tmp/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/02 22:32:42, total cpu=0:00:00.1, real=0:00:00.0, peak res=766.0M, cu
+rrent mem=766.0M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/powerplan.enc.dat.tmp/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/02 22:32:42, mem=766.2M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/02 22:32:42, total cpu=0:00:00.0, real=0:00:00.0, peak res=766.2M, curren
+t mem=766.2M)
+Saving preference file result/pr/data/powerplan.enc.dat.tmp/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 22:32:42, mem=766.6M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 22:32:43, total cpu=0:00:00.0, real=0:00:01.0, peak res=766.6M,
+current mem=766.6M)
+Saving PG file result/pr/data/powerplan.enc.dat.tmp/ibex_core.pg.gz, version#2, (Created by Innovus v20.10
+-p004_1 on Mon Mar  2 22:32:43 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=915.7M) ***
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 22:32:43, mem=767.1M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 22:32:43, total cpu=0:00:00.0, real=0:00:00.0, peak res=767.1M,
+current mem=767.1M)
+% Begin Save routing data ... (date=03/02 22:32:43, mem=767.1M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.0 real=0:00:00.0 mem=915.7M) ***
+% End Save routing data ... (date=03/02 22:32:43, total cpu=0:00:00.0, real=0:00:00.0, peak res=767.2M, cu
+rrent mem=767.2M)
+Saving property file result/pr/data/powerplan.enc.dat.tmp/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=918.7M) ***
+% Begin Save power constraints data ... (date=03/02 22:32:43, mem=767.2M)
+% End Save power constraints data ... (date=03/02 22:32:43, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+767.2M, current mem=767.2M)
+Generated self-contained design powerplan.enc.dat.tmp
+#% End save design ... (date=03/02 22:32:48, total cpu=0:00:05.0, real=0:00:06.0, peak res=797.1M, current
+ mem=765.3M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+STAGE 3 COMPLETE
+=========================================
+STAGE 4: Placement
+=========================================
+Effort level <high> specified for reg2reg path_group
+**WARN: (IMPOPT-3602):	The specified path group name reg2cg is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <high> specified for reg2cg path_group
+Effort level <low> specified for in2reg path_group
+Effort level <low> specified for reg2out path_group
+Effort level <low> specified for feedthr path_group
+Ignoring {in2reg reg2out feedthr} groups for Hold optimization.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+No user sequential activity specified, applying default sequential activity of "0.2" for Dynamic Power rep
+orting.
+'set_default_switching_activity' finished successfully.
+*** Starting GigaPlace ***
+**INFO: User settings:
+setDesignMode -process                            130
+setExtractRCMode -coupling_c_th                   0.4
+setExtractRCMode -relative_c_th                   1
+setExtractRCMode -total_c_th                      0
+setDelayCalMode -engine                           aae
+setOptMode -ignorePathGroupsForHold               {in2reg reg2out feedthr}
+setPlaceMode -place_detail_legalization_inst_gap  2
+setPlaceMode -place_global_ignore_scan            true
+setPlaceMode -place_global_place_io_pins          false
+setPlaceMode -place_global_reorder_scan           false
+setAnalysisMode -analysisType                     single
+setAnalysisMode -cppr                             both
+setRouteMode -earlyGlobalMaxRouteLayer            5
+setRouteMode -earlyGlobalMinRouteLayer            2
+
+#optDebug: fT-E <X 2 3 1 0>
+**ERROR: (IMPSP-9099):	Scan chains exist in this design but are not defined for 99.95% flops. Placement a
+nd timing QoR can be severely impacted in this case!
+It is highly recommend to define scan chains either through input scan def (preferred) or specifyScanChain
+.
+
+innovus 2> source /tmp/hipilot-EDA/exec/hipilot_exec_1772461993517.tcl
+
+Usage: specifyScanChain [-help] <scanChainName> -start {ftname|instPinName} -stop {ftname|instPinName}
+
+**ERROR: (IMPTCM-48):	"-deleteAllScanChains" is not a legal option for command "specifyScanChain". Eithe
+r the current option or an option prior to it is not specified correctly.
+
+innovus 3> source /tmp/hipilot-EDA/exec/hipilot_exec_1772462053687.tcl
+ambiguous command name "loadDef": loadDefFile loadDefNetlist
+innovus 4> source /tmp/hipilot-EDA/exec/hipilot_exec_1772462133190.tcl
+-place_detail_legalization_inst_gap 0
+-place_global_reorder_scan true
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+
+Usage: setOptMode [-help] [-reset] [-addAOFeedThruBuffer {true|false}] [-addInst {true|false}]
+                  [-addInstancePrefix <PREFIX>] [-addNetPrefix <PREFIX>] [-addPortAsNeeded {true|false}]
+                  [-allEndPoints {true|false}] [-allowOnlyCellSwapping {true|false}]
+                  [-checkRoutingCongestion {auto|false|true}] [-deleteInst {true|false}]
+                  [-detailDrvFailureReason {true|false}] [-detailDrvFailureReasonMaxNumNets <value>]
+                  [-downsizeInst {true|false}] [-drcMargin <DOUBLE>]
+                  [-enableDataToDataChecks {true|false}] [-fixClockDrv {true|false}]
+                  [-fixDrc {true|false}] [-fixFanoutLoad {true|false}] [-fixGlitch {true|false}]
+                  [-fixHoldAllowOverlap {auto|false|true}] [-fixHoldAllowResizing {false|true}]
+                  [-fixHoldAllowSetupTnsDegrade {true|false}] [-fixHoldOnExcludedClockNets {true|false}]
+                  [-fixMillerCapDrv {true|false}] [-fixSISlew {true|false}] [-highEffortOptCells <LIST>]
+                  [-holdFixingCells <LIST>] [-holdSlackFixingThreshold <SLACK>] [-holdTargetSlack <SLACK>]
+                  [-honorDensityScreenInOpt {true|false}] [-honorFence {true|false}]
+                  [-ignorePathGroupsForHold <INST>] [-leakageToDynamicRatio <ratio>]
+                  [-maxDensity <DENSITY>] [-maxLength <value>] [-moveInst {true|false}]
+                  [-multiBitFlopOpt {false|true|mergeOnly|splitOnly}]
+                  [-multiBitFlopOptIgnoreSDC {true|false}] [-ndrAwareOpt <LIST>]
+                  [-optimizeConstantInputs {true|false}] [-optimizeConstantNet {true|false}]
+                  [-optimizeFF {true|false}] [-optimizeTiedInputs {true|false}]
+                  [-postRouteAllowOverlap {true|false}]
+                  [-postRouteAreaReclaim {none|setupAware|holdAndSetupAware}]
+                  [-postRouteCheckAntennaRules {true|false}] [-postRouteDrvRecovery <ENUM>]
+                  [-postRouteSetupRecovery <ENUM>] [-powerEffort {none|low|high}]
+                  [-preserveAllSequential {true|false}] [-preserveModuleFunction {true|false}]
+                  [-reclaimArea {true|false|default}] [-resizePowerSwitchInsts {true|false}]
+                  [-resizeShifterAndIsoInsts {true|false}] [-restruct {true|false}]
+                  [-setupTargetSlack <SLACK>] [-setupTargetSlackForReclaim <SLACK>]
+                  [-simplifyNetlist {true|false}] [-swapPin {true|false}] [-targetBasedOptFile <FILE>]
+                  [-targetBasedOptFileOnly {false|true}] [-targetBasedOptHoldFile <FILE>]
+                  [-timeDesignCompressReports {true|false}] [-timeDesignExpandedView {true|false}]
+                  [-timeDesignNumPaths <value>] [-timeDesignReportNet {true|false}]
+                  [-unfixClkInstForOpt {true|false}] [-useConcatDefaultsPrefix {true|false}]
+                  [-usefulSkew {true|false}] [-usefulSkewCCOpt {none|standard|extreme}]
+                  [-usefulSkewPostRoute {true|false}] [-usefulSkewPreCTS {true|false}]
+                  [-verbose {true|false}] [-virtualPartition {true|false}]
+
+**ERROR: (IMPTCM-48):	"-ignoreScanChainsForTiming" is not a legal option for command "setOptMode". Eithe
+r the current option or an option prior to it is not specified correctly.
+
+innovus 5>

@@ -1,0 +1,257 @@
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o31a_1; Check the timi
+ng library (.lib) file and make sure the timing information exists for the cell and you can run the checkT
+imingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o22ai_2; Check the tim
+ing library (.lib) file and make sure the timing information exists for the cell and you can run the check
+TimingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (EMS-27):	Message (IMPSYC-2) has exceeded the current message display limit of 20.
+To increase the message display limit, refer to the product command reference manual.
+**ERROR: (IMPSYT-7327):	Active setup and hold analysis views were not provided in either file result/pr/da
+ta/mmmc.view or by the -setup and -hold arguments to initDesign. The system requires at least one active s
+etup and hold analysis view to be declared before the design can be initialized. You must add a set_analys
+is_view command to your script, or add the -setup and -hold options to your init_design invocation. You ca
+n use the all_analysis_view command to identify the currently available views. If you are using CPF in a p
+hysical-only flow, please use 'read_power_intent -cpf' and 'commit_power_intent' after init_design. Do not
+ specify the CPF with the init_cpf_file variable in a physical-only flow.
+
+innovus 2> source /tmp/hipilot-EDA/exec/hipilot_exec_1772461393543.tcl
+**WARN: (IMPSYT-7329):	Cannot load design with init_design, after design is already in memory.  This comm
+and is skipped.
+############################################################################
+# Innovus Netlist Design Rule Check
+# Mon Mar  2 22:23:13 2026
+
+############################################################################
+Design: ibex_core
+
+------ Design Summary:
+Total Standard Cell Number   (cells) : 11078
+Total Block Cell Number      (cells) : 0
+Total I/O Pad Cell Number    (cells) : 0
+Total Standard Cell Area     ( um^2) : 121616.64
+Total Block Cell Area        ( um^2) : 0.00
+Total I/O Pad Cell Area      ( um^2) : 0.00
+
+------ Design Statistics:
+
+Number of Instances            : 11078
+Number of Non-uniquified Insts : 11056
+Number of Nets                 : 11519
+Average number of Pins per Net : 4.34
+Maximum number of Pins in Net  : 997
+
+------ I/O Port summary
+
+Number of Primary I/O Ports    : 266
+Number of Input Ports          : 159
+Number of Output Ports         : 107
+Number of Bidirectional Ports  : 0
+Number of Power/Ground Ports   : 0
+Number of Floating Ports                     *: 8
+Number of Ports Connected to Multiple Pads   *: 0
+Number of Ports Connected to Core Instances   : 258
+**WARN: (IMPREPO-200):	There are 8 Floating Ports in the top design.
+**WARN: (IMPREPO-202):	There are 258 Ports connected to core instances.
+
+------ Design Rule Checking:
+
+Number of Output Pins connect to Power/Ground *: 0
+Number of Insts with Input Pins tied together ?: 1230
+Number of TieHi/Lo term nets not connected to instance's PG terms ?: 0
+Number of Input/InOut Floating Pins            : 0
+Number of Output Floating Pins                 : 0
+Number of Output Term Marked TieHi/Lo         *: 0
+
+**WARN: (IMPREPO-216):	There are 1230 Instances with input pins tied together.
+Number of nets with tri-state drivers          : 0
+Number of nets with parallel drivers           : 0
+Number of nets with multiple drivers           : 0
+Number of nets with no driver (No FanIn)       : 0
+Number of Output Floating nets (No FanOut)     : 137
+Number of High Fanout nets (>50)               : 68
+**WARN: (IMPREPO-227):	There are 68 High Fanout nets (>50).
+Design check done.
+
+
+---
+--- Please refer to file result/pr/report/check_data_init.report for detailed report.
+---
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPREPO-227          1  There are %d High Fanout nets (>50).
+WARNING   IMPREPO-200          1  There are %d Floating Ports in the top d...
+WARNING   IMPREPO-202          1  There are %d Ports connected to core ins...
+WARNING   IMPREPO-216          1  There are %d Instances with input pins t...
+*** Message Summary: 4 warning(s), 0 error(s)
+
+**ERROR: (IMPOPT-6029):	Timing Library is not loaded yet.
+
+innovus 3> source /tmp/hipilot-EDA/exec/hipilot_exec_1772461429043.tcl
+couldn't read file "/home/EDA/ibex_work_upload/result/pr/data/init_design.enc": no such file or directory
+innovus 4> source /tmp/hipilot-EDA/exec/hipilot_exec_1772461475591.tcl
+**WARN: (IMPSYT-7329):	Cannot load design with init_design, after design is already in memory.  This comm
+and is skipped.
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPSYT-7329          1  Cannot load design with init_design, aft...
+*** Message Summary: 1 warning(s), 0 error(s)
+
+#% Begin save design ... (date=03/02 22:24:35, mem=667.0M)
+% Begin Save ccopt configuration ... (date=03/02 22:24:35, mem=670.1M)
+% End Save ccopt configuration ... (date=03/02 22:24:35, total cpu=0:00:00.0, real=0:00:00.0, peak res=671
+.0M, current mem=671.0M)
+% Begin Save netlist data ... (date=03/02 22:24:35, mem=690.8M)
+Writing Binary DB to result/pr/data/init_design.enc.dat/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/02 22:24:35, total cpu=0:00:00.1, real=0:00:00.0, peak res=692.4M, cu
+rrent mem=691.0M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/init_design.enc.dat/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/02 22:24:36, mem=691.8M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/02 22:24:36, total cpu=0:00:00.0, real=0:00:00.0, peak res=691.8M, curren
+t mem=691.8M)
+Saving preference file result/pr/data/init_design.enc.dat/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 22:24:36, mem=692.9M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 22:24:36, total cpu=0:00:00.0, real=0:00:00.0, peak res=693.6M,
+current mem=693.6M)
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 22:24:36, mem=693.7M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 22:24:36, total cpu=0:00:00.0, real=0:00:00.0, peak res=693.9M,
+current mem=693.8M)
+% Begin Save routing data ... (date=03/02 22:24:36, mem=693.8M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.0 real=0:00:00.0 mem=808.7M) ***
+% End Save routing data ... (date=03/02 22:24:36, total cpu=0:00:00.1, real=0:00:00.0, peak res=695.1M, cu
+rrent mem=694.1M)
+Saving property file result/pr/data/init_design.enc.dat/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=811.7M) ***
+% Begin Save power constraints data ... (date=03/02 22:24:36, mem=694.7M)
+% End Save power constraints data ... (date=03/02 22:24:36, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+694.8M, current mem=694.8M)
+Generated self-contained design init_design.enc.dat
+#% End save design ... (date=03/02 22:24:41, total cpu=0:00:05.1, real=0:00:06.0, peak res=698.7M, current
+ mem=698.7M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+CHECKPOINT SAVED: init_design.enc
+############################################################################
+# Innovus Netlist Design Rule Check
+# Mon Mar  2 22:24:41 2026
+
+############################################################################
+Design: ibex_core
+
+------ Design Summary:
+Total Standard Cell Number   (cells) : 11078
+Total Block Cell Number      (cells) : 0
+Total I/O Pad Cell Number    (cells) : 0
+Total Standard Cell Area     ( um^2) : 121616.64
+Total Block Cell Area        ( um^2) : 0.00
+Total I/O Pad Cell Area      ( um^2) : 0.00
+
+------ Design Statistics:
+
+Number of Instances            : 11078
+Number of Non-uniquified Insts : 11056
+Number of Nets                 : 11519
+Average number of Pins per Net : 4.34
+Maximum number of Pins in Net  : 997
+
+------ I/O Port summary
+
+Number of Primary I/O Ports    : 266
+Number of Input Ports          : 159
+Number of Output Ports         : 107
+Number of Bidirectional Ports  : 0
+Number of Power/Ground Ports   : 0
+Number of Floating Ports                     *: 8
+Number of Ports Connected to Multiple Pads   *: 0
+Number of Ports Connected to Core Instances   : 258
+**WARN: (IMPREPO-200):	There are 8 Floating Ports in the top design.
+**WARN: (IMPREPO-202):	There are 258 Ports connected to core instances.
+
+------ Design Rule Checking:
+
+Number of Output Pins connect to Power/Ground *: 0
+Number of Insts with Input Pins tied together ?: 1230
+Number of TieHi/Lo term nets not connected to instance's PG terms ?: 0
+Number of Input/InOut Floating Pins            : 0
+Number of Output Floating Pins                 : 0
+Number of Output Term Marked TieHi/Lo         *: 0
+
+**WARN: (IMPREPO-216):	There are 1230 Instances with input pins tied together.
+Number of nets with tri-state drivers          : 0
+Number of nets with parallel drivers           : 0
+Number of nets with multiple drivers           : 0
+Number of nets with no driver (No FanIn)       : 0
+Number of Output Floating nets (No FanOut)     : 137
+Number of High Fanout nets (>50)               : 68
+**WARN: (IMPREPO-227):	There are 68 High Fanout nets (>50).
+Design check done.
+
+
+---
+--- Please refer to file result/pr/report/check_data_init.report for detailed report.
+---
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPREPO-227          1  There are %d High Fanout nets (>50).
+WARNING   IMPREPO-200          1  There are %d Floating Ports in the top d...
+WARNING   IMPREPO-202          1  There are %d Ports connected to core ins...
+WARNING   IMPREPO-216          1  There are %d Instances with input pins t...
+*** Message Summary: 4 warning(s), 0 error(s)
+
+**ERROR: (IMPOPT-6029):	Timing Library is not loaded yet.
+
+innovus 5> source /tmp/hipilot-EDA/exec/hipilot_exec_1772461509006.tcl
+#% Begin load design ... (date=03/02 22:25:09, mem=698.8M)
+
+
+ERROR: **ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+
+**ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+    while executing
+"error $catchMsg"
+    (procedure "restoreDesign" line 31)
+
+
+
+ERROR : The MMMC configuration specified is incomplete  - a set_analysis_view command
+       was not found in the configuration. The software requires at least 1 setup
+       and 1 hold analysis view to be defined.  You should remedy this problem and
+       restart the software.
+
+**ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+innovus 6> exit
+
+*** Memory Usage v#1 (Current mem = 845.945M, initial mem = 249.227M) ***
+*** Message Summary: 110 warning(s), 4 error(s)
+
+--- Ending "Innovus" (totcpu=0:00:31.2, real=0:04:12, mem=845.9M) ---
+
+[EDA@EDA2035 ibex_work_upload]$ cd /home/EDA/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$

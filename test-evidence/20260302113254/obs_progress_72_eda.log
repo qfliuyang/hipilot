@@ -1,0 +1,257 @@
+Density for the design = 0.406.
+       = stdcell_area 97200 sites (121617 um^2) / alloc_area 239554 sites (299731 um^2).
+Pin Density = 0.2005.
+            = total # of pins 48727 / total area 243006.
+=== lastAutoLevel = 9
+**WARN: (IMPSP-9531):	Turning off clkGateAware when timingDriven is off
+Init WL Bound For Global Placement...
+Iteration  1: Total net bbox = 2.044e+05 (1.03e+05 1.01e+05)
+              Est.  stn bbox = 2.275e+05 (1.15e+05 1.13e+05)
+              cpu = 0:00:00.1 real = 0:00:01.0 mem = 914.2M
+Iteration  2: Total net bbox = 2.044e+05 (1.03e+05 1.01e+05)
+              Est.  stn bbox = 2.275e+05 (1.15e+05 1.13e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 914.2M
+Iteration  3: Total net bbox = 1.937e+05 (9.61e+04 9.77e+04)
+              Est.  stn bbox = 2.342e+05 (1.16e+05 1.19e+05)
+              cpu = 0:00:01.1 real = 0:00:01.0 mem = 935.9M
+Iteration  4: Total net bbox = 3.818e+05 (2.23e+05 1.59e+05)
+              Est.  stn bbox = 4.908e+05 (2.91e+05 2.00e+05)
+              cpu = 0:00:02.8 real = 0:00:03.0 mem = 935.9M
+Iteration  5: Total net bbox = 4.565e+05 (2.36e+05 2.21e+05)
+              Est.  stn bbox = 6.080e+05 (3.15e+05 2.93e+05)
+              cpu = 0:00:03.8 real = 0:00:04.0 mem = 936.9M
+Iteration  6: Total net bbox = 4.743e+05 (2.37e+05 2.37e+05)
+              Est.  stn bbox = 6.379e+05 (3.18e+05 3.20e+05)
+              cpu = 0:00:06.8 real = 0:00:07.0 mem = 941.1M
+
+Iteration  7: Total net bbox = 5.259e+05 (2.74e+05 2.52e+05)
+              Est.  stn bbox = 7.095e+05 (3.71e+05 3.38e+05)
+              cpu = 0:00:04.9 real = 0:00:05.0 mem = 946.4M
+Iteration  8: Total net bbox = 5.259e+05 (2.74e+05 2.52e+05)
+              Est.  stn bbox = 7.095e+05 (3.71e+05 3.38e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 946.4M
+Iteration  9: Total net bbox = 5.679e+05 (2.84e+05 2.84e+05)
+              Est.  stn bbox = 7.681e+05 (3.86e+05 3.82e+05)
+              cpu = 0:00:10.5 real = 0:00:11.0 mem = 946.4M
+Iteration 10: Total net bbox = 5.679e+05 (2.84e+05 2.84e+05)
+              Est.  stn bbox = 7.681e+05 (3.86e+05 3.82e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 946.4M
+Iteration 11: Total net bbox = 5.417e+05 (2.70e+05 2.72e+05)
+              Est.  stn bbox = 7.287e+05 (3.65e+05 3.64e+05)
+              cpu = 0:00:02.4 real = 0:00:02.0 mem = 944.4M
+Iteration 12: Total net bbox = 5.509e+05 (2.79e+05 2.72e+05)
+              Est.  stn bbox = 7.385e+05 (3.74e+05 3.65e+05)
+              cpu = 0:00:17.6 real = 0:00:17.0 mem = 944.4M
+Iteration 13: Total net bbox = 5.509e+05 (2.79e+05 2.72e+05)
+              Est.  stn bbox = 7.385e+05 (3.74e+05 3.65e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 944.4M
+Iteration 14: Total net bbox = 5.509e+05 (2.79e+05 2.72e+05)
+              Est.  stn bbox = 7.385e+05 (3.74e+05 3.65e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 944.4M
+Finished Global Placement (cpu=0:00:47.8, real=0:00:50.0, mem=944.4M)
+*** Starting refinePlace (0:01:18 mem=944.4M) ***
+Total net bbox length = 5.511e+05 (2.788e+05 2.722e+05) (ext = 2.167e+04)
+Move report: Detail placement moves 11078 insts, mean move: 1.72 um, max move: 50.22 um
+	Max move on inst (gen_regfile_ff.register_file_i/U2687): (215.00, 187.62) --> (214.82, 237.66)
+	Runtime: CPU: 0:00:02.0 REAL: 0:00:03.0 MEM: 952.5MB
+Summary Report:
+Instances move: 11078 (out of 11078 movable)
+Instances flipped: 0
+Mean displacement: 1.72 um
+Max displacement: 50.22 um (Instance: gen_regfile_ff.register_file_i/U2687) (214.998, 187.621) -> (214.82,
+ 237.66)
+	Length: 3 sites, height: 1 rows, site name: unithd, cell type: sky130_fd_sc_hd__buf_1
+Total net bbox length = 5.393e+05 (2.664e+05 2.730e+05) (ext = 2.149e+04)
+Runtime: CPU: 0:00:02.0 REAL: 0:00:03.0 MEM: 952.5MB
+*** Finished refinePlace (0:01:20 mem=952.5M) ***
+*** Finished Initial Placement (cpu=0:00:50.2, real=0:00:53.0, mem=952.5M) ***
+
+*** Start incrementalPlace ***
+Init WL Bound for IncrIp in placeDesign ...
+No Views given, use default active views for adaptive view pruning
+SKP will enable view:
+  default_view_setup
+[NR-eGR] Num Prerouted Nets = 0  Num Prerouted Wires = 0
+[NR-eGR] Read numTotalNets=11377  numIgnoredNets=0
+[NR-eGR] ============ Routing rule table ============
+[NR-eGR] Rule id: 0  Nets: 11377
+[NR-eGR] ========================================
+[NR-eGR]
+[NR-eGR] Layer group 1: route 11377 net(s) in layer range [2, 5]
+[NR-eGR] Early Global Route overflow of layer group 1: 4.44% H + 4.76% V. EstWL: 6.922373e+05um
+[NR-eGR] Overflow after Early Global Route (GR compatible) 1.25% H + 2.36% V
+[NR-eGR] Overflow after Early Global Route 1.53% H + 2.67% V
+Early Global Route congestion estimation runtime: 0.40 seconds, mem = 952.5M
+Local HotSpot Analysis: normalized max congestion hotspot area = 4.44, normalized total congestion hotspot
+ area = 21.33 (area is in unit of 4 std-cell row bins)
+Skipped repairing congestion.
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR]    li1  (1F) length: 0.000000e+00um, number of vias: 47763
+[NR-eGR]   met1  (2H) length: 2.459244e+05um, number of vias: 85783
+[NR-eGR]   met2  (3V) length: 2.878719e+05um, number of vias: 8721
+[NR-eGR]   met3  (4H) length: 1.119678e+05um, number of vias: 5385
+[NR-eGR]   met4  (5V) length: 7.121618e+04um, number of vias: 0
+[NR-eGR] Total length: 7.169802e+05um, number of vias: 147652
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR] Total eGR-routed clock nets wire length: 0.000000e+00um
+[NR-eGR] --------------------------------------------------------------------------
+Early Global Route wiring runtime: 0.41 seconds, mem = 952.5M
+Tdgp not successfully inited but do clear! skip clearing
+
+*** Finished incrementalPlace (cpu=0:00:00.8, real=0:00:00.0)***
+***** Total cpu  0:0:52
+***** Total real time  0:0:53
+Tdgp not successfully inited but do clear! skip clearing
+**placeDesign ... cpu = 0: 0:52, real = 0: 0:54, mem = 935.5M **
+**optDesign ... cpu = 0:00:00, real = 0:00:00, mem = 795.3M, totSessionCpu=0:01:21 **
+**WARN: (IMPOPT-576):	2 nets have unplaced terms.
+Type 'man IMPOPT-576' for more detail.
+**INFO: setDesignMode -flowEffort standard -> setting 'setOptMode -allEndPoints true' for the duration of
+this command.
+GigaOpt running with 1 threads.
+**WARN: (IMPOPT-3000):	Buffer footprint is not defined or is an invalid buffer footprint.
+Type 'man IMPOPT-3000' for more detail.
+**WARN: (IMPOPT-3001):	Inverter footprint is not defined or is an invalid inverter footprint.
+Type 'man IMPOPT-3001' for more detail.
+**WARN: No usable buffer/inverter becasue of dont-use/dont-touch setting.
+Updating RC grid for preRoute extraction ...
+**DIAG[/icd/cm_t1nb_001/INNOVUS201/Rel/20.10/main/lnx86_64_opt/20.10-p004_1/fe/src/op/opUtil.c:7018:update
+]: Assert "powerView != toCteGetDefaultAnalysisView()"
+Total number of combinational cells: 0
+Total number of sequential cells: 0
+Total number of tristate cells: 0
+Total number of level shifter cells: 0
+Total number of power gating cells: 0
+Total number of isolation cells: 0
+Total number of power switch cells: 0
+Total number of pulse generator cells: 0
+Total number of always on buffers: 0
+Total number of retention cells: 0
+List of usable buffers:
+Total number of usable buffers: 0
+List of unusable buffers:
+Total number of unusable buffers: 0
+List of usable inverters:
+Total number of usable inverters: 0
+List of unusable inverters:
+Total number of unusable inverters: 0
+List of identified usable delay cells:
+Total number of identified usable delay cells: 0
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+No delay cells were detected in the set of buffers. Buffers will be used to fix hold violations.
+**DIAG[/icd/cm_t1nb_001/INNOVUS201/Rel/20.10/main/lnx86_64_opt/20.10-p004_1/fe/src/op/opUtil.c:7029:update
+]: Assert "powerViewTlc"
+**DIAG[/icd/cm_t1nb_001/INNOVUS201/Rel/20.10/main/lnx86_64_opt/20.10-p004_1/fe/src/op/opUtil.c:7018:update
+]: Assert "powerView != toCteGetDefaultAnalysisView()"
+**DIAG[/icd/cm_t1nb_001/INNOVUS201/Rel/20.10/main/lnx86_64_opt/20.10-p004_1/fe/src/op/opUtil.c:7029:update
+]: Assert "powerViewTlc"
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+** ERROR ** Cannot find corner default_rc_corner in layerCapPerDBUForCorner table.
+**WARN: (IMPOPT-3000):	Buffer footprint is not defined or is an invalid buffer footprint.
+Type 'man IMPOPT-3000' for more detail.
+**WARN: (IMPOPT-3001):	Inverter footprint is not defined or is an invalid inverter footprint.
+Type 'man IMPOPT-3001' for more detail.
+**DIAG[/icd/cm_t1nb_001/INNOVUS201/Rel/20.10/main/lnx86_64_opt/20.10-p004_1/fe/src/op/opUtil.c:7018:update
+]: Assert "powerView != toCteGetDefaultAnalysisView()"
+**DIAG[/icd/cm_t1nb_001/INNOVUS201/Rel/20.10/main/lnx86_64_opt/20.10-p004_1/fe/src/op/opUtil.c:7029:update
+]: Assert "powerViewTlc"
+**WARN: (IMPOPT-665):	test_si : Net has unplaced terms or is connected to uplaced instances in design.
+Type 'man IMPOPT-665' for more detail.
+**WARN: (IMPOPT-665):	test_so : Net has unplaced terms or is connected to uplaced instances in design.
+Type 'man IMPOPT-665' for more detail.
+AAE DB initialization (MEM=958.391 CPU=0:00:00.0 REAL=0:00:00.0)
+Setting timing_disable_library_data_to_data_checks to 'true'.
+Setting timing_disable_user_data_to_data_checks to 'true'.
+**optDesign ... cpu = 0:00:01, real = 0:00:00, mem = 803.3M, totSessionCpu=0:01:21 **
+**ERROR: (IMPOPT-6029):	Timing Library is not loaded yet.
+
+innovus 4> source /tmp/hipilot-EDA/exec/hipilot_exec_1772451805396.tcl
+% Begin save design ... (date=03/02 19:43:25, mem=803.7M)
+% Begin Save ccopt configuration ... (date=03/02 19:43:25, mem=806.7M)
+% End Save ccopt configuration ... (date=03/02 19:43:25, total cpu=0:00:00.0, real=0:00:00.0, peak res=807
+.6M, current mem=807.6M)
+% Begin Save netlist data ... (date=03/02 19:43:25, mem=807.6M)
+Writing Binary DB to result/pr/data/placement.enc.dat.tmp/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/02 19:43:25, total cpu=0:00:00.1, real=0:00:00.0, peak res=808.0M, cu
+rrent mem=808.0M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/placement.enc.dat.tmp/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/02 19:43:26, mem=808.6M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/02 19:43:26, total cpu=0:00:00.0, real=0:00:00.0, peak res=808.6M, curren
+t mem=808.5M)
+Saving preference file result/pr/data/placement.enc.dat.tmp/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 19:43:26, mem=809.3M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 19:43:26, total cpu=0:00:00.0, real=0:00:00.0, peak res=809.3M,
+current mem=809.3M)
+Saving PG file result/pr/data/placement.enc.dat.tmp/ibex_core.pg.gz, version#2, (Created by Innovus v20.10
+-p004_1 on Mon Mar  2 19:43:26 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:01.0 mem=957.4M) ***
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 19:43:27, mem=809.6M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 19:43:27, total cpu=0:00:00.0, real=0:00:00.0, peak res=809.6M,
+current mem=809.6M)
+% Begin Save routing data ... (date=03/02 19:43:27, mem=809.6M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.1 real=0:00:00.0 mem=957.4M) ***
+% End Save routing data ... (date=03/02 19:43:27, total cpu=0:00:00.2, real=0:00:00.0, peak res=809.6M, cu
+rrent mem=809.6M)
+Saving property file result/pr/data/placement.enc.dat.tmp/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=960.4M) ***
+% Begin Save power constraints data ... (date=03/02 19:43:27, mem=810.1M)
+% End Save power constraints data ... (date=03/02 19:43:27, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+810.2M, current mem=810.2M)
+Generated self-contained design placement.enc.dat.tmp
+% End save design ... (date=03/02 19:43:32, total cpu=0:00:05.3, real=0:00:07.0, peak res=811.4M, current
+mem=811.4M)
+PLACEMENT CHECKPOINT SAVED
+
+*** Memory Usage v#1 (Current mem = 1000.719M, initial mem = 249.227M) ***
+*** Message Summary: 187 warning(s), 36 error(s)
+
+--- Ending "Innovus" (totcpu=0:01:27, real=0:02:56, mem=1000.7M) ---
+
+[EDA@EDA2035 ibex_work_upload]$ cd /home/EDA/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$ innovus -no_gui
+C: unknown locale
+
+Cadence Innovus(TM) Implementation System.
+Copyright 2020 Cadence Design Systems, Inc. All rights reserved worldwide.
+
+Version:	v20.10-p004_1, built Thu May 7 20:02:41 PDT 2020
+Options:	-no_gui
+Date:		Mon Mar  2 19:43:38 2026
+Host:		EDA2035 (x86_64 w/Linux 3.10.0-1160.119.1.el7.x86_64) (3cores*6cpus*Intel(R) Core(TM) i7-8
+559U CPU @ 2.70GHz 8192KB)
+OS:		CentOS Linux release 7.9.2009 (Core)
+
+License:
+		invs	Innovus Implementation System	20.1	checkout succeeded
+		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required
+CPU count.
+**WARN: (IMPOPT-801):	Genus executable not found in PATH. Install Genus, add the path to the genus execu
+table in the PATH variable and rerun Innovus.
+Create and set the environment variable TMPDIR to /tmp/innovus_temp_101585_EDA2035_EDA_ZHWEZB.
+
+The soft stacksize limit is either up to the hard limit or larger than 0.2% of RAM. No change is needed.
+
+**INFO:  MMMC transition support version v31-84
+
+innovus 1>

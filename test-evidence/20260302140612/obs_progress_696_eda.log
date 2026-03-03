@@ -1,0 +1,257 @@
+
+*** Finish DRV Fixing (cpu=0:00:00.5 real=0:00:00.0 mem=1312.5M) ***
+
+*** Starting refinePlace (0:05:19 mem=1312.5M) ***
+Total net bbox length = 4.289e+05 (2.091e+05 2.199e+05) (ext = 2.125e+04)
+*** Checked 4 GNC rules.
+*** Applying global-net connections...
+*** Applied 4 GNC rules (cpu = 0:00:00.0)
+**WARN: (IMPSP-315):	Found 846 instances insts with no PG Term connections.
+Type 'man IMPSP-315' for more detail.
+Move report: Detail placement moves 2 insts, mean move: 3.41 um, max move: 5.44 um
+	Max move on inst (FE_OFC1230_n3656): (416.76, 400.86) --> (416.76, 406.30)
+	Runtime: CPU: 0:00:00.7 REAL: 0:00:01.0 MEM: 1315.5MB
+Summary Report:
+Instances move: 2 (out of 11499 movable)
+Instances flipped: 0
+Mean displacement: 3.41 um
+Max displacement: 5.44 um (Instance: FE_OFC1230_n3656) (416.76, 400.86) -> (416.76, 406.3)
+	Length: 3 sites, height: 1 rows, site name: unithd, cell type: sky130_fd_sc_hd__clkbuf_1
+Total net bbox length = 4.289e+05 (2.091e+05 2.199e+05) (ext = 2.125e+04)
+Runtime: CPU: 0:00:00.8 REAL: 0:00:01.0 MEM: 1315.5MB
+*** Finished refinePlace (0:05:20 mem=1315.5M) ***
+*** maximum move = 5.44 um ***
+*** Finished re-routing un-routed nets (1315.5M) ***
+
+*** Finish Physical Update (cpu=0:00:01.1 real=0:00:01.0 mem=1315.5M) ***
+*** DrvOpt [finish] : cpu/real = 0:00:04.3/0:00:04.4 (1.0), totSession cpu/real = 0:05:19.9/0:05:49.7 (0.9
+), mem = 1296.4M
+End: GigaOpt postEco DRV Optimization
+
+Active setup views:
+ max_view
+  Dominating endpoints: 0
+  Dominating TNS: -0.000
+
+Extraction called for design 'ibex_core' of instances=11499 and nets=11937 using extraction engine 'preRou
+te' .
+PreRoute RC Extraction called for design ibex_core.
+RC Extraction called in multi-corner(2) mode.
+**WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy
+when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to gener
+ate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_r
+c_corner/update_rc_corner -cap_table'.
+Type 'man IMPEXT-6197' for more detail.
+RCMode: PreRoute
+      RC Corner Indexes            0       1
+Capacitance Scaling Factor   : 1.05000 1.00000
+Resistance Scaling Factor    : 1.05000 1.00000
+Clock Cap. Scaling Factor    : 1.05000 1.00000
+Clock Res. Scaling Factor    : 1.05000 1.00000
+Shrink Factor                : 1.00000
+PreRoute extraction is honoring NDR/Shielding/ExtraSpace for clock nets.
+Skipped RC grid update for preRoute extraction.
+Initializing multi-corner resistance tables ...
+PreRoute RC Extraction DONE (CPU Time: 0:00:00.2  Real Time: 0:00:00.0  MEM: 1284.117M)
+Skewing Data Summary (End_of_FINAL)
+--------------------------------------------------
+ Total skewed count:0
+--------------------------------------------------
+[NR-eGR] Num Prerouted Nets = 0  Num Prerouted Wires = 0
+[NR-eGR] Read numTotalNets=11796  numIgnoredNets=0
+[NR-eGR] There are 2 clock nets ( 0 with NDR ).
+[NR-eGR] ============ Routing rule table ============
+[NR-eGR] Rule id: 0  Nets: 11796
+[NR-eGR] ========================================
+[NR-eGR]
+[NR-eGR] Layer group 1: route 11796 net(s) in layer range [2, 5]
+[NR-eGR] Early Global Route overflow of layer group 1: 2.65% H + 2.60% V. EstWL: 5.231430e+05um
+[NR-eGR] Overflow after Early Global Route (GR compatible) 0.63% H + 1.15% V
+[NR-eGR] Overflow after Early Global Route 0.77% H + 1.25% V
+[NR-eGR] Finished Early Global Route kernel ( CPU: 0.38 sec, Real: 0.39 sec, Curr Mem: 1284.12 MB )
+[hotspot] +------------+---------------+---------------+
+[hotspot] |            |   max hotspot | total hotspot |
+[hotspot] +------------+---------------+---------------+
+[hotspot] | normalized |          0.89 |          3.56 |
+[hotspot] +------------+---------------+---------------+
+Local HotSpot Analysis: normalized max congestion hotspot area = 0.89, normalized total congestion hotspot
+ area = 3.56 (area is in unit of 4 std-cell row bins)
+[hotspot] top 5 congestion hotspot bounding boxes and scores of normalized hotspot
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] | top |            hotspot bbox             | hotspot score |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  1  |   262.50   425.34   284.26   447.10 |        0.89   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  2  |   121.06   316.54   142.82   338.30 |        0.44   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  3  |   414.82   327.42   436.58   349.18 |        0.44   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  4  |   121.06   338.30   142.82   360.06 |        0.44   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  5  |   262.50   360.06   284.26   381.82 |        0.44   |
+[hotspot] +-----+-------------------------------------+---------------+
+Starting delay calculation for Setup views
+#################################################################################
+# Design Stage: PreRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC Non-OCV
+# Parasitics Mode: No SPEF/RCDB
+# Signoff Settings: SI Off
+#################################################################################
+Calculate delays in Single mode...
+Start delay calculation (fullDC) (1 T). (MEM=1274.12)
+Total number of fetched objects 11805
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+End delay calculation. (MEM=1290.45 CPU=0:00:02.2 REAL=0:00:02.0)
+End delay calculation (fullDC). (MEM=1290.45 CPU=0:00:02.7 REAL=0:00:03.0)
+*** Done Building Timing Graph (cpu=0:00:03.7 real=0:00:04.0 totSessionCpu=0:05:25 mem=1290.5M)
+Reported timing to dir ./timingReports
+**optDesign ... cpu = 0:03:29, real = 0:03:31, mem = 1035.1M, totSessionCpu=0:05:25 **
+
+------------------------------------------------------------
+     optDesign Final Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):|  0.003  |  0.003  |  2.717  |  1.253  |  8.313  |  4.074  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |    0    |    0    |    0    |
+|          All Paths:|  3692   |  1941   |  3449   |   100   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      1 (1)       |
+|   max_tran     |      0 (0)       |   0.000    |      0 (0)       |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 40.444%
+Routing Overflow: 0.77% H and 1.25% V
+------------------------------------------------------------
+**optDesign ... cpu = 0:03:31, real = 0:03:34, mem = 1036.7M, totSessionCpu=0:05:27 **
+**WARN: (IMPOPT-3195):	Analysis mode has changed.
+Type 'man IMPOPT-3195' for more detail.
+*** Finished optDesign ***
+#optDebug: fT-D <X 1 0 0 0>
+**place_opt_design ... cpu = 0:04:42, real = 0:04:47, mem = 1206.5M **
+*** Finished GigaPlace ***
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPEXT-6197          3  The Cap table file is not specified. Thi...
+WARNING   IMPEXT-2882          5  Unable to find the resistance for via '%...
+WARNING   IMPSP-315            4  Found %d instances insts with no PG Term...
+WARNING   IMPSP-9042           1  Scan chains were not defined, -place_glo...
+WARNING   IMPOPT-3195          2  Analysis mode has changed.
+*** Message Summary: 15 warning(s), 0 error(s)
+
+#% Begin save design ... (date=03/02 23:08:36, mem=989.5M)
+% Begin Save ccopt configuration ... (date=03/02 23:08:36, mem=989.5M)
+% End Save ccopt configuration ... (date=03/02 23:08:36, total cpu=0:00:00.1, real=0:00:00.0, peak res=989
+.6M, current mem=989.6M)
+% Begin Save netlist data ... (date=03/02 23:08:36, mem=989.6M)
+Writing Binary DB to result/pr/data/placement.enc.dat/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/02 23:08:36, total cpu=0:00:00.1, real=0:00:00.0, peak res=989.6M, cu
+rrent mem=989.6M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/placement.enc.dat/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/02 23:08:36, mem=990.1M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/02 23:08:36, total cpu=0:00:00.0, real=0:00:00.0, peak res=990.1M, curren
+t mem=990.1M)
+Saving preference file result/pr/data/placement.enc.dat/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 23:08:37, mem=990.6M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 23:08:37, total cpu=0:00:00.0, real=0:00:00.0, peak res=990.6M,
+current mem=990.6M)
+Saving PG file result/pr/data/placement.enc.dat/ibex_core.pg.gz, version#2, (Created by Innovus v20.10-p00
+4_1 on Mon Mar  2 23:08:37 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=1207.0M) ***
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 23:08:37, mem=991.0M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 23:08:37, total cpu=0:00:00.0, real=0:00:00.0, peak res=991.0M,
+current mem=991.0M)
+% Begin Save routing data ... (date=03/02 23:08:37, mem=991.0M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.1 real=0:00:01.0 mem=1207.0M) ***
+% End Save routing data ... (date=03/02 23:08:38, total cpu=0:00:00.2, real=0:00:01.0, peak res=991.2M, cu
+rrent mem=991.2M)
+Saving property file result/pr/data/placement.enc.dat/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=1210.0M) ***
+Saving rc congestion map result/pr/data/placement.enc.dat/ibex_core.congmap.gz ...
+% Begin Save power constraints data ... (date=03/02 23:08:38, mem=991.2M)
+% End Save power constraints data ... (date=03/02 23:08:38, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+991.2M, current mem=991.2M)
+Generated self-contained design placement.enc.dat
+#% End save design ... (date=03/02 23:08:43, total cpu=0:00:05.5, real=0:00:07.0, peak res=992.3M, current
+ mem=992.3M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+STAGE 4 COMPLETE - placement done!
+=========================================
+STAGE 5: CTS
+=========================================
+
+Usage: setNanoRouteMode [-help] [-reset] [-dbAdjustAutoViaWeight {true|false}]
+                        [-dbAllowInstanceOverlaps {true|false}] [-dbIgnoreFollowPinShape {true|false}]
+                        [-dbProcessNode <value>] [-dbRcExtractionCorner <value>]
+                        [-dbSkipAnalog {true|false}] [-dbViaWeight <value>]
+                        [-drouteAddPassiveFillOnlyOnLayers <value>] [-drouteAntennaEcoListFile <value>]
+                        [-drouteAutoStop {true|false}] [-drouteCheckMarOnCellPin {true|false}]
+                        [-drouteEndIteration <value>] [-drouteFixAntenna {true|false}]
+                        [-drouteMinLengthForWireSpreading <value>]
+                        [-drouteMinLengthForWireWidening <value>]
+                        [-drouteMinSlackForWireOptimization <value>] [-drouteNoTaperInLayers <value>]
+                        [-drouteNoTaperOnOutputPin <value>] [-drouteOnGridOnly <value>]
+                        [-droutePostRouteLithoRepair {true|false}] [-droutePostRouteSpreadWire <value>]
+                        [-droutePostRouteSwapVia <value>] [-droutePostRouteSwapViaPriority <value>]
+                        [-droutePostRouteViaPillarEffort <value>] [-droutePostRouteWidenWire <value>]
+                        [-droutePostRouteWidenWireRule <value>] [-drouteSearchAndRepair {true|false}]
+                        [-drouteSignOffEffort <value>] [-drouteUseMultiCutViaEffort <value>]
+                        [-envNumberFailLimit <value>] [-envNumberProcessor <value>]
+                        [-envNumberWarningLimit <value>] [-envThirdPartyData {true|false}]
+                        [-hfrouteConstraintGroups <value>] [-hfrouteMatchReportFile <value>]
+                        [-hfrouteNumReserveLayers <value>] [-hfrouteRemoveFloatingShield {true|false}]
+                        [-hfrouteSearchRepair <value>] [-hfrouteShieldTrimLength <value>]
+                        [-routeAddAntennaInstPrefix <value>]
+                        [-routeAllowPinAsFeedthrough {true|TRUE|false|FALSE|none|NONE|output|input|inout}]
+                        [-routeAntennaCellName <value>] [-routeConcurrentMinimizeViaCountEffort <value>]
+                        [-routeConnectToBump {true|false}] [-routeDesignFixClockNets {true|false}]
+                        [-routeDesignRouteClockNetsFirst {true|false}]
+                        [-routeEnableNdrSiLimitLength <value>] [-routeEnforceNdrOnSpecialNetWire <value>]
+                        [-routeExtraViaEnclosure <value>] [-routeHonorPowerDomain {true|false}]
+                        [-routeIgnoreAntennaTopCellPin {true|false}]
+                        [-routeInsertAntennaDiode {true|false}]
+                        [-routeInsertDiodeForClockNets {true|false}]
+                        [-routeRelaxedNdrSpacingToPGNets <value>]
+                        [-routeReserveSpaceForMultiCut {true|false}] [-routeReverseDirection <value>]
+                        [-routeSelectedNetOnly {true|false}] [-routeShieldCrosstieOffset <value>]
+                        [-routeStrictlyHonorNonDefaultRule <value>] [-routeStripeLayerRange <value>]
+                        [-routeTieNetToShape <value>] [-routeTrimPullBackDistanceFromBoundary <value>]
+                        [-routeTrunkWithClusterTargetSize <value>] [-routeUnconnectedPorts {true|false}]
+                        [-routeUseAutoVia <value>] [-routeWithEco {true|false}]
+                        [-routeWithLithoDriven {true|false}] [-routeWithSiDriven {true|false}]
+                        [-routeWithTimingDriven {true|false}] [-routeWithTrimMetal <value>]
+                        [-routeWithViaInPin <value>] [-routeWithViaOnlyForMacroCellPin <value>]
+                        [-routeWithViaOnlyForStandardCellPin <value>]
+
+**ERROR: (IMPTCM-48):	"-routeBottomRouting" is not a legal option for command "setNanoRouteMode". Either
+ the current option or an option prior to it is not specified correctly.
+
+innovus 2>

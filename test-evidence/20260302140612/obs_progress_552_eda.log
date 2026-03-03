@@ -1,0 +1,257 @@
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 23:03:37, total cpu=0:00:00.0, real=0:00:00.0, peak res=761.2M,
+current mem=761.2M)
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 23:03:37, mem=761.2M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 23:03:37, total cpu=0:00:00.0, real=0:00:00.0, peak res=761.2M,
+current mem=761.2M)
+% Begin Save routing data ... (date=03/02 23:03:37, mem=761.2M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.0 real=0:00:00.0 mem=898.9M) ***
+% End Save routing data ... (date=03/02 23:03:37, total cpu=0:00:00.0, real=0:00:00.0, peak res=761.3M, cu
+rrent mem=761.3M)
+Saving property file result/pr/data/floor_plan.enc.dat.tmp/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=901.9M) ***
+% Begin Save power constraints data ... (date=03/02 23:03:37, mem=761.3M)
+% End Save power constraints data ... (date=03/02 23:03:37, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+761.3M, current mem=761.3M)
+Generated self-contained design floor_plan.enc.dat.tmp
+#% End save design ... (date=03/02 23:03:41, total cpu=0:00:04.6, real=0:00:05.0, peak res=791.7M, current
+ mem=761.5M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+STAGE 2 COMPLETE
+=========================================
+STAGE 3: Power Planning
+=========================================
+**ERROR: (IMPDB-1221):	A global net connection rule was specified to connect power pins with the name pat
+tern 'VPB VPWR' to a global net.  But the connections cannot be made because there is no such power pin wi
+th name matching the pattern in any cell.  Check the pin name in Lef or liberty and make sure it is correc
+t.
+**ERROR: (IMPDB-1221):	A global net connection rule was specified to connect ground pins with the name pa
+ttern 'VGND VNB' to a global net.  But the connections cannot be made because there is no such ground pin
+with name matching the pattern in any cell.  Check the pin name in Lef or liberty and make sure it is corr
+ect.
+#% Begin addStripe (date=03/02 23:03:41, mem=761.6M)
+
+Initialize fgc environment(mem: 899.9M) ...  fail and won't use fgc to check drc(cpu: 0:00:00.0, real: 0:0
+0:00.0, peak mem: 899.9M)
+Loading cell geometries (cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Loading wires (cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Loading via instances (cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Starting stripe generation ...
+Non-Default Mode Option Settings :
+  NONE
+The core ring for VSS is incomplete. The core ring will not be used as a boundary for stripes. In this sit
+uation, the power planner will generate stripes only within the core area.
+The core ring for VDD is incomplete. The core ring will not be used as a boundary for stripes. In this sit
+uation, the power planner will generate stripes only within the core area.
+Completing 10% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 20% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 30% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 40% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 50% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 60% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 70% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 80% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 90% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 100% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Stripe generation is complete.
+vias are now being generated.
+addStripe created 35 wires.
+ViaGen created 0 via, deleted 0 via to avoid violation.
++--------+----------------+----------------+
+|  Layer |     Created    |     Deleted    |
++--------+----------------+----------------+
+|  met4  |       35       |       NA       |
++--------+----------------+----------------+
+#% End addStripe (date=03/02 23:03:41, total cpu=0:00:00.0, real=0:00:00.0, peak res=763.3M, current mem=7
+63.3M)
+#% Begin addStripe (date=03/02 23:03:41, mem=763.3M)
+
+Initialize fgc environment(mem: 899.9M) ...  fail and won't use fgc to check drc(cpu: 0:00:00.0, real: 0:0
+0:00.0, peak mem: 899.9M)
+Loading cell geometries (cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Loading wires (cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Loading via instances (cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Starting stripe generation ...
+Non-Default Mode Option Settings :
+  NONE
+The core ring for VSS is incomplete. The core ring will not be used as a boundary for stripes. In this sit
+uation, the power planner will generate stripes only within the core area.
+The core ring for VDD is incomplete. The core ring will not be used as a boundary for stripes. In this sit
+uation, the power planner will generate stripes only within the core area.
+Completing 10% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 20% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 30% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 40% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 50% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 60% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 70% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 80% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 90% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Completing 100% stripe generation(cpu: 0:00:00.0, real: 0:00:00.0, peak mem: 899.9M)
+Stripe generation is complete.
+vias are now being generated.
+addStripe created 35 wires.
+ViaGen created 613 vias, deleted 0 via to avoid violation.
++--------+----------------+----------------+
+|  Layer |     Created    |     Deleted    |
++--------+----------------+----------------+
+|  via4  |       613      |        0       |
+|  met5  |       35       |       NA       |
++--------+----------------+----------------+
+#% End addStripe (date=03/02 23:03:42, total cpu=0:00:00.1, real=0:00:01.0, peak res=764.0M, current mem=7
+64.0M)
+#% Begin sroute (date=03/02 23:03:42, mem=764.0M)
+*** Begin SPECIAL ROUTE on Mon Mar  2 23:03:42 2026 ***
+SPECIAL ROUTE ran on directory: /home/EDA/ibex_work_upload
+SPECIAL ROUTE ran on machine: EDA2035 (Linux 3.10.0-1160.119.1.el7.x86_64 x86_64 2.71Ghz)
+
+Begin option processing ...
+srouteConnectPowerBump set to false
+routeSelectNet set to "VDD VSS"
+routeSpecial set to true
+srouteBottomLayerLimit set to 1
+srouteBottomTargetLayerLimit set to 1
+srouteConnectBlockPin set to false
+srouteConnectConverterPin set to false
+srouteConnectPadPin set to false
+srouteConnectStripe set to false
+srouteCrossoverViaBottomLayer set to 1
+srouteCrossoverViaTopLayer set to 5
+srouteFollowCorePinEnd set to 3
+srouteFollowPadPin set to false
+srouteJogControl set to "preferWithChanges differentLayer"
+sroutePadPinAllPorts set to true
+sroutePreserveExistingRoutes set to true
+srouteRoutePowerBarPortOnBothDir set to true
+srouteStopSCPin set to true
+srouteTopLayerLimit set to 5
+srouteTopTargetLayerLimit set to 5
+End option processing: cpu: 0:00:00, real: 0:00:00, peak: 1898.00 megs.
+
+Reading DB technology information...
+Finished reading DB technology information.
+Reading floorplan and netlist information...
+Finished reading floorplan and netlist information.
+Read in 12 layers, 6 routing layers, 0 overlap layer
+Read in 440 macros, 88 used
+Read in 87 components
+  87 core components: 87 unplaced, 0 placed, 0 fixed
+Read in 264 physical pins
+  264 physical pins: 0 unplaced, 264 placed, 0 fixed
+Read in 264 nets
+Read in 2 special nets, 2 routed
+Read in 264 terminals
+2 nets selected.
+
+Begin power routing ...
+**WARN: (IMPSR-1253):	Cannot find any standard cell pin connected to net VDD.
+Run globalNetConnect command or change CPF file to make sure that the netlist reflects the correct power g
+round connections. The standard cell pins must be defined as 'USE POWER' or 'USE GROUND'.
+**WARN: (IMPSR-1253):	Cannot find any standard cell pin connected to net VSS.
+Run globalNetConnect command or change CPF file to make sure that the netlist reflects the correct power g
+round connections. The standard cell pins must be defined as 'USE POWER' or 'USE GROUND'.
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+CPU time for FollowPin 0 seconds
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+CPU time for FollowPin 0 seconds
+  Number of Core ports routed: 0
+  Number of Followpin connections: 192
+End power routing: cpu: 0:00:01, real: 0:00:00, peak: 1912.00 megs.
+
+
+
+ Begin updating DB with routing results ...
+ Updating DB with 264 io pins ...
+ Updating DB with 0 via definition ...Extracting standard cell pins and blockage ......
+Pin and blockage extraction finished
+
+sroute created 192 wires.
+ViaGen created 10080 vias, deleted 0 via to avoid violation.
++--------+----------------+----------------+
+|  Layer |     Created    |     Deleted    |
++--------+----------------+----------------+
+|  met1  |       192      |       NA       |
+|   via  |      3360      |        0       |
+|  via2  |      3360      |        0       |
+|  via3  |      3360      |        0       |
++--------+----------------+----------------+
+#% End sroute (date=03/02 23:03:42, total cpu=0:00:00.8, real=0:00:00.0, peak res=771.9M, current mem=771.
+9M)
+#% Begin save design ... (date=03/02 23:03:42, mem=771.9M)
+% Begin Save ccopt configuration ... (date=03/02 23:03:42, mem=771.9M)
+% End Save ccopt configuration ... (date=03/02 23:03:42, total cpu=0:00:00.0, real=0:00:00.0, peak res=772
+.1M, current mem=772.1M)
+% Begin Save netlist data ... (date=03/02 23:03:42, mem=772.1M)
+Writing Binary DB to result/pr/data/powerplan.enc.dat.tmp/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/02 23:03:43, total cpu=0:00:00.1, real=0:00:01.0, peak res=772.1M, cu
+rrent mem=770.6M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/powerplan.enc.dat.tmp/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/02 23:03:43, mem=770.6M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/02 23:03:43, total cpu=0:00:00.0, real=0:00:00.0, peak res=770.6M, curren
+t mem=770.6M)
+Saving preference file result/pr/data/powerplan.enc.dat.tmp/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 23:03:43, mem=771.1M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 23:03:43, total cpu=0:00:00.0, real=0:00:00.0, peak res=771.1M,
+current mem=771.1M)
+Saving PG file result/pr/data/powerplan.enc.dat.tmp/ibex_core.pg.gz, version#2, (Created by Innovus v20.10
+-p004_1 on Mon Mar  2 23:03:43 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:01.0 mem=914.8M) ***
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 23:03:44, mem=771.6M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 23:03:44, total cpu=0:00:00.0, real=0:00:00.0, peak res=771.6M,
+current mem=771.6M)
+% Begin Save routing data ... (date=03/02 23:03:44, mem=771.6M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.0 real=0:00:00.0 mem=914.8M) ***
+% End Save routing data ... (date=03/02 23:03:44, total cpu=0:00:00.0, real=0:00:00.0, peak res=771.6M, cu
+rrent mem=771.6M)
+Saving property file result/pr/data/powerplan.enc.dat.tmp/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=917.8M) ***
+% Begin Save power constraints data ... (date=03/02 23:03:44, mem=771.6M)
+% End Save power constraints data ... (date=03/02 23:03:44, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+771.6M, current mem=771.6M)
+

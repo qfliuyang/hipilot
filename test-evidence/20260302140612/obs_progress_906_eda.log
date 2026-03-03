@@ -1,0 +1,257 @@
+For best results, it is recommended that the skew target be set no lower than 0.154ns. The skew target has
+ been relaxed to 0.154ns. You may force the use of the tighter skew target by setting override_minimum_ske
+w_target to true.
+Type 'man IMPCCOPT-1261' for more detail.
+    CCOpt configuration status: all checks passed.
+  Reconstructing clock tree datastructures done.
+Initializing clock structures done.
+PRO...
+  PRO active optimizations:
+   - DRV fixing with cell sizing
+
+  Detected clock skew data from CTS
+  Clock tree timing engine global stage delay update for delay_max:setup.late...
+  Clock tree timing engine global stage delay update for delay_max:setup.late done. (took cpu=0:00:00.1 re
+al=0:00:00.1)
+  Clock DAG stats PRO initial state:
+    cell counts      : b=0, i=56, icg=0, nicg=1, l=0, total=57
+    cell areas       : b=0.000um^2, i=1552.739um^2, icg=0.000um^2, nicg=8.758um^2, l=0.000um^2, total=1561
+.498um^2
+    cell capacitance : b=0.000pF, i=2.085pF, icg=0.000pF, nicg=0.002pF, l=0.000pF, total=2.087pF
+    sink capacitance : count=1941, total=3.633pF, avg=0.002pF, sd=0.000pF, min=0.002pF, max=0.002pF
+    wire capacitance : top=0.000pF, trunk=0.488pF, leaf=2.848pF, total=3.336pF
+    wire lengths     : top=0.000um, trunk=2986.570um, leaf=16154.295um, total=19140.865um
+    hp wire lengths  : top=0.000um, trunk=2056.680um, leaf=5888.240um, total=7944.920um
+  Clock DAG net violations PRO initial state:
+    Remaining Transition : {count=9, worst=[0.009ns, 0.007ns, 0.006ns, 0.006ns, 0.005ns, 0.005ns, 0.003ns,
+ 0.001ns, 0.000ns]} avg=0.005ns sd=0.003ns sum=0.042ns
+  Clock DAG primary half-corner transition distribution PRO initial state:
+    Trunk : target=0.133ns count=23 avg=0.095ns sd=0.021ns min=0.030ns max=0.132ns {3 <= 0.080ns, 14 <= 0.
+106ns, 5 <= 0.120ns, 0 <= 0.126ns, 1 <= 0.133ns}
+    Leaf  : target=0.133ns count=35 avg=0.127ns sd=0.009ns min=0.109ns max=0.142ns {0 <= 0.080ns, 0 <= 0.1
+06ns, 5 <= 0.120ns, 10 <= 0.126ns, 11 <= 0.133ns} {7 <= 0.140ns, 2 <= 0.146ns, 0 <= 0.160ns, 0 <= 0.199ns,
+ 0 > 0.199ns}
+  Clock DAG library cell distribution PRO initial state {count}:
+     Invs: sky130_fd_sc_hd__clkinv_16: 48 sky130_fd_sc_hd__clkinv_8: 6 sky130_fd_sc_hd__clkinv_4: 1 sky130
+_fd_sc_hd__clkinv_2: 1
+    NICGs: sky130_fd_sc_hd__and2_4: 1
+  Primary reporting skew groups PRO initial state:
+    skew_group default.core_clock/common: unconstrained
+  Skew group summary PRO initial state:
+    skew_group core_clock/common: insertion delay [min=0.640, max=0.777, avg=0.708, sd=0.047], skew [0.138
+ vs 0.154], 100% {0.640, 0.777} (wid=0.048 ws=0.025) (gid=0.731 gs=0.114)
+  Recomputing CTS skew targets...
+  Resolving skew group constraints...
+    Solving LP: 1 skew groups; 3 fragments, 3 fraglets and 4 vertices; 25 variables and 66 constraints; to
+lerance 1
+  Resolving skew group constraints done.
+  Recomputing CTS skew targets done. (took cpu=0:00:00.1 real=0:00:00.1)
+  PRO Fixing DRVs...
+    Fixing clock tree DRVs: ...20% ...40% ...60% ...80% ...100%
+    CCOpt-PRO: considered: 58, tested: 58, violation detected: 9, violation ignored (due to small violatio
+n): 0, cannot run: 0, attempted: 9, unsuccessful: 0, sized: 0
+
+    PRO Statistics: Fix DRVs (cell sizing):
+    =======================================
+
+    Cell changes by Net Type:
+
+    ------------------------------------------------------------------------------------------------------
+-------------
+    Net Type    Attempted            Upsized     Downsized    Swapped Same Size    Total Changed      Not
+Sized
+    ------------------------------------------------------------------------------------------------------
+-------------
+    top                0                    0           0            0                    0
+   0
+    trunk              0                    0           0            0                    0
+   0
+    leaf               9 [100.0%]           0           0            0                    0 (0.0%)
+   9 (100.0%)
+    ------------------------------------------------------------------------------------------------------
+-------------
+    Total              9 [100.0%]           0           0            0                    0 (0.0%)
+   9 (100.0%)
+    ------------------------------------------------------------------------------------------------------
+-------------
+
+    Upsized: 0, Downsized: 0, Sized but same area: 0, Unchanged: 9, Area change: 0.000um^2 (0.000%)
+    Max. move: 0.000um, Min. move: 0.000um, Avg. move: 0.000um
+
+    Clock DAG stats after 'PRO Fixing DRVs':
+      cell counts      : b=0, i=56, icg=0, nicg=1, l=0, total=57
+      cell areas       : b=0.000um^2, i=1552.739um^2, icg=0.000um^2, nicg=8.758um^2, l=0.000um^2, total=15
+61.498um^2
+      cell capacitance : b=0.000pF, i=2.085pF, icg=0.000pF, nicg=0.002pF, l=0.000pF, total=2.087pF
+      sink capacitance : count=1941, total=3.633pF, avg=0.002pF, sd=0.000pF, min=0.002pF, max=0.002pF
+      wire capacitance : top=0.000pF, trunk=0.488pF, leaf=2.848pF, total=3.336pF
+      wire lengths     : top=0.000um, trunk=2986.570um, leaf=16154.295um, total=19140.865um
+      hp wire lengths  : top=0.000um, trunk=2056.680um, leaf=5888.240um, total=7944.920um
+    Clock DAG net violations after 'PRO Fixing DRVs':
+      Remaining Transition : {count=9, worst=[0.009ns, 0.007ns, 0.006ns, 0.006ns, 0.005ns, 0.005ns, 0.003n
+s, 0.001ns, 0.000ns]} avg=0.005ns sd=0.003ns sum=0.042ns
+    Clock DAG primary half-corner transition distribution after 'PRO Fixing DRVs':
+      Trunk : target=0.133ns count=23 avg=0.095ns sd=0.021ns min=0.030ns max=0.132ns {3 <= 0.080ns, 14 <=
+0.106ns, 5 <= 0.120ns, 0 <= 0.126ns, 1 <= 0.133ns}
+      Leaf  : target=0.133ns count=35 avg=0.127ns sd=0.009ns min=0.109ns max=0.142ns {0 <= 0.080ns, 0 <= 0
+.106ns, 5 <= 0.120ns, 10 <= 0.126ns, 11 <= 0.133ns} {7 <= 0.140ns, 2 <= 0.146ns, 0 <= 0.160ns, 0 <= 0.199n
+s, 0 > 0.199ns}
+    Clock DAG library cell distribution after 'PRO Fixing DRVs' {count}:
+       Invs: sky130_fd_sc_hd__clkinv_16: 48 sky130_fd_sc_hd__clkinv_8: 6 sky130_fd_sc_hd__clkinv_4: 1 sky1
+30_fd_sc_hd__clkinv_2: 1
+      NICGs: sky130_fd_sc_hd__and2_4: 1
+    Primary reporting skew groups after 'PRO Fixing DRVs':
+      skew_group default.core_clock/common: unconstrained
+    Skew group summary after 'PRO Fixing DRVs':
+      skew_group core_clock/common: insertion delay [min=0.640, max=0.777, avg=0.708, sd=0.047], skew [0.1
+38 vs 0.154], 100% {0.640, 0.777} (wid=0.048 ws=0.025) (gid=0.731 gs=0.114)
+    Legalizer API calls during this step: 9 succeeded with high effort: 9 succeeded with medium effort: 0
+succeeded with low effort: 0 succeeded with basic effort: 0 succeeded with basic unbounded effort: 0
+  PRO Fixing DRVs done. (took cpu=0:00:00.1 real=0:00:00.1)
+  Reconnecting optimized routes...
+  Reconnecting optimized routes done. (took cpu=0:00:00.0 real=0:00:00.0)
+  Set dirty flag on 0 instances, 0 nets
+  Clock tree timing engine global stage delay update for delay_max:setup.late...
+  Clock tree timing engine global stage delay update for delay_max:setup.late done. (took cpu=0:00:00.1 re
+al=0:00:00.2)
+  Clock DAG stats PRO final:
+    cell counts      : b=0, i=56, icg=0, nicg=1, l=0, total=57
+    cell areas       : b=0.000um^2, i=1552.739um^2, icg=0.000um^2, nicg=8.758um^2, l=0.000um^2, total=1561
+.498um^2
+    cell capacitance : b=0.000pF, i=2.085pF, icg=0.000pF, nicg=0.002pF, l=0.000pF, total=2.087pF
+    sink capacitance : count=1941, total=3.633pF, avg=0.002pF, sd=0.000pF, min=0.002pF, max=0.002pF
+    wire capacitance : top=0.000pF, trunk=0.488pF, leaf=2.848pF, total=3.336pF
+    wire lengths     : top=0.000um, trunk=2986.570um, leaf=16154.295um, total=19140.865um
+    hp wire lengths  : top=0.000um, trunk=2056.680um, leaf=5888.240um, total=7944.920um
+  Clock DAG net violations PRO final:
+    Remaining Transition : {count=9, worst=[0.009ns, 0.007ns, 0.006ns, 0.006ns, 0.005ns, 0.005ns, 0.003ns,
+ 0.001ns, 0.000ns]} avg=0.005ns sd=0.003ns sum=0.042ns
+  Clock DAG primary half-corner transition distribution PRO final:
+    Trunk : target=0.133ns count=23 avg=0.095ns sd=0.021ns min=0.030ns max=0.132ns {3 <= 0.080ns, 14 <= 0.
+106ns, 5 <= 0.120ns, 0 <= 0.126ns, 1 <= 0.133ns}
+    Leaf  : target=0.133ns count=35 avg=0.127ns sd=0.009ns min=0.109ns max=0.142ns {0 <= 0.080ns, 0 <= 0.1
+06ns, 5 <= 0.120ns, 10 <= 0.126ns, 11 <= 0.133ns} {7 <= 0.140ns, 2 <= 0.146ns, 0 <= 0.160ns, 0 <= 0.199ns,
+ 0 > 0.199ns}
+  Clock DAG library cell distribution PRO final {count}:
+     Invs: sky130_fd_sc_hd__clkinv_16: 48 sky130_fd_sc_hd__clkinv_8: 6 sky130_fd_sc_hd__clkinv_4: 1 sky130
+_fd_sc_hd__clkinv_2: 1
+    NICGs: sky130_fd_sc_hd__and2_4: 1
+  Primary reporting skew groups PRO final:
+    skew_group default.core_clock/common: unconstrained
+  Skew group summary PRO final:
+    skew_group core_clock/common: insertion delay [min=0.640, max=0.777, avg=0.708, sd=0.047], skew [0.138
+ vs 0.154], 100% {0.640, 0.777} (wid=0.048 ws=0.025) (gid=0.731 gs=0.114)
+PRO done.
+Restoring CTS place status for unmodified clock tree cells and sinks.
+Net route status summary:
+  Clock:        58 (unrouted=0, trialRouted=0, noStatus=0, routed=58, fixed=0, [crossesIlmBoundary=0, tooF
+ewTerms=0, (crossesIlmBoundary AND tooFewTerms=0)])
+  Non-clock: 11945 (unrouted=141, trialRouted=0, noStatus=0, routed=11804, fixed=0, [crossesIlmBoundary=0,
+ tooFewTerms=141, (crossesIlmBoundary AND tooFewTerms=0)])
+Updating delays...
+Updating delays done.
+PRO done. (took cpu=0:00:01.4 real=0:00:01.5)
+**INFO: Start fixing DRV (Mem = 1281.95M) ...
+Begin: GigaOpt DRV Optimization
+Glitch fixing enabled
+GigaOpt Checkpoint: Internal optDRV -postRoute -max_tran -max_cap -max_fanout -maintainWNS -setupTNSCostFa
+ctor 0.3 -maxLocalDensity 0.96 -numThreads 1  -glitch
+Info: 58 clock nets excluded from IPO operation.
+*** DrvOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:09:13.5/0:09:28.0 (1.0)
+, mem = 1281.9M
+DRV pessimism of 5.00% is used for tran, 5.00% for cap, 5.00% for fanout, on top of margin 0.00%
+**INFO: Disabling fanout fix in postRoute stage.
++---------------------------------------------------------------------------------------------------------
+------------------------------------------------------------+
+|        max-tran       |        max-cap        |  max-fanout |  max-length |    glitch   |       setup
+    |        |        |        |       |          |         |
++---------------------------------------------------------------------------------------------------------
+------------------------------------------------------------+
+| nets | terms|  wViol  | nets | terms|  wViol  | nets | terms| nets | terms| nets | terms|   WNS   |   TN
+S   |  #Buf  |  #Inv  | #Resize|Density|   Real   |   Mem   |
++---------------------------------------------------------------------------------------------------------
+------------------------------------------------------------+
+|    29|   204|    -0.38|    30|    30|    -0.03|     0|     0|     0|     0|     2|     2|    -1.46| -126
+5.85|       0|       0|       0|  40.99|          |         |
+|     0|     0|     0.00|     0|     0|     0.00|     0|     0|     0|     0|     1|     1|    -2.05| -202
+5.99|      10|       0|      23|  41.04| 0:00:15.0|  1471.3M|
+|     0|     0|     0.00|     0|     0|     0.00|     0|     0|     0|     0|     1|     1|    -2.05| -202
+5.99|       0|       0|       0|  41.04| 0:00:00.0|  1471.3M|
++---------------------------------------------------------------------------------------------------------
+------------------------------------------------------------+
+Bottom Preferred Layer:
++-------------+------------+----------+
+|    Layer    |    CLK     |   Rule   |
++-------------+------------+----------+
+| met2 (z=3)  |         35 | default  |
++-------------+------------+----------+
+| met2 (z=3)  |         23 | cts_1    |
++-------------+------------+----------+
+Via Pillar Rule:
+    None
+
+*** Finish DRV Fixing (cpu=0:00:16.0 real=0:00:16.0 mem=1471.3M) ***
+
+*** DrvOpt [finish] : cpu/real = 0:00:24.4/0:00:24.4 (1.0), totSession cpu/real = 0:09:37.9/0:09:52.4 (1.0
+), mem = 1452.2M
+Running refinePlace -preserveRouting true -hardFence false
+*** Starting refinePlace (0:09:38 mem=1452.2M) ***
+*** Checked 2 GNC rules.
+*** Applying global-net connections...
+*** Applied 2 GNC rules (cpu = 0:00:00.0)
+**WARN: (IMPSP-315):	Found 924 instances insts with no PG Term connections.
+Type 'man IMPSP-315' for more detail.
+Move report: Detail placement moves 0 insts, mean move: 0.00 um, max move: 0.00 um
+	Runtime: CPU: 0:00:00.5 REAL: 0:00:01.0 MEM: 1452.2MB
+Summary Report:
+Instances move: 0 (out of 11518 movable)
+Instances flipped: 0
+Mean displacement: 0.00 um
+Max displacement: 0.00 um
+Runtime: CPU: 0:00:00.6 REAL: 0:00:01.0 MEM: 1452.2MB
+*** Finished refinePlace (0:09:39 mem=1452.2M) ***
+End: GigaOpt DRV Optimization
+**optDesign ... cpu = 0:00:55, real = 0:00:55, mem = 1155.1M, totSessionCpu=0:09:39 **
+*info:
+**INFO: Completed fixing DRV (CPU Time = 0:00:25, Mem = 1348.20M).
+
+------------------------------------------------------------
+     SI Timing Summary (cpu=0.42min real=0.42min mem=1348.2M)
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):| -2.051  | -2.051  |  0.885  | -0.627  |  5.114  |  1.891  |
+|           TNS (ns):| -2026.0 | -2024.9 |  0.000  | -1.128  |  0.000  |  0.000  |
+|    Violating Paths:|  1448   |  1445   |    0    |    3    |    0    |    0    |
+|          All Paths:|  3692   |  1941   |  3449   |   100   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      0 (0)       |
+|   max_tran     |      0 (0)       |   0.000    |      0 (0)       |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 41.044%
+Total number of glitch violations: 1
+------------------------------------------------------------
+**optDesign ... cpu = 0:00:56, real = 0:00:56, mem = 1152.4M, totSessionCpu=0:09:39 **
+*** Timing NOT met, worst failing slack is -2.051
+*** Check timing (0:00:00.0)
+Begin: GigaOpt Optimization in WNS mode
+GigaOpt Checkpoint: Internal optTiming -maxLocalDensity 0.96 -numThreads 1 -postRoute -usefulSkew -nativeP
+athGroupFlow
+Info: 58 clock nets excluded from IPO operation.
+*** SetupOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:09:39.4/0:09:53.9 (1.
+0), mem = 1338.7M
+

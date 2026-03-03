@@ -1,0 +1,257 @@
+    RC-Corner PreRoute Clock Cap Factor   : 1.05	[Derived from Cap Table]
+    RC-Corner PostRoute Clock Cap Factor  : 1.05 {1.05 1 1} 	[Derived from postRoute_cap (effortLevel l
+ow)]
+    RC-Corner PostRoute Clock Res Factor  : 1.05 {1.05 1 1} 	[Derived from postRoute_res (effortLevel l
+ow)]
+
+ Analysis View: min_view
+    RC-Corner Name        : rc_min
+    RC-Corner Index       : 1
+    RC-Corner Temperature : 25 Celsius
+    RC-Corner Cap Table   : ''
+    RC-Corner PreRoute Res Factor         : 1
+    RC-Corner PreRoute Cap Factor         : 1
+    RC-Corner PostRoute Res Factor        : 1 {1 1 1}
+    RC-Corner PostRoute Cap Factor        : 1 {1 1 1}
+    RC-Corner PostRoute XCap Factor       : 1 {1 1 1}
+    RC-Corner PreRoute Clock Res Factor   : 1	[Derived from Cap Table]
+    RC-Corner PreRoute Clock Cap Factor   : 1	[Derived from Cap Table]
+    RC-Corner PostRoute Clock Cap Factor  : 1 {1 1 1} 	[Derived from postRoute_cap (effortLevel low)]
+    RC-Corner PostRoute Clock Res Factor  : 1 {1 1 1} 	[Derived from postRoute_res (effortLevel low)]
+Updating RC grid for preRoute extraction ...
+Initializing multi-corner resistance tables ...
+*Info: initialize multi-corner CTS.
+Reading timing constraints file 'designs/sky130hd/ibex/constraint_for_pr.sdc' ...
+Current (total cpu=0:00:36.2, real=0:12:44, peak res=704.4M, current mem=704.4M)
+ibex_core
+INFO (CTE): Constraints read successfully.
+Ending "Constraint file reading stats" (total cpu=0:00:00.1, real=0:00:00.0, peak res=722.2M, current mem=
+722.2M)
+Current (total cpu=0:00:36.3, real=0:12:44, peak res=722.2M, current mem=722.2M)
+Total number of combinational cells: 329
+Total number of sequential cells: 68
+Total number of tristate cells: 13
+Total number of level shifter cells: 7
+Total number of power gating cells: 0
+Total number of isolation cells: 11
+Total number of power switch cells: 0
+Total number of pulse generator cells: 0
+Total number of always on buffers: 0
+Total number of retention cells: 0
+List of usable buffers: sky130_fd_sc_hd__buf_1 sky130_fd_sc_hd__buf_12 sky130_fd_sc_hd__buf_16 sky130_fd_s
+c_hd__buf_2 sky130_fd_sc_hd__buf_4 sky130_fd_sc_hd__buf_6 sky130_fd_sc_hd__buf_8 sky130_fd_sc_hd__clkbuf_1
+ sky130_fd_sc_hd__clkbuf_16 sky130_fd_sc_hd__clkbuf_2 sky130_fd_sc_hd__clkbuf_4 sky130_fd_sc_hd__clkbuf_8
+sky130_fd_sc_hd__dlymetal6s2s_1 sky130_fd_sc_hd__probec_p_8 sky130_fd_sc_hd__probe_p_8
+Total number of usable buffers: 15
+List of unusable buffers:
+Total number of unusable buffers: 0
+List of usable inverters: sky130_fd_sc_hd__bufinv_16 sky130_fd_sc_hd__clkinv_1 sky130_fd_sc_hd__bufinv_8 s
+ky130_fd_sc_hd__clkinv_16 sky130_fd_sc_hd__clkinv_2 sky130_fd_sc_hd__clkinv_4 sky130_fd_sc_hd__clkinv_8 sk
+y130_fd_sc_hd__inv_1 sky130_fd_sc_hd__clkinvlp_2 sky130_fd_sc_hd__clkinvlp_4 sky130_fd_sc_hd__inv_12 sky13
+0_fd_sc_hd__inv_16 sky130_fd_sc_hd__inv_2 sky130_fd_sc_hd__inv_4 sky130_fd_sc_hd__inv_6 sky130_fd_sc_hd__i
+nv_8
+Total number of usable inverters: 16
+List of unusable inverters:
+Total number of unusable inverters: 0
+List of identified usable delay cells: sky130_fd_sc_hd__bufbuf_16 sky130_fd_sc_hd__bufbuf_8 sky130_fd_sc_h
+d__clkdlybuf4s15_1 sky130_fd_sc_hd__clkdlybuf4s15_2 sky130_fd_sc_hd__clkdlybuf4s18_1 sky130_fd_sc_hd__clkd
+lybuf4s18_2 sky130_fd_sc_hd__clkdlybuf4s25_1 sky130_fd_sc_hd__clkdlybuf4s50_1 sky130_fd_sc_hd__clkdlybuf4s
+25_2 sky130_fd_sc_hd__clkdlybuf4s50_2 sky130_fd_sc_hd__dlygate4sd2_1 sky130_fd_sc_hd__dlygate4sd1_1 sky130
+_fd_sc_hd__dlygate4sd3_1 sky130_fd_sc_hd__dlymetal6s6s_1 sky130_fd_sc_hd__dlymetal6s4s_1
+Total number of identified usable delay cells: 15
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPLF-200            4  Pin '%s' in macro '%s' has no ANTENNAGAT...
+WARNING   IMPLF-201            3  Pin '%s' in macro '%s' has no ANTENNADIF...
+WARNING   IMPLF-108            1  There is no overlap layer defined in any...
+WARNING   IMPFP-3961           1  The techSite '%s' has no related standar...
+WARNING   IMPEXT-2766         12  The sheet resistance for layer %s is not...
+WARNING   IMPEXT-2773         12  The via resistance between layers %s and...
+WARNING   TECHLIB-302         12  No function defined for cell '%s'. The c...
+WARNING   TECHLIB-1161         1  The library level attribute %s on line %...
+*** Message Summary: 46 warning(s), 0 error(s)
+
+0
+innovus 14> source /tmp/hipilot-EDA/exec/hipilot_exec_1772456934040.tcl
+############################################################################
+# Innovus Netlist Design Rule Check
+# Mon Mar  2 21:08:54 2026
+
+############################################################################
+Design: ibex_core
+
+------ Design Summary:
+Total Standard Cell Number   (cells) : 11078
+Total Block Cell Number      (cells) : 0
+Total I/O Pad Cell Number    (cells) : 0
+Total Standard Cell Area     ( um^2) : 121616.64
+Total Block Cell Area        ( um^2) : 0.00
+Total I/O Pad Cell Area      ( um^2) : 0.00
+
+------ Design Statistics:
+
+Number of Instances            : 11078
+Number of Non-uniquified Insts : 11056
+Number of Nets                 : 11519
+Average number of Pins per Net : 4.34
+Maximum number of Pins in Net  : 997
+
+------ I/O Port summary
+
+Number of Primary I/O Ports    : 266
+Number of Input Ports          : 159
+Number of Output Ports         : 107
+Number of Bidirectional Ports  : 0
+Number of Power/Ground Ports   : 0
+Number of Floating Ports                     *: 8
+Number of Ports Connected to Multiple Pads   *: 0
+Number of Ports Connected to Core Instances   : 258
+**WARN: (IMPREPO-200):	There are 8 Floating Ports in the top design.
+**WARN: (IMPREPO-202):	There are 258 Ports connected to core instances.
+
+------ Design Rule Checking:
+
+Number of Output Pins connect to Power/Ground *: 0
+Number of Insts with Input Pins tied together ?: 1230
+Number of TieHi/Lo term nets not connected to instance's PG terms ?: 0
+Number of Input/InOut Floating Pins            : 0
+Number of Output Floating Pins                 : 0
+Number of Output Term Marked TieHi/Lo         *: 0
+
+**WARN: (IMPREPO-216):	There are 1230 Instances with input pins tied together.
+Number of nets with tri-state drivers          : 0
+Number of nets with parallel drivers           : 0
+Number of nets with multiple drivers           : 0
+Number of nets with no driver (No FanIn)       : 0
+Number of Output Floating nets (No FanOut)     : 137
+Number of High Fanout nets (>50)               : 68
+**WARN: (IMPREPO-227):	There are 68 High Fanout nets (>50).
+Design check done.
+
+
+---
+--- Please refer to file result/pr/report/check_data_init.report for detailed report.
+---
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPREPO-227          1  There are %d High Fanout nets (>50).
+WARNING   IMPREPO-200          1  There are %d Floating Ports in the top d...
+WARNING   IMPREPO-202          1  There are %d Ports connected to core ins...
+WARNING   IMPREPO-216          1  There are %d Instances with input pins t...
+*** Message Summary: 4 warning(s), 0 error(s)
+
+Setting timing_disable_library_data_to_data_checks to 'true'.
+Setting timing_disable_user_data_to_data_checks to 'true'.
+Set Using Default Delay Limit as 101.
+**WARN: (IMPDC-1629):	The default delay limit was set to 101. This is less than the default of 1000 and
+may result in inaccurate delay calculation for nets with a fanout higher than the setting.  If needed, the
+ default delay limit may be adjusted by running the command 'set delaycal_use_default_delay_limit'.
+Setting High Fanout Nets ( > 100 ) as ideal temporarily for -prePlace option
+Set Default Net Delay as 0 ps.
+Set Default Net Load as 0 pF.
+Starting delay calculation for Setup views
+**WARN: (IMPESI-3505):	setDelayCalMode -eng_copyNetPropToNewNet true (default=false) will be obsoleted al
+ong with its sgs2set equivalent.  This parameter will continue to be supported in the current release, but
+ will be removed in the next major release of the software.
+AAE DB initialization (MEM=899.773 CPU=0:00:00.0 REAL=0:00:00.0)
+#################################################################################
+# Design Stage: PreRoute
+# Design Name: ibex_core
+# Design Mode: 90nm
+# Analysis Mode: MMMC Non-OCV
+# Parasitics Mode: No SPEF/RCDB
+# Signoff Settings: SI Off
+#################################################################################
+Calculate delays in Single mode...
+Start delay calculation (fullDC) (1 T). (MEM=899.773)
+siFlow : Timing analysis mode is single, using late cdB files
+Total number of fetched objects 11381
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+End delay calculation. (MEM=1027.57 CPU=0:00:01.9 REAL=0:00:02.0)
+End delay calculation (fullDC). (MEM=1000.49 CPU=0:00:02.4 REAL=0:00:02.0)
+*** Done Building Timing Graph (cpu=0:00:03.3 real=0:00:04.0 totSessionCpu=0:00:40.5 mem=1000.5M)
+
+------------------------------------------------------------
+          timeDesign Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg |reg2cgate| default |
++--------------------+---------+---------+---------+---------+
+|           WNS (ns):|  0.606  |  0.606  |  8.336  |  2.923  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |    0    |
+|          All Paths:|  7573   |  3880   |    1    |  5491   |
++--------------------+---------+---------+---------+---------+
+
+Density: 70.043%
+------------------------------------------------------------
+Set Using Default Delay Limit as 1000.
+Resetting back High Fanout Nets as non-ideal
+Set Default Net Delay as 1000 ps.
+Set Default Net Load as 0.5 pF.
+Reported timing to dir result/pr/report/init_data_timing
+Total CPU time: 4.98 sec
+Total Real time: 5.0 sec
+Total Memory Usage: 927.082031 Mbytes
+#% Begin save design ... (date=03/02 21:08:59, mem=763.4M)
+% Begin Save ccopt configuration ... (date=03/02 21:08:59, mem=766.4M)
+% End Save ccopt configuration ... (date=03/02 21:08:59, total cpu=0:00:00.0, real=0:00:00.0, peak res=767
+.2M, current mem=767.2M)
+% Begin Save netlist data ... (date=03/02 21:08:59, mem=767.2M)
+Writing Binary DB to result/pr/data/init_design.enc.dat/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/02 21:08:59, total cpu=0:00:00.1, real=0:00:00.0, peak res=767.6M, cu
+rrent mem=767.6M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/init_design.enc.dat/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/02 21:08:59, mem=768.4M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/02 21:08:59, total cpu=0:00:00.0, real=0:00:00.0, peak res=768.4M, curren
+t mem=768.4M)
+Saving preference file result/pr/data/init_design.enc.dat/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 21:09:00, mem=769.5M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 21:09:00, total cpu=0:00:00.0, real=0:00:00.0, peak res=770.1M,
+current mem=770.1M)
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 21:09:00, mem=770.1M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 21:09:00, total cpu=0:00:00.0, real=0:00:00.0, peak res=770.3M,
+current mem=770.3M)
+% Begin Save routing data ... (date=03/02 21:09:00, mem=770.3M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.0 real=0:00:00.0 mem=927.6M) ***
+% End Save routing data ... (date=03/02 21:09:00, total cpu=0:00:00.0, real=0:00:00.0, peak res=770.6M, cu
+rrent mem=770.6M)
+Saving property file result/pr/data/init_design.enc.dat/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=930.6M) ***
+% Begin Save power constraints data ... (date=03/02 21:09:00, mem=770.9M)
+% End Save power constraints data ... (date=03/02 21:09:00, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+771.0M, current mem=771.0M)
+Generated self-contained design init_design.enc.dat
+#% End save design ... (date=03/02 21:09:05, total cpu=0:00:05.0, real=0:00:06.0, peak res=774.1M, current
+ mem=774.1M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+========================================
+Stage 1 COMPLETE!
+Checkpoint: result/pr/data/init_design.enc
+========================================
+
+*** Memory Usage v#1 (Current mem = 966.902M, initial mem = 249.227M) ***
+*** Message Summary: 157 warning(s), 4 error(s)
+
+--- Ending "Innovus" (totcpu=0:00:46.6, real=0:13:03, mem=966.9M) ---
+
+[EDA@EDA2035 ibex_work_upload]$

@@ -1,0 +1,257 @@
+Violations for such geometries will be reported.
+**** 23:41:00 **** Processed 5000 nets.
+**** 23:41:00 **** Processed 10000 nets.
+Net VDD: has an unconnected terminal.
+**WARN: (IMPVFC-3):	Verify Connectivity stopped: Number of errors exceeds the limit 1000
+Type 'man IMPVFC-3' for more detail.
+
+Begin Summary
+    1000 Problem(s) (IMPVFC-96): Terminal(s) are not connected.
+    1000 total info(s) created.
+End Summary
+
+End Time: Mon Mar  2 23:41:01 2026
+Time Elapsed: 0:00:01.0
+
+******** End: VERIFY CONNECTIVITY ********
+  Verification Complete : 1000 Viols.  0 Wrngs.
+  (CPU Time: 0:00:01.0  MEM: 4.000M)
+
+Writing DEF file 'result/pr/data/ibex_routing.def', current time is Mon Mar  2 23:41:01 2026 ...
+unitPerMicron=1000, dbgMicronPerDBU=0.001000, unitPerDBU=1.000000
+DEF file 'result/pr/data/ibex_routing.def' is written, current time is Mon Mar  2 23:41:01 2026 ...
+Writing Netlist "result/pr/data/ibex_routing.vg" ...
+Writing Netlist "result/pr/data/ibex_lvs.vg" ...
+Pwr name (VDD).
+Gnd name (VSS).
+1 Pwr names and 1 Gnd names.
+**WARN: (IMPEXT-3493):	The design extraction status has been reset by set_analysis_view/update_rc_corner
+or setExtractRCMode  command. The parasitic data can be regenerated either by extracting the design using
+the extractRC command or by loading the SPEF or RCDB file(s). To prevent resetting of the extraction statu
+s, avoid changing extraction modes.
+Type 'man IMPEXT-3493' for more detail.
+Extraction called for design 'ibex_core' of instances=11575 and nets=12013 using extraction engine 'postRo
+ute' at effort level 'low' .
+PostRoute (effortLevel low) RC Extraction called for design ibex_core.
+RC Extraction called in multi-corner(2) mode.
+**WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy
+when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to gener
+ate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_r
+c_corner/update_rc_corner -cap_table'.
+Type 'man IMPEXT-6197' for more detail.
+**WARN: (IMPEXT-3032):	Because the cap table file was not provided, it will be created internally with th
+e following process info:
+* Layer Id             : 1 - M1
+      Thickness        : 0.1
+      Min Width        : 0.17
+      Layer Dielectric : 4.1
+* Layer Id             : 2 - M2
+      Thickness        : 0.35
+      Min Width        : 0.14
+      Layer Dielectric : 4.1
+* Layer Id             : 3 - M3
+      Thickness        : 0.35
+      Min Width        : 0.14
+      Layer Dielectric : 4.1
+* Layer Id             : 4 - M4
+      Thickness        : 0.8
+      Min Width        : 0.3
+      Layer Dielectric : 4.1
+* Layer Id             : 5 - M5
+      Thickness        : 0.8
+      Min Width        : 0.3
+      Layer Dielectric : 4.1
+* Layer Id             : 6 - M6
+      Thickness        : 1.2
+      Min Width        : 1.6
+      Layer Dielectric : 4.1
+extractDetailRC Option : -outfile /tmp/innovus_temp_121529_EDA2035_EDA_zcKZug/ibex_core_121529_vu6ZKN.rcdb
+.d -maxResLength 200  -basic
+RC Mode: PostRoute -effortLevel low [Basic CapTable, LEF Resistances]
+      RC Corner Indexes            0       1
+Capacitance Scaling Factor   : 1.05000 1.00000
+Coupling Cap. Scaling Factor : 1.00000 1.00000
+Resistance Scaling Factor    : 1.05000 1.00000
+Clock Cap. Scaling Factor    : 1.05000 1.00000
+Clock Res. Scaling Factor    : 1.05000 1.00000
+Shrink Factor                : 1.00000
+Initializing multi-corner resistance tables ...
+Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1328.9M)
+Extracted 10.0009% (CPU Time= 0:00:00.6  MEM= 1336.9M)
+Extracted 20.0008% (CPU Time= 0:00:00.8  MEM= 1348.9M)
+Extracted 30.0007% (CPU Time= 0:00:00.9  MEM= 1348.9M)
+Extracted 40.0006% (CPU Time= 0:00:01.0  MEM= 1348.9M)
+Extracted 50.001% (CPU Time= 0:00:01.1  MEM= 1348.9M)
+Extracted 60.0009% (CPU Time= 0:00:01.5  MEM= 1348.9M)
+Extracted 70.0008% (CPU Time= 0:00:01.8  MEM= 1348.9M)
+Extracted 80.0007% (CPU Time= 0:00:02.4  MEM= 1352.9M)
+Extracted 90.0006% (CPU Time= 0:00:02.5  MEM= 1352.9M)
+Extracted 100% (CPU Time= 0:00:03.0  MEM= 1352.9M)
+Number of Extracted Resistors     : 317454
+Number of Extracted Ground Cap.   : 318292
+Number of Extracted Coupling Cap. : 660788
+Filtering XCap in 'relativeAndCoupling' mode using values coupling_c_threshold=0.4fF, relative_c_threshold
+=1, and total_c_threshold=0fF.
+Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1352.9M)
+PostRoute (effortLevel low) RC Extraction DONE (CPU Time: 0:00:04.4  Real Time: 0:00:04.0  MEM: 1356.938M)
+Parse flat map file...
+**WARN: (IMPOGDS-392):	Unknown layer poly
+Type 'man IMPOGDS-392' for more detail.
+**WARN: (IMPOGDS-392):	Unknown layer poly
+Type 'man IMPOGDS-392' for more detail.
+**WARN: (IMPOGDS-392):	Unknown layer poly
+Type 'man IMPOGDS-392' for more detail.
+**WARN: (IMPOGDS-392):	Unknown layer poly
+Type 'man IMPOGDS-392' for more detail.
+**WARN: (IMPOGDS-392):	Unknown layer licon1
+Type 'man IMPOGDS-392' for more detail.
+**WARN: (IMPOGDS-392):	Unknown layer licon1
+Type 'man IMPOGDS-392' for more detail.
+**WARN: (IMPOGDS-392):	Unknown layer licon1
+Type 'man IMPOGDS-392' for more detail.
+Writing GDSII file ...
+	****** db unit per micron = 1000 ******
+	****** output gds2 file unit per micron = 1000 ******
+	****** unit scaling factor = 1 ******
+Output for instance
+Output for bump
+Output for physical terminals
+Output for logical terminals
+Output for regular nets
+Output for special nets and metal fills
+Output for via structure generation total number 14
+Statistics for GDS generated (version 3)
+----------------------------------------
+Stream Out Layer Mapping Information:
+GDS Layer Number          GDS Layer Name
+----------------------------------------
+    72                              met5
+    71                              via4
+    71                              met4
+    70                              via3
+    70                              met3
+    67                               li1
+    68                              met1
+    67                              mcon
+    69                              met2
+    68                               via
+    69                              via2
+
+
+Stream Out Information Processed for GDS version 3:
+Units: 1000 DBU
+
+Object                             Count
+----------------------------------------
+Instances                          11575
+
+Ports/Pins                           264
+    metal layer met2                 139
+    metal layer met3                 125
+
+Nets                              203022
+    metal layer met1              104352
+    metal layer met2               70145
+    metal layer met3               18127
+    metal layer met4               10148
+    metal layer met5                 250
+
+    Via Instances                 113727
+
+Special Nets                         262
+    metal layer met1                 192
+    metal layer met4                  35
+    metal layer met5                  35
+
+    Via Instances                  10693
+
+Metal Fills                            0
+
+    Via Instances                      0
+
+Metal FillOPCs                         0
+
+    Via Instances                      0
+
+Metal FillDRCs                         0
+
+    Via Instances                      0
+
+Text                                   0
+
+
+Blockages                              0
+
+
+Custom Text                            0
+
+
+Custom Box                             0
+
+Trim Metal                             0
+
+######Streamout is finished!
+The in-memory database contained RC information but was not saved. To save
+the RC information, use saveDesign's -rc option. Note: Saving RC information can be quite large,
+so it should only be saved when it is really desired.
+#% Begin save design ... (date=03/02 23:41:06, mem=1051.7M)
+% Begin Save ccopt configuration ... (date=03/02 23:41:06, mem=1051.7M)
+% End Save ccopt configuration ... (date=03/02 23:41:06, total cpu=0:00:00.1, real=0:00:00.0, peak res=105
+1.7M, current mem=1046.4M)
+% Begin Save netlist data ... (date=03/02 23:41:06, mem=1046.4M)
+Writing Binary DB to result/pr/data/chip_done.enc.dat/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/02 23:41:06, total cpu=0:00:00.1, real=0:00:01.0, peak res=1046.4M, c
+urrent mem=1046.4M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/chip_done.enc.dat/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/02 23:41:07, mem=1046.9M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/02 23:41:07, total cpu=0:00:00.0, real=0:00:00.0, peak res=1046.9M, curre
+nt mem=1046.9M)
+Saving preference file result/pr/data/chip_done.enc.dat/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 23:41:08, mem=1049.5M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 23:41:08, total cpu=0:00:00.1, real=0:00:00.0, peak res=1049.5M,
+ current mem=1049.5M)
+Saving PG file result/pr/data/chip_done.enc.dat/ibex_core.pg.gz, version#2, (Created by Innovus v20.10-p00
+4_1 on Mon Mar  2 23:41:08 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=1323.5M) ***
+Saving Drc markers ...
+... 1005 markers are saved ...
+... 0 geometry drc markers are saved ...
+... 5 antenna drc markers are saved ...
+% Begin Save placement data ... (date=03/02 23:41:08, mem=1049.8M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 23:41:08, total cpu=0:00:00.0, real=0:00:01.0, peak res=1049.8M,
+ current mem=1049.8M)
+% Begin Save routing data ... (date=03/02 23:41:09, mem=1049.8M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.3 real=0:00:00.0 mem=1323.5M) ***
+% End Save routing data ... (date=03/02 23:41:09, total cpu=0:00:00.3, real=0:00:00.0, peak res=1050.0M, c
+urrent mem=1050.0M)
+Saving property file result/pr/data/chip_done.enc.dat/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=1326.5M) ***
+#Saving pin access data to file result/pr/data/chip_done.enc.dat/ibex_core.apa ...
+#
+% Begin Save power constraints data ... (date=03/02 23:41:10, mem=1050.0M)
+% End Save power constraints data ... (date=03/02 23:41:10, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+1050.0M, current mem=1050.0M)
+Generated self-contained design chip_done.enc.dat
+#% End save design ... (date=03/02 23:41:15, total cpu=0:00:06.1, real=0:00:09.0, peak res=1051.7M, curren
+t mem=1050.7M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+=========================================
+RTL-TO-GDS FLOW COMPLETE!
+=========================================
+GDS output: result/pr/data/ibex_core.gds
+
+*** Memory Usage v#1 (Current mem = 1310.508M, initial mem = 249.227M) ***
+*** Message Summary: 94 warning(s), 1 error(s)
+
+--- Ending "Innovus" (totcpu=0:11:34, real=0:11:56, mem=1310.5M) ---
+
+[EDA@EDA2035 ibex_work_upload]$

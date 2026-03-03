@@ -1,0 +1,257 @@
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__or3_1; Check the timin
+g library (.lib) file and make sure the timing information exists for the cell and you can run the checkTi
+mingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__or2_2; Check the timin
+g library (.lib) file and make sure the timing information exists for the cell and you can run the checkTi
+mingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__or2_1; Check the timin
+g library (.lib) file and make sure the timing information exists for the cell and you can run the checkTi
+mingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__or2_0; Check the timin
+g library (.lib) file and make sure the timing information exists for the cell and you can run the checkTi
+mingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o221ai_1; Check the ti
+ming library (.lib) file and make sure the timing information exists for the cell and you can run the chec
+kTimingLibrary command to verify if the timing library has complete information after the design is loaded
+.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o211ai_1; Check the ti
+ming library (.lib) file and make sure the timing information exists for the cell and you can run the chec
+kTimingLibrary command to verify if the timing library has complete information after the design is loaded
+.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o32ai_1; Check the tim
+ing library (.lib) file and make sure the timing information exists for the cell and you can run the check
+TimingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o31ai_1; Check the tim
+ing library (.lib) file and make sure the timing information exists for the cell and you can run the check
+TimingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o31a_1; Check the timi
+ng library (.lib) file and make sure the timing information exists for the cell and you can run the checkT
+imingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (IMPSYC-2):	Timing information is not defined for cell sky130_fd_sc_hd__o22ai_2; Check the tim
+ing library (.lib) file and make sure the timing information exists for the cell and you can run the check
+TimingLibrary command to verify if the timing library has complete information after the design is loaded.
+Type 'man IMPSYC-2' for more detail.
+**WARN: (EMS-27):	Message (IMPSYC-2) has exceeded the current message display limit of 20.
+To increase the message display limit, refer to the product command reference manual.
+**ERROR: (IMPSYT-7327):	Active setup and hold analysis views were not provided in either file result/pr/da
+ta/mmmc.view or by the -setup and -hold arguments to initDesign. The system requires at least one active s
+etup and hold analysis view to be declared before the design can be initialized. You must add a set_analys
+is_view command to your script, or add the -setup and -hold options to your init_design invocation. You ca
+n use the all_analysis_view command to identify the currently available views. If you are using CPF in a p
+hysical-only flow, please use 'read_power_intent -cpf' and 'commit_power_intent' after init_design. Do not
+ specify the CPF with the init_cpf_file variable in a physical-only flow.
+
+innovus 3> source /tmp/hipilot-EDA/exec/hipilot_exec_1772454245027.tcl
+**WARN: (IMPSYT-7329):	Cannot load design with init_design, after design is already in memory.  This comm
+and is skipped.
+############################################################################
+# Innovus Netlist Design Rule Check
+# Mon Mar  2 20:24:05 2026
+
+############################################################################
+Design: ibex_core
+
+------ Design Summary:
+Total Standard Cell Number   (cells) : 11078
+Total Block Cell Number      (cells) : 0
+Total I/O Pad Cell Number    (cells) : 0
+Total Standard Cell Area     ( um^2) : 121616.64
+Total Block Cell Area        ( um^2) : 0.00
+Total I/O Pad Cell Area      ( um^2) : 0.00
+
+------ Design Statistics:
+
+Number of Instances            : 11078
+Number of Non-uniquified Insts : 11056
+Number of Nets                 : 11519
+Average number of Pins per Net : 4.34
+Maximum number of Pins in Net  : 997
+
+------ I/O Port summary
+
+Number of Primary I/O Ports    : 266
+Number of Input Ports          : 159
+Number of Output Ports         : 107
+Number of Bidirectional Ports  : 0
+Number of Power/Ground Ports   : 0
+Number of Floating Ports                     *: 8
+Number of Ports Connected to Multiple Pads   *: 0
+Number of Ports Connected to Core Instances   : 258
+**WARN: (IMPREPO-200):	There are 8 Floating Ports in the top design.
+**WARN: (IMPREPO-202):	There are 258 Ports connected to core instances.
+
+------ Design Rule Checking:
+
+Number of Output Pins connect to Power/Ground *: 0
+Number of Insts with Input Pins tied together ?: 1230
+Number of TieHi/Lo term nets not connected to instance's PG terms ?: 0
+Number of Input/InOut Floating Pins            : 0
+Number of Output Floating Pins                 : 0
+Number of Output Term Marked TieHi/Lo         *: 0
+
+**WARN: (IMPREPO-216):	There are 1230 Instances with input pins tied together.
+Number of nets with tri-state drivers          : 0
+Number of nets with parallel drivers           : 0
+Number of nets with multiple drivers           : 0
+Number of nets with no driver (No FanIn)       : 0
+Number of Output Floating nets (No FanOut)     : 137
+Number of High Fanout nets (>50)               : 68
+**WARN: (IMPREPO-227):	There are 68 High Fanout nets (>50).
+Design check done.
+
+
+---
+--- Please refer to file result/pr/report/check_data_init.report for detailed report.
+---
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPREPO-227          1  There are %d High Fanout nets (>50).
+WARNING   IMPREPO-200          1  There are %d Floating Ports in the top d...
+WARNING   IMPREPO-202          1  There are %d Ports connected to core ins...
+WARNING   IMPREPO-216          1  There are %d Instances with input pins t...
+*** Message Summary: 4 warning(s), 0 error(s)
+
+**ERROR: (IMPOPT-6029):	Timing Library is not loaded yet.
+
+innovus 4> source /tmp/hipilot-EDA/exec/hipilot_exec_1772454264387.tcl
+**WARN: (IMPSYT-7329):	Cannot load design with init_design, after design is already in memory.  This comm
+and is skipped.
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPSYT-7329          1  Cannot load design with init_design, aft...
+*** Message Summary: 1 warning(s), 0 error(s)
+
+############################################################################
+# Innovus Netlist Design Rule Check
+# Mon Mar  2 20:24:24 2026
+
+############################################################################
+Design: ibex_core
+
+------ Design Summary:
+Total Standard Cell Number   (cells) : 11078
+Total Block Cell Number      (cells) : 0
+Total I/O Pad Cell Number    (cells) : 0
+Total Standard Cell Area     ( um^2) : 121616.64
+Total Block Cell Area        ( um^2) : 0.00
+Total I/O Pad Cell Area      ( um^2) : 0.00
+
+------ Design Statistics:
+
+Number of Instances            : 11078
+Number of Non-uniquified Insts : 11056
+Number of Nets                 : 11519
+Average number of Pins per Net : 4.34
+Maximum number of Pins in Net  : 997
+
+------ I/O Port summary
+
+Number of Primary I/O Ports    : 266
+Number of Input Ports          : 159
+Number of Output Ports         : 107
+Number of Bidirectional Ports  : 0
+Number of Power/Ground Ports   : 0
+Number of Floating Ports                     *: 8
+Number of Ports Connected to Multiple Pads   *: 0
+Number of Ports Connected to Core Instances   : 258
+**WARN: (IMPREPO-200):	There are 8 Floating Ports in the top design.
+**WARN: (IMPREPO-202):	There are 258 Ports connected to core instances.
+
+------ Design Rule Checking:
+
+Number of Output Pins connect to Power/Ground *: 0
+Number of Insts with Input Pins tied together ?: 1230
+Number of TieHi/Lo term nets not connected to instance's PG terms ?: 0
+Number of Input/InOut Floating Pins            : 0
+Number of Output Floating Pins                 : 0
+Number of Output Term Marked TieHi/Lo         *: 0
+
+**WARN: (IMPREPO-216):	There are 1230 Instances with input pins tied together.
+Number of nets with tri-state drivers          : 0
+Number of nets with parallel drivers           : 0
+Number of nets with multiple drivers           : 0
+Number of nets with no driver (No FanIn)       : 0
+Number of Output Floating nets (No FanOut)     : 137
+Number of High Fanout nets (>50)               : 68
+**WARN: (IMPREPO-227):	There are 68 High Fanout nets (>50).
+Design check done.
+
+
+---
+--- Please refer to file result/pr/report/check_data_init.report for detailed report.
+---
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPREPO-227          1  There are %d High Fanout nets (>50).
+WARNING   IMPREPO-200          1  There are %d Floating Ports in the top d...
+WARNING   IMPREPO-202          1  There are %d Ports connected to core ins...
+WARNING   IMPREPO-216          1  There are %d Instances with input pins t...
+*** Message Summary: 4 warning(s), 0 error(s)
+
+**ERROR: (IMPOPT-6029):	Timing Library is not loaded yet.
+
+innovus 5> source /tmp/hipilot-EDA/exec/hipilot_exec_1772454279280.tcl
+**WARN: (IMPSYT-7329):	Cannot load design with init_design, after design is already in memory.  This comm
+and is skipped.
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPSYT-7329          1  Cannot load design with init_design, aft...
+*** Message Summary: 1 warning(s), 0 error(s)
+
+**ERROR: (TCLCMD-1239):	The software has been initialized without timing library information into a physic
+al-only mode of operation. Access to timing analysis related commands and functionality is not available i
+n this mode.  To operate the software with full functionality you must exit or issue the freeDesign comman
+d - then reinitialize the system with a design configuration that includes a valid timing library configur
+ation.
+
+innovus 6> source /tmp/hipilot-EDA/exec/hipilot_exec_1772454307165.tcl
+
+*** Memory Usage v#1 (Current mem = 785.141M, initial mem = 249.230M) ***
+*** Message Summary: 111 warning(s), 4 error(s)
+
+--- Ending "Innovus" (totcpu=0:00:26.5, real=0:08:19, mem=785.1M) ---
+
+[EDA@EDA2035 ibex_work_upload]$ cd /home/EDA/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$ innovus -no_gui
+C: unknown locale
+
+Cadence Innovus(TM) Implementation System.
+Copyright 2020 Cadence Design Systems, Inc. All rights reserved worldwide.
+
+Version:	v20.10-p004_1, built Thu May 7 20:02:41 PDT 2020
+Options:	-no_gui
+Date:		Mon Mar  2 20:25:12 2026
+Host:		EDA2035 (x86_64 w/Linux 3.10.0-1160.119.1.el7.x86_64) (3cores*6cpus*Intel(R) Core(TM) i7-8
+559U CPU @ 2.70GHz 8192KB)
+OS:		CentOS Linux release 7.9.2009 (Core)
+
+License:
+		invs	Innovus Implementation System	20.1	checkout succeeded
+		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required
+CPU count.
+**WARN: (IMPOPT-801):	Genus executable not found in PATH. Install Genus, add the path to the genus execu
+table in the PATH variable and rerun Innovus.
+Create and set the environment variable TMPDIR to /tmp/innovus_temp_118583_EDA2035_EDA_3B9BzD.
+
+The soft stacksize limit is either up to the hard limit or larger than 0.2% of RAM. No change is needed.
+
+**INFO:  MMMC transition support version v31-84
+
+innovus 1> source /tmp/hipilot-EDA/exec/hipilot_exec_1772454342704.tcl
+**ERROR: (IMPDBTCL-247):	'library_root' is not a recognized object or root attribute. Type 'help ro
+ot:' to get a list of all root attributes, or "man get_db" for more information about objects.
+
+innovus 2>

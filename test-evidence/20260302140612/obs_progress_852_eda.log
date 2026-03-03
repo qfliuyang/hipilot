@@ -1,0 +1,257 @@
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 23:33:10, mem=1026.7M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 23:33:11, total cpu=0:00:00.1, real=0:00:01.0, peak res=1026.7M,
+ current mem=1026.7M)
+Saving PG file result/pr/data/post_cts_opt.enc.dat/ibex_core.pg.gz, version#2, (Created by Innovus v20.10-
+p004_1 on Mon Mar  2 23:33:11 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=1211.9M) ***
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 23:33:11, mem=1027.0M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 23:33:11, total cpu=0:00:00.0, real=0:00:00.0, peak res=1027.0M,
+ current mem=1027.0M)
+% Begin Save routing data ... (date=03/02 23:33:11, mem=1027.0M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.1 real=0:00:00.0 mem=1211.9M) ***
+% End Save routing data ... (date=03/02 23:33:11, total cpu=0:00:00.2, real=0:00:00.0, peak res=1027.2M, c
+urrent mem=1027.2M)
+Saving property file result/pr/data/post_cts_opt.enc.dat/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=1214.9M) ***
+#Saving pin access data to file result/pr/data/post_cts_opt.enc.dat/ibex_core.apa ...
+#
+Saving rc congestion map result/pr/data/post_cts_opt.enc.dat/ibex_core.congmap.gz ...
+% Begin Save power constraints data ... (date=03/02 23:33:12, mem=1027.2M)
+% End Save power constraints data ... (date=03/02 23:33:12, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+1027.2M, current mem=1027.2M)
+Generated self-contained design post_cts_opt.enc.dat
+#% End save design ... (date=03/02 23:33:17, total cpu=0:00:05.7, real=0:00:08.0, peak res=1027.2M, curren
+t mem=1025.9M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+STAGE 6 COMPLETE
+=========================================
+STAGE 7: Routing
+=========================================
+#WARNING (NRIF-91) Option setNanoRouteMode -routeTopRoutingLayer is obsolete. It will continue to work for
+ the current release. To ensure compatibility with future releases, use option setDesignMode -topRoutingLa
+yer instead.
+#WARNING (NRIF-90) Option setNanoRouteMode -routeBottomRoutingLayer is obsolete. It will continue to work
+for the current release. To ensure compatibility with future releases, use option setDesignMode -bottomRou
+tingLayer instead.
+#% Begin routeDesign (date=03/02 23:33:17, mem=978.4M)
+#routeDesign: cpu time = 00:00:00, elapsed time = 00:00:00, memory = 978.45 (MB), peak = 1108.10 (MB)
+#WARNING (NRIG-96) Selected single pass global detail route "-globalDetail". Clock eco and post optimizati
+ons will not be run. See "man NRIG-96" for more details.
+**INFO: User settings:
+setNanoRouteMode -drouteEndIteration                            70
+setNanoRouteMode -drouteFixAntenna                              true
+setNanoRouteMode -drouteUseMultiCutViaEffort                    medium
+setNanoRouteMode -extractThirdPartyCompatible                   false
+setNanoRouteMode -grouteExpTdStdDelay                           41.6
+setNanoRouteMode -grouteExpTdUseTifTimingEngineForImportDesign  true
+setNanoRouteMode -routeBottomRoutingLayer                       2
+setNanoRouteMode -routeTopRoutingLayer                          6
+setNanoRouteMode -routeWithTimingDriven                         true
+setDesignMode -process                                          130
+setExtractRCMode -coupling_c_th                                 0.4
+setExtractRCMode -engine                                        preRoute
+setExtractRCMode -relative_c_th                                 1
+setExtractRCMode -total_c_th                                    0
+setDelayCalMode -enable_high_fanout                             true
+setDelayCalMode -eng_copyNetPropToNewNet                        true
+setDelayCalMode -engine                                         aae
+setDelayCalMode -ignoreNetLoad                                  false
+setDelayCalMode -SIAware                                        true
+setSIMode -separate_delta_delay_on_data                         true
+
+#rc_max has no qx tech file defined
+#No active RC corner or QRC tech file is missing.
+#**INFO: setDesignMode -flowEffort standard
+#**INFO: multi-cut via swapping will not be performed after routing.
+#**INFO: All auto set options tuned by routeDesign will be restored to their original settings on command
+completion.
+Begin checking placement ... (start mem=1171.5M, init mem=1169.5M)
+*info: Placed = 11565          (Fixed = 58)
+*info: Unplaced = 0
+Placement Density:40.99%(111093/271002)
+Placement Density (including fixed std cells):40.99%(111093/271002)
+Finished checkPlace (total: cpu=0:00:00.2, real=0:00:00.0; vio checks: cpu=0:00:00.2, real=0:00:00.0; mem=
+1169.5M)
+**WARN: (IMPCK-8086):	The command changeUseClockNetStatus is obsolete and will be removed in the next re
+lease. This command still works in this release, but by the next release you must transition to the CCOpt-
+based CTS flow.
+
+changeUseClockNetStatus Option :  -noFixedNetWires
+*** Changed status on (58) nets in Clock.
+*** End changeUseClockNetStatus (cpu=0:00:00.0, real=0:00:00.0, mem=1169.5M) ***
+% Begin globalDetailRoute (date=03/02 23:33:17, mem=976.6M)
+
+globalDetailRoute
+
+#Start globalDetailRoute on Mon Mar  2 23:33:17 2026
+#
+#Generating timing data, please wait...
+#11863 total nets, 11862 already routed, 11862 will ignore in trialRoute
+**WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy
+when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to gener
+ate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_r
+c_corner/update_rc_corner -cap_table'.
+#Dump tif for version 2.1
+Total number of fetched objects 11865
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+End delay calculation. (MEM=1290.11 CPU=0:00:02.3 REAL=0:00:02.0)
+
+#Generating timing data took: cpu time = 00:00:06, elapsed time = 00:00:06, memory = 939.45 (MB), peak = 1
+108.10 (MB)
+#Done generating timing data.
+#WARNING (NRIG-1303) Congestion map does not match the GCELL grid, clearing map.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[60] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[60] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[60] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[60] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[57] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[57] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[57] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[57] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[56] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[56] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[56] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[56] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[55] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[55] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[55] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[55] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[54] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[54] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[54] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[54] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (EMS-27) Message (NRIG-34) has exceeded the current message display limit of 20.
+#To increase the message display limit, refer to the product command reference manual.
+#num needed restored net=0
+#need_extraction net=0 (total=12003)
+#WARNING (NRDB-2005) SPECIAL_NET VDD has special wires but no definitions for instance pins or top level p
+ins. This will cause routability problems later.
+#WARNING (NRDB-2005) SPECIAL_NET VSS has special wires but no definitions for instance pins or top level p
+ins. This will cause routability problems later.
+#WARNING (NRDB-976) The TRACK STEP 0.6100 for preferred direction tracks is smaller than the PITCH 0.6800
+for LAYER met3. This will cause routability problems for NanoRoute.
+#WARNING (NRDB-976) The TRACK STEP 0.6900 for preferred direction tracks is smaller than the PITCH 0.9200
+for LAYER met4. This will cause routability problems for NanoRoute.
+#Start reading timing information from file .timing_file_121529.tif.gz ...
+#Read in timing information for 264 ports, 11565 instances from timing file .timing_file_121529.tif.gz.
+#NanoRoute Version 20.10-p004_1 NR200413-0234/20_10-UB
+#Start routing data preparation on Mon Mar  2 23:33:25 2026
+#
+#Minimum voltage of a net in the design = 0.000.
+#Maximum voltage of a net in the design = 1.800.
+#Voltage range [0.000 - 1.800] has 12001 nets.
+#Voltage range [1.800 - 1.800] has 1 net.
+#Voltage range [0.000 - 0.000] has 1 net.
+# li1          V   Track-Pitch = 0.4600    Line-2-Via Pitch = 0.3400
+# met1         H   Track-Pitch = 0.3400    Line-2-Via Pitch = 0.3250
+# met2         V   Track-Pitch = 0.4600    Line-2-Via Pitch = 0.3400
+# met3         H   Track-Pitch = 0.6100    Line-2-Via Pitch = 0.6100
+# met4         V   Track-Pitch = 0.6900    Line-2-Via Pitch = 0.6150
+# met5         H   Track-Pitch = 3.6600    Line-2-Via Pitch = 3.2000
+#Monitoring time of adding inner blkg by smac
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 950.87 (MB), peak = 1108.10 (MB)
+#Regenerating Ggrids automatically.
+#Auto generating G-grids with size=15 tracks, using layer met2's pitch = 0.4600.
+#Using automatically generated G-grids.
+#Done routing data preparation.
+#cpu time = 00:00:01, elapsed time = 00:00:01, memory = 952.86 (MB), peak = 1108.10 (MB)
+#
+#Finished routing data preparation on Mon Mar  2 23:33:25 2026
+#
+#Cpu time = 00:00:01
+#Elapsed time = 00:00:01
+#Increased memory = 6.49 (MB)
+#Total memory = 952.88 (MB)
+#Peak memory = 1108.10 (MB)
+#
+#
+#Start global routing on Mon Mar  2 23:33:25 2026
+#
+#
+#Start global routing initialization on Mon Mar  2 23:33:25 2026
+#
+#Number of eco nets is 1
+#
+#Start global routing data preparation on Mon Mar  2 23:33:25 2026
+#
+#Start routing resource analysis on Mon Mar  2 23:33:25 2026
+#
+#Routing resource analysis is done on Mon Mar  2 23:33:26 2026
+#
+#  Resource Analysis:
+#
+#               Routing  #Avail      #Track     #Total     %Gcell
+#  Layer      Direction   Track     Blocked      Gcell    Blocked
+#  --------------------------------------------------------------
+#  li1            V        1140           0        5776    47.32%
+#  met1           H        1534           0        5776     0.00%
+#  met2           V        1140           0        5776     0.00%
+#  met3           H         825           7        5776     0.00%
+#  met4           V         398         361        5776     6.58%
+#  met5           H          52          90        5776    53.95%
+#  --------------------------------------------------------------
+#  Total                   5089      18.63%       34656    17.97%
+#
+#  35 nets (0.29%) with 1 preferred extra spacing.
+#
+#
+#
+#Global routing data preparation is done on Mon Mar  2 23:33:26 2026
+#
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 954.37 (MB), peak = 1108.10 (MB)
+#
+#
+#Global routing initialization is done on Mon Mar  2 23:33:26 2026
+#
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 954.38 (MB), peak = 1108.10 (MB)
+#
+#start global routing iteration 1...
+

@@ -1,0 +1,257 @@
+    0:01:34  122407.4      0.00       0.0       0.5                             41.6998
+    0:01:36  120998.5      0.00       0.0       0.7                             42.6960
+    0:01:36  120998.5      0.00       0.0       0.7                             42.6960
+    0:01:36  120998.5      0.00       0.0       0.7                             42.6960
+    0:01:37  121514.0      0.00       0.0       0.5                             42.1553
+    0:01:41  121345.1      0.00       0.0       0.5                             41.7783
+    0:01:41  121345.1      0.00       0.0       0.5                             41.7783
+    0:01:41  121345.1      0.00       0.0       0.5                             41.7783
+    0:01:41  121345.1      0.00       0.0       0.5                             41.7783
+    0:01:41  121345.1      0.00       0.0       0.5                             41.7783
+    0:01:41  121345.1      0.00       0.0       0.5                             41.7783
+    0:01:58  121251.3      0.00       0.0       0.7                             41.7024
+Loading db file '/home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios
+
+
+  Optimization Complete
+  ---------------------
+Warning: Design 'ibex_core' contains 2 high-fanout nets. A fanout number of 1000 will be used for delay ca
+lculations involving these nets. (TIM-134)
+     Net 'ex_block_i/gen_multdiv_fast.multdiv_i/n151': 1896 load(s), 1 driver(s)
+     Net 'gen_regfile_ff.register_file_i/n2014': 1984 load(s), 1 driver(s)
+Information: State dependent leakage is now switched from off to on.
+Information: Propagating switching activity (low effort zero delay simulation). (PWR-6)
+1
+dc_shell> dc_shell> Accepted insert_dft configuration specification.
+1
+dc_shell> Accepted dft signal specification for modes: all_dft
+1
+dc_shell> Accepted dft signal specification for modes: all_dft
+1
+dc_shell> Accepted dft signal specification for modes: all_dft
+1
+dc_shell> Accepted insert_dft configuration specification.
+1
+dc_shell> Information: Overwriting the default autofix configuration for the type bidirectional. (TESTXG-1
+9)
+Accepted Autofix configuration specifications for design 'ibex_core'.
+1
+dc_shell> In mode: all_dft...
+
+Information: Starting test protocol creation. (TEST-219)
+  ...inferring clock signals...
+Information: Inferred system/test clock port clk_i (45.0,55.0). (TEST-260)
+  ...inferring asynchronous signals...
+Information: Inferred active low asynchronous control port rst_ni. (TEST-261)
+1
+dc_shell> dc_shell> Warning: Design 'ibex_core' contains 2 high-fanout nets. A fanout number of 1000 will
+be used for delay calculations involving these nets. (TIM-134)
+
+Information: Starting test design rule checking. (TEST-222)
+Warning: Violations occurred during test design rule checking. (TEST-124)
+Information: Test design rule checking completed. (TEST-123)
+  Architecting Scan Chains
+  Routing Scan Chains
+  Routing Global Signals
+  Mapping New Logic
+Resetting current test mode
+Warning: Design 'ibex_core' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay ca
+lculations involving these nets. (TIM-134)
+
+1
+dc_shell> dc_shell> dc_shell> Incremental compile after DFT...
+dc_shell> Information: Performing power optimization. (PWR-850)
+Alib files are up-to-date.
+Information: Choosing a test methodology will restrict the optimization of sequential cells. (UIO-12)
+====================================================================================================
+| Flow Information                                                                                 |
+----------------------------------------------------------------------------------------------------
+| Flow         | Design Compiler                                                                   |
+| Comand Line  | compile_ultra -incremental -scan                                                  |
+====================================================================================================
+| Design Information                                      | Value                                  |
+====================================================================================================
+| Number of Scenarios                                     | 0                                      |
+| Leaf Cell Count                                         | 11000                                  |
+| Number of User Hierarchies                              | 1                                      |
+| Sequential Cell Count                                   | 1941                                   |
+| Macro Count                                             | 0                                      |
+| Number of Power Domains                                 | 0                                      |
+| Number of Path Groups                                   | 5                                      |
+| Number of VT Class                                      | 0                                      |
+| Number of Clocks                                        | 1                                      |
+| Number of Dont Touch Cells                              | 0                                      |
+| Number of Dont Touch Nets                               | 0                                      |
+| Number of Size Only Cells                               | 0                                      |
+| Design with UPF Data                                    | false                                  |
+----------------------------------------------------------------------------------------------------
+| Variables                                               | Value                                  |
+----------------------------------------------------------------------------------------------------
+| set_fix_multiple_port_nets                              | -all -buffer_constants                 |
+====================================================================================================
+
+Information: There are 12 potential problems in your design. Please run 'check_design' for more informatio
+n. (LINT-99)
+
+
+Information: State dependent leakage is now switched from on to off.
+
+  Beginning Pass 1 Mapping  (Incremental)
+  ------------------------
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+Information: The library cell 'sky130_fd_sc_hd__macro_sparecell' in the library 'sky130_fd_sc_hd__tt_025C_
+1v80' is not characterized for internal power. (PWR-536)
+Information: The library cell 'sky130_fd_sc_hd__conb_1' in the library 'sky130_fd_sc_hd__tt_025C_1v80' is
+not characterized for internal power. (PWR-536)
+Information: The target library(s) contains cell(s), other than black boxes, that are not characterized fo
+r internal power. (PWR-24)
+
+                                  TOTAL
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:03  121247.5      0.02      61.5       0.7                             41.6991
+    0:00:03  121247.5      0.02      61.5       0.7                             41.6991
+
+  Beginning Mapping Optimizations  (Ultra High effort)  (Incremental)
+  -------------------------------
+
+  Beginning Incremental Implementation Selection
+  ----------------------------------------------
+    0:00:09  121217.5      0.02      61.5       0.7                             41.6986
+
+  Beginning Delay Optimization Phase
+  ----------------------------------
+
+                                  TOTAL
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:09  121217.5      0.02      61.5       0.7                             41.6986
+    0:00:10  129133.8      0.02      61.5       0.7                             46.4701
+    0:00:11  122313.6      0.00       0.0       0.7                             42.3674
+    0:00:11  122313.6      0.00       0.0       0.7                             42.3674
+    0:00:11  122313.6      0.00       0.0       0.7                             42.3674
+    0:00:11  122313.6      0.00       0.0       0.7                             42.3674
+    0:00:11  122313.6      0.00       0.0       0.7                             42.3674
+
+  Beginning Delay Optimization
+  ----------------------------
+    0:00:11  122313.6      0.00       0.0       0.7                             42.3674
+    0:00:11  122313.6      0.00       0.0       0.7                             42.3674
+    0:00:11  122313.6      0.00       0.0       0.7                             42.3674
+    0:00:11  122313.6      0.00       0.0       0.7                             42.3674
+    0:00:11  122313.6      0.00       0.0       0.7                             42.3674
+    0:00:12  122313.6      0.00       0.0       0.7                             42.3674
+
+
+  Beginning Design Rule Fixing  (max_transition)
+  ----------------------------
+
+                                  TOTAL
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:12  122313.6      0.00       0.0       0.7                             42.3674
+    0:00:14  122299.8      0.00       0.0       0.7                             42.3600
+    0:00:15  122339.8      0.00       0.0       0.5                             42.4782
+    0:00:15  122339.8      0.00       0.0       0.5                             42.4782
+    0:00:15  122339.8      0.00       0.0       0.5                             42.4782
+    0:00:15  122339.8      0.00       0.0       0.5                             42.4782
+    0:00:15  122339.8      0.00       0.0       0.5                             42.4782
+    0:00:15  122339.8      0.00       0.0       0.5                             42.4782
+    0:00:15  122339.8      0.00       0.0       0.5                             42.4782
+    0:00:15  122339.8      0.00       0.0       0.5                             42.4782
+    0:00:15  122339.8      0.00       0.0       0.5                             42.4782
+
+
+  Beginning Critical Range Optimization
+  -------------------------------------
+
+                                  TOTAL
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:15  122339.8      0.00       0.0       0.5                             42.4782
+    0:00:15  122339.8      0.00       0.0       0.5                             42.4782
+    0:00:16  122292.3      0.00       0.0       0.7                             42.3556
+    0:00:16  122292.3      0.00       0.0       0.7                             42.3556
+    0:00:16  122292.3      0.00       0.0       0.7                             42.3556
+    0:00:16  122292.3      0.00       0.0       0.7                             42.3556
+    0:00:16  122292.3      0.00       0.0       0.7                             42.3556
+    0:00:16  122292.3      0.00       0.0       0.7                             42.3556
+    0:00:16  122292.3      0.00       0.0       0.7                             42.3556
+    0:00:16  122292.3      0.00       0.0       0.7                             42.3556
+    0:00:16  122292.3      0.00       0.0       0.7                             42.3556
+    0:00:16  122299.8      0.00       0.0       0.7                             42.3367
+
+                                  TOTAL
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:16  122299.8      0.00       0.0       0.7                             42.3367
+    0:00:17  122347.3      0.00       0.0       0.5                             42.4592
+    0:00:25  121728.0      0.00       0.0       0.7                             41.7296
+    0:00:25  121728.0      0.00       0.0       0.7                             41.7296
+    0:00:25  121728.0      0.00       0.0       0.7                             41.7296
+    0:00:25  121728.0      0.00       0.0       0.7                             41.7296
+    0:00:49  121616.6      0.00       0.0       0.7                             41.7279
+Loading db file '/home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios
+
+
+  Optimization Complete
+  ---------------------
+Information: State dependent leakage is now switched from off to on.
+Information: Propagating switching activity (low effort zero delay simulation). (PWR-6)
+1
+dc_shell> dc_shell> dc_shell> dc_shell> dc_shell> dc_shell> Writing netlist...
+dc_shell> Writing verilog file '/home/EDA/ibex_work_upload/result/syn/data/ibex_core.syn.v'.
+Warning: Verilog 'assign' or 'tran' statements are written out. (VO-4)
+1
+dc_shell> Writing ddc file 'result/syn/data/ibex_core.rpt.ddc'.
+1
+dc_shell> 1
+dc_shell> 1
+dc_shell> dc_shell> SYNTHESIS COMPLETE
+dc_shell>
+Memory usage for this session 222 Mbytes.
+Memory usage for this session including child processes 241 Mbytes.
+CPU usage for this session 270 seconds ( 0.07 hours ).
+Elapsed time for this session 363 seconds ( 0.10 hours ).
+
+Thank you...
+[EDA@EDA2035 ibex_work_upload]$ cd /home/EDA/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$ innovus -no_gui
+C: unknown locale
+
+Cadence Innovus(TM) Implementation System.
+Copyright 2020 Cadence Design Systems, Inc. All rights reserved worldwide.
+
+Version:	v20.10-p004_1, built Thu May 7 20:02:41 PDT 2020
+Options:	-no_gui
+Date:		Mon Mar  2 22:21:28 2026
+Host:		EDA2035 (x86_64 w/Linux 3.10.0-1160.119.1.el7.x86_64) (3cores*6cpus*Intel(R) Core(TM) i7-8
+559U CPU @ 2.70GHz 8192KB)
+OS:		CentOS Linux release 7.9.2009 (Core)
+
+License:
+		invs	Innovus Implementation System	20.1	checkout succeeded
+		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required
+CPU count.
+**WARN: (IMPOPT-801):	Genus executable not found in PATH. Install Genus, add the path to the genus execu
+table in the PATH variable and rerun Innovus.
+Create and set the environment variable TMPDIR to /tmp/innovus_temp_86337_EDA2035_EDA_PA2TfR.
+
+The soft stacksize limit is either up to the hard limit or larger than 0.2% of RAM. No change is needed.
+
+**INFO:  MMMC transition support version v31-84
+
+innovus 1>

@@ -1,0 +1,257 @@
+b)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__decap_12'. The cell will only be us
+ed for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.l
+ib)
+Read 428 cells in library 'sky130_fd_sc_hd__tt_025C_1v80'
+*** End library_loading (cpu=0.01min, real=0.02min, mem=14.5M, fe_cpu=0.46min, fe_real=1.28min, fe_mem=598
+.9M) ***
+#% Begin Load netlist data ... (date=03/02 22:40:20, mem=480.1M)
+*** Begin netlist parsing (mem=598.9M) ***
+Created 428 new cells from 1 timing libraries.
+Reading netlist ...
+Backslashed names will retain backslash and a trailing blank character.
+Reading verilog netlist '/home/EDA/ibex_work_upload/result/syn/data/ibex_core.syn.v'
+
+*** Memory Usage v#1 (Current mem = 600.855M, initial mem = 249.227M) ***
+*** End netlist parsing (cpu=0:00:00.2, real=0:00:00.0, mem=600.9M) ***
+#% End Load netlist data ... (date=03/02 22:40:20, total cpu=0:00:00.2, real=0:00:00.0, peak res=492.3M, c
+urrent mem=492.3M)
+Set top cell to ibex_core.
+Hooked 428 DB cells to tlib cells.
+Starting recursive module instantiation check.
+No recursion found.
+Building hierarchical netlist for Cell ibex_core ...
+*** Netlist is unique.
+** info: there are 443 modules.
+** info: there are 11078 stdCell insts.
+
+*** Memory Usage v#1 (Current mem = 629.789M, initial mem = 249.227M) ***
+**WARN: (IMPFP-3961):	The techSite 'unithddbl' has no related standard cells in LEF/OA library. Cannot m
+ake calculations for this site type unless standard cell models of this type exist in the LEF/OA library.
+If the SITE is not used by the library you can ignore this warning or remove the SITE definition from the
+LEF/OA to avoid this message.
+Type 'man IMPFP-3961' for more detail.
+Adjust met3 preferred direction offset from 0.34 to 0.17.
+Adjust met4 preferred direction offset from 0.46 to 0.23.
+Adjust met5 preferred direction offset from 1.7 to 0.17.
+Generated pitch 3.66 in met5 is different from 3.4 defined in technology file in preferred direction.
+Generated pitch 0.69 in met4 is different from 0.92 defined in technology file in preferred direction.
+Generated pitch 0.61 in met3 is different from 0.68 defined in technology file in preferred direction.
+Set Default Net Delay as 1000 ps.
+Set Default Net Load as 0.5 pF.
+Set Default Input Pin Transition as 0.1 ps.
+Extraction setup Started
+Initializing multi-corner RC extraction with 2 active RC Corners ...
+**WARN: (IMPEXT-2773):	The via resistance between layers POLY and M1 could not be determined from the LEF
+ technology file because the via resistance specification is missing. A default of 4 Ohms will be used as
+via resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M1 and M2 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M2 and M3 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M3 and M4 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M4 and M5 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M5 and M6 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M1 is not defined in the cap table. Therefore, the
+LEF value 12.2 will be used instead. To avoid this message, update the relevant cap table to include the s
+heet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M2 is not defined in the cap table. Therefore, the
+LEF value 0.125 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M3 is not defined in the cap table. Therefore, the
+LEF value 0.125 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M4 is not defined in the cap table. Therefore, the
+LEF value 0.047 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M5 is not defined in the cap table. Therefore, the
+LEF value 0.047 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M6 is not defined in the cap table. Therefore, the
+LEF value 0.0285 will be used instead. To avoid this message, update the relevant cap table to include the
+ sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2773):	The via resistance between layers POLY and M1 could not be determined from the LEF
+ technology file because the via resistance specification is missing. A default of 4 Ohms will be used as
+via resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M1 and M2 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M2 and M3 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M3 and M4 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M4 and M5 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M5 and M6 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M1 is not defined in the cap table. Therefore, the
+LEF value 12.2 will be used instead. To avoid this message, update the relevant cap table to include the s
+heet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M2 is not defined in the cap table. Therefore, the
+LEF value 0.125 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M3 is not defined in the cap table. Therefore, the
+LEF value 0.125 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M4 is not defined in the cap table. Therefore, the
+LEF value 0.047 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M5 is not defined in the cap table. Therefore, the
+LEF value 0.047 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M6 is not defined in the cap table. Therefore, the
+LEF value 0.0285 will be used instead. To avoid this message, update the relevant cap table to include the
+ sheet resistance for the specified layer and read it back in.
+Summary of Active RC-Corners :
+
+ Analysis View: max_view
+    RC-Corner Name        : rc_max
+    RC-Corner Index       : 0
+    RC-Corner Temperature : 25 Celsius
+    RC-Corner Cap Table   : ''
+    RC-Corner PreRoute Res Factor         : 1.05
+    RC-Corner PreRoute Cap Factor         : 1.05
+    RC-Corner PostRoute Res Factor        : 1.05 {1.05 1 1}
+    RC-Corner PostRoute Cap Factor        : 1.05 {1.05 1 1}
+    RC-Corner PostRoute XCap Factor       : 1 {1 1 1}
+    RC-Corner PreRoute Clock Res Factor   : 1.05	[Derived from Cap Table]
+    RC-Corner PreRoute Clock Cap Factor   : 1.05	[Derived from Cap Table]
+    RC-Corner PostRoute Clock Cap Factor  : 1.05 {1.05 1 1} 	[Derived from postRoute_cap (effortLevel l
+ow)]
+    RC-Corner PostRoute Clock Res Factor  : 1.05 {1.05 1 1} 	[Derived from postRoute_res (effortLevel l
+ow)]
+
+ Analysis View: min_view
+    RC-Corner Name        : rc_min
+    RC-Corner Index       : 1
+    RC-Corner Temperature : 25 Celsius
+    RC-Corner Cap Table   : ''
+    RC-Corner PreRoute Res Factor         : 1
+    RC-Corner PreRoute Cap Factor         : 1
+    RC-Corner PostRoute Res Factor        : 1 {1 1 1}
+    RC-Corner PostRoute Cap Factor        : 1 {1 1 1}
+    RC-Corner PostRoute XCap Factor       : 1 {1 1 1}
+    RC-Corner PreRoute Clock Res Factor   : 1	[Derived from Cap Table]
+    RC-Corner PreRoute Clock Cap Factor   : 1	[Derived from Cap Table]
+    RC-Corner PostRoute Clock Cap Factor  : 1 {1 1 1} 	[Derived from postRoute_cap (effortLevel low)]
+    RC-Corner PostRoute Clock Res Factor  : 1 {1 1 1} 	[Derived from postRoute_res (effortLevel low)]
+Updating RC grid for preRoute extraction ...
+Initializing multi-corner resistance tables ...
+*Info: initialize multi-corner CTS.
+Reading timing constraints file '/home/EDA/ibex_work_upload/designs/sky130hd/ibex/constraint_for_pr.sdc' .
+..
+Current (total cpu=0:00:28.4, real=0:01:18, peak res=696.2M, current mem=696.2M)
+ibex_core
+INFO (CTE): Constraints read successfully.
+Ending "Constraint file reading stats" (total cpu=0:00:00.1, real=0:00:00.0, peak res=714.0M, current mem=
+714.0M)
+Current (total cpu=0:00:28.5, real=0:01:18, peak res=714.0M, current mem=714.0M)
+Total number of combinational cells: 329
+Total number of sequential cells: 68
+Total number of tristate cells: 13
+Total number of level shifter cells: 7
+Total number of power gating cells: 0
+Total number of isolation cells: 11
+Total number of power switch cells: 0
+Total number of pulse generator cells: 0
+Total number of always on buffers: 0
+Total number of retention cells: 0
+List of usable buffers: sky130_fd_sc_hd__buf_1 sky130_fd_sc_hd__buf_12 sky130_fd_sc_hd__buf_16 sky130_fd_s
+c_hd__buf_2 sky130_fd_sc_hd__buf_4 sky130_fd_sc_hd__buf_6 sky130_fd_sc_hd__buf_8 sky130_fd_sc_hd__clkbuf_1
+ sky130_fd_sc_hd__clkbuf_16 sky130_fd_sc_hd__clkbuf_2 sky130_fd_sc_hd__clkbuf_4 sky130_fd_sc_hd__clkbuf_8
+sky130_fd_sc_hd__dlymetal6s2s_1 sky130_fd_sc_hd__probec_p_8 sky130_fd_sc_hd__probe_p_8
+Total number of usable buffers: 15
+List of unusable buffers:
+Total number of unusable buffers: 0
+List of usable inverters: sky130_fd_sc_hd__bufinv_16 sky130_fd_sc_hd__clkinv_1 sky130_fd_sc_hd__bufinv_8 s
+ky130_fd_sc_hd__clkinv_16 sky130_fd_sc_hd__clkinv_2 sky130_fd_sc_hd__clkinv_4 sky130_fd_sc_hd__clkinv_8 sk
+y130_fd_sc_hd__inv_1 sky130_fd_sc_hd__clkinvlp_2 sky130_fd_sc_hd__clkinvlp_4 sky130_fd_sc_hd__inv_12 sky13
+0_fd_sc_hd__inv_16 sky130_fd_sc_hd__inv_2 sky130_fd_sc_hd__inv_4 sky130_fd_sc_hd__inv_6 sky130_fd_sc_hd__i
+nv_8
+Total number of usable inverters: 16
+List of unusable inverters:
+Total number of unusable inverters: 0
+List of identified usable delay cells: sky130_fd_sc_hd__bufbuf_16 sky130_fd_sc_hd__bufbuf_8 sky130_fd_sc_h
+d__clkdlybuf4s15_1 sky130_fd_sc_hd__clkdlybuf4s15_2 sky130_fd_sc_hd__clkdlybuf4s18_1 sky130_fd_sc_hd__clkd
+lybuf4s18_2 sky130_fd_sc_hd__clkdlybuf4s25_1 sky130_fd_sc_hd__clkdlybuf4s50_1 sky130_fd_sc_hd__clkdlybuf4s
+25_2 sky130_fd_sc_hd__clkdlybuf4s50_2 sky130_fd_sc_hd__dlygate4sd2_1 sky130_fd_sc_hd__dlygate4sd1_1 sky130
+_fd_sc_hd__dlygate4sd3_1 sky130_fd_sc_hd__dlymetal6s6s_1 sky130_fd_sc_hd__dlymetal6s4s_1
+Total number of identified usable delay cells: 15
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPLF-200            4  Pin '%s' in macro '%s' has no ANTENNAGAT...
+WARNING   IMPLF-201            3  Pin '%s' in macro '%s' has no ANTENNADIF...
+WARNING   IMPLF-108            1  There is no overlap layer defined in any...
+WARNING   IMPFP-3961           1  The techSite '%s' has no related standar...
+WARNING   IMPEXT-2766         12  The sheet resistance for layer %s is not...
+WARNING   IMPEXT-2773         12  The via resistance between layers %s and...
+WARNING   TECHLIB-302         12  No function defined for cell '%s'. The c...
+WARNING   TECHLIB-1161         1  The library level attribute %s on line %...
+*** Message Summary: 46 warning(s), 0 error(s)
+
+#% Begin save design ... (date=03/02 22:40:21, mem=736.6M)
+% Begin Save ccopt configuration ... (date=03/02 22:40:21, mem=739.6M)
+% End Save ccopt configuration ... (date=03/02 22:40:21, total cpu=0:00:00.0, real=0:00:00.0, peak res=740
+.4M, current mem=740.4M)
+% Begin Save netlist data ... (date=03/02 22:40:21, mem=740.4M)
+Writing Binary DB to result/pr/data/init_design.enc.dat.tmp/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/02 22:40:21, total cpu=0:00:00.1, real=0:00:00.0, peak res=742.5M, cu
+rrent mem=741.1M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/init_design.enc.dat.tmp/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/02 22:40:22, mem=741.9M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/02 22:40:22, total cpu=0:00:00.0, real=0:00:00.0, peak res=741.9M, curren
+t mem=741.9M)
+Saving preference file result/pr/data/init_design.enc.dat.tmp/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 22:40:22, mem=745.5M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 22:40:22, total cpu=0:00:00.0, real=0:00:00.0, peak res=746.2M,
+current mem=746.2M)
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 22:40:22, mem=746.2M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 22:40:22, total cpu=0:00:00.0, real=0:00:00.0, peak res=746.4M,
+current mem=746.4M)
+% Begin Save routing data ... (date=03/02 22:40:22, mem=746.4M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.0 real=0:00:00.0 mem=858.3M) ***
+% End Save routing data ... (date=03/02 22:40:23, total cpu=0:00:00.0, real=0:00:00.0, peak res=746.7M, cu
+rrent mem=746.7M)
+Saving property file result/pr/data/init_design.enc.dat.tmp/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=861.3M) ***
+% Begin Save power constraints data ... (date=03/02 22:40:23, mem=747.3M)
+% End Save power constraints data ... (date=03/02 22:40:23, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+747.3M, current mem=747.3M)
+

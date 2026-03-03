@@ -1,0 +1,257 @@
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 5.020000) (554.760010, 5.0
+20000) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 35.020000) (554.760010, 35
+.020000) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 65.019997) (554.760010, 65
+.019997) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 95.019997) (554.760010, 95
+.019997) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 125.019997) (554.760010, 1
+25.019997) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 155.020004) (554.760010, 1
+55.020004) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 185.020004) (554.760010, 1
+85.020004) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 215.020004) (554.760010, 2
+15.020004) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 245.020004) (554.760010, 2
+45.020004) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 275.019989) (554.760010, 2
+75.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 305.019989) (554.760010, 3
+05.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 335.019989) (554.760010, 3
+35.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 365.019989) (554.760010, 3
+65.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 395.019989) (554.760010, 3
+95.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 425.019989) (554.760010, 4
+25.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 455.019989) (554.760010, 4
+55.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 485.019989) (554.760010, 4
+85.019989) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 515.020020) (554.760010, 5
+15.020020) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 545.020020) (554.760010, 5
+45.020020) because same wire already exists.
+**WARN: (IMPPP-170):	The power planner failed to create a wire at (1.380000, 13.020000) (554.760010, 13
+.020000) because same wire already exists.
+**WARN: (EMS-27):	Message (IMPPP-170) has exceeded the current message display limit of 20.
+To increase the message display limit, refer to the product command reference manual.
+Stripe generation is complete.
+#% End addStripe (date=03/02 19:45:44, total cpu=0:00:00.0, real=0:00:00.0, peak res=738.6M, current mem=7
+36.5M)
+#% Begin sroute (date=03/02 19:45:44, mem=736.5M)
+*** Begin SPECIAL ROUTE on Mon Mar  2 19:45:44 2026 ***
+SPECIAL ROUTE ran on directory: /home/EDA/ibex_work_upload
+SPECIAL ROUTE ran on machine: EDA2035 (Linux 3.10.0-1160.119.1.el7.x86_64 x86_64 2.71Ghz)
+
+Begin option processing ...
+srouteConnectPowerBump set to false
+routeSelectNet set to "VDD VSS"
+routeSpecial set to true
+srouteBottomLayerLimit set to 1
+srouteBottomTargetLayerLimit set to 1
+srouteConnectBlockPin set to false
+srouteConnectConverterPin set to false
+srouteConnectPadPin set to false
+srouteConnectStripe set to false
+srouteCrossoverViaBottomLayer set to 1
+srouteCrossoverViaTopLayer set to 5
+srouteFollowCorePinEnd set to 3
+srouteFollowPadPin set to false
+srouteJogControl set to "preferWithChanges differentLayer"
+sroutePadPinAllPorts set to true
+sroutePreserveExistingRoutes set to true
+srouteRoutePowerBarPortOnBothDir set to true
+srouteStopSCPin set to true
+srouteTopLayerLimit set to 5
+srouteTopTargetLayerLimit set to 5
+End option processing: cpu: 0:00:00, real: 0:00:00, peak: 1870.00 megs.
+
+Reading DB technology information...
+Finished reading DB technology information.
+Reading floorplan and netlist information...
+Finished reading floorplan and netlist information.
+Read in 12 layers, 6 routing layers, 0 overlap layer
+Read in 440 macros, 91 used
+Read in 90 components
+  90 core components: 90 unplaced, 0 placed, 0 fixed
+Read in 264 physical pins
+  264 physical pins: 0 unplaced, 264 placed, 0 fixed
+Read in 2 logical pins
+Read in 266 nets
+Read in 2 special nets, 2 routed
+Read in 264 terminals
+2 nets selected.
+
+Begin power routing ...
+**WARN: (IMPSR-1253):	Cannot find any standard cell pin connected to net VDD.
+Run globalNetConnect command or change CPF file to make sure that the netlist reflects the correct power g
+round connections. The standard cell pins must be defined as 'USE POWER' or 'USE GROUND'.
+**WARN: (IMPSR-1253):	Cannot find any standard cell pin connected to net VSS.
+Run globalNetConnect command or change CPF file to make sure that the netlist reflects the correct power g
+round connections. The standard cell pins must be defined as 'USE POWER' or 'USE GROUND'.
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+CPU time for FollowPin 0 seconds
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+CPU time for FollowPin 0 seconds
+  Number of Core ports routed: 0
+End power routing: cpu: 0:00:00, real: 0:00:00, peak: 1870.00 megs.
+
+
+
+ Begin updating DB with routing results ...
+ Updating DB with 264 io pins ...
+ Updating DB with 0 via definition ...
+sroute created 0 wire.
+ViaGen created 0 via, deleted 0 via to avoid violation.
+#% End sroute (date=03/02 19:45:44, total cpu=0:00:00.3, real=0:00:00.0, peak res=739.2M, current mem=739.
+2M)
+STAGE 3 COMPLETE - POWER
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+**ERROR: (IMPSP-9099):	Scan chains exist in this design but are not defined for 99.95% flops. Placement a
+nd timing QoR can be severely impacted in this case!
+It is highly recommend to define scan chains either through input scan def (preferred) or specifyScanChain
+.
+
+innovus 9> source /tmp/hipilot-EDA/exec/hipilot_exec_1772451954121.tcl
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+**ERROR: (IMPSP-9099):	Scan chains exist in this design but are not defined for 99.95% flops. Placement a
+nd timing QoR can be severely impacted in this case!
+It is highly recommend to define scan chains either through input scan def (preferred) or specifyScanChain
+.
+
+innovus 10> source /tmp/hipilot-EDA/exec/hipilot_exec_1772451963443.tcl
+invalid command name "getAllScanChains"
+innovus 11> source /tmp/hipilot-EDA/exec/hipilot_exec_1772451977535.tcl
+invalid command name "reportScanChains"
+innovus 12> source /tmp/hipilot-EDA/exec/hipilot_exec_1772451988062.tcl
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+invalid command name "errorCodeConfigure"
+innovus 13> source /tmp/hipilot-EDA/exec/hipilot_exec_1772451999460.tcl
+
+Usage: all_registers [-help] [-async_pins] [-cells] [-clock <clock_list>] [-clock_pins] [-data_pins]
+                     [-fall_clock <clock_list>] [-macros] [-master_slave] [-no_hierarchy] [-output_pins]
+                     [-rise_clock <clock_list>] [-slave_clock_pins] [-flops  | -edge_triggered ] [-latches
+  | -level_sensitive ]
+
+**ERROR: (IMPTCM-48):	"-filter" is not a legal option for command "all_registers". Either the current op
+tion or an option prior to it is not specified correctly.
+
+innovus 14> source /tmp/hipilot-EDA/exec/hipilot_exec_1772452013151.tcl
+**ERROR: (IMPDBTCL-206):	'fInst' is not a recognized object/attribute. For help use 'dbGet <object>
+.?' to get list of all supported objects and attributes.
+0x0
+innovus 15> source /tmp/hipilot-EDA/exec/hipilot_exec_1772452029965.tcl
+**ERROR: (TCLCMD-1022):	Property 'is_placed' is not supported for object type 'db instance'
+**ERROR: (TCLCMD-917):	Cannot find 'cells' that match '*'
+Placed cells: 0
+Running placement...
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+**ERROR: (IMPSP-9099):	Scan chains exist in this design but are not defined for 99.95% flops. Placement a
+nd timing QoR can be severely impacted in this case!
+It is highly recommend to define scan chains either through input scan def (preferred) or specifyScanChain
+.
+
+innovus 16> source /tmp/hipilot-EDA/exec/hipilot_exec_1772452041539.tcl
+Loading scan DEF file...
+--- CASESENSITIVE ON
+**ERROR: (IMPDFNL-338):	A lib cell named 'ibex_core' exist.
+Cannot create a top cell 'ibex_core' ('DESIGN ibex_core' in the DEF file)
+
+*** Memory Usage v#1 (Current mem = 852.566M, initial mem = 249.227M) ***
+*** Message Summary: 322 warning(s), 24 error(s)
+
+--- Ending "Innovus" (totcpu=0:00:34.2, real=0:03:43, mem=852.6M) ---
+
+[EDA@EDA2035 ibex_work_upload]$ cd /home/EDA/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$

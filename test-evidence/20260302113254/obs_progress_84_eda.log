@@ -1,0 +1,257 @@
++--------+----------------+----------------+
+|  Layer |     Created    |     Deleted    |
++--------+----------------+----------------+
+|  via4  |       685      |        0       |
+|  met5  |       37       |       NA       |
++--------+----------------+----------------+
+#% End addStripe (date=03/02 19:44:18, total cpu=0:00:00.1, real=0:00:00.0, peak res=747.7M, current mem=7
+47.7M)
+#% Begin sroute (date=03/02 19:44:18, mem=747.7M)
+*** Begin SPECIAL ROUTE on Mon Mar  2 19:44:19 2026 ***
+SPECIAL ROUTE ran on directory: /home/EDA/ibex_work_upload
+SPECIAL ROUTE ran on machine: EDA2035 (Linux 3.10.0-1160.119.1.el7.x86_64 x86_64 2.71Ghz)
+
+Begin option processing ...
+srouteConnectPowerBump set to false
+routeSelectNet set to "VDD VSS"
+routeSpecial set to true
+srouteBottomLayerLimit set to 1
+srouteBottomTargetLayerLimit set to 1
+srouteConnectBlockPin set to false
+srouteConnectConverterPin set to false
+srouteConnectPadPin set to false
+srouteConnectStripe set to false
+srouteCrossoverViaBottomLayer set to 1
+srouteCrossoverViaTopLayer set to 5
+srouteFollowCorePinEnd set to 3
+srouteFollowPadPin set to false
+srouteJogControl set to "preferWithChanges differentLayer"
+sroutePadPinAllPorts set to true
+sroutePreserveExistingRoutes set to true
+srouteRoutePowerBarPortOnBothDir set to true
+srouteStopSCPin set to true
+srouteTopLayerLimit set to 5
+srouteTopTargetLayerLimit set to 5
+End option processing: cpu: 0:00:00, real: 0:00:00, peak: 1855.00 megs.
+
+Reading DB technology information...
+Finished reading DB technology information.
+Reading floorplan and netlist information...
+Finished reading floorplan and netlist information.
+Read in 12 layers, 6 routing layers, 0 overlap layer
+Read in 440 macros, 91 used
+Read in 90 components
+  90 core components: 90 unplaced, 0 placed, 0 fixed
+Read in 264 physical pins
+  264 physical pins: 0 unplaced, 264 placed, 0 fixed
+Read in 2 logical pins
+Read in 266 nets
+Read in 2 special nets, 2 routed
+Read in 264 terminals
+2 nets selected.
+
+Begin power routing ...
+**WARN: (IMPSR-1253):	Cannot find any standard cell pin connected to net VDD.
+Run globalNetConnect command or change CPF file to make sure that the netlist reflects the correct power g
+round connections. The standard cell pins must be defined as 'USE POWER' or 'USE GROUND'.
+**WARN: (IMPSR-1253):	Cannot find any standard cell pin connected to net VSS.
+Run globalNetConnect command or change CPF file to make sure that the netlist reflects the correct power g
+round connections. The standard cell pins must be defined as 'USE POWER' or 'USE GROUND'.
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+CPU time for FollowPin 0 seconds
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+CPU time for FollowPin 0 seconds
+  Number of Core ports routed: 0
+  Number of Followpin connections: 203
+End power routing: cpu: 0:00:01, real: 0:00:01, peak: 1870.00 megs.
+
+
+
+ Begin updating DB with routing results ...
+ Updating DB with 264 io pins ...
+ Updating DB with 0 via definition ...Extracting standard cell pins and blockage ......
+Pin and blockage extraction finished
+
+sroute created 203 wires.
+ViaGen created 11265 vias, deleted 0 via to avoid violation.
++--------+----------------+----------------+
+|  Layer |     Created    |     Deleted    |
++--------+----------------+----------------+
+|  met1  |       203      |       NA       |
+|   via  |      3755      |        0       |
+|  via2  |      3755      |        0       |
+|  via3  |      3755      |        0       |
++--------+----------------+----------------+
+#% End sroute (date=03/02 19:44:20, total cpu=0:00:01.5, real=0:00:01.0, peak res=766.3M, current mem=757.
+2M)
+Effort level <high> specified for reg2reg path_group
+**WARN: (IMPOPT-3602):	The specified path group name reg2cg is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <high> specified for reg2cg path_group
+Effort level <low> specified for in2reg path_group
+Effort level <low> specified for reg2out path_group
+Effort level <low> specified for feedthr path_group
+Ignoring {in2reg reg2out feedthr} groups for Hold optimization.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+**ERROR: (IMPSP-9099):	Scan chains exist in this design but are not defined for 99.95% flops. Placement a
+nd timing QoR can be severely impacted in this case!
+It is highly recommend to define scan chains either through input scan def (preferred) or specifyScanChain
+.
+
+innovus 2> source /tmp/hipilot-EDA/exec/hipilot_exec_1772451872990.tcl
+
+Usage: setNanoRouteMode [-help] [-reset] [-dbAdjustAutoViaWeight {true|false}]
+                        [-dbAllowInstanceOverlaps {true|false}] [-dbIgnoreFollowPinShape {true|false}]
+                        [-dbProcessNode <value>] [-dbRcExtractionCorner <value>]
+                        [-dbSkipAnalog {true|false}] [-dbViaWeight <value>]
+                        [-drouteAddPassiveFillOnlyOnLayers <value>] [-drouteAntennaEcoListFile <value>]
+                        [-drouteAutoStop {true|false}] [-drouteCheckMarOnCellPin {true|false}]
+                        [-drouteEndIteration <value>] [-drouteFixAntenna {true|false}]
+                        [-drouteMinLengthForWireSpreading <value>]
+                        [-drouteMinLengthForWireWidening <value>]
+                        [-drouteMinSlackForWireOptimization <value>] [-drouteNoTaperInLayers <value>]
+                        [-drouteNoTaperOnOutputPin <value>] [-drouteOnGridOnly <value>]
+                        [-droutePostRouteLithoRepair {true|false}] [-droutePostRouteSpreadWire <value>]
+                        [-droutePostRouteSwapVia <value>] [-droutePostRouteSwapViaPriority <value>]
+                        [-droutePostRouteViaPillarEffort <value>] [-droutePostRouteWidenWire <value>]
+                        [-droutePostRouteWidenWireRule <value>] [-drouteSearchAndRepair {true|false}]
+                        [-drouteSignOffEffort <value>] [-drouteUseMultiCutViaEffort <value>]
+                        [-envNumberFailLimit <value>] [-envNumberProcessor <value>]
+                        [-envNumberWarningLimit <value>] [-envThirdPartyData {true|false}]
+                        [-hfrouteConstraintGroups <value>] [-hfrouteMatchReportFile <value>]
+                        [-hfrouteNumReserveLayers <value>] [-hfrouteRemoveFloatingShield {true|false}]
+                        [-hfrouteSearchRepair <value>] [-hfrouteShieldTrimLength <value>]
+                        [-routeAddAntennaInstPrefix <value>]
+                        [-routeAllowPinAsFeedthrough {true|TRUE|false|FALSE|none|NONE|output|input|inout}]
+                        [-routeAntennaCellName <value>] [-routeConcurrentMinimizeViaCountEffort <value>]
+                        [-routeConnectToBump {true|false}] [-routeDesignFixClockNets {true|false}]
+                        [-routeDesignRouteClockNetsFirst {true|false}]
+                        [-routeEnableNdrSiLimitLength <value>] [-routeEnforceNdrOnSpecialNetWire <value>]
+                        [-routeExtraViaEnclosure <value>] [-routeHonorPowerDomain {true|false}]
+                        [-routeIgnoreAntennaTopCellPin {true|false}]
+                        [-routeInsertAntennaDiode {true|false}]
+                        [-routeInsertDiodeForClockNets {true|false}]
+                        [-routeRelaxedNdrSpacingToPGNets <value>]
+                        [-routeReserveSpaceForMultiCut {true|false}] [-routeReverseDirection <value>]
+                        [-routeSelectedNetOnly {true|false}] [-routeShieldCrosstieOffset <value>]
+                        [-routeStrictlyHonorNonDefaultRule <value>] [-routeStripeLayerRange <value>]
+                        [-routeTieNetToShape <value>] [-routeTrimPullBackDistanceFromBoundary <value>]
+                        [-routeTrunkWithClusterTargetSize <value>] [-routeUnconnectedPorts {true|false}]
+                        [-routeUseAutoVia <value>] [-routeWithEco {true|false}]
+                        [-routeWithLithoDriven {true|false}] [-routeWithSiDriven {true|false}]
+                        [-routeWithTimingDriven {true|false}] [-routeWithTrimMetal <value>]
+                        [-routeWithViaInPin <value>] [-routeWithViaOnlyForMacroCellPin <value>]
+                        [-routeWithViaOnlyForStandardCellPin <value>]
+
+**ERROR: (IMPTCM-48):	"-routeBottomRouting" is not a legal option for command "setNanoRouteMode". Either
+ the current option or an option prior to it is not specified correctly.
+
+innovus 3> source /tmp/hipilot-EDA/exec/hipilot_exec_1772451880231.tcl
+**ERROR: (IMPSYC-3604):	NONDEFAULTRULE 'cts_1' cannot be created because it already exists. Use 'dbGet hea
+d.rules.name' to see name for all existing rules. Re-run the command with a new rule name.
+
+innovus 4> source /tmp/hipilot-EDA/exec/hipilot_exec_1772451887939.tcl
+Creating clock tree spec for modes (timing configs): common
+extract_clock_generator_skew_groups=true: create_ccopt_clock_tree_spec will generate skew groups with a na
+me prefix of "_clock_gen" to balance clock generator connected flops with the clock generator they drive.
+Reset timing graph...
+Ignoring AAE DB Resetting ...
+Reset timing graph done.
+Ignoring AAE DB Resetting ...
+Analyzing clock structure...
+Analyzing clock structure done.
+Reset timing graph...
+Ignoring AAE DB Resetting ...
+Reset timing graph done.
+Wrote: result/pr/data/clk.spec
+Extracting original clock gating for core_clock...
+  clock_tree core_clock contains 1941 sinks and 1 clock gates.
+  Extraction for core_clock complete.
+Extracting original clock gating for core_clock done.
+The skew group core_clock/common was created. It contains 1941 sinks and 1 sources.
+Checking clock tree convergence...
+Checking clock tree convergence done.
+#% Begin ccopt_design (date=03/02 19:44:48, mem=733.1M)
+Runtime...
+**INFO: User's settings:
+setDesignMode -process                            130
+setExtractRCMode -coupling_c_th                   0.4
+setExtractRCMode -relative_c_th                   1
+setExtractRCMode -total_c_th                      0
+setDelayCalMode -engine                           aae
+setPlaceMode -place_detail_legalization_inst_gap  2
+setPlaceMode -place_global_ignore_scan            true
+setPlaceMode -place_global_place_io_pins          false
+setPlaceMode -place_global_reorder_scan           false
+setRouteMode -earlyGlobalMaxRouteLayer            5
+setRouteMode -earlyGlobalMinRouteLayer            2
+
+(ccopt_design): CTS Engine: auto. Used Spec: pre-existing CCOPT spec.
+Placement constraints of type 'region' or 'fence' will not be downgraded to 'guide' because the property c
+hange_fences_to_guides has been set to false.
+CCOpt::Phase::Initialization...
+Check Prerequisites...
+**ERROR: (IMPCCOPT-4254):	Design must be placed before running 'ccopt_check_prerequisites_internal'.
+Check Prerequisites interrupted. (took cpu=0:00:00.0 real=0:00:00.0)
+CCOpt::Phase::Initialization interrupted. (took cpu=0:00:00.0 real=0:00:00.0)
+**ERROR: (IMPCCOPT-2196):	Cannot run ccopt_design because the command prerequisites were not met. Re
+view the previous error messages for more details about the failure.
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+ERROR     IMPCCOPT-2196        1  Cannot run ccopt_design because the comm...
+ERROR     IMPCCOPT-4254        1  Design must be placed before running '%s...
+*** Message Summary: 0 warning(s), 2 error(s)
+
+#% End ccopt_design (date=03/02 19:44:48, total cpu=0:00:00.1, real=0:00:00.0, peak res=734.4M, current me
+m=734.4M)
+
+innovus 5>

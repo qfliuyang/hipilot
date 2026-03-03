@@ -1,0 +1,257 @@
+            skew_group core_clock/common: insertion delay [min=0.646, max=0.765, avg=0.700, sd=0.040], ske
+w [0.119 vs 0.153], 100% {0.646, 0.765} (wid=0.049 ws=0.022) (gid=0.720 gs=0.102)
+          Skew group summary after 'eGRPC Fixing DRVs':
+            skew_group core_clock/common: insertion delay [min=0.646, max=0.765, avg=0.700, sd=0.040], ske
+w [0.119 vs 0.153], 100% {0.646, 0.765} (wid=0.049 ws=0.022) (gid=0.720 gs=0.102)
+          Legalizer API calls during this step: 0 succeeded with high effort: 0 succeeded with medium effo
+rt: 0 succeeded with low effort: 0 succeeded with basic effort: 0 succeeded with basic unbounded effort: 0
+        eGRPC Fixing DRVs done. (took cpu=0:00:00.1 real=0:00:00.1)
+        Reconnecting optimized routes...
+        Reset timing graph...
+Ignoring AAE DB Resetting ...
+        Reset timing graph done.
+        Reconnecting optimized routes done. (took cpu=0:00:00.0 real=0:00:00.0)
+        Violation analysis...
+        Violation analysis done. (took cpu=0:00:00.0 real=0:00:00.0)
+        Reset timing graph...
+Ignoring AAE DB Resetting ...
+        Reset timing graph done.
+        Set dirty flag on 0 instances, 0 nets
+        Clock DAG stats before routing clock trees:
+          cell counts      : b=0, i=56, icg=0, nicg=1, l=0, total=57
+          cell areas       : b=0.000um^2, i=1552.739um^2, icg=0.000um^2, nicg=8.758um^2, l=0.000um^2, tota
+l=1561.498um^2
+          cell capacitance : b=0.000pF, i=2.085pF, icg=0.000pF, nicg=0.002pF, l=0.000pF, total=2.087pF
+          sink capacitance : count=1941, total=3.633pF, avg=0.002pF, sd=0.000pF, min=0.002pF, max=0.002pF
+          wire capacitance : top=0.000pF, trunk=0.495pF, leaf=2.171pF, total=2.666pF
+          wire lengths     : top=0.000um, trunk=3014.720um, leaf=16128.735um, total=19143.455um
+          hp wire lengths  : top=0.000um, trunk=2056.680um, leaf=5887.320um, total=7944.000um
+        Clock DAG net violations before routing clock trees: none
+        Clock DAG primary half-corner transition distribution before routing clock trees:
+          Trunk : target=0.133ns count=23 avg=0.097ns sd=0.022ns min=0.030ns max=0.132ns {2 <= 0.080ns, 14
+ <= 0.106ns, 4 <= 0.120ns, 2 <= 0.126ns, 1 <= 0.133ns}
+          Leaf  : target=0.133ns count=35 avg=0.118ns sd=0.007ns min=0.103ns max=0.129ns {0 <= 0.080ns, 3
+<= 0.106ns, 16 <= 0.120ns, 11 <= 0.126ns, 5 <= 0.133ns}
+        Clock DAG library cell distribution before routing clock trees {count}:
+           Invs: sky130_fd_sc_hd__clkinv_16: 48 sky130_fd_sc_hd__clkinv_8: 6 sky130_fd_sc_hd__clkinv_4: 1
+sky130_fd_sc_hd__clkinv_2: 1
+          NICGs: sky130_fd_sc_hd__and2_4: 1
+        Primary reporting skew groups before routing clock trees:
+          skew_group core_clock/common: insertion delay [min=0.646, max=0.765, avg=0.700, sd=0.040], skew
+[0.119 vs 0.153], 100% {0.646, 0.765} (wid=0.049 ws=0.022) (gid=0.720 gs=0.102)
+        Skew group summary before routing clock trees:
+          skew_group core_clock/common: insertion delay [min=0.646, max=0.765, avg=0.700, sd=0.040], skew
+[0.119 vs 0.153], 100% {0.646, 0.765} (wid=0.049 ws=0.022) (gid=0.720 gs=0.102)
+      eGRPC done.
+    Calling post conditioning for eGRPC done.
+  eGR Post Conditioning loop iteration 0 done.
+  Refine place not called during Post Conditioning. Calling it now the eGR->PC Loop is complete.
+  Leaving CCOpt scope - ClockRefiner...
+  Performing Single Pass Refine Place.
+*** Starting refinePlace (0:00:59.0 mem=1037.9M) ***
+Total net bbox length = 4.363e+05 (2.126e+05 2.237e+05) (ext = 2.135e+04)
+Move report: Detail placement moves 137 insts, mean move: 2.01 um, max move: 8.62 um
+	Max move on inst (gen_regfile_ff.register_file_i/U2056): (167.44, 82.62) --> (167.90, 90.78)
+	Runtime: CPU: 0:00:01.0 REAL: 0:00:01.0 MEM: 1037.9MB
+Summary Report:
+Instances move: 137 (out of 11555 movable)
+Instances flipped: 0
+Mean displacement: 2.01 um
+Max displacement: 8.62 um (Instance: gen_regfile_ff.register_file_i/U2056) (167.44, 82.62) -> (167.9, 90.7
+8)
+	Length: 6 sites, height: 1 rows, site name: unithd, cell type: sky130_fd_sc_hd__a22oi_1
+	Violation at original loc: Placement Blockage Violation
+Total net bbox length = 4.365e+05 (2.126e+05 2.238e+05) (ext = 2.135e+04)
+Runtime: CPU: 0:00:01.1 REAL: 0:00:01.0 MEM: 1037.9MB
+*** Finished refinePlace (0:01:00 mem=1037.9M) ***
+  ClockRefiner summary
+  All clock instances: Moved 16, flipped 0 and cell swapped 0 (out of a total of 1998).
+  The largest move was 3.22 um for cs_registers_i/u_mie_csr/rdata_q_reg[14].
+  Leaving CCOpt scope - ClockRefiner done. (took cpu=0:00:01.2 real=0:00:01.2)
+  CCOpt::Phase::eGRPC done. (took cpu=0:00:03.1 real=0:00:03.4)
+  CCOpt::Phase::Routing...
+  Clock implementation routing...
+    Leaving CCOpt scope - Routing Tools...
+Net route status summary:
+  Clock:        58 (unrouted=0, trialRouted=0, noStatus=0, routed=0, fixed=58, [crossesIlmBoundary=0, tooF
+ewTerms=0, (crossesIlmBoundary AND tooFewTerms=0)])
+  Non-clock: 12132 (unrouted=340, trialRouted=11792, noStatus=0, routed=0, fixed=0, [crossesIlmBoundary=0,
+ tooFewTerms=338, (crossesIlmBoundary AND tooFewTerms=0)])
+    Routing using eGR in eGR->NR Step...
+      Early Global Route - eGR->NR step...
+(ccopt eGR): There are 58 nets for routing of which 58 have one or more fixed wires.
+(ccopt eGR): Start to route 58 all nets
+[NR-eGR] Num Prerouted Nets = 0  Num Prerouted Wires = 0
+[NR-eGR] Read numTotalNets=11852  numIgnoredNets=11794
+[NR-eGR] Connected 0 must-join pins/ports
+[NR-eGR] There are 58 clock nets ( 58 with NDR ).
+[NR-eGR] ============ Routing rule table ============
+[NR-eGR] Rule id: 0  Rule name: cts_1  Nets: 23
+[NR-eGR] Rule id: 1  Nets: 35
+[NR-eGR] Rule id: 2  Nets: 0
+[NR-eGR] ========================================
+[NR-eGR]
+[NR-eGR] Layer group 1: route 23 net(s) in layer range [3, 4]
+[NR-eGR] Early Global Route overflow of layer group 1: 0.02% H + 0.14% V. EstWL: 3.152480e+03um
+[NR-eGR] Create a new net group with 5 nets and layer range [3, 5]
+[NR-eGR] Layer group 2: route 35 net(s) in layer range [3, 4]
+[NR-eGR] Early Global Route overflow of layer group 2: 0.05% H + 0.59% V. EstWL: 1.826752e+04um
+[NR-eGR] Create a new net group with 35 nets and layer range [3, 5]
+[NR-eGR] Layer group 3: route 35 net(s) in layer range [3, 5]
+[NR-eGR] Early Global Route overflow of layer group 3: 0.04% H + 0.33% V. EstWL: 1.821312e+04um
+[NR-eGR] Create a new net group with 35 nets and layer range [2, 5]
+[NR-eGR] Layer group 4: route 5 net(s) in layer range [3, 5]
+[NR-eGR] Early Global Route overflow of layer group 4: 0.00% H + 0.13% V. EstWL: 2.981120e+03um
+[NR-eGR] Create a new net group with 5 nets and layer range [2, 5]
+[NR-eGR] Layer group 5: route 5 net(s) in layer range [2, 5]
+[NR-eGR] Early Global Route overflow of layer group 5: 0.00% H + 0.02% V. EstWL: 3.128000e+03um
+[NR-eGR] Layer group 6: route 35 net(s) in layer range [2, 5]
+[NR-eGR] Early Global Route overflow of layer group 6: 0.00% H + 0.37% V. EstWL: 3.170160e+04um
+[NR-eGR] Overflow after Early Global Route (GR compatible) 0.00% H + 0.13% V
+[NR-eGR] Overflow after Early Global Route 0.00% H + 0.13% V
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR]    li1  (1F) length: 0.000000e+00um, number of vias: 44824
+[NR-eGR]   met1  (2H) length: 1.923665e+05um, number of vias: 76833
+[NR-eGR]   met2  (3V) length: 2.218265e+05um, number of vias: 7431
+[NR-eGR]   met3  (4H) length: 7.908911e+04um, number of vias: 4508
+[NR-eGR]   met4  (5V) length: 5.607268e+04um, number of vias: 0
+[NR-eGR] Total length: 5.493548e+05um, number of vias: 133596
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR] Total eGR-routed clock nets wire length: 1.915012e+04um
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR] Report for selected net(s) only.
+[NR-eGR]    li1  (1V) length: 0.000000e+00um, number of vias: 2007
+[NR-eGR]   met1  (2H) length: 5.050325e+03um, number of vias: 3441
+[NR-eGR]   met2  (3V) length: 8.783010e+03um, number of vias: 739
+[NR-eGR]   met3  (4H) length: 4.405190e+03um, number of vias: 263
+[NR-eGR]   met4  (5V) length: 9.116000e+02um, number of vias: 0
+[NR-eGR] Total length: 1.915012e+04um, number of vias: 6450
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR] Total routed clock nets wire length: 1.915012e+04um, number of vias: 6450
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR] Finished Early Global Route kernel ( CPU: 0.66 sec, Real: 0.83 sec, Curr Mem: 1037.85 MB )
+Generated NR early global route guides for clocks to: /tmp/innovus_temp_121529_EDA2035_EDA_zcKZug/.rgfnybj
+np
+      Early Global Route - eGR->NR step done. (took cpu=0:00:00.8 real=0:00:00.9)
+    Routing using eGR in eGR->NR Step done.
+    Routing using NR in eGR->NR Step...
+
+CCOPT: Preparing to route 58 clock nets with NanoRoute.
+  35 nets are default rule and 23 are cts_1.
+  Removed pre-existing routes for 58 nets.
+  Preferred NanoRoute mode settings: Current
+#WARNING (NRIF-90) Option setNanoRouteMode -routeBottomRoutingLayer is obsolete. It will continue to work
+for the current release. To ensure compatibility with future releases, use option setDesignMode -bottomRou
+tingLayer instead.
+#WARNING (NRIF-91) Option setNanoRouteMode -routeTopRoutingLayer is obsolete. It will continue to work for
+ the current release. To ensure compatibility with future releases, use option setDesignMode -topRoutingLa
+yer instead.
+#WARNING (NRIF-90) Option setNanoRouteMode -routeBottomRoutingLayer is obsolete. It will continue to work
+for the current release. To ensure compatibility with future releases, use option setDesignMode -bottomRou
+tingLayer instead.
+#WARNING (NRIF-91) Option setNanoRouteMode -routeTopRoutingLayer is obsolete. It will continue to work for
+ the current release. To ensure compatibility with future releases, use option setDesignMode -topRoutingLa
+yer instead.
+**WARN: (IMPTCM-77):	Option "-routeExpDeterministicMultiThread" for command setNanoRouteMode is obsolet
+e and will be removed in a future release. The obsolete option still works in this release but to avoid th
+is warning and to ensure compatibility with future releases, remove the obsolete option from your script.
+#WARNING (NRIF-47) This option supports a feature that is under development and experimental, use at your
+own risk.
+#WARNING (NRIF-47) This option supports a feature that is under development and experimental, use at your
+own risk.
+      Clock detailed routing...
+        NanoRoute...
+% Begin globalDetailRoute (date=03/02 23:30:27, mem=822.2M)
+
+globalDetailRoute
+
+#Start globalDetailRoute on Mon Mar  2 23:30:27 2026
+#
+#create default rule from bind_ndr_rule rule=0x2b193cc38270 0x2b194fd02fd8
+#WARNING (NRIG-1303) Congestion map does not match the GCELL grid, clearing map.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[60] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[60] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[60] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[60] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[57] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[57] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[57] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[57] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[56] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[56] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[56] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[56] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[55] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[55] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[55] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[55] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[54] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[54] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[54] is not
+ connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a powe
+r/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance gen_regfile_ff.register_file_i/rf_reg_q_reg[54] is no
+t connected to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a pow
+er/ground net.
+#WARNING (EMS-27) Message (NRIG-34) has exceeded the current message display limit of 20.
+#To increase the message display limit, refer to the product command reference manual.
+#num needed restored net=0
+#need_extraction net=0 (total=12190)
+#WARNING (NRDB-2005) SPECIAL_NET VDD has special wires but no definitions for instance pins or top level p
+ins. This will cause routability problems later.
+#WARNING (NRDB-2005) SPECIAL_NET VSS has special wires but no definitions for instance pins or top level p
+ins. This will cause routability problems later.
+#WARNING (NRDB-976) The TRACK STEP 0.6100 for preferred direction tracks is smaller than the PITCH 0.6800
+for LAYER met3. This will cause routability problems for NanoRoute.
+#WARNING (NRDB-976) The TRACK STEP 0.6900 for preferred direction tracks is smaller than the PITCH 0.9200
+for LAYER met4. This will cause routability problems for NanoRoute.
+#NanoRoute Version 20.10-p004_1 NR200413-0234/20_10-UB
+#Skip comparing routing design signature in db-snapshot flow
+#Start routing data preparation on Mon Mar  2 23:30:28 2026
+#
+#WARNING (NRDB-2040) Rule LEF_DEFAULT doesn't specify any vias that satisfy all of the area rules for laye
+r met3
+#WARNING (NRDB-2040) Rule cts_1 doesn't specify any vias that satisfy all of the area rules for layer met3
+
+#Minimum voltage of a net in the design = 0.000.
+#Maximum voltage of a net in the design = 1.800.
+#Voltage range [0.000 - 1.800] has 12188 nets.
+#Voltage range [1.800 - 1.800] has 1 net.
+#Voltage range [0.000 - 0.000] has 1 net.
+

@@ -1,0 +1,257 @@
+ via is allowed between layer: met5 & met1 at (1.38, 183.02) (554.76, 183.50)
+**WARN: (IMPPP-532):	ViaGen Warning: top layer and bottom layer have same direction but only orthogonal
+ via is allowed between layer: met5 & met1 at (1.38, 215.66) (554.76, 216.14)
+**WARN: (IMPPP-532):	ViaGen Warning: top layer and bottom layer have same direction but only orthogonal
+ via is allowed between layer: met5 & met1 at (1.38, 242.86) (554.76, 243.34)
+**WARN: (IMPPP-532):	ViaGen Warning: top layer and bottom layer have same direction but only orthogonal
+ via is allowed between layer: met5 & met1 at (1.38, 275.50) (554.76, 275.98)
+**WARN: (IMPPP-532):	ViaGen Warning: top layer and bottom layer have same direction but only orthogonal
+ via is allowed between layer: met5 & met1 at (1.38, 302.70) (554.76, 303.18)
+**WARN: (IMPPP-532):	ViaGen Warning: top layer and bottom layer have same direction but only orthogonal
+ via is allowed between layer: met5 & met1 at (1.38, 335.34) (554.76, 335.82)
+**WARN: (IMPPP-532):	ViaGen Warning: top layer and bottom layer have same direction but only orthogonal
+ via is allowed between layer: met5 & met1 at (1.38, 362.54) (554.76, 363.02)
+**WARN: (IMPPP-532):	ViaGen Warning: top layer and bottom layer have same direction but only orthogonal
+ via is allowed between layer: met5 & met1 at (1.38, 367.98) (554.76, 368.02)
+**WARN: (IMPPP-532):	ViaGen Warning: top layer and bottom layer have same direction but only orthogonal
+ via is allowed between layer: met5 & met1 at (1.38, 395.18) (554.76, 395.66)
+**WARN: (IMPPP-532):	ViaGen Warning: top layer and bottom layer have same direction but only orthogonal
+ via is allowed between layer: met5 & met1 at (1.38, 422.38) (554.76, 422.86)
+**WARN: (IMPPP-532):	ViaGen Warning: top layer and bottom layer have same direction but only orthogonal
+ via is allowed between layer: met5 & met1 at (1.38, 427.82) (554.76, 428.02)
+**WARN: (IMPPP-532):	ViaGen Warning: top layer and bottom layer have same direction but only orthogonal
+ via is allowed between layer: met5 & met1 at (1.38, 455.02) (554.76, 455.50)
+**WARN: (IMPPP-532):	ViaGen Warning: top layer and bottom layer have same direction but only orthogonal
+ via is allowed between layer: met5 & met1 at (1.38, 482.22) (554.76, 482.70)
+**WARN: (IMPPP-532):	ViaGen Warning: top layer and bottom layer have same direction but only orthogonal
+ via is allowed between layer: met5 & met1 at (1.38, 487.66) (554.76, 488.02)
+**WARN: (EMS-27):	Message (IMPPP-532) has exceeded the current message display limit of 20.
+To increase the message display limit, refer to the product command reference manual.
+addStripe created 37 wires.
+ViaGen created 0 via, deleted 0 via to avoid violation.
++--------+----------------+----------------+
+|  Layer |     Created    |     Deleted    |
++--------+----------------+----------------+
+|  met5  |       37       |       NA       |
++--------+----------------+----------------+
+% End addStripe (date=03/02 19:42:08, total cpu=0:00:00.1, real=0:00:00.0, peak res=681.3M, current mem=68
+1.3M)
+% Begin sroute (date=03/02 19:42:08, mem=681.3M)
+*** Begin SPECIAL ROUTE on Mon Mar  2 19:42:08 2026 ***
+SPECIAL ROUTE ran on directory: /home/EDA/ibex_work_upload
+SPECIAL ROUTE ran on machine: EDA2035 (Linux 3.10.0-1160.119.1.el7.x86_64 x86_64 2.71Ghz)
+
+Begin option processing ...
+srouteConnectPowerBump set to false
+routeSelectNet set to "VDD VSS"
+routeSpecial set to true
+srouteBottomLayerLimit set to 1
+srouteBottomTargetLayerLimit set to 1
+srouteConnectBlockPin set to false
+srouteConnectConverterPin set to false
+srouteConnectPadPin set to false
+srouteConnectStripe set to false
+srouteCrossoverViaBottomLayer set to 1
+srouteCrossoverViaTopLayer set to 5
+srouteFollowCorePinEnd set to 3
+srouteFollowPadPin set to false
+srouteJogControl set to "preferWithChanges differentLayer"
+sroutePadPinAllPorts set to true
+sroutePreserveExistingRoutes set to true
+srouteRoutePowerBarPortOnBothDir set to true
+srouteStopSCPin set to true
+srouteTopLayerLimit set to 5
+srouteTopTargetLayerLimit set to 5
+End option processing: cpu: 0:00:00, real: 0:00:00, peak: 1784.00 megs.
+
+Reading DB technology information...
+Finished reading DB technology information.
+Reading floorplan and netlist information...
+Finished reading floorplan and netlist information.
+Read in 12 layers, 6 routing layers, 0 overlap layer
+Read in 440 macros, 91 used
+Read in 90 components
+  90 core components: 90 unplaced, 0 placed, 0 fixed
+Read in 264 physical pins
+  264 physical pins: 0 unplaced, 264 placed, 0 fixed
+Read in 2 logical pins
+Read in 266 nets
+Read in 2 special nets, 2 routed
+Read in 264 terminals
+2 nets selected.
+
+Begin power routing ...
+**WARN: (IMPSR-1253):	Cannot find any standard cell pin connected to net VDD.
+Run globalNetConnect command or change CPF file to make sure that the netlist reflects the correct power g
+round connections. The standard cell pins must be defined as 'USE POWER' or 'USE GROUND'.
+**WARN: (IMPSR-1253):	Cannot find any standard cell pin connected to net VSS.
+Run globalNetConnect command or change CPF file to make sure that the netlist reflects the correct power g
+round connections. The standard cell pins must be defined as 'USE POWER' or 'USE GROUND'.
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VDD.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+CPU time for FollowPin 0 seconds
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+**WARN: (IMPSR-468):	Cannot find any standard cell pin connected to net VSS.
+Use setSrouteMode -corePinReferenceMacro <standard cell> to specify a reference macro for followpin connec
+tion, or run globalNetConnect command or change CPF file to make sure that the netlist reflects the correc
+t power ground connections. The standard cell pins must be defined as "USE POWER" or "USE GROUND".
+CPU time for FollowPin 0 seconds
+  Number of Core ports routed: 0
+End power routing: cpu: 0:00:00, real: 0:00:00, peak: 1798.00 megs.
+
+
+
+ Begin updating DB with routing results ...
+ Updating DB with 264 io pins ...
+ Updating DB with 0 via definition ...
+sroute created 0 wire.
+ViaGen created 0 via, deleted 0 via to avoid violation.
+% End sroute (date=03/02 19:42:08, total cpu=0:00:00.2, real=0:00:00.0, peak res=696.8M, current mem=687.2
+M)
+**ERROR: (TCLCMD-1410):	The delay corner 'delay_max' is not associated with any active view. The timing de
+rate can be applied to corners associated with active views only.
+**ERROR: (TCLCMD-1410):	The delay corner 'delay_max' is not associated with any active view. The timing de
+rate can be applied to corners associated with active views only.
+**ERROR: (TCLCMD-923):	Specified argument '' is not a valid collection
+**ERROR: (TCLCMD-923):	Specified argument '' is not a valid collection
+**ERROR: (TCLNL-305):	group_path: empty list of pins passed
+**ERROR: (TCLNL-305):	group_path: empty list of pins passed
+**ERROR: (TCLNL-305):	group_path: empty list of pins passed
+**ERROR: (TCLNL-305):	group_path: empty list of pins passed
+**WARN: (IMPOPT-3602):	The specified path group name reg2reg is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <high> specified for reg2reg path_group
+**WARN: (IMPOPT-3602):	The specified path group name reg2cg is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <high> specified for reg2cg path_group
+Effort level <low> specified for in2reg path_group
+Effort level <low> specified for reg2out path_group
+Effort level <low> specified for feedthr path_group
+Ignoring {in2reg reg2out feedthr} groups for Hold optimization.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+No user sequential activity specified, applying default sequential activity of "0.2" for Dynamic Power rep
+orting.
+'set_default_switching_activity' finished successfully.
+*** Starting GigaPlace ***
+**INFO: User settings:
+setDesignMode -process                            130
+setExtractRCMode -coupling_c_th                   0.4
+setExtractRCMode -engine                          preRoute
+setExtractRCMode -relative_c_th                   1
+setExtractRCMode -total_c_th                      0
+setDelayCalMode -engine                           aae
+setOptMode -ignorePathGroupsForHold               {in2reg reg2out feedthr}
+setPlaceMode -place_detail_legalization_inst_gap  2
+setPlaceMode -place_global_ignore_scan            true
+setPlaceMode -place_global_place_io_pins          false
+setPlaceMode -place_global_reorder_scan           false
+setAnalysisMode -analysisType                     bcwc
+setAnalysisMode -cppr                             both
+setRouteMode -earlyGlobalMaxRouteLayer            5
+setRouteMode -earlyGlobalMinRouteLayer            2
+
+#optDebug: fT-E <X 2 3 1 0>
+**WARN: (IMPSP-9513):	Timing constraint file does not exist
+**WARN: (IMPSP-9514):	Non-TimingDriven placement will be performed.
+Deleted 0 physical inst  (cell - / prefix -).
+INFO: #ExclusiveGroups=0
+INFO: There are no Exclusive Groups.
+No user-set net weight.
+Net fanout histogram:
+2		: 6715 (59.0%) nets
+3		: 1135 (10.0%) nets
+4     -	14	: 3132 (27.5%) nets
+15    -	39	: 322 (2.8%) nets
+40    -	79	: 57 (0.5%) nets
+80    -	159	: 13 (0.1%) nets
+160   -	319	: 0 (0.0%) nets
+320   -	639	: 0 (0.0%) nets
+640   -	1279	: 4 (0.0%) nets
+1280  -	2559	: 0 (0.0%) nets
+2560  -	5119	: 0 (0.0%) nets
+5120+		: 0 (0.0%) nets
+Options: clkGateAware ignoreScan pinGuide congEffort=auto gpeffort=medium
+**WARN: (IMPSP-9042):	Scan chains were not defined, -place_global_ignore_scan option will be ignored.
+Define the scan chains before using this option.
+Type 'man IMPSP-9042' for more detail.
+#std cell=11078 (0 fixed + 11078 movable) #buf cell=0 #inv cell=0 #block=0 (0 floating + 0 preplaced)
+#ioInst=0 #net=11378 #term=48727 #term/net=4.28, #fixedIo=264, #floatIo=0, #fixedPin=0, #floatPin=258
+stdCell: 11078 single + 0 double + 0 multi
+Total standard cell length = 44.7120 (mm), area = 0.1216 (mm^2)
+Average module density = 0.406.
+Density for the design = 0.406.
+       = stdcell_area 97200 sites (121617 um^2) / alloc_area 239554 sites (299731 um^2).
+Pin Density = 0.2005.
+            = total # of pins 48727 / total area 243006.
+=== lastAutoLevel = 9
+**WARN: (IMPSP-9531):	Turning off clkGateAware when timingDriven is off
+Init WL Bound For Global Placement...
+Iteration  1: Total net bbox = 2.044e+05 (1.03e+05 1.01e+05)
+              Est.  stn bbox = 2.275e+05 (1.15e+05 1.13e+05)
+              cpu = 0:00:00.1 real = 0:00:01.0 mem = 914.2M
+Iteration  2: Total net bbox = 2.044e+05 (1.03e+05 1.01e+05)
+              Est.  stn bbox = 2.275e+05 (1.15e+05 1.13e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 914.2M
+Iteration  3: Total net bbox = 1.937e+05 (9.61e+04 9.77e+04)
+              Est.  stn bbox = 2.342e+05 (1.16e+05 1.19e+05)
+              cpu = 0:00:01.1 real = 0:00:01.0 mem = 935.9M
+Iteration  4: Total net bbox = 3.818e+05 (2.23e+05 1.59e+05)
+              Est.  stn bbox = 4.908e+05 (2.91e+05 2.00e+05)
+              cpu = 0:00:02.8 real = 0:00:03.0 mem = 935.9M
+Iteration  5: Total net bbox = 4.565e+05 (2.36e+05 2.21e+05)
+              Est.  stn bbox = 6.080e+05 (3.15e+05 2.93e+05)
+              cpu = 0:00:03.8 real = 0:00:04.0 mem = 936.9M
+Iteration  6: Total net bbox = 4.743e+05 (2.37e+05 2.37e+05)
+              Est.  stn bbox = 6.379e+05 (3.18e+05 3.20e+05)
+              cpu = 0:00:06.8 real = 0:00:07.0 mem = 941.1M
+
+Iteration  7: Total net bbox = 5.259e+05 (2.74e+05 2.52e+05)
+              Est.  stn bbox = 7.095e+05 (3.71e+05 3.38e+05)
+              cpu = 0:00:04.9 real = 0:00:05.0 mem = 946.4M
+Iteration  8: Total net bbox = 5.259e+05 (2.74e+05 2.52e+05)
+              Est.  stn bbox = 7.095e+05 (3.71e+05 3.38e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 946.4M
+

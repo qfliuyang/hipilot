@@ -1,0 +1,257 @@
+
+ Begin updating DB with routing results ...
+ Updating DB with 264 io pins ...
+ Updating DB with 0 via definition ...Extracting standard cell pins and blockage ......
+Pin and blockage extraction finished
+
+sroute created 192 wires.
+ViaGen created 10080 vias, deleted 0 via to avoid violation.
++--------+----------------+----------------+
+|  Layer |     Created    |     Deleted    |
++--------+----------------+----------------+
+|  met1  |       192      |       NA       |
+|   via  |      3360      |        0       |
+|  via2  |      3360      |        0       |
+|  via3  |      3360      |        0       |
++--------+----------------+----------------+
+#% End sroute (date=03/02 23:03:42, total cpu=0:00:00.8, real=0:00:00.0, peak res=771.9M, current mem=771.
+9M)
+#% Begin save design ... (date=03/02 23:03:42, mem=771.9M)
+% Begin Save ccopt configuration ... (date=03/02 23:03:42, mem=771.9M)
+% End Save ccopt configuration ... (date=03/02 23:03:42, total cpu=0:00:00.0, real=0:00:00.0, peak res=772
+.1M, current mem=772.1M)
+% Begin Save netlist data ... (date=03/02 23:03:42, mem=772.1M)
+Writing Binary DB to result/pr/data/powerplan.enc.dat.tmp/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/02 23:03:43, total cpu=0:00:00.1, real=0:00:01.0, peak res=772.1M, cu
+rrent mem=770.6M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/powerplan.enc.dat.tmp/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/02 23:03:43, mem=770.6M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/02 23:03:43, total cpu=0:00:00.0, real=0:00:00.0, peak res=770.6M, curren
+t mem=770.6M)
+Saving preference file result/pr/data/powerplan.enc.dat.tmp/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 23:03:43, mem=771.1M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 23:03:43, total cpu=0:00:00.0, real=0:00:00.0, peak res=771.1M,
+current mem=771.1M)
+Saving PG file result/pr/data/powerplan.enc.dat.tmp/ibex_core.pg.gz, version#2, (Created by Innovus v20.10
+-p004_1 on Mon Mar  2 23:03:43 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:01.0 mem=914.8M) ***
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 23:03:44, mem=771.6M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 23:03:44, total cpu=0:00:00.0, real=0:00:00.0, peak res=771.6M,
+current mem=771.6M)
+% Begin Save routing data ... (date=03/02 23:03:44, mem=771.6M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.0 real=0:00:00.0 mem=914.8M) ***
+% End Save routing data ... (date=03/02 23:03:44, total cpu=0:00:00.0, real=0:00:00.0, peak res=771.6M, cu
+rrent mem=771.6M)
+Saving property file result/pr/data/powerplan.enc.dat.tmp/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=917.8M) ***
+% Begin Save power constraints data ... (date=03/02 23:03:44, mem=771.6M)
+% End Save power constraints data ... (date=03/02 23:03:44, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+771.6M, current mem=771.6M)
+Generated self-contained design powerplan.enc.dat.tmp
+#% End save design ... (date=03/02 23:03:49, total cpu=0:00:05.4, real=0:00:07.0, peak res=801.6M, current
+ mem=771.4M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+STAGE 3 COMPLETE
+=========================================
+STAGE 4: Placement (NO DFT - should work)
+=========================================
+Effort level <high> specified for reg2reg path_group
+**WARN: (IMPOPT-3602):	The specified path group name reg2cg is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <high> specified for reg2cg path_group
+Effort level <low> specified for in2reg path_group
+Effort level <low> specified for reg2out path_group
+Effort level <low> specified for feedthr path_group
+Ignoring {in2reg reg2out feedthr} groups for Hold optimization.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+No user sequential activity specified, applying default sequential activity of "0.2" for Dynamic Power rep
+orting.
+'set_default_switching_activity' finished successfully.
+*** Starting GigaPlace ***
+**INFO: User settings:
+setDesignMode -process                            130
+setExtractRCMode -coupling_c_th                   0.4
+setExtractRCMode -relative_c_th                   1
+setExtractRCMode -total_c_th                      0
+setDelayCalMode -engine                           aae
+setOptMode -ignorePathGroupsForHold               {in2reg reg2out feedthr}
+setPlaceMode -place_detail_legalization_inst_gap  2
+setPlaceMode -place_global_ignore_scan            true
+setPlaceMode -place_global_place_io_pins          false
+setPlaceMode -place_global_reorder_scan           false
+setAnalysisMode -analysisType                     single
+setAnalysisMode -cppr                             both
+setRouteMode -earlyGlobalMaxRouteLayer            5
+setRouteMode -earlyGlobalMinRouteLayer            2
+
+#optDebug: fT-E <X 2 3 1 0>
+Extracting standard cell pins and blockage ......
+Pin and blockage extraction finished
+*** Start deleteBufferTree ***
+Info: Detect buffers to remove automatically.
+Analyzing netlist ...
+Updating netlist
+AAE DB initialization (MEM=978.047 CPU=0:00:00.0 REAL=0:00:00.0)
+siFlow : Timing analysis mode is single, using late cdB files
+
+*summary: 89 instances (buffers/inverters) removed
+*** Finish deleteBufferTree (0:00:01.0) ***
+Deleted 0 physical inst  (cell - / prefix -).
+INFO: #ExclusiveGroups=0
+INFO: There are no Exclusive Groups.
+No user-set net weight.
+Net fanout histogram:
+2		: 6766 (60.4%) nets
+3		: 1469 (13.1%) nets
+4     -	14	: 2659 (23.7%) nets
+15    -	39	: 235 (2.1%) nets
+40    -	79	: 50 (0.4%) nets
+80    -	159	: 18 (0.2%) nets
+160   -	319	: 0 (0.0%) nets
+320   -	639	: 0 (0.0%) nets
+640   -	1279	: 2 (0.0%) nets
+1280  -	2559	: 1 (0.0%) nets
+2560  -	5119	: 0 (0.0%) nets
+5120+		: 0 (0.0%) nets
+Options: timingDriven clkGateAware ignoreScan pinGuide congEffort=auto gpeffort=medium
+**WARN: (IMPSP-9042):	Scan chains were not defined, -place_global_ignore_scan option will be ignored.
+Define the scan chains before using this option.
+Type 'man IMPSP-9042' for more detail.
+#std cell=10895 (0 fixed + 10895 movable) #buf cell=0 #inv cell=812 #block=0 (0 floating + 0 preplaced)
+#ioInst=0 #net=11200 #term=45695 #term/net=4.08, #fixedIo=264, #floatIo=0, #fixedPin=0, #floatPin=256
+stdCell: 10895 single + 0 double + 0 multi
+Total standard cell length = 39.7224 (mm), area = 0.1080 (mm^2)
+Average module density = 0.404.
+Density for the design = 0.404.
+       = stdcell_area 86353 sites (108045 um^2) / alloc_area 213612 sites (267271 um^2).
+Pin Density = 0.2110.
+            = total # of pins 45695 / total area 216594.
+=== lastAutoLevel = 9
+Clock gating cells determined by native netlist tracing.
+Init WL Bound For Global Placement...
+Iteration  1: Total net bbox = 2.012e+05 (1.02e+05 9.92e+04)
+              Est.  stn bbox = 2.188e+05 (1.10e+05 1.08e+05)
+              cpu = 0:00:00.1 real = 0:00:00.0 mem = 1006.6M
+Iteration  2: Total net bbox = 2.012e+05 (1.02e+05 9.92e+04)
+              Est.  stn bbox = 2.188e+05 (1.10e+05 1.08e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 1006.6M
+*** Finished SKP initialization (cpu=0:00:02.7, real=0:00:03.0)***
+Iteration  3: Total net bbox = 1.418e+05 (7.09e+04 7.09e+04)
+              Est.  stn bbox = 1.641e+05 (8.16e+04 8.25e+04)
+              cpu = 0:00:03.5 real = 0:00:04.0 mem = 1094.5M
+Iteration  4: Total net bbox = 2.640e+05 (1.39e+05 1.25e+05)
+              Est.  stn bbox = 3.410e+05 (1.79e+05 1.62e+05)
+              cpu = 0:00:04.6 real = 0:00:04.0 mem = 1120.5M
+Iteration  5: Total net bbox = 2.640e+05 (1.39e+05 1.25e+05)
+              Est.  stn bbox = 3.410e+05 (1.79e+05 1.62e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 1120.5M
+Iteration  6: Total net bbox = 3.487e+05 (1.63e+05 1.85e+05)
+              Est.  stn bbox = 4.656e+05 (2.15e+05 2.50e+05)
+              cpu = 0:00:04.0 real = 0:00:04.0 mem = 1092.5M
+
+Iteration  7: Total net bbox = 3.867e+05 (1.91e+05 1.96e+05)
+              Est.  stn bbox = 5.160e+05 (2.50e+05 2.66e+05)
+              cpu = 0:00:04.1 real = 0:00:04.0 mem = 1091.5M
+Iteration  8: Total net bbox = 3.867e+05 (1.91e+05 1.96e+05)
+              Est.  stn bbox = 5.160e+05 (2.50e+05 2.66e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 1091.5M
+Iteration  9: Total net bbox = 4.071e+05 (2.03e+05 2.04e+05)
+              Est.  stn bbox = 5.393e+05 (2.65e+05 2.75e+05)
+              cpu = 0:00:07.8 real = 0:00:08.0 mem = 1088.4M
+Iteration 10: Total net bbox = 4.071e+05 (2.03e+05 2.04e+05)
+              Est.  stn bbox = 5.393e+05 (2.65e+05 2.75e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 1088.4M
+Iteration 11: Total net bbox = 3.976e+05 (1.92e+05 2.06e+05)
+              Est.  stn bbox = 5.160e+05 (2.46e+05 2.70e+05)
+              cpu = 0:00:02.1 real = 0:00:02.0 mem = 1095.2M
+Iteration 12: Total net bbox = 4.079e+05 (2.02e+05 2.06e+05)
+              Est.  stn bbox = 5.321e+05 (2.60e+05 2.72e+05)
+              cpu = 0:00:14.2 real = 0:00:14.0 mem = 1095.2M
+Iteration 13: Total net bbox = 4.079e+05 (2.02e+05 2.06e+05)
+              Est.  stn bbox = 5.321e+05 (2.60e+05 2.72e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 1095.2M
+Iteration 14: Total net bbox = 4.079e+05 (2.02e+05 2.06e+05)
+              Est.  stn bbox = 5.321e+05 (2.60e+05 2.72e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 1095.2M
+Finished Global Placement (cpu=0:00:38.4, real=0:00:40.0, mem=1095.2M)
+Keep Tdgp Graph and DB for later use
+Info: 1 clock gating cells identified, 1 (on average) moved 5/5
+*** Starting refinePlace (0:01:27 mem=1095.2M) ***
+Total net bbox length = 4.079e+05 (2.020e+05 2.059e+05) (ext = 2.412e+04)
+Move report: Detail placement moves 10895 insts, mean move: 1.52 um, max move: 27.69 um
+	Max move on inst (U4523): (351.48, 234.43) --> (324.30, 234.94)
+	Runtime: CPU: 0:00:01.8 REAL: 0:00:02.0 MEM: 1097.2MB
+Summary Report:
+Instances move: 10895 (out of 10895 movable)
+Instances flipped: 0
+Mean displacement: 1.52 um
+Max displacement: 27.69 um (Instance: U4523) (351.481, 234.431) -> (324.3, 234.94)
+	Length: 3 sites, height: 1 rows, site name: unithd, cell type: sky130_fd_sc_hd__nand2_1
+Total net bbox length = 3.980e+05 (1.916e+05 2.065e+05) (ext = 2.400e+04)
+Runtime: CPU: 0:00:01.8 REAL: 0:00:02.0 MEM: 1097.2MB
+*** Finished refinePlace (0:01:28 mem=1097.2M) ***
+*** Finished Initial Placement (cpu=0:00:41.3, real=0:00:43.0, mem=1097.2M) ***
+
+*** Start incrementalPlace ***
+Init WL Bound for IncrIp in placeDesign ...
+No Views given, use default active views for adaptive view pruning
+SKP will enable view:
+  max_view
+[NR-eGR] Num Prerouted Nets = 0  Num Prerouted Wires = 0
+[NR-eGR] Read numTotalNets=11200  numIgnoredNets=0
+[NR-eGR] There are 2 clock nets ( 0 with NDR ).
+[NR-eGR] ============ Routing rule table ============
+[NR-eGR] Rule id: 0  Nets: 11200
+[NR-eGR] ========================================
+[NR-eGR]
+[NR-eGR] Layer group 1: route 11200 net(s) in layer range [2, 5]
+[NR-eGR] Early Global Route overflow of layer group 1: 2.20% H + 4.36% V. EstWL: 5.163322e+05um
+[NR-eGR] Overflow after Early Global Route (GR compatible) 0.59% H + 2.25% V
+[NR-eGR] Overflow after Early Global Route 0.72% H + 2.61% V
+Early Global Route congestion estimation runtime: 0.36 seconds, mem = 1097.2M
+Local HotSpot Analysis: normalized max congestion hotspot area = 19.00, normalized total congestion hotspo
+t area = 43.00 (area is in unit of 4 std-cell row bins)
+
+=== incrementalPlace Internal Loop 1 ===
+Iteration  7: Total net bbox = 3.660e+05 (1.77e+05 1.89e+05)
+              Est.  stn bbox = 4.844e+05 (2.31e+05 2.53e+05)
+              cpu = 0:00:02.3 real = 0:00:02.0 mem = 1134.6M
+Iteration  8: Total net bbox = 3.794e+05 (1.84e+05 1.95e+05)
+              Est.  stn bbox = 4.991e+05 (2.39e+05 2.60e+05)
+              cpu = 0:00:05.5 real = 0:00:06.0 mem = 1127.6M
+Iteration  9: Total net bbox = 3.846e+05 (1.87e+05 1.97e+05)
+              Est.  stn bbox = 5.025e+05 (2.41e+05 2.62e+05)
+              cpu = 0:00:08.7 real = 0:00:09.0 mem = 1127.6M
+Iteration 10: Total net bbox = 3.968e+05 (1.91e+05 2.05e+05)
+              Est.  stn bbox = 5.137e+05 (2.45e+05 2.69e+05)
+              cpu = 0:00:02.6 real = 0:00:02.0 mem = 1131.1M
+

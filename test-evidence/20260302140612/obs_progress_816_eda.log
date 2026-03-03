@@ -1,0 +1,257 @@
+.6M, current mem=989.6M)
+% Begin Save netlist data ... (date=03/02 23:08:36, mem=989.6M)
+Writing Binary DB to result/pr/data/placement.enc.dat/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/02 23:08:36, total cpu=0:00:00.1, real=0:00:00.0, peak res=989.6M, cu
+rrent mem=989.6M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/placement.enc.dat/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/02 23:08:36, mem=990.1M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/02 23:08:36, total cpu=0:00:00.0, real=0:00:00.0, peak res=990.1M, curren
+t mem=990.1M)
+Saving preference file result/pr/data/placement.enc.dat/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/02 23:08:37, mem=990.6M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/02 23:08:37, total cpu=0:00:00.0, real=0:00:00.0, peak res=990.6M,
+current mem=990.6M)
+Saving PG file result/pr/data/placement.enc.dat/ibex_core.pg.gz, version#2, (Created by Innovus v20.10-p00
+4_1 on Mon Mar  2 23:08:37 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=1207.0M) ***
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/02 23:08:37, mem=991.0M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/02 23:08:37, total cpu=0:00:00.0, real=0:00:00.0, peak res=991.0M,
+current mem=991.0M)
+% Begin Save routing data ... (date=03/02 23:08:37, mem=991.0M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.1 real=0:00:01.0 mem=1207.0M) ***
+% End Save routing data ... (date=03/02 23:08:38, total cpu=0:00:00.2, real=0:00:01.0, peak res=991.2M, cu
+rrent mem=991.2M)
+Saving property file result/pr/data/placement.enc.dat/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=1210.0M) ***
+Saving rc congestion map result/pr/data/placement.enc.dat/ibex_core.congmap.gz ...
+% Begin Save power constraints data ... (date=03/02 23:08:38, mem=991.2M)
+% End Save power constraints data ... (date=03/02 23:08:38, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+991.2M, current mem=991.2M)
+Generated self-contained design placement.enc.dat
+#% End save design ... (date=03/02 23:08:43, total cpu=0:00:05.5, real=0:00:07.0, peak res=992.3M, current
+ mem=992.3M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+STAGE 4 COMPLETE - placement done!
+=========================================
+STAGE 5: CTS
+=========================================
+
+Usage: setNanoRouteMode [-help] [-reset] [-dbAdjustAutoViaWeight {true|false}]
+                        [-dbAllowInstanceOverlaps {true|false}] [-dbIgnoreFollowPinShape {true|false}]
+                        [-dbProcessNode <value>] [-dbRcExtractionCorner <value>]
+                        [-dbSkipAnalog {true|false}] [-dbViaWeight <value>]
+                        [-drouteAddPassiveFillOnlyOnLayers <value>] [-drouteAntennaEcoListFile <value>]
+                        [-drouteAutoStop {true|false}] [-drouteCheckMarOnCellPin {true|false}]
+                        [-drouteEndIteration <value>] [-drouteFixAntenna {true|false}]
+                        [-drouteMinLengthForWireSpreading <value>]
+                        [-drouteMinLengthForWireWidening <value>]
+                        [-drouteMinSlackForWireOptimization <value>] [-drouteNoTaperInLayers <value>]
+                        [-drouteNoTaperOnOutputPin <value>] [-drouteOnGridOnly <value>]
+                        [-droutePostRouteLithoRepair {true|false}] [-droutePostRouteSpreadWire <value>]
+                        [-droutePostRouteSwapVia <value>] [-droutePostRouteSwapViaPriority <value>]
+                        [-droutePostRouteViaPillarEffort <value>] [-droutePostRouteWidenWire <value>]
+                        [-droutePostRouteWidenWireRule <value>] [-drouteSearchAndRepair {true|false}]
+                        [-drouteSignOffEffort <value>] [-drouteUseMultiCutViaEffort <value>]
+                        [-envNumberFailLimit <value>] [-envNumberProcessor <value>]
+                        [-envNumberWarningLimit <value>] [-envThirdPartyData {true|false}]
+                        [-hfrouteConstraintGroups <value>] [-hfrouteMatchReportFile <value>]
+                        [-hfrouteNumReserveLayers <value>] [-hfrouteRemoveFloatingShield {true|false}]
+                        [-hfrouteSearchRepair <value>] [-hfrouteShieldTrimLength <value>]
+                        [-routeAddAntennaInstPrefix <value>]
+                        [-routeAllowPinAsFeedthrough {true|TRUE|false|FALSE|none|NONE|output|input|inout}]
+                        [-routeAntennaCellName <value>] [-routeConcurrentMinimizeViaCountEffort <value>]
+                        [-routeConnectToBump {true|false}] [-routeDesignFixClockNets {true|false}]
+                        [-routeDesignRouteClockNetsFirst {true|false}]
+                        [-routeEnableNdrSiLimitLength <value>] [-routeEnforceNdrOnSpecialNetWire <value>]
+                        [-routeExtraViaEnclosure <value>] [-routeHonorPowerDomain {true|false}]
+                        [-routeIgnoreAntennaTopCellPin {true|false}]
+                        [-routeInsertAntennaDiode {true|false}]
+                        [-routeInsertDiodeForClockNets {true|false}]
+                        [-routeRelaxedNdrSpacingToPGNets <value>]
+                        [-routeReserveSpaceForMultiCut {true|false}] [-routeReverseDirection <value>]
+                        [-routeSelectedNetOnly {true|false}] [-routeShieldCrosstieOffset <value>]
+                        [-routeStrictlyHonorNonDefaultRule <value>] [-routeStripeLayerRange <value>]
+                        [-routeTieNetToShape <value>] [-routeTrimPullBackDistanceFromBoundary <value>]
+                        [-routeTrunkWithClusterTargetSize <value>] [-routeUnconnectedPorts {true|false}]
+                        [-routeUseAutoVia <value>] [-routeWithEco {true|false}]
+                        [-routeWithLithoDriven {true|false}] [-routeWithSiDriven {true|false}]
+                        [-routeWithTimingDriven {true|false}] [-routeWithTrimMetal <value>]
+                        [-routeWithViaInPin <value>] [-routeWithViaOnlyForMacroCellPin <value>]
+                        [-routeWithViaOnlyForStandardCellPin <value>]
+
+**ERROR: (IMPTCM-48):	"-routeBottomRouting" is not a legal option for command "setNanoRouteMode". Either
+ the current option or an option prior to it is not specified correctly.
+
+innovus 2> source /tmp/hipilot-EDA/exec/hipilot_exec_1772464746748.tcl
+=========================================
+STAGE 5: CTS
+=========================================
+#% Begin load design ... (date=03/02 23:19:06, mem=992.5M)
+
+
+ERROR: **ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+
+**ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+    while executing
+"error $catchMsg"
+    (procedure "restoreDesign" line 31)
+
+**ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+innovus 3> exit
+
+*** Memory Usage v#1 (Current mem = 1207.000M, initial mem = 249.227M) ***
+*** Message Summary: 77 warning(s), 4 error(s)
+
+--- Ending "Innovus" (totcpu=0:05:34, real=0:26:40, mem=1207.0M) ---
+
+[EDA@EDA2035 ibex_work_upload]$ cd /home/EDA/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$ innovus -no_gui
+C: unknown locale
+
+Cadence Innovus(TM) Implementation System.
+Copyright 2020 Cadence Design Systems, Inc. All rights reserved worldwide.
+
+Version:	v20.10-p004_1, built Thu May 7 20:02:41 PDT 2020
+Options:	-no_gui
+Date:		Mon Mar  2 23:29:19 2026
+Host:		EDA2035 (x86_64 w/Linux 3.10.0-1160.119.1.el7.x86_64) (3cores*6cpus*Intel(R) Core(TM) i7-8
+559U CPU @ 2.70GHz 8192KB)
+OS:		CentOS Linux release 7.9.2009 (Core)
+
+License:
+		invs	Innovus Implementation System	20.1	checkout succeeded
+		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required
+CPU count.
+**WARN: (IMPOPT-801):	Genus executable not found in PATH. Install Genus, add the path to the genus execu
+table in the PATH variable and rerun Innovus.
+Create and set the environment variable TMPDIR to /tmp/innovus_temp_121529_EDA2035_EDA_zcKZug.
+
+The soft stacksize limit is either up to the hard limit or larger than 0.2% of RAM. No change is needed.
+
+**INFO:  MMMC transition support version v31-84
+
+innovus 1> source /tmp/hipilot-EDA/exec/hipilot_exec_1772465392835.tcl
+=========================================
+STAGE 5: CTS
+=========================================
+#% Begin load design ... (date=03/02 23:29:52, mem=465.1M)
+Set Default Input Pin Transition as 0.1 ps.
+Loading design 'ibex_core' saved by 'Innovus' '20.10-p004_1' on 'Mon Mar 2 23:08:43 2026'.
+% Begin Load MMMC data ... (date=03/02 23:29:53, mem=464.6M)
+% End Load MMMC data ... (date=03/02 23:29:53, total cpu=0:00:00.0, real=0:00:00.0, peak res=464.8M, curre
+nt mem=464.8M)
+
+Loading LEF file /home/EDA/ibex_work_upload/result/pr/data/placement.enc.dat/libs/lef/sky130_fd_sc_hd.tlef
+ ...
+
+Loading LEF file /home/EDA/ibex_work_upload/result/pr/data/placement.enc.dat/libs/lef/sky130_fd_sc_hd_merg
+ed.lef ...
+**WARN: (IMPLF-108):	There is no overlap layer defined in any LEF file
+so you are unable to create rectilinear partition in a hierarchical flow.
+Set DBUPerIGU to M1 pitch 460.
+**WARN: (IMPLF-201):	Pin 'LO' in macro 'sky130_fd_sc_hd__macro_sparecell' has no ANTENNADIFFAREA value
+defined. The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-201' for more detail.
+**WARN: (IMPLF-200):	Pin 'DIODE' in macro 'sky130_fd_sc_hd__diode_2' has no ANTENNAGATEAREA value defin
+ed. The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-200' for more detail.
+**WARN: (IMPLF-201):	Pin 'HI' in macro 'sky130_fd_sc_hd__conb_1' has no ANTENNADIFFAREA value defined.
+The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-201' for more detail.
+**WARN: (IMPLF-201):	Pin 'LO' in macro 'sky130_fd_sc_hd__conb_1' has no ANTENNADIFFAREA value defined.
+The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-201' for more detail.
+**WARN: (IMPLF-200):	Pin 'DIODE' in macro 'sky130_ef_sc_hd__fakediode_2' has no ANTENNAGATEAREA value d
+efined. The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-200' for more detail.
+**WARN: (IMPLF-200):	Pin 'VNB' in macro 'sky130_ef_sc_hd__decap_12' has no ANTENNAGATEAREA value define
+d. The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-200' for more detail.
+**WARN: (IMPLF-200):	Pin 'VPB' in macro 'sky130_ef_sc_hd__decap_12' has no ANTENNAGATEAREA value define
+d. The library data is incomplete and some process antenna rules will not be checked correctly.
+Type 'man IMPLF-200' for more detail.
+
+viaInitial starts at Mon Mar  2 23:29:53 2026
+viaInitial ends at Mon Mar  2 23:29:53 2026
+
+##  Check design process and node:
+##  Both design process and tech node are not set.
+
+Loading view definition file from /home/EDA/ibex_work_upload/result/pr/data/placement.enc.dat/viewDefiniti
+on.tcl
+Reading lib_set_max timing library '/home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__t
+t_025C_1v80.lib' ...
+**WARN: (TECHLIB-1161):	The library level attribute default_operating_conditions on line 173158 is defined
+ after at least one cell definition. The attribute will be ignored. (File /home/EDA/ibex_work_upload/desig
+ns/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.lib)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__lpflow_decapkapwr_8'. The cell will
+ only be used for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_
+025C_1v80.lib)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__lpflow_decapkapwr_6'. The cell will
+ only be used for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_
+025C_1v80.lib)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__lpflow_decapkapwr_4'. The cell will
+ only be used for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_
+025C_1v80.lib)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__lpflow_decapkapwr_3'. The cell will
+ only be used for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_
+025C_1v80.lib)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__lpflow_decapkapwr_12'. The cell wil
+l only be used for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt
+_025C_1v80.lib)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__lpflow_bleeder_1'. The cell will on
+ly be used for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025
+C_1v80.lib)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__diode_2'. The cell will only be use
+d for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.li
+b)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__decap_8'. The cell will only be use
+d for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.li
+b)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__decap_6'. The cell will only be use
+d for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.li
+b)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__decap_4'. The cell will only be use
+d for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.li
+b)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__decap_3'. The cell will only be use
+d for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.li
+b)
+**WARN: (TECHLIB-302):	No function defined for cell 'sky130_fd_sc_hd__decap_12'. The cell will only be us
+ed for analysis. (File /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.l
+ib)
+Read 428 cells in library 'sky130_fd_sc_hd__tt_025C_1v80'
+*** End library_loading (cpu=0.01min, real=0.02min, mem=18.5M, fe_cpu=0.52min, fe_real=0.58min, fe_mem=606
+.5M) ***
+% Begin Load netlist data ... (date=03/02 23:29:54, mem=482.6M)
+*** Begin netlist parsing (mem=606.5M) ***
+Created 428 new cells from 1 timing libraries.
+Reading netlist ...
+Backslashed names will retain backslash and a trailing blank character.
+Reading verilogBinary netlist '/home/EDA/ibex_work_upload/result/pr/data/placement.enc.dat/ibex_core.v.bin
+'
+Reading binary database version 2 in 1-threaded mode
+
