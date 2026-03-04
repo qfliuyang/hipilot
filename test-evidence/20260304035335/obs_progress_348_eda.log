@@ -1,0 +1,257 @@
+source /home/EDA/ibex_work_upload/result/pr/data/post_cts_opt.enc.dat/ibex_core_power_constraints.tcl
+'set_default_switching_activity' finished successfully.
+% End Load power constraints ... (date=03/04 12:27:45, total cpu=0:00:00.0, real=0:00:00.0, peak res=742.7
+M, current mem=742.7M)
+% Begin load AAE data ... (date=03/04 12:27:45, mem=785.5M)
+**WARN: (IMPESI-3505):	setDelayCalMode -eng_copyNetPropToNewNet true (default=false) will be obsoleted al
+ong with its sgs2set equivalent.  This parameter will continue to be supported in the current release, but
+ will be removed in the next major release of the software.
+AAE DB initialization (MEM=918.812 CPU=0:00:00.0 REAL=0:00:00.0)
+% End load AAE data ... (date=03/04 12:27:45, total cpu=0:00:00.5, real=0:00:00.0, peak res=792.1M, curren
+t mem=792.1M)
+Restoring CCOpt config...
+  Extracting original clock gating for core_clock...
+    clock_tree core_clock contains 1941 sinks and 1 clock gates.
+    Extraction for core_clock complete.
+  Extracting original clock gating for core_clock done.
+  The skew group core_clock/common was created. It contains 1941 sinks and 1 sources.
+  Added 1 ignore pin (of 1 specified) to skew group 1. Skew group now contains 1 ignore pin.
+  The skew group core_clock/common was created. It contains 1941 sinks and 1 sources.
+Restoring CCOpt config done.
+Total number of combinational cells: 329
+Total number of sequential cells: 68
+Total number of tristate cells: 13
+Total number of level shifter cells: 7
+Total number of power gating cells: 0
+Total number of isolation cells: 11
+Total number of power switch cells: 0
+Total number of pulse generator cells: 0
+Total number of always on buffers: 0
+Total number of retention cells: 0
+List of usable buffers: sky130_fd_sc_hd__buf_1 sky130_fd_sc_hd__buf_12 sky130_fd_sc_hd__buf_16 sky130_fd_s
+c_hd__buf_2 sky130_fd_sc_hd__buf_4 sky130_fd_sc_hd__buf_6 sky130_fd_sc_hd__buf_8 sky130_fd_sc_hd__clkbuf_1
+ sky130_fd_sc_hd__clkbuf_16 sky130_fd_sc_hd__clkbuf_2 sky130_fd_sc_hd__clkbuf_4 sky130_fd_sc_hd__clkbuf_8
+sky130_fd_sc_hd__dlymetal6s2s_1 sky130_fd_sc_hd__probe_p_8
+Total number of usable buffers: 14
+List of unusable buffers: sky130_fd_sc_hd__probec_p_8
+Total number of unusable buffers: 1
+List of usable inverters: sky130_fd_sc_hd__bufinv_16 sky130_fd_sc_hd__clkinv_1 sky130_fd_sc_hd__bufinv_8 s
+ky130_fd_sc_hd__clkinv_16 sky130_fd_sc_hd__clkinv_2 sky130_fd_sc_hd__clkinv_4 sky130_fd_sc_hd__clkinv_8 sk
+y130_fd_sc_hd__inv_1 sky130_fd_sc_hd__clkinvlp_2 sky130_fd_sc_hd__clkinvlp_4 sky130_fd_sc_hd__inv_12 sky13
+0_fd_sc_hd__inv_16 sky130_fd_sc_hd__inv_2 sky130_fd_sc_hd__inv_4 sky130_fd_sc_hd__inv_6 sky130_fd_sc_hd__i
+nv_8
+Total number of usable inverters: 16
+List of unusable inverters:
+Total number of unusable inverters: 0
+List of identified usable delay cells: sky130_fd_sc_hd__bufbuf_16 sky130_fd_sc_hd__bufbuf_8 sky130_fd_sc_h
+d__clkdlybuf4s15_1 sky130_fd_sc_hd__clkdlybuf4s15_2 sky130_fd_sc_hd__clkdlybuf4s18_1 sky130_fd_sc_hd__clkd
+lybuf4s18_2 sky130_fd_sc_hd__clkdlybuf4s25_1 sky130_fd_sc_hd__clkdlybuf4s50_1 sky130_fd_sc_hd__clkdlybuf4s
+25_2 sky130_fd_sc_hd__clkdlybuf4s50_2 sky130_fd_sc_hd__dlygate4sd2_1 sky130_fd_sc_hd__dlygate4sd1_1 sky130
+_fd_sc_hd__dlygate4sd3_1 sky130_fd_sc_hd__dlymetal6s6s_1 sky130_fd_sc_hd__dlymetal6s4s_1
+Total number of identified usable delay cells: 15
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+**WARN: (IMPCTE-107):	The following globals have been obsoleted since version 20.10-p004_1. They will be
+ removed in the next release.
+timing_enable_default_delay_arc
+#% End load design ... (date=03/04 12:27:46, total cpu=0:00:04.5, real=0:00:07.0, peak res=816.4M, current
+ mem=799.6M)
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPLF-200            4  Pin '%s' in macro '%s' has no ANTENNAGAT...
+WARNING   IMPLF-201            3  Pin '%s' in macro '%s' has no ANTENNADIF...
+WARNING   IMPLF-108            1  There is no overlap layer defined in any...
+WARNING   IMPFP-3961           2  The techSite '%s' has no related standar...
+WARNING   IMPEXT-2766         12  The sheet resistance for layer %s is not...
+WARNING   IMPEXT-2773         12  The via resistance between layers %s and...
+WARNING   IMPESI-3505          1  setDelayCalMode -eng_%s (default=%s) wil...
+WARNING   IMPOPT-3602          4  The specified path group name %s is not ...
+WARNING   IMPCTE-107           1  The following globals have been obsolete...
+WARNING   IMPPSP-1003          2  Found use of '%s'. This will continue to...
+WARNING   TECHLIB-302         12  No function defined for cell '%s'. The c...
+WARNING   TECHLIB-1161         1  The library level attribute %s on line %...
+*** Message Summary: 55 warning(s), 0 error(s)
+
+#WARNING (NRIF-91) Option setNanoRouteMode -routeTopRoutingLayer is obsolete. It will continue to work for
+ the current release. To ensure compatibility with future releases, use option setDesignMode -topRoutingLa
+yer instead.
+#WARNING (NRIF-90) Option setNanoRouteMode -routeBottomRoutingLayer is obsolete. It will continue to work
+for the current release. To ensure compatibility with future releases, use option setDesignMode -bottomRou
+tingLayer instead.
+AAE DB initialization (MEM=923.812 CPU=0:00:00.0 REAL=0:00:00.0)
+#% Begin routeDesign (date=03/04 12:27:46, mem=799.7M)
+#routeDesign: cpu time = 00:00:00, elapsed time = 00:00:00, memory = 799.71 (MB), peak = 816.42 (MB)
+#WARNING (NRIG-96) Selected single pass global detail route "-globalDetail". Clock eco and post optimizati
+ons will not be run. See "man NRIG-96" for more details.
+**INFO: User settings:
+setNanoRouteMode -drouteEndIteration                            70
+setNanoRouteMode -drouteFixAntenna                              true
+setNanoRouteMode -drouteUseMultiCutViaEffort                    medium
+setNanoRouteMode -extractThirdPartyCompatible                   false
+setNanoRouteMode -grouteExpTdStdDelay                           41.6
+setNanoRouteMode -grouteExpTdUseTifTimingEngineForImportDesign  true
+setNanoRouteMode -routeBottomRoutingLayer                       2
+setNanoRouteMode -routeTopRoutingLayer                          6
+setNanoRouteMode -routeWithTimingDriven                         true
+setDesignMode -process                                          130
+setExtractRCMode -coupling_c_th                                 0.4
+setExtractRCMode -engine                                        preRoute
+setExtractRCMode -relative_c_th                                 1
+setExtractRCMode -total_c_th                                    0
+setDelayCalMode -enable_high_fanout                             true
+setDelayCalMode -eng_copyNetPropToNewNet                        true
+setDelayCalMode -engine                                         aae
+setDelayCalMode -ignoreNetLoad                                  false
+setDelayCalMode -SIAware                                        true
+setSIMode -separate_delta_delay_on_data                         true
+
+#rc_max has no qx tech file defined
+#No active RC corner or QRC tech file is missing.
+#**INFO: setDesignMode -flowEffort standard
+#**INFO: multi-cut via swapping will not be performed after routing.
+#**INFO: All auto set options tuned by routeDesign will be restored to their original settings on command
+completion.
+Begin checking placement ... (start mem=923.8M, init mem=954.8M)
+*info: Placed = 11747          (Fixed = 72)
+*info: Unplaced = 0
+Placement Density:41.05%(124817/304049)
+Placement Density (including fixed std cells):41.05%(124817/304049)
+Finished checkPlace (total: cpu=0:00:00.3, real=0:00:00.0; vio checks: cpu=0:00:00.2, real=0:00:00.0; mem=
+956.8M)
+**WARN: (IMPCK-8086):	The command changeUseClockNetStatus is obsolete and will be removed in the next re
+lease. This command still works in this release, but by the next release you must transition to the CCOpt-
+based CTS flow.
+
+changeUseClockNetStatus Option :  -noFixedNetWires
+*** Changed status on (72) nets in Clock.
+*** End changeUseClockNetStatus (cpu=0:00:00.0, real=0:00:00.0, mem=956.8M) ***
+% Begin globalDetailRoute (date=03/04 12:27:46, mem=804.9M)
+
+globalDetailRoute
+
+#Start globalDetailRoute on Wed Mar  4 12:27:46 2026
+#
+#Generating timing data, please wait...
+#12041 total nets, 12039 already routed, 12039 will ignore in trialRoute
+**WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy
+when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to gener
+ate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_r
+c_corner/update_rc_corner -cap_table'.
+#Dump tif for version 2.1
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M2M3_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'L1M1_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M1M2_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M3M4_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+**WARN: (IMPESI-3014):	The RC network is incomplete for net test_so. As a result, a lumped model will be
+used during delay calculation which may compromise timing accuracy. To resolve this, check parasitics for
+completeness, re-extraction may be required.
+Total number of fetched objects 12043
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+End delay calculation. (MEM=1089.03 CPU=0:00:02.6 REAL=0:00:03.0)
+
+#Generating timing data took: cpu time = 00:00:07, elapsed time = 00:00:07, memory = 808.88 (MB), peak = 8
+72.91 (MB)
+#Done generating timing data.
+#create default rule from bind_ndr_rule rule=0x2b6c4263e270 0x2b6c57582fd8
+#WARNING (NRIG-1303) Congestion map does not match the GCELL grid, clearing map.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fifo
+_i/instr_addr_q_reg[31] is not connected to any power/ground net. Use command globalNetConnect to connect
+the power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fifo_
+i/instr_addr_q_reg[31] is not connected to any power/ground net. Use command globalNetConnect to connect t
+he power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fifo_
+i/instr_addr_q_reg[31] is not connected to any power/ground net. Use command globalNetConnect to connect t
+he power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fifo
+_i/instr_addr_q_reg[31] is not connected to any power/ground net. Use command globalNetConnect to connect
+the power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fifo
+_i/instr_addr_q_reg[30] is not connected to any power/ground net. Use command globalNetConnect to connect
+the power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fifo_
+i/instr_addr_q_reg[30] is not connected to any power/ground net. Use command globalNetConnect to connect t
+he power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fifo_
+i/instr_addr_q_reg[30] is not connected to any power/ground net. Use command globalNetConnect to connect t
+he power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fifo
+_i/instr_addr_q_reg[30] is not connected to any power/ground net. Use command globalNetConnect to connect
+the power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance if_stage_i/pc_id_o_reg[30] is not connected to any po
+wer/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance if_stage_i/pc_id_o_reg[30] is not connected to any pow
+er/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance if_stage_i/pc_id_o_reg[30] is not connected to any pow
+er/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance if_stage_i/pc_id_o_reg[30] is not connected to any po
+wer/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance if_stage_i/instr_rdata_id_o_reg[31] is not connected
+to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground ne
+t.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance if_stage_i/instr_rdata_id_o_reg[31] is not connected t
+o any power/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground net
+.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance if_stage_i/instr_rdata_id_o_reg[31] is not connected t
+o any power/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground net
+.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance if_stage_i/instr_rdata_id_o_reg[31] is not connected
+to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground ne
+t.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fetc
+h_addr_q_reg[2] is not connected to any power/ground net. Use command globalNetConnect to connect the powe
+r/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fetch
+_addr_q_reg[2] is not connected to any power/ground net. Use command globalNetConnect to connect the power
+/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fetch
+_addr_q_reg[2] is not connected to any power/ground net. Use command globalNetConnect to connect the power
+/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fetc
+h_addr_q_reg[2] is not connected to any power/ground net. Use command globalNetConnect to connect the powe
+r/ground pin to a power/ground net.
+#WARNING (EMS-27) Message (NRIG-34) has exceeded the current message display limit of 20.
+#To increase the message display limit, refer to the product command reference manual.
+#WARNING (NRIG-39) NanoRoute cannot route to pin PIN/test_si of net test_si because it might be a logical
+pin and does not have physical shapes. To fix the problem, check the pin connection in the netlist and ens
+ure the pin shapes exist in the floorplan.
+#WARNING (NRIG-39) NanoRoute cannot route to pin PIN/test_so of net test_so because it might be a logical
+pin and does not have physical shapes. To fix the problem, check the pin connection in the netlist and ens
+ure the pin shapes exist in the floorplan.
+#num needed restored net=0
+#need_extraction net=0 (total=12185)
+#WARNING (NRDB-2005) SPECIAL_NET VDD has special wires but no definitions for instance pins or top level p
+ins. This will cause routability problems later.
+#WARNING (NRDB-2005) SPECIAL_NET VSS has special wires but no definitions for instance pins or top level p
+ins. This will cause routability problems later.
+#WARNING (NRDB-976) The TRACK STEP 0.6100 for preferred direction tracks is smaller than the PITCH 0.6800
+for LAYER met3. This will cause routability problems for NanoRoute.
+#WARNING (NRDB-976) The TRACK STEP 0.6900 for preferred direction tracks is smaller than the PITCH 0.9200
+for LAYER met4. This will cause routability problems for NanoRoute.
+#Start reading timing information from file .timing_file_119159.tif.gz ...
+#Read in timing information for 266 ports, 11747 instances from timing file .timing_file_119159.tif.gz.
+#NanoRoute Version 20.10-p004_1 NR200413-0234/20_10-UB
+#Start routing data preparation on Wed Mar  4 12:27:54 2026
+#
+#WARNING (NRDB-2040) Rule LEF_DEFAULT doesn't specify any vias that satisfy all of the area rules for laye
+r met3
+#WARNING (NRDB-2040) Rule cts_1 doesn't specify any vias that satisfy all of the area rules for layer met3
+
+#Minimum voltage of a net in the design = 0.000.
+#Maximum voltage of a net in the design = 1.800.
+#Voltage range [0.000 - 1.800] has 12183 nets.
+#Voltage range [1.800 - 1.800] has 1 net.
+#Voltage range [0.000 - 0.000] has 1 net.
+#Restoring pin access data from file /home/EDA/ibex_work_upload/result/pr/data/post_cts_opt.enc.dat/ibex_c
+ore.apa ...
+#Done restoring pin access data
+

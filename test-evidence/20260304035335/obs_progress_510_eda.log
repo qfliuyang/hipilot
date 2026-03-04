@@ -1,0 +1,257 @@
+ile_ff.register_file_i/FE_OFN437_n88. The NET is considered partially routed. Visually verify wiring at th
+e specified location as the wire/via origin may not touch the PIN. This NET will be rerouted with same or
+different wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN A at ( 74.2400 151.8150 ) on li1 for NET gen_regfi
+le_ff.register_file_i/FE_OFN8136_n1730. The NET is considered partially routed. Visually verify wiring at
+the specified location as the wire/via origin may not touch the PIN. This NET will be rerouted with same o
+r different wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN A at ( 78.8550 21.2300 ) on li1 for NET gen_regfil
+e_ff.register_file_i/FE_OFN8136_n1730. The NET is considered partially routed. Visually verify wiring at t
+he specified location as the wire/via origin may not touch the PIN. This NET will be rerouted with same or
+ different wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN B1 at ( 324.4300 100.4800 ) on li1 for NET n4698.
+The NET is considered partially routed. Visually verify wiring at the specified location as the wire/via o
+rigin may not touch the PIN. This NET will be rerouted with same or different wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN B1 at ( 294.5300 91.9600 ) on li1 for NET n4698. T
+he NET is considered partially routed. Visually verify wiring at the specified location as the wire/via or
+igin may not touch the PIN. This NET will be rerouted with same or different wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN X at ( 88.1800 192.7800 ) on li1 for NET gen_regfi
+le_ff.register_file_i/FE_OFN8234_n. The NET is considered partially routed. Visually verify wiring at the
+specified location as the wire/via origin may not touch the PIN. This NET will be rerouted with same or di
+fferent wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN X at ( 73.0000 151.9800 ) on li1 for NET gen_regfi
+le_ff.register_file_i/FE_OFN181_n1730. The NET is considered partially routed. Visually verify wiring at t
+he specified location as the wire/via origin may not touch the PIN. This NET will be rerouted with same or
+ different wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN A at ( 119.4000 301.7700 ) on li1 for NET gen_regf
+ile_ff.register_file_i/n2543. The NET is considered partially routed. Visually verify wiring at the specif
+ied location as the wire/via origin may not touch the PIN. This NET will be rerouted with same or differen
+t wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN A at ( 181.0400 296.3300 ) on li1 for NET gen_regf
+ile_ff.register_file_i/n2543. The NET is considered partially routed. Visually verify wiring at the specif
+ied location as the wire/via origin may not touch the PIN. This NET will be rerouted with same or differen
+t wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN B at ( 172.3700 249.7000 ) on li1 for NET FE_OFN79
+40_id_stage_i_imm_i_type_1. The NET is considered partially routed. Visually verify wiring at the specifie
+d location as the wire/via origin may not touch the PIN. This NET will be rerouted with same or different
+wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN A1 at ( 126.5100 508.4850 ) on li1 for NET gen_reg
+file_ff.register_file_i/FE_OFN462_n2530. The NET is considered partially routed. Visually verify wiring at
+ the specified location as the wire/via origin may not touch the PIN. This NET will be rerouted with same
+or different wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN A1 at ( 327.6200 100.4800 ) on li1 for NET FE_OFN7
+961_ex_block_i_gen_multdiv_fast_multdiv_i_gen_mult_fast_mult_state_q_1. The NET is considered partially ro
+uted. Visually verify wiring at the specified location as the wire/via origin may not touch the PIN. This
+NET will be rerouted with same or different wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN A1 at ( 297.7200 91.9600 ) on li1 for NET FE_OFN79
+61_ex_block_i_gen_multdiv_fast_multdiv_i_gen_mult_fast_mult_state_q_1. The NET is considered partially rou
+ted. Visually verify wiring at the specified location as the wire/via origin may not touch the PIN. This N
+ET will be rerouted with same or different wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN A at ( 91.2750 274.5700 ) on li1 for NET gen_regfi
+le_ff.register_file_i/FE_OFN312_n1780. The NET is considered partially routed. Visually verify wiring at t
+he specified location as the wire/via origin may not touch the PIN. This NET will be rerouted with same or
+ different wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN X at ( 132.7450 470.2200 ) on li1 for NET gen_regf
+ile_ff.register_file_i/FE_OFN8093_n88. The NET is considered partially routed. Visually verify wiring at t
+he specified location as the wire/via origin may not touch the PIN. This NET will be rerouted with same or
+ different wiring.
+#WARNING (NRDB-1005) Cannot establish connection to PIN X at ( 120.3250 301.5800 ) on li1 for NET gen_regf
+ile_ff.register_file_i/FE_OFN8290_n2543. The NET is considered partially routed. Visually verify wiring at
+ the specified location as the wire/via origin may not touch the PIN. This NET will be rerouted with same
+or different wiring.
+#WARNING (EMS-27) Message (NRDB-1005) has exceeded the current message display limit of 20.
+#To increase the message display limit, refer to the product command reference manual.
+#
+#Connectivity extraction summary:
+#155 routed nets are extracted.
+#    128 (1.05%) extracted nets are partially routed.
+#11928 routed net(s) are imported.
+#1 (0.01%) nets are without wires.
+#146 nets are fixed|skipped|trivial (not extracted).
+#Total number of nets = 12230.
+#
+#Found 0 nets for post-route si or timing fixing.
+#
+#Finished routing data preparation on Wed Mar  4 12:41:56 2026
+#
+#Cpu time = 00:00:01
+#Elapsed time = 00:00:01
+#Increased memory = 4.46 (MB)
+#Total memory = 1009.04 (MB)
+#Peak memory = 1161.67 (MB)
+#
+#
+#Start global routing on Wed Mar  4 12:41:56 2026
+#
+#
+#Start global routing initialization on Wed Mar  4 12:41:56 2026
+#
+#Number of eco nets is 128
+#
+#Start global routing data preparation on Wed Mar  4 12:41:56 2026
+#
+#Start routing resource analysis on Wed Mar  4 12:41:56 2026
+#
+#Routing resource analysis is done on Wed Mar  4 12:41:56 2026
+#
+#  Resource Analysis:
+#
+#               Routing  #Avail      #Track     #Total     %Gcell
+#  Layer      Direction   Track     Blocked      Gcell    Blocked
+#  --------------------------------------------------------------
+#  li1            V        1209           0        6480    47.75%
+#  met1           H        1622           0        6480     0.00%
+#  met2           V        1209           0        6480     0.00%
+#  met3           H         871           8        6480     0.00%
+#  met4           V         423         382        6480     6.17%
+#  met5           H          50         100        6480    57.45%
+#  --------------------------------------------------------------
+#  Total                   5384      19.17%       38880    18.56%
+#
+#  165 nets (1.35%) with 1 preferred extra spacing.
+#
+#
+#
+#Global routing data preparation is done on Wed Mar  4 12:41:56 2026
+#
+#cpu time = 00:00:01, elapsed time = 00:00:01, memory = 1009.72 (MB), peak = 1161.67 (MB)
+#
+#
+#Global routing initialization is done on Wed Mar  4 12:41:56 2026
+#
+#cpu time = 00:00:01, elapsed time = 00:00:01, memory = 1009.72 (MB), peak = 1161.67 (MB)
+#
+#start global routing iteration 1...
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 1010.14 (MB), peak = 1161.67 (MB)
+#
+#start global routing iteration 2...
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 1010.14 (MB), peak = 1161.67 (MB)
+#
+#
+#Total number of trivial nets (e.g. < 2 pins) = 146 (skipped).
+#Total number of routable nets = 12084.
+#Total number of nets in the design = 12230.
+#
+#129 routable nets have only global wires.
+#11955 routable nets have only detail routed wires.
+#12 global routed or unrouted (routable) nets have been constrained (e.g. have preferred extra spacing, re
+quire shielding etc.)
+#180 detail routed (routable) nets have been constrained (e.g. have preferred extra spacing, require shiel
+ding etc.)
+#
+#Routed nets constraints summary:
+#------------------------------------------------
+#        Rules   Pref Extra Space   Unconstrained
+#------------------------------------------------
+#      Default                 12             117
+#        cts_1                  0               0
+#------------------------------------------------
+#        Total                 12             117
+#------------------------------------------------
+#
+#Routing constraints summary of the whole design:
+#----------------------------------------------------------------------------
+#        Rules   Pref Extra Space   Pref Layer   Avoid Detour   Unconstrained
+#----------------------------------------------------------------------------
+#      Default                165            0              0           11892
+#        cts_1                  0           27             27               0
+#----------------------------------------------------------------------------
+#        Total                165           27             27           11892
+#----------------------------------------------------------------------------
+#
+#
+#  Congestion Analysis: (blocked Gcells are excluded)
+#
+#                 OverCon       OverCon
+#                  #Gcell        #Gcell    %Gcell
+#     Layer           (1)           (2)   OverCon
+#  ----------------------------------------------
+#  met1          9(0.14%)      3(0.05%)   (0.19%)
+#  met2         10(0.15%)      0(0.00%)   (0.15%)
+#  met3          0(0.00%)      0(0.00%)   (0.00%)
+#  met4          0(0.00%)      0(0.00%)   (0.00%)
+#  met5          0(0.00%)      0(0.00%)   (0.00%)
+#  ----------------------------------------------
+#     Total     19(0.07%)      3(0.01%)   (0.08%)
+#
+#  The worst congested Gcell overcon (routing demand over resource in number of tracks) = 2
+#  Overflow after GR: 0.04% H + 0.04% V
+#
+#Complete Global Routing.
+#Total number of nets with non-default rule or having extra spacing = 192
+#Total wire length = 814843 um.
+#Total half perimeter of net bounding box = 626504 um.
+#Total wire length on LAYER li1 = 1 um.
+#Total wire length on LAYER met1 = 266114 um.
+#Total wire length on LAYER met2 = 254265 um.
+#Total wire length on LAYER met3 = 144960 um.
+#Total wire length on LAYER met4 = 140385 um.
+#Total wire length on LAYER met5 = 9117 um.
+#Total number of vias = 134134
+#Up-Via Summary (total 134134):
+#
+#-----------------------
+# li1             49633
+# met1            64303
+# met2            12182
+# met3             7786
+# met4              230
+#-----------------------
+#                134134
+#
+#Max overcon = 2 tracks.
+#Total overcon = 0.08%.
+#Worst layer Gcell overcon rate = 0.17%.
+#
+#Global routing statistics:
+#Cpu time = 00:00:01
+#Elapsed time = 00:00:01
+#Increased memory = 1.10 (MB)
+#Total memory = 1010.14 (MB)
+#Peak memory = 1161.67 (MB)
+#
+#Finished global routing on Wed Mar  4 12:41:57 2026
+#
+#
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 1009.45 (MB), peak = 1161.67 (MB)
+#Start Track Assignment.
+#Done with 16 horizontal wires in 3 hboxes and 8 vertical wires in 3 hboxes.
+#Done with 2 horizontal wires in 3 hboxes and 0 vertical wires in 3 hboxes.
+#Complete Track Assignment.
+#Total number of nets with non-default rule or having extra spacing = 192
+#Total wire length = 815008 um.
+#Total half perimeter of net bounding box = 626504 um.
+#Total wire length on LAYER li1 = 1 um.
+#Total wire length on LAYER met1 = 266231 um.
+#Total wire length on LAYER met2 = 254303 um.
+#Total wire length on LAYER met3 = 144967 um.
+#Total wire length on LAYER met4 = 140390 um.
+#Total wire length on LAYER met5 = 9117 um.
+#Total number of vias = 134134
+#Up-Via Summary (total 134134):
+#
+#-----------------------
+# li1             49633
+# met1            64303
+# met2            12182
+# met3             7786
+# met4              230
+#-----------------------
+#                134134
+#
+#cpu time = 00:00:02, elapsed time = 00:00:02, memory = 1024.09 (MB), peak = 1161.67 (MB)
+#
+#number of short segments in preferred routing layers
+#	
+#	
+#
+#Routing data preparation, pin analysis, global routing and track assignment statistics:
+#Cpu time = 00:00:04
+#Elapsed time = 00:00:04
+#Increased memory = 19.88 (MB)
+#Total memory = 1024.38 (MB)
+#Peak memory = 1161.67 (MB)
+#
+#Start Detail Routing..
+#start initial detail routing ...
+

@@ -1,0 +1,257 @@
+er/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance if_stage_i/pc_id_o_reg[30] is not connected to any pow
+er/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance if_stage_i/pc_id_o_reg[30] is not connected to any po
+wer/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance if_stage_i/instr_rdata_id_o_reg[31] is not connected
+to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground ne
+t.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance if_stage_i/instr_rdata_id_o_reg[31] is not connected t
+o any power/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground net
+.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance if_stage_i/instr_rdata_id_o_reg[31] is not connected t
+o any power/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground net
+.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance if_stage_i/instr_rdata_id_o_reg[31] is not connected
+to any power/ground net. Use command globalNetConnect to connect the power/ground pin to a power/ground ne
+t.
+#WARNING (NRIG-34) Power/Ground pin VPWR of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fetc
+h_addr_q_reg[2] is not connected to any power/ground net. Use command globalNetConnect to connect the powe
+r/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VPB of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fetch
+_addr_q_reg[2] is not connected to any power/ground net. Use command globalNetConnect to connect the power
+/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VNB of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fetch
+_addr_q_reg[2] is not connected to any power/ground net. Use command globalNetConnect to connect the power
+/ground pin to a power/ground net.
+#WARNING (NRIG-34) Power/Ground pin VGND of instance if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fetc
+h_addr_q_reg[2] is not connected to any power/ground net. Use command globalNetConnect to connect the powe
+r/ground pin to a power/ground net.
+#WARNING (EMS-27) Message (NRIG-34) has exceeded the current message display limit of 20.
+#To increase the message display limit, refer to the product command reference manual.
+#WARNING (NRIG-39) NanoRoute cannot route to pin PIN/test_si of net test_si because it might be a logical
+pin and does not have physical shapes. To fix the problem, check the pin connection in the netlist and ens
+ure the pin shapes exist in the floorplan.
+#WARNING (NRIG-39) NanoRoute cannot route to pin PIN/test_so of net test_so because it might be a logical
+pin and does not have physical shapes. To fix the problem, check the pin connection in the netlist and ens
+ure the pin shapes exist in the floorplan.
+#num needed restored net=0
+#need_extraction net=0 (total=12392)
+#WARNING (NRDB-2005) SPECIAL_NET VDD has special wires but no definitions for instance pins or top level p
+ins. This will cause routability problems later.
+#WARNING (NRDB-2005) SPECIAL_NET VSS has special wires but no definitions for instance pins or top level p
+ins. This will cause routability problems later.
+#WARNING (NRDB-976) The TRACK STEP 0.6100 for preferred direction tracks is smaller than the PITCH 0.6800
+for LAYER met3. This will cause routability problems for NanoRoute.
+#WARNING (NRDB-976) The TRACK STEP 0.6900 for preferred direction tracks is smaller than the PITCH 0.9200
+for LAYER met4. This will cause routability problems for NanoRoute.
+#NanoRoute Version 20.10-p004_1 NR200413-0234/20_10-UB
+#Skip comparing routing design signature in db-snapshot flow
+#Start routing data preparation on Wed Mar  4 12:19:11 2026
+#
+#WARNING (NRDB-2040) Rule LEF_DEFAULT doesn't specify any vias that satisfy all of the area rules for laye
+r met3
+#WARNING (NRDB-2040) Rule cts_1 doesn't specify any vias that satisfy all of the area rules for layer met3
+
+#Minimum voltage of a net in the design = 0.000.
+#Maximum voltage of a net in the design = 1.800.
+#Voltage range [0.000 - 1.800] has 12390 nets.
+#Voltage range [1.800 - 1.800] has 1 net.
+#Voltage range [0.000 - 0.000] has 1 net.
+# li1          V   Track-Pitch = 0.4600    Line-2-Via Pitch = 0.3400
+# met1         H   Track-Pitch = 0.3400    Line-2-Via Pitch = 0.3250
+# met2         V   Track-Pitch = 0.4600    Line-2-Via Pitch = 0.3400
+# met3         H   Track-Pitch = 0.6100    Line-2-Via Pitch = 0.6100
+# met4         V   Track-Pitch = 0.6900    Line-2-Via Pitch = 0.6150
+# met5         H   Track-Pitch = 3.6600    Line-2-Via Pitch = 3.2000
+#Monitoring time of adding inner blkg by smac
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 855.48 (MB), peak = 888.48 (MB)
+#Regenerating Ggrids automatically.
+#Auto generating G-grids with size=15 tracks, using layer met2's pitch = 0.4600.
+#Using automatically generated G-grids.
+#Done routing data preparation.
+#cpu time = 00:00:07, elapsed time = 00:00:07, memory = 858.62 (MB), peak = 888.48 (MB)
+#reading routing guides ......
+#
+#Finished routing data preparation on Wed Mar  4 12:19:18 2026
+#
+#Cpu time = 00:00:07
+#Elapsed time = 00:00:07
+#Increased memory = 15.07 (MB)
+#Total memory = 858.75 (MB)
+#Peak memory = 888.48 (MB)
+#
+#
+#Start global routing on Wed Mar  4 12:19:18 2026
+#
+#
+#Start global routing initialization on Wed Mar  4 12:19:18 2026
+#
+#Number of eco nets is 0
+#
+#Start global routing data preparation on Wed Mar  4 12:19:18 2026
+#
+#Start routing resource analysis on Wed Mar  4 12:19:18 2026
+#
+#Routing resource analysis is done on Wed Mar  4 12:19:18 2026
+#
+#  Resource Analysis:
+#
+#               Routing  #Avail      #Track     #Total     %Gcell
+#  Layer      Direction   Track     Blocked      Gcell    Blocked
+#  --------------------------------------------------------------
+#  li1            V        1209           0        6480    46.64%
+#  met1           H        1622           0        6480     0.00%
+#  met2           V        1209           0        6480     0.00%
+#  met3           H         879           0        6480     0.00%
+#  met4           V         423         382        6480     6.17%
+#  met5           H          54          96        6480    55.00%
+#  --------------------------------------------------------------
+#  Total                   5396      18.58%       38880    17.97%
+#
+#  45 nets (0.36%) with 1 preferred extra spacing.
+#
+#
+#
+#Global routing data preparation is done on Wed Mar  4 12:19:18 2026
+#
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 860.23 (MB), peak = 888.48 (MB)
+#
+#Routing guide is on.
+#
+#Global routing initialization is done on Wed Mar  4 12:19:18 2026
+#
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 860.29 (MB), peak = 888.48 (MB)
+#
+#start global routing iteration 1...
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 864.23 (MB), peak = 888.48 (MB)
+#
+#start global routing iteration 2...
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 864.34 (MB), peak = 888.48 (MB)
+#
+#
+#Total number of trivial nets (e.g. < 2 pins) = 340 (skipped).
+#Total number of selected nets for routing = 72.
+#Total number of unselected nets (but routable) for routing = 11980 (skipped).
+#Total number of nets in the design = 12392.
+#
+#11980 skipped nets do not have any wires.
+#72 routable nets have only global wires.
+#72 global routed or unrouted (routable) nets have been constrained (e.g. have preferred extra spacing, re
+quire shielding etc.)
+#
+#Routed net constraints summary:
+#----------------------------------------------------------------------------
+#        Rules   Pref Extra Space   Pref Layer   Avoid Detour   Unconstrained
+#----------------------------------------------------------------------------
+#      Default                 45            0              0               0
+#        cts_1                  0           27             27               0
+#----------------------------------------------------------------------------
+#        Total                 45           27             27               0
+#----------------------------------------------------------------------------
+#
+#Routing constraints summary of the whole design:
+#----------------------------------------------------------------------------
+#        Rules   Pref Extra Space   Pref Layer   Avoid Detour   Unconstrained
+#----------------------------------------------------------------------------
+#      Default                 45            0              0           11980
+#        cts_1                  0           27             27               0
+#----------------------------------------------------------------------------
+#        Total                 45           27             27           11980
+#----------------------------------------------------------------------------
+#
+#
+#  Congestion Analysis: (blocked Gcells are excluded)
+#
+#                 OverCon       OverCon
+#                  #Gcell        #Gcell    %Gcell
+#     Layer           (1)           (2)   OverCon
+#  ----------------------------------------------
+#  met1          0(0.00%)      0(0.00%)   (0.00%)
+#  met2         38(0.59%)      2(0.03%)   (0.62%)
+#  met3          1(0.02%)      0(0.00%)   (0.02%)
+#  met4          0(0.00%)      0(0.00%)   (0.00%)
+#  met5          0(0.00%)      0(0.00%)   (0.00%)
+#  ----------------------------------------------
+#     Total     39(0.14%)      2(0.01%)   (0.14%)
+#
+#  The worst congested Gcell overcon (routing demand over resource in number of tracks) = 2
+#  Overflow after GR: 0.00% H + 0.14% V
+#
+#Complete Global Routing.
+#Total number of nets with non-default rule or having extra spacing = 72
+#Total wire length = 20300 um.
+#Total half perimeter of net bounding box = 11364 um.
+#Total wire length on LAYER li1 = 0 um.
+#Total wire length on LAYER met1 = 4119 um.
+#Total wire length on LAYER met2 = 9336 um.
+#Total wire length on LAYER met3 = 5699 um.
+#Total wire length on LAYER met4 = 1145 um.
+#Total wire length on LAYER met5 = 0 um.
+#Total number of vias = 4604
+#Up-Via Summary (total 4604):
+#
+#-----------------------
+# li1              2026
+# met1             1617
+# met2              739
+# met3              222
+#-----------------------
+#                  4604
+#
+#Total number of involved priority nets 72
+#Maximum src to sink distance for priority net 833.9
+#Average of max src_to_sink distance for priority net 135.5
+#Average of ave src_to_sink distance for priority net 81.8
+#Max overcon = 2 tracks.
+#Total overcon = 0.14%.
+#Worst layer Gcell overcon rate = 0.62%.
+#
+#Global routing statistics:
+#Cpu time = 00:00:01
+#Elapsed time = 00:00:01
+#Increased memory = 5.81 (MB)
+#Total memory = 864.57 (MB)
+#Peak memory = 888.48 (MB)
+#
+#Finished global routing on Wed Mar  4 12:19:19 2026
+#
+#
+#reading routing guides ......
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 863.91 (MB), peak = 888.48 (MB)
+#Start Track Assignment.
+#Done with 1302 horizontal wires in 3 hboxes and 1185 vertical wires in 3 hboxes.
+#Done with 1268 horizontal wires in 3 hboxes and 1175 vertical wires in 3 hboxes.
+#Complete Track Assignment.
+#Total number of nets with non-default rule or having extra spacing = 72
+#Total wire length = 20403 um.
+#Total half perimeter of net bounding box = 11364 um.
+#Total wire length on LAYER li1 = 0 um.
+#Total wire length on LAYER met1 = 4028 um.
+#Total wire length on LAYER met2 = 9228 um.
+#Total wire length on LAYER met3 = 5967 um.
+#Total wire length on LAYER met4 = 1181 um.
+#Total wire length on LAYER met5 = 0 um.
+#Total number of vias = 4604
+#Up-Via Summary (total 4604):
+#
+#-----------------------
+# li1              2026
+# met1             1617
+# met2              739
+# met3              222
+#-----------------------
+#                  4604
+#
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 868.83 (MB), peak = 888.48 (MB)
+#
+#Routing data preparation, pin analysis, global routing and track assignment statistics:
+#Cpu time = 00:00:09
+#Elapsed time = 00:00:09
+#Increased memory = 25.24 (MB)
+#Total memory = 868.84 (MB)
+#Peak memory = 888.48 (MB)
+#
+#Start Detail Routing..
+#start initial detail routing ...
+

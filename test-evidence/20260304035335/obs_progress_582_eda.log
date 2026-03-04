@@ -1,0 +1,257 @@
+
+******** End: VERIFY CONNECTIVITY ********
+  Verification Complete : 1000 Viols.  0 Wrngs.
+  (CPU Time: 0:00:01.1  MEM: 70.000M)
+
+Writing DEF file 'result/pr/data/ibex_routing.def', current time is Wed Mar  4 12:44:22 2026 ...
+unitPerMicron=1000, dbgMicronPerDBU=0.001000, unitPerDBU=1.000000
+DEF file 'result/pr/data/ibex_routing.def' is written, current time is Wed Mar  4 12:44:22 2026 ...
+Writing Netlist "result/pr/data/ibex_routing.vg" ...
+Writing Netlist "result/pr/data/ibex_lvs.vg" ...
+Pwr name (VDD).
+Gnd name (VSS).
+1 Pwr names and 1 Gnd names.
+Extraction called for design 'ibex_core' of instances=11792 and nets=12230 using extraction engine 'postRo
+ute' at effort level 'low' .
+PostRoute (effortLevel low) RC Extraction called for design ibex_core.
+RC Extraction called in multi-corner(2) mode.
+**WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy
+when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to gener
+ate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_r
+c_corner/update_rc_corner -cap_table'.
+Type 'man IMPEXT-6197' for more detail.
+**WARN: (IMPEXT-3032):	Because the cap table file was not provided, it will be created internally with th
+e following process info:
+* Layer Id             : 1 - M1
+      Thickness        : 0.1
+      Min Width        : 0.17
+      Layer Dielectric : 4.1
+* Layer Id             : 2 - M2
+      Thickness        : 0.35
+      Min Width        : 0.14
+      Layer Dielectric : 4.1
+* Layer Id             : 3 - M3
+      Thickness        : 0.35
+      Min Width        : 0.14
+      Layer Dielectric : 4.1
+* Layer Id             : 4 - M4
+      Thickness        : 0.8
+      Min Width        : 0.3
+      Layer Dielectric : 4.1
+* Layer Id             : 5 - M5
+      Thickness        : 0.8
+      Min Width        : 0.3
+      Layer Dielectric : 4.1
+* Layer Id             : 6 - M6
+      Thickness        : 1.2
+      Min Width        : 1.6
+      Layer Dielectric : 4.1
+extractDetailRC Option : -outfile /tmp/innovus_temp_129452_EDA2035_EDA_hYpKqM/ibex_core_129452_PoPUcC.rcdb
+.d  -basic
+RC Mode: PostRoute -effortLevel low [Basic CapTable, LEF Resistances]
+      RC Corner Indexes            0       1
+Capacitance Scaling Factor   : 1.05000 1.00000
+Coupling Cap. Scaling Factor : 1.00000 1.00000
+Resistance Scaling Factor    : 1.05000 1.00000
+Clock Cap. Scaling Factor    : 1.05000 1.00000
+Clock Res. Scaling Factor    : 1.05000 1.00000
+Shrink Factor                : 1.00000
+Initializing multi-corner resistance tables ...
+Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 997.0M)
+Extracted 10.0008% (CPU Time= 0:00:00.5  MEM= 1001.1M)
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'L1M1_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+Extracted 20.0008% (CPU Time= 0:00:00.6  MEM= 1001.1M)
+Extracted 30.0007% (CPU Time= 0:00:00.8  MEM= 1001.1M)
+Extracted 40.0007% (CPU Time= 0:00:00.8  MEM= 1001.1M)
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M1M2_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+Extracted 50.0006% (CPU Time= 0:00:01.1  MEM= 1001.1M)
+Extracted 60.0006% (CPU Time= 0:00:01.4  MEM= 1001.1M)
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M2M3_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M3M4_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+Extracted 70.0005% (CPU Time= 0:00:01.8  MEM= 1001.1M)
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M4M5_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+Extracted 80.0005% (CPU Time= 0:00:02.1  MEM= 1002.1M)
+Extracted 90.0005% (CPU Time= 0:00:02.3  MEM= 1002.1M)
+Extracted 100% (CPU Time= 0:00:02.8  MEM= 1005.1M)
+Number of Extracted Resistors     : 385237
+Number of Extracted Ground Cap.   : 385252
+Number of Extracted Coupling Cap. : 842456
+Filtering XCap in 'relativeAndCoupling' mode using values coupling_c_threshold=0.4fF, relative_c_threshold
+=1, and total_c_threshold=0fF.
+Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1027.1M)
+PostRoute (effortLevel low) RC Extraction DONE (CPU Time: 0:00:04.0  Real Time: 0:00:04.0  MEM: 1029.062M)
+Parse flat map file...
+**WARN: (IMPOGDS-392):	Unknown layer poly
+Type 'man IMPOGDS-392' for more detail.
+**WARN: (IMPOGDS-392):	Unknown layer poly
+Type 'man IMPOGDS-392' for more detail.
+**WARN: (IMPOGDS-392):	Unknown layer poly
+Type 'man IMPOGDS-392' for more detail.
+**WARN: (IMPOGDS-392):	Unknown layer poly
+Type 'man IMPOGDS-392' for more detail.
+**WARN: (IMPOGDS-392):	Unknown layer licon1
+Type 'man IMPOGDS-392' for more detail.
+**WARN: (IMPOGDS-392):	Unknown layer licon1
+Type 'man IMPOGDS-392' for more detail.
+**WARN: (IMPOGDS-392):	Unknown layer licon1
+Type 'man IMPOGDS-392' for more detail.
+Writing GDSII file ...
+	****** db unit per micron = 1000 ******
+	****** output gds2 file unit per micron = 1000 ******
+	****** unit scaling factor = 1 ******
+Output for instance
+Output for bump
+Output for physical terminals
+Output for logical terminals
+Output for regular nets
+Output for special nets and metal fills
+Output for via structure generation total number 14
+Statistics for GDS generated (version 3)
+----------------------------------------
+Stream Out Layer Mapping Information:
+GDS Layer Number          GDS Layer Name
+----------------------------------------
+    72                              met5
+    71                              via4
+    71                              met4
+    70                              via3
+    70                              met3
+    67                               li1
+    68                              met1
+    67                              mcon
+    69                              met2
+    68                               via
+    69                              via2
+
+
+Stream Out Information Processed for GDS version 3:
+Units: 1000 DBU
+
+Object                             Count
+----------------------------------------
+Instances                          11792
+
+Ports/Pins                           264
+    metal layer met2                 139
+    metal layer met3                 125
+
+Nets                              249787
+    metal layer met1              123834
+    metal layer met2               88403
+    metal layer met3               24537
+    metal layer met4               12724
+    metal layer met5                 289
+
+    Via Instances                 134361
+
+Special Nets                         277
+    metal layer met1                 203
+    metal layer met4                  37
+    metal layer met5                  37
+
+    Via Instances                  11950
+
+Metal Fills                            0
+
+    Via Instances                      0
+
+Metal FillOPCs                         0
+
+    Via Instances                      0
+
+Metal FillDRCs                         0
+
+    Via Instances                      0
+
+Text                                   0
+
+
+Blockages                              0
+
+
+Custom Text                            0
+
+
+Custom Box                             0
+
+Trim Metal                             0
+
+######Streamout is finished!
+The in-memory database contained RC information but was not saved. To save
+the RC information, use saveDesign's -rc option. Note: Saving RC information can be quite large,
+so it should only be saved when it is really desired.
+#% Begin save design ... (date=03/04 12:44:27, mem=834.9M)
+% Begin Save ccopt configuration ... (date=03/04 12:44:27, mem=837.9M)
+% End Save ccopt configuration ... (date=03/04 12:44:27, total cpu=0:00:00.1, real=0:00:00.0, peak res=837
+.9M, current mem=836.5M)
+% Begin Save netlist data ... (date=03/04 12:44:27, mem=836.5M)
+Writing Binary DB to result/pr/data/chip_done.enc.dat/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/04 12:44:27, total cpu=0:00:00.1, real=0:00:00.0, peak res=836.6M, cu
+rrent mem=836.6M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/chip_done.enc.dat/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/04 12:44:27, mem=836.7M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/04 12:44:27, total cpu=0:00:00.0, real=0:00:00.0, peak res=836.7M, curren
+t mem=836.7M)
+Saving preference file result/pr/data/chip_done.enc.dat/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/04 12:44:28, mem=839.7M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/04 12:44:28, total cpu=0:00:00.0, real=0:00:00.0, peak res=840.1M,
+current mem=840.1M)
+Saving PG file result/pr/data/chip_done.enc.dat/ibex_core.pg.gz, version#2, (Created by Innovus v20.10-p00
+4_1 on Wed Mar  4 12:44:28 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=984.6M) ***
+Saving Drc markers ...
+... 1003 markers are saved ...
+... 0 geometry drc markers are saved ...
+... 3 antenna drc markers are saved ...
+% Begin Save placement data ... (date=03/04 12:44:28, mem=840.6M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/04 12:44:28, total cpu=0:00:00.0, real=0:00:00.0, peak res=840.6M,
+current mem=840.6M)
+% Begin Save routing data ... (date=03/04 12:44:28, mem=840.6M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.2 real=0:00:01.0 mem=984.6M) ***
+% End Save routing data ... (date=03/04 12:44:29, total cpu=0:00:00.2, real=0:00:01.0, peak res=840.8M, cu
+rrent mem=840.8M)
+Saving SCANDEF file ...
+*** Scan Trace Summary (runtime: cpu: 0:00:00.0 , real: 0:00:00.0):
+Successfully traced 1 scan chain  (total 1940 scan bits).
+Start applying DEF ordered sections ...
+Successfully applied all DEF ordered sections.
+*** Scan Sanity Check Summary:
+*** 1 scan chain  passed sanity check.
+Saving property file result/pr/data/chip_done.enc.dat/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=1178.6M) ***
+#Saving pin access data to file result/pr/data/chip_done.enc.dat/ibex_core.apa ...
+% Begin Save power constraints data ... (date=03/04 12:44:29, mem=841.6M)
+% End Save power constraints data ... (date=03/04 12:44:29, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+841.7M, current mem=841.7M)
+Generated self-contained design chip_done.enc.dat
+#% End save design ... (date=03/04 12:44:34, total cpu=0:00:05.2, real=0:00:07.0, peak res=845.9M, current
+ mem=845.9M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+STAGE 9 COMPLETE: Chip finish and GDS export done
+GDS output: result/pr/data/ibex_core.gds
+
+*** Memory Usage v#1 (Current mem = 1022.969M, initial mem = 249.227M) ***
+*** Message Summary: 74 warning(s), 0 error(s)
+
+--- Ending "Innovus" (totcpu=0:00:42.9, real=0:00:45.0, mem=1023.0M) ---
+
+[EDA@EDA2035 ibex_work_upload]$

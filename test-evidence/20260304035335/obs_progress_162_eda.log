@@ -1,0 +1,257 @@
+GigaOpt DRV: restore maxLocalDensity to 0.98
+**optDesign ... cpu = 0:00:30, real = 0:00:30, mem = 990.1M, totSessionCpu=0:02:42 **
+
+Active setup views:
+ max_view
+  Dominating endpoints: 0
+  Dominating TNS: -0.000
+
+Begin: GigaOpt Global Optimization
+*info: use new DP (enabled)
+GigaOpt Checkpoint: Internal globalOpt -maxLocalDensity 1.2 -numThreads 1 -preCTS -rebufferAll -preRouteDo
+ntEndWithRefinePlaceIncrSteinerRouteDC -enableHighLayerOpt -maxIter 50 -maxIterForLEPG 50
+Info: 2 clock nets excluded from IPO operation.
+*** SetupOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:02:41.9/0:02:43.3 (1.
+0), mem = 1170.0M
+*info: 2 clock nets excluded
+*info: 2 special nets excluded.
+*info: 132 no-driver nets excluded.
+** GigaOpt Global Opt WNS Slack -12.816  TNS Slack -16789.206
++--------+----------+----------+------------+--------+----------+---------+-------------------------------
+---------------------+
+|  WNS   |   TNS    | Density  |    Real    |  Mem   |Worst View|Pathgroup|                     End Point
+                     |
++--------+----------+----------+------------+--------+----------+---------+-------------------------------
+---------------------+
+| -12.816|-16789.206|    40.34%|   0:00:00.0| 1189.1M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/rdata_q_reg[59]/D
+                     |
+Dumping Information for Job 0 **WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M4M5_PR' in
+ Cap table or LEF or OA files. The default value of 4.0 ohms is being assigned. To avoid this, check the C
+ap table and LEF and OA files, provide the resistance and read the files again.
+
+|  -7.295| -8307.441|    40.70%|   0:00:06.0| 1246.8M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -5.995| -5758.880|    41.28%|   0:00:06.0| 1255.3M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -5.995| -5758.880|    41.28%|   0:00:01.0| 1257.1M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -3.426| -2755.481|    41.75%|   0:00:09.0| 1257.1M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -3.105| -1988.269|    41.85%|   0:00:06.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -3.013| -1764.068|    42.03%|   0:00:03.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -3.013| -1764.068|    42.03%|   0:00:01.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -2.186| -1133.452|    42.17%|   0:00:02.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -2.252| -1162.826|    42.17%|   0:00:04.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -2.252| -1151.093|    42.25%|   0:00:02.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -2.252| -1151.093|    42.25%|   0:00:00.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.820|  -574.698|    42.33%|   0:00:01.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -2.034|  -822.822|    42.35%|   0:00:03.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.765|  -481.033|    42.40%|   0:00:01.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.765|  -481.033|    42.40%|   0:00:00.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.684|  -372.268|    42.44%|   0:00:01.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.689|  -321.799|    42.44%|   0:00:02.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.689|  -309.398|    42.50%|   0:00:01.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.689|  -309.398|    42.50%|   0:00:00.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -280.993|    42.53%|   0:00:01.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -279.150|    42.55%|   0:00:01.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -278.798|    42.56%|   0:00:01.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -278.798|    42.56%|   0:00:00.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -278.483|    42.58%|   0:00:00.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -279.394|    42.57%|   0:00:01.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -277.721|    42.58%|   0:00:01.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -277.721|    42.58%|   0:00:00.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -277.679|    42.59%|   0:00:00.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -277.273|    42.60%|   0:00:01.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -277.273|    42.62%|   0:00:00.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -277.273|    42.62%|   0:00:00.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -277.054|    42.63%|   0:00:01.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -277.054|    42.63%|   0:00:00.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -277.054|    42.65%|   0:00:01.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -277.054|    42.65%|   0:00:00.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -277.064|    42.65%|   0:00:00.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
+|  -1.678|  -273.875|    42.67%|   0:00:04.0| 1276.2M|  max_view|  default| if_stage_i/gen_prefetch_buffer
+.prefetch_buffer_i/f |
+|        |          |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                     |
++--------+----------+----------+------------+--------+----------+---------+-------------------------------
+---------------------+
+
+*** Finish pre-CTS Global Setup Fixing (cpu=0:01:01 real=0:01:01 mem=1276.2M) ***
+
+*** Finish pre-CTS Setup Fixing (cpu=0:01:01 real=0:01:01 mem=1276.2M) ***
+Bottom Preferred Layer:
+    None
+Via Pillar Rule:
+    None
+** GigaOpt Global Opt End WNS Slack -1.678  TNS Slack -273.875
+*** SetupOpt [finish] : cpu/real = 0:01:09.3/0:01:09.4 (1.0), totSession cpu/real = 0:03:51.2/0:03:52.6 (1
+.0), mem = 1257.1M
+End: GigaOpt Global Optimization
+*** Timing NOT met, worst failing slack is -1.678
+*** Check timing (0:00:00.0)
+GigaOpt Checkpoint: Internal reclaim -numThreads 1 -preCTS -force -doRemoveUselessTerm -tgtSlackMult 3 -ro
+uteType -noRouteTypeResizePolish -noViewPrune -weedwhack -nonLegal -nativePathGroupFlow
+Info: 2 clock nets excluded from IPO operation.
+Begin: Area Reclaim Optimization
+*** AreaOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:03:53.5/0:03:54.9 (1.0
+), mem = 1218.2M
+Reclaim Optimization WNS Slack -1.678  TNS Slack -273.875 Density 42.67
++----------+---------+--------+--------+------------+--------+
+| Density  | Commits |  WNS   |  TNS   |    Real    |  Mem   |
++----------+---------+--------+--------+------------+--------+
+|    42.67%|        -|  -1.678|-273.875|   0:00:00.0| 1218.2M|
+|    42.67%|        0|  -1.678|-273.875|   0:00:16.0| 1238.8M|
+|    42.67%|        0|  -1.678|-273.875|   0:00:00.0| 1238.8M|
+|    42.48%|      103|  -1.678|-275.301|   0:00:01.0| 1262.4M|
+|    41.45%|     2139|  -1.671|-275.301|   0:00:10.0| 1265.4M|
+|    41.43%|       36|  -1.671|-275.206|   0:00:01.0| 1265.4M|
+|    41.43%|        0|  -1.671|-275.206|   0:00:00.0| 1265.4M|
+|    41.43%|        0|  -1.671|-275.206|   0:00:00.0| 1265.4M|
++----------+---------+--------+--------+------------+--------+
+Reclaim Optimization End WNS Slack -1.671  TNS Slack -275.206 Density 41.43
+Bottom Preferred Layer:
+    None
+Via Pillar Rule:
+    None
+End: Core Area Reclaim Optimization (cpu = 0:00:31.2) (real = 0:00:31.0) **
+*** AreaOpt [finish] : cpu/real = 0:00:29.2/0:00:29.2 (1.0), totSession cpu/real = 0:04:22.6/0:04:24.1 (1.
+0), mem = 1265.4M
+Executing incremental physical updates
+Executing incremental physical updates
+End: Area Reclaim Optimization (cpu=0:00:31, real=0:00:31, mem=1198.35M, totSessionCpu=0:04:23).
+
+*** Start incrementalPlace ***
+Collecting buffer chain nets ...
+No Views given, use default active views for adaptive view pruning
+SKP will enable view:
+  max_view
+[NR-eGR] Num Prerouted Nets = 0  Num Prerouted Wires = 0
+[NR-eGR] Read numTotalNets=12019  numIgnoredNets=0
+[NR-eGR] There are 2 clock nets ( 0 with NDR ).
+[NR-eGR] ============ Routing rule table ============
+[NR-eGR] Rule id: 0  Nets: 12019
+[NR-eGR] ========================================
+[NR-eGR]
+[NR-eGR] Layer group 1: route 12019 net(s) in layer range [2, 5]
+[NR-eGR] Early Global Route overflow of layer group 1: 5.34% H + 7.48% V. EstWL: 7.289083e+05um
+[NR-eGR] Overflow after Early Global Route (GR compatible) 1.26% H + 3.59% V
+[NR-eGR] Overflow after Early Global Route 1.62% H + 4.10% V
+Early Global Route congestion estimation runtime: 0.52 seconds, mem = 1210.9M
+Local HotSpot Analysis: normalized max congestion hotspot area = 6.00, normalized total congestion hotspot
+ area = 34.44 (area is in unit of 4 std-cell row bins)
+
+=== incrementalPlace Internal Loop 1 ===
+*** Finished SKP initialization (cpu=0:00:01.9, real=0:00:02.0)***
+Iteration  7: Total net bbox = 5.690e+05 (2.50e+05 3.19e+05)
+              Est.  stn bbox = 7.260e+05 (3.16e+05 4.10e+05)
+              cpu = 0:00:08.2 real = 0:00:08.0 mem = 1263.0M
+Iteration  8: Total net bbox = 5.732e+05 (2.53e+05 3.20e+05)
+              Est.  stn bbox = 7.291e+05 (3.20e+05 4.09e+05)
+              cpu = 0:00:15.3 real = 0:00:15.0 mem = 1256.0M
+

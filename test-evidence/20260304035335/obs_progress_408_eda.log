@@ -1,0 +1,257 @@
+#Start routing resource analysis on Wed Mar  4 12:27:55 2026
+#
+#Routing resource analysis is done on Wed Mar  4 12:27:55 2026
+#
+#  Resource Analysis:
+#
+#               Routing  #Avail      #Track     #Total     %Gcell
+#  Layer      Direction   Track     Blocked      Gcell    Blocked
+#  --------------------------------------------------------------
+#  li1            V        1209           0        6480    46.51%
+#  met1           H        1622           0        6480     0.00%
+#  met2           V        1209           0        6480     0.00%
+#  met3           H         873           6        6480     0.00%
+#  met4           V         423         382        6480     6.17%
+#  met5           H          54          96        6480    55.00%
+#  --------------------------------------------------------------
+#  Total                   5390      18.68%       38880    17.95%
+#
+#  45 nets (0.37%) with 1 preferred extra spacing.
+#
+#
+#
+#Global routing data preparation is done on Wed Mar  4 12:27:55 2026
+#
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 865.70 (MB), peak = 892.73 (MB)
+#
+#
+#Global routing initialization is done on Wed Mar  4 12:27:55 2026
+#
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 865.76 (MB), peak = 892.73 (MB)
+#
+#start global routing iteration 1...
+#cpu time = 00:00:36, elapsed time = 00:00:36, memory = 883.01 (MB), peak = 928.30 (MB)
+#
+#start global routing iteration 2...
+#cpu time = 00:00:17, elapsed time = 00:00:17, memory = 883.38 (MB), peak = 928.30 (MB)
+#
+#
+#Total number of trivial nets (e.g. < 2 pins) = 146 (skipped).
+#Total number of routable nets = 12039.
+#Total number of nets in the design = 12185.
+#
+#11969 routable nets have only global wires.
+#70 routable nets have only detail routed wires.
+#2 global routed or unrouted (routable) nets have been constrained (e.g. have preferred extra spacing, req
+uire shielding etc.)
+#70 detail routed (routable) nets have been constrained (e.g. have preferred extra spacing, require shield
+ing etc.)
+#
+#Routed nets constraints summary:
+#-------------------------------------------------------------
+#        Rules   Pref Extra Space   Pref Layer   Unconstrained
+#-------------------------------------------------------------
+#      Default                  1            0           11967
+#        cts_1                  0            1               0
+#-------------------------------------------------------------
+#        Total                  1            1           11967
+#-------------------------------------------------------------
+#
+#Routing constraints summary of the whole design:
+#-------------------------------------------------------------
+#        Rules   Pref Extra Space   Pref Layer   Unconstrained
+#-------------------------------------------------------------
+#      Default                 45            0           11967
+#        cts_1                  0           27               0
+#-------------------------------------------------------------
+#        Total                 45           27           11967
+#-------------------------------------------------------------
+#
+#
+#  Congestion Analysis: (blocked Gcells are excluded)
+#
+#                 OverCon       OverCon       OverCon
+#                  #Gcell        #Gcell        #Gcell    %Gcell
+#     Layer         (1-2)         (3-4)         (5-6)   OverCon
+#  ------------------------------------------------------------
+#  met1        243(3.75%)     10(0.15%)      1(0.02%)   (3.92%)
+#  met2       1451(22.4%)     45(0.69%)      0(0.00%)   (23.1%)
+#  met3        117(1.81%)      0(0.00%)      0(0.00%)   (1.81%)
+#  met4        363(5.97%)      0(0.00%)      0(0.00%)   (5.97%)
+#  met5          0(0.00%)      0(0.00%)      0(0.00%)   (0.00%)
+#  ------------------------------------------------------------
+#     Total   2174(7.65%)     55(0.19%)      1(0.00%)   (7.84%)
+#
+#  The worst congested Gcell overcon (routing demand over resource in number of tracks) = 6
+#  Overflow after GR: 1.30% H + 6.54% V
+#
+#Hotspot report including placement blocked areas
+[hotspot] +----------------+-------------------+-------------------+-------------------------------------+
+[hotspot] |      layer     |    max hotspot    |   total hotspot   |            hotspot bbox             |
+[hotspot] +----------------+-------------------+-------------------+-------------------------------------+
+[hotspot] |     met1(H)    |              7.00 |             50.00 |   489.60    97.92   533.12   130.56 |
+[hotspot] |     met2(V)    |            793.00 |           1062.00 |    -0.01    -0.01   556.14   533.12 |
+[hotspot] |     met3(H)    |              9.00 |             96.00 |   359.04    54.40   391.68   108.80 |
+[hotspot] |     met4(V)    |            362.00 |           1114.00 |   163.19    54.40   304.63   489.60 |
+[hotspot] |     met5(H)    |             14.00 |             71.00 |   359.04   533.12   511.36   544.00 |
+[hotspot] +----------------+-------------------+-------------------+-------------------------------------+
+[hotspot] |      worst     |   (met2)   793.00 |   (met4)  1114.00 |                                     |
+[hotspot] +----------------+-------------------+-------------------+-------------------------------------+
+[hotspot] |   all layers   |            772.00 |           1083.00 |                                     |
+[hotspot] +----------------+-------------------+-------------------+-------------------------------------+
+Local HotSpot Analysis (3d): normalized congestion max/total hotspot area = 772.00/1083.00 (area is in uni
+t of 4 std-cell row bins)
+[hotspot] top 5 congestion hotspot bounding boxes and scores of all layers hotspot
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] | top |            hotspot bbox             | hotspot score |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  1  |    -0.01    -0.01   556.14   489.60 |     1040.00   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  2  |    87.03    32.63   184.96   184.96 |       58.00   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  3  |   239.36   413.44   326.39   489.60 |       26.00   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  4  |    -0.01   315.51    76.16   380.80 |       21.00   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  5  |   174.08    43.52   272.00    97.92 |       18.00   |
+[hotspot] +-----+-------------------------------------+---------------+
+#Complete Global Routing.
+#Total number of nets with non-default rule or having extra spacing = 72
+#Total wire length = 792427 um.
+#Total half perimeter of net bounding box = 624253 um.
+#Total wire length on LAYER li1 = 0 um.
+#Total wire length on LAYER met1 = 231957 um.
+#Total wire length on LAYER met2 = 186523 um.
+#Total wire length on LAYER met3 = 190715 um.
+#Total wire length on LAYER met4 = 170889 um.
+#Total wire length on LAYER met5 = 12343 um.
+#Total number of vias = 100329
+#Up-Via Summary (total 100329):
+#
+#-----------------------
+# li1             47689
+# met1            31080
+# met2            12694
+# met3             8538
+# met4              328
+#-----------------------
+#                100329
+#
+#Max overcon = 6 tracks.
+#Total overcon = 7.84%.
+#Worst layer Gcell overcon rate = 23.09%.
+#
+#Global routing statistics:
+#Cpu time = 00:00:54
+#Elapsed time = 00:00:54
+#Increased memory = 19.97 (MB)
+#Total memory = 883.86 (MB)
+#Peak memory = 928.30 (MB)
+#
+#Finished global routing on Wed Mar  4 12:28:48 2026
+#
+#
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 883.21 (MB), peak = 928.30 (MB)
+#Start Track Assignment.
+#Done with 31664 horizontal wires in 3 hboxes and 21889 vertical wires in 3 hboxes.
+#Done with 9341 horizontal wires in 3 hboxes and 3559 vertical wires in 3 hboxes.
+#Done with 3 horizontal wires in 3 hboxes and 3 vertical wires in 3 hboxes.
+#
+#Track assignment summary:
+# layer   (wire length)   (overlap)     (long ovlp)	(with obs/pg/clk)
+#------------------------------------------------------------------------
+# met1      226614.42 	  0.32%  	  0.00% 	  0.04%
+# met2      172550.50 	  0.39%  	  0.00% 	  0.02%
+# met3      179793.24 	  1.67%  	  0.07% 	  0.33%
+# met4      170447.35 	  0.88%  	  0.04% 	  0.02%
+# met5       12569.89 	  0.02%  	  0.00% 	  0.00%
+#------------------------------------------------------------------------
+# All      761975.40  	  0.77% 	  0.02% 	  0.00%
+#Complete Track Assignment.
+#Total number of nets with non-default rule or having extra spacing = 72
+#Total wire length = 807190 um.
+#Total half perimeter of net bounding box = 624253 um.
+#Total wire length on LAYER li1 = 0 um.
+#Total wire length on LAYER met1 = 245554 um.
+#Total wire length on LAYER met2 = 185713 um.
+#Total wire length on LAYER met3 = 191537 um.
+#Total wire length on LAYER met4 = 171953 um.
+#Total wire length on LAYER met5 = 12431 um.
+#Total number of vias = 100329
+#Up-Via Summary (total 100329):
+#
+#-----------------------
+# li1             47689
+# met1            31080
+# met2            12694
+# met3             8538
+# met4              328
+#-----------------------
+#                100329
+#
+#cpu time = 00:00:07, elapsed time = 00:00:07, memory = 883.99 (MB), peak = 928.30 (MB)
+#
+#number of short segments in preferred routing layers
+#	
+#	
+#
+#Routing data preparation, pin analysis, global routing and track assignment statistics:
+#Cpu time = 00:01:01
+#Elapsed time = 00:01:01
+#Increased memory = 38.98 (MB)
+#Total memory = 884.28 (MB)
+#Peak memory = 928.30 (MB)
+#
+#Start Detail Routing..
+#start initial detail routing ...
+#   number of violations = 352
+#
+#    By Layer and Type :
+#	         MetSpc    Short     Loop   CutSpc   Totals
+#	li1           0        0        0        3        3
+#	met1         60       96        0        0      156
+#	met2         19       94        0        0      113
+#	met3         64        3        0        0       67
+#	met4          0       10        3        0       13
+#	Totals      143      203        3        3      352
+#255 out of 11747 instances (2.2%) need to be verified(marked ipoed), dirty area = 0.7%.
+#30.6% of the total area is being checked for drcs
+#30.6% of the total area was checked
+#   number of violations = 352
+#
+#    By Layer and Type :
+#	         MetSpc    Short     Loop   CutSpc   Totals
+#	li1           0        0        0        3        3
+#	met1         60       96        0        0      156
+#	met2         19       94        0        0      113
+#	met3         64        3        0        0       67
+#	met4          0       10        3        0       13
+#	Totals      143      203        3        3      352
+#cpu time = 00:03:52, elapsed time = 00:03:52, memory = 912.13 (MB), peak = 1309.56 (MB)
+#start 1st optimization iteration ...
+#   number of violations = 52
+#
+#    By Layer and Type :
+#	         MetSpc    Short   Totals
+#	li1           0        0        0
+#	met1         15       30       45
+#	met2          1        2        3
+#	met3          2        0        2
+#	met4          0        2        2
+#	Totals       18       34       52
+#    number of process antenna violations = 532
+#cpu time = 00:00:15, elapsed time = 00:00:15, memory = 908.77 (MB), peak = 1309.56 (MB)
+#start 2nd optimization iteration ...
+#   number of violations = 35
+#
+#    By Layer and Type :
+#	         MetSpc    Short   Totals
+#	li1           0        0        0
+#	met1         11       21       32
+#	met2          0        2        2
+#	met3          1        0        1
+#	Totals       12       23       35
+#    number of process antenna violations = 543
+#cpu time = 00:00:03, elapsed time = 00:00:03, memory = 909.95 (MB), peak = 1309.56 (MB)
+#start 3rd optimization iteration ...
+

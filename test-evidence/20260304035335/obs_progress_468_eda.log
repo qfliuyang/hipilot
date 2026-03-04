@@ -1,0 +1,257 @@
+#Total number of fails = 0
+#Complete globalDetailRoute on Wed Mar  4 12:34:21 2026
+#
+% End globalDetailRoute (date=03/04 12:34:21, total cpu=0:06:34, real=0:06:35, peak res=1309.6M, current m
+em=892.3M)
+#Default setup view is reset to max_view.
+#Default setup view is reset to max_view.
+#routeDesign: cpu time = 00:06:35, elapsed time = 00:06:35, memory = 887.50 (MB), peak = 1309.56 (MB)
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPEXT-6197          1  The Cap table file is not specified. Thi...
+WARNING   IMPEXT-2882          4  Unable to find the resistance for via '%...
+WARNING   IMPCK-8086           1  The command %s is obsolete and will be r...
+WARNING   IMPESI-3014          1  The RC network is incomplete for net %s....
+*** Message Summary: 7 warning(s), 0 error(s)
+
+#% End routeDesign (date=03/04 12:34:21, total cpu=0:06:35, real=0:06:35, peak res=1309.6M, current mem=88
+7.5M)
+ Reset EOS DB
+Ignoring AAE DB Resetting ...
+Extraction called for design 'ibex_core' of instances=11747 and nets=12185 using extraction engine 'postRo
+ute' at effort level 'low' .
+PostRoute (effortLevel low) RC Extraction called for design ibex_core.
+RC Extraction called in multi-corner(2) mode.
+**WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy
+when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to gener
+ate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_r
+c_corner/update_rc_corner -cap_table'.
+Type 'man IMPEXT-6197' for more detail.
+**WARN: (IMPEXT-3032):	Because the cap table file was not provided, it will be created internally with th
+e following process info:
+* Layer Id             : 1 - M1
+      Thickness        : 0.1
+      Min Width        : 0.17
+      Layer Dielectric : 4.1
+* Layer Id             : 2 - M2
+      Thickness        : 0.35
+      Min Width        : 0.14
+      Layer Dielectric : 4.1
+* Layer Id             : 3 - M3
+      Thickness        : 0.35
+      Min Width        : 0.14
+      Layer Dielectric : 4.1
+* Layer Id             : 4 - M4
+      Thickness        : 0.8
+      Min Width        : 0.3
+      Layer Dielectric : 4.1
+* Layer Id             : 5 - M5
+      Thickness        : 0.8
+      Min Width        : 0.3
+      Layer Dielectric : 4.1
+* Layer Id             : 6 - M6
+      Thickness        : 1.2
+      Min Width        : 1.6
+      Layer Dielectric : 4.1
+extractDetailRC Option : -outfile /tmp/innovus_temp_119159_EDA2035_EDA_KjzgFs/ibex_core_119159_uFWUXT.rcdb
+.d  -basic
+RC Mode: PostRoute -effortLevel low [Basic CapTable, LEF Resistances]
+      RC Corner Indexes            0       1
+Capacitance Scaling Factor   : 1.05000 1.00000
+Coupling Cap. Scaling Factor : 1.00000 1.00000
+Resistance Scaling Factor    : 1.05000 1.00000
+Clock Cap. Scaling Factor    : 1.05000 1.00000
+Clock Res. Scaling Factor    : 1.05000 1.00000
+Shrink Factor                : 1.00000
+Initializing multi-corner resistance tables ...
+Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1092.3M)
+Extracted 10.0007% (CPU Time= 0:00:00.6  MEM= 1118.3M)
+Extracted 20.0005% (CPU Time= 0:00:00.7  MEM= 1118.3M)
+Extracted 30.0008% (CPU Time= 0:00:00.8  MEM= 1118.3M)
+Extracted 40.0006% (CPU Time= 0:00:00.9  MEM= 1118.3M)
+Extracted 50.0009% (CPU Time= 0:00:01.2  MEM= 1118.3M)
+Extracted 60.0007% (CPU Time= 0:00:01.5  MEM= 1118.3M)
+Extracted 70.0005% (CPU Time= 0:00:01.9  MEM= 1122.3M)
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M4M5_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+Extracted 80.0008% (CPU Time= 0:00:02.3  MEM= 1122.3M)
+Extracted 90.0006% (CPU Time= 0:00:02.4  MEM= 1122.3M)
+Extracted 100% (CPU Time= 0:00:03.1  MEM= 1122.3M)
+Number of Extracted Resistors     : 378493
+Number of Extracted Ground Cap.   : 378527
+Number of Extracted Coupling Cap. : 829228
+Filtering XCap in 'relativeAndCoupling' mode using values coupling_c_threshold=0.4fF, relative_c_threshold
+=1, and total_c_threshold=0fF.
+Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1120.3M)
+PostRoute (effortLevel low) RC Extraction DONE (CPU Time: 0:00:04.5  Real Time: 0:00:04.0  MEM: 1126.324M)
+Starting delay calculation for Setup views
+AAE DB initialization (MEM=1143.4 CPU=0:00:00.0 REAL=0:00:00.0)
+Starting SI iteration 1 using Infinite Timing Windows
+#################################################################################
+# Design Stage: PostRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC OCV
+# Parasitics Mode: SPEF/RCDB
+# Signoff Settings: SI On
+#################################################################################
+AAE_INFO: 1 threads acquired from CTE.
+Start delay calculation (fullDC) (1 T). (MEM=1143.4)
+Initializing multi-corner resistance tables ...
+**WARN: (IMPESI-3140):	Bumpy transitions may exist in the design which may lead to inaccurate delay compu
+tation. To report/analyze the nets having bumpy transition, please enable delay report and use command 're
+port_noise -bumpy_waveform -threshold 0' after timing analysis. Delay report is enabled by setting 'set_si
+_mode -enable_delay_report true' before timing analysis.
+Type 'man IMPESI-3140' for more detail.
+Total number of fetched objects 12043
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+AAE_INFO-618: Total number of nets in the design is 12185,  98.8 percent of the nets selected for SI analy
+sis
+End delay calculation. (MEM=1234.74 CPU=0:00:06.4 REAL=0:00:07.0)
+End delay calculation (fullDC). (MEM=1207.66 CPU=0:00:07.1 REAL=0:00:07.0)
+Loading CTE timing window with TwFlowType 0...(CPU = 0:00:00.0, REAL = 0:00:00.0, MEM = 1207.7M)
+Add other clocks and setupCteToAAEClockMapping during iter 1
+Loading CTE timing window is completed (CPU = 0:00:00.1, REAL = 0:00:00.0, MEM = 1207.7M)
+Starting SI iteration 2
+Start delay calculation (fullDC) (1 T). (MEM=1156.78)
+Glitch Analysis: View max_view -- Total Number of Nets Skipped = 0.
+Glitch Analysis: View max_view -- Total Number of Nets Analyzed = 12043.
+Total number of fetched objects 12043
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+AAE_INFO-618: Total number of nets in the design is 12185,  44.5 percent of the nets selected for SI analy
+sis
+End delay calculation. (MEM=1200.46 CPU=0:00:06.1 REAL=0:00:06.0)
+End delay calculation (fullDC). (MEM=1200.46 CPU=0:00:06.1 REAL=0:00:06.0)
+*** Done Building Timing Graph (cpu=0:00:15.9 real=0:00:16.0 totSessionCpu=0:07:26 mem=1200.5M)
+
+------------------------------------------------------------
+          timeDesign Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):| -3.018  | -3.018  |  0.261  | -1.732  |  8.955  | -0.741  |
+|           TNS (ns):| -3240.8 | -3235.8 |  0.000  | -4.262  |  0.000  | -0.741  |
+|    Violating Paths:|  1580   |  1574   |    0    |    5    |    0    |    1    |
+|          All Paths:|  7573   |  3880   |  5390   |   101   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |     32 (32)      |   -0.048   |     32 (32)      |
+|   max_tran     |     34 (121)     |   -2.556   |     34 (121)     |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 41.052%
+Total number of glitch violations: 7
+------------------------------------------------------------
+Reported timing to dir result/pr/report/routing_timing
+Total CPU time: 22.15 sec
+Total Real time: 23.0 sec
+Total Memory Usage: 1152.433594 Mbytes
+Reset AAE Options
+The in-memory database contained RC information but was not saved. To save
+the RC information, use saveDesign's -rc option. Note: Saving RC information can be quite large,
+so it should only be saved when it is really desired.
+#% Begin save design ... (date=03/04 12:34:44, mem=989.3M)
+% Begin Save ccopt configuration ... (date=03/04 12:34:44, mem=992.3M)
+% End Save ccopt configuration ... (date=03/04 12:34:44, total cpu=0:00:00.1, real=0:00:00.0, peak res=993
+.6M, current mem=993.6M)
+% Begin Save netlist data ... (date=03/04 12:34:44, mem=993.7M)
+Writing Binary DB to result/pr/data/routing.enc.dat/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/04 12:34:44, total cpu=0:00:00.1, real=0:00:00.0, peak res=993.8M, cu
+rrent mem=993.8M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/routing.enc.dat/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/04 12:34:44, mem=993.9M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/04 12:34:44, total cpu=0:00:00.0, real=0:00:00.0, peak res=994.0M, curren
+t mem=994.0M)
+Saving preference file result/pr/data/routing.enc.dat/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/04 12:34:45, mem=994.8M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/04 12:34:45, total cpu=0:00:00.1, real=0:00:00.0, peak res=995.0M,
+current mem=995.0M)
+Saving PG file result/pr/data/routing.enc.dat/ibex_core.pg.gz, version#2, (Created by Innovus v20.10-p004_
+1 on Wed Mar  4 12:34:45 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=1153.0M) ***
+Saving Drc markers ...
+... 5 markers are saved ...
+... 0 geometry drc markers are saved ...
+... 5 antenna drc markers are saved ...
+% Begin Save placement data ... (date=03/04 12:34:45, mem=995.1M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/04 12:34:45, total cpu=0:00:00.0, real=0:00:00.0, peak res=995.1M,
+current mem=995.1M)
+% Begin Save routing data ... (date=03/04 12:34:45, mem=995.1M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.3 real=0:00:01.0 mem=1153.0M) ***
+% End Save routing data ... (date=03/04 12:34:46, total cpu=0:00:00.3, real=0:00:01.0, peak res=995.4M, cu
+rrent mem=995.4M)
+Saving SCANDEF file ...
+*** Scan Trace Summary (runtime: cpu: 0:00:00.0 , real: 0:00:00.0):
+Successfully traced 1 scan chain  (total 1940 scan bits).
+Start applying DEF ordered sections ...
+Successfully applied all DEF ordered sections.
+*** Scan Sanity Check Summary:
+*** 1 scan chain  passed sanity check.
+Saving property file result/pr/data/routing.enc.dat/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=1347.0M) ***
+#Saving pin access data to file result/pr/data/routing.enc.dat/ibex_core.apa ...
+#
+% Begin Save power constraints data ... (date=03/04 12:34:47, mem=997.3M)
+% End Save power constraints data ... (date=03/04 12:34:47, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+997.4M, current mem=997.4M)
+Generated self-contained design routing.enc.dat
+#% End save design ... (date=03/04 12:34:51, total cpu=0:00:05.7, real=0:00:07.0, peak res=999.4M, current
+ mem=999.4M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+STAGE 7 COMPLETE: Routing done
+
+*** Memory Usage v#1 (Current mem = 1193.277M, initial mem = 249.230M) ***
+*** Message Summary: 67 warning(s), 0 error(s)
+
+--- Ending "Innovus" (totcpu=0:07:33, real=0:07:34, mem=1193.3M) ---
+
+[EDA@EDA2035 ibex_work_upload]$ cd /home/EDA/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$ innovus -no_gui
+C: unknown locale
+
+Cadence Innovus(TM) Implementation System.
+Copyright 2020 Cadence Design Systems, Inc. All rights reserved worldwide.
+
+Version:	v20.10-p004_1, built Thu May 7 20:02:41 PDT 2020
+Options:	-no_gui
+Date:		Wed Mar  4 12:37:50 2026
+Host:		EDA2035 (x86_64 w/Linux 3.10.0-1160.119.1.el7.x86_64) (3cores*6cpus*Intel(R) Core(TM) i7-8
+559U CPU @ 2.70GHz 8192KB)
+OS:		CentOS Linux release 7.9.2009 (Core)
+
+License:
+		invs	Innovus Implementation System	20.1	checkout succeeded
+		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required
+CPU count.
+**WARN: (IMPOPT-801):	Genus executable not found in PATH. Install Genus, add the path to the genus execu
+table in the PATH variable and rerun Innovus.
+Create and set the environment variable TMPDIR to /tmp/innovus_temp_125007_EDA2035_EDA_FF3yqW.
+
+The soft stacksize limit is either up to the hard limit or larger than 0.2% of RAM. No change is needed.
+
+**INFO:  MMMC transition support version v31-84
+
+innovus 1>

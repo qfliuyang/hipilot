@@ -1,0 +1,257 @@
+Type 'man IMPSP-315' for more detail.
+Density distribution unevenness ratio = 11.959%
+Move report: Detail placement moves 7 insts, mean move: 0.92 um, max move: 1.84 um
+	Max move on inst (FE_OFC134_n6701): (333.50, 449.82) --> (335.34, 449.82)
+	Runtime: CPU: 0:00:00.6 REAL: 0:00:01.0 MEM: 1159.5MB
+Summary Report:
+Instances move: 7 (out of 11676 movable)
+Instances flipped: 0
+Mean displacement: 0.92 um
+Max displacement: 1.84 um (Instance: FE_OFC134_n6701) (333.5, 449.82) -> (335.34, 449.82)
+	Length: 3 sites, height: 1 rows, site name: unithd, cell type: sky130_fd_sc_hd__clkbuf_1
+Runtime: CPU: 0:00:01.6 REAL: 0:00:02.0 MEM: 1159.5MB
+*** Finished refinePlace (0:01:40 mem=1159.5M) ***
+#optDebug: fT-D <X 1 0 0 0>
+
+Active setup views:
+ max_view
+  Dominating endpoints: 0
+  Dominating TNS: -0.000
+
+Extraction called for design 'ibex_core' of instances=11747 and nets=12185 using extraction engine 'preRou
+te' .
+PreRoute RC Extraction called for design ibex_core.
+RC Extraction called in multi-corner(2) mode.
+**WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy
+when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to gener
+ate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_r
+c_corner/update_rc_corner -cap_table'.
+Type 'man IMPEXT-6197' for more detail.
+RCMode: PreRoute
+      RC Corner Indexes            0       1
+Capacitance Scaling Factor   : 1.05000 1.00000
+Resistance Scaling Factor    : 1.05000 1.00000
+Clock Cap. Scaling Factor    : 1.05000 1.00000
+Clock Res. Scaling Factor    : 1.05000 1.00000
+Shrink Factor                : 1.00000
+PreRoute extraction is honoring NDR/Shielding/ExtraSpace for clock nets.
+Updating RC grid for preRoute extraction ...
+Initializing multi-corner resistance tables ...
+PreRoute RC Extraction DONE (CPU Time: 0:00:00.2  Real Time: 0:00:00.0  MEM: 1146.996M)
+Starting delay calculation for Setup views
+#################################################################################
+# Design Stage: PreRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC Non-OCV
+# Parasitics Mode: No SPEF/RCDB
+# Signoff Settings: SI Off
+#################################################################################
+Calculate delays in Single mode...
+Start delay calculation (fullDC) (1 T). (MEM=1145)
+Total number of fetched objects 12043
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+End delay calculation. (MEM=1161.46 CPU=0:00:02.3 REAL=0:00:02.0)
+End delay calculation (fullDC). (MEM=1161.46 CPU=0:00:02.7 REAL=0:00:03.0)
+*** Done Building Timing Graph (cpu=0:00:04.2 real=0:00:04.0 totSessionCpu=0:01:46 mem=1161.5M)
+Reported timing to dir ./timingReports
+**optDesign ... cpu = 0:01:16, real = 0:01:16, mem = 932.1M, totSessionCpu=0:01:46 **
+
+------------------------------------------------------------
+     optDesign Final Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):|  0.019  |  0.019  |  1.923  |  1.224  |  8.256  |  2.702  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |    0    |    0    |    0    |
+|          All Paths:|  7573   |  3880   |  5390   |   101   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      0 (0)       |
+|   max_tran     |      0 (0)       |   0.000    |      0 (0)       |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 41.052%
+Routing Overflow: 1.80% H and 4.09% V
+------------------------------------------------------------
+**optDesign ... cpu = 0:01:17, real = 0:01:19, mem = 933.2M, totSessionCpu=0:01:47 **
+*** Finished optDesign ***
+Info: Destroy the CCOpt slew target map.
+**optDesign ... cpu = 0:00:00, real = 0:00:00, mem = 884.9M, totSessionCpu=0:01:47 **
+**WARN: (IMPOPT-576):	2 nets have unplaced terms.
+Type 'man IMPOPT-576' for more detail.
+**INFO: User settings:
+setDesignMode -process                            130
+setExtractRCMode -coupling_c_th                   0.4
+setExtractRCMode -engine                          preRoute
+setExtractRCMode -relative_c_th                   1
+setExtractRCMode -total_c_th                      0
+setUsefulSkewMode -ecoRoute                       false
+setDelayCalMode -enable_high_fanout               true
+setDelayCalMode -eng_copyNetPropToNewNet          true
+setDelayCalMode -engine                           aae
+setDelayCalMode -ignoreNetLoad                    false
+setOptMode -activeSetupViews                      { max_view }
+setOptMode -autoSetupViews                        { max_view}
+setOptMode -autoTDGRSetupViews                    { max_view}
+setOptMode -drcMargin                             0
+setOptMode -fixDrc                                true
+setOptMode -fixFanoutLoad                         true
+setOptMode -ignorePathGroupsForHold               {in2reg reg2out feedthr}
+setOptMode -optimizeFF                            true
+setOptMode -preserveAllSequential                 false
+setOptMode -setupTargetSlack                      0
+setPlaceMode -place_detail_legalization_inst_gap  2
+setPlaceMode -place_global_ignore_scan            true
+setPlaceMode -place_global_place_io_pins          false
+setPlaceMode -place_global_reorder_scan           false
+setAnalysisMode -analysisType                     single
+setAnalysisMode -checkType                        setup
+setAnalysisMode -clkSrcPath                       true
+setAnalysisMode -clockPropagation                 sdcControl
+setAnalysisMode -cppr                             both
+setAnalysisMode -skew                             true
+setAnalysisMode -usefulSkew                       true
+setRouteMode -earlyGlobalMaxRouteLayer            5
+setRouteMode -earlyGlobalMinRouteLayer            2
+
+**INFO: setDesignMode -flowEffort standard -> setting 'setOptMode -allEndPoints true' for the duration of
+this command.
+GigaOpt running with 1 threads.
+info: unfix 1 clock instance placement location
+info: this clock instance will be remarked as fixed at the end of optimiztion
+Need call spDPlaceInit before registerPrioInstLoc.
+**WARN: (IMPOPT-665):	test_si : Net has unplaced terms or is connected to uplaced instances in design.
+Type 'man IMPOPT-665' for more detail.
+**WARN: (IMPOPT-665):	test_so : Net has unplaced terms or is connected to uplaced instances in design.
+Type 'man IMPOPT-665' for more detail.
+**optDesign ... cpu = 0:00:02, real = 0:00:02, mem = 889.4M, totSessionCpu=0:01:50 **
+*** optDesign -postCTS ***
+DRC Margin: user margin 0.0
+Hold Target Slack: user slack 0
+Setup Target Slack: user slack 0;
+setUsefulSkewMode -ecoRoute false
+Start to check current routing status for nets...
+All nets are already routed correctly.
+End to check current routing status for nets (mem=1071.5M)
+Compute RC Scale Done ...
+GigaOpt Hold Optimizer is used
+Starting initialization (fixHold) cpu=0:00:00.0 real=0:00:00.0 totSessionCpu=0:01:53 mem=1151.2M ***
+Running 'saveTimingGraph -compress -file /tmp/innovus_temp_115825_EDA2035_EDA_t85Hwx/opt_timing_graph_AHyE
+2c/timingGraph.tgz -dir /tmp/innovus_temp_115825_EDA2035_EDA_t85Hwx/opt_timing_graph_AHyE2c -prefix timing
+Graph'
+Done saveTimingGraph
+Starting delay calculation for Hold views
+#################################################################################
+# Design Stage: PreRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC Non-OCV
+# Parasitics Mode: No SPEF/RCDB
+# Signoff Settings: SI Off
+#################################################################################
+Calculate delays in Single mode...
+Start delay calculation (fullDC) (1 T). (MEM=1134.7)
+Total number of fetched objects 12043
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+End delay calculation. (MEM=1170.25 CPU=0:00:02.1 REAL=0:00:02.0)
+End delay calculation (fullDC). (MEM=1170.25 CPU=0:00:02.5 REAL=0:00:03.0)
+*** Done Building Timing Graph (cpu=0:00:03.4 real=0:00:04.0 totSessionCpu=0:01:58 mem=1170.2M)
+
+Active hold views:
+ min_view
+  Dominating endpoints: 0
+  Dominating TNS: -0.000
+
+Done building cte hold timing graph (fixHold) cpu=0:00:05.8 real=0:00:06.0 totSessionCpu=0:01:59 mem=1170.
+2M ***
+Done building hold timer [1 node(s), 0 edge(s), 1 view(s)] (fixHold) cpu=0:00:06.3 real=0:00:07.0 totSessi
+onCpu=0:01:59 mem=1170.2M ***
+Running 'restoreTimingGraph -file /tmp/innovus_temp_115825_EDA2035_EDA_t85Hwx/opt_timing_graph_AHyE2c/timi
+ngGraph.tgz -dir /tmp/innovus_temp_115825_EDA2035_EDA_t85Hwx/opt_timing_graph_AHyE2c -prefix timingGraph'
+Done restoreTimingGraph
+Done building cte setup timing graph (fixHold) cpu=0:00:07.0 real=0:00:07.0 totSessionCpu=0:02:00 mem=1183
+.3M ***
+
+*Info: minBufDelay = 97.6 ps, libStdDelay = 41.6 ps, minBufSize = 3753600 (3.0)
+*Info: worst delay setup view: max_view
+
+------------------------------------------------------------
+             Initial Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+Hold  views included:
+ min_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):|  0.019  |  0.019  |  1.923  |  1.224  |  8.256  |  2.702  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |    0    |    0    |    0    |
+|          All Paths:|  7573   |  3880   |  5390   |   101   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Hold mode      |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):|  0.249  |  0.441  |   N/A   |   N/A   |  0.249  |   N/A   |
+|           TNS (ns):|  0.000  |  0.000  |   N/A   |   N/A   |  0.000  |   N/A   |
+|    Violating Paths:|    0    |    0    |   N/A   |   N/A   |    0    |   N/A   |
+|          All Paths:|  7573   |  3880   |   N/A   |   N/A   |    1    |   N/A   |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      0 (0)       |
+|   max_tran     |      0 (0)       |   0.000    |      0 (0)       |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 41.052%
+------------------------------------------------------------
+**optDesign ... cpu = 0:00:16, real = 0:00:16, mem = 982.3M, totSessionCpu=0:02:03 **
+*** HoldOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:02:03.2/0:01:59.2 (1.0
+), mem = 1155.3M
+*info: Run optDesign holdfix with 1 thread.
+Info: 72 nets with fixed/cover wires excluded.
+Info: 72 clock nets excluded from IPO operation.
+*** Hold timing is met. Hold fixing is not needed
+**INFO: total 0 insts, 0 nets marked don't touch
+**INFO: total 0 insts, 0 nets marked don't touch DB property
+**INFO: total 0 insts, 0 nets unmarked don't touch
+
+*** HoldOpt [finish] : cpu/real = 0:00:00.1/0:00:00.1 (1.0), totSession cpu/real = 0:02:03.3/0:01:59.4 (1.
+0), mem = 1156.3M
+
+Active setup views:
+ max_view
+  Dominating endpoints: 0
+  Dominating TNS: -0.000
+
+Reported timing to dir ./timingReports
+**optDesign ... cpu = 0:00:16, real = 0:00:16, mem = 985.0M, totSessionCpu=0:02:04 **
+Running 'saveTimingGraph -compress -file /tmp/innovus_temp_115825_EDA2035_EDA_t85Hwx/opt_timing_graph_SFKI
+tt/timingGraph.tgz -dir /tmp/innovus_temp_115825_EDA2035_EDA_t85Hwx/opt_timing_graph_SFKItt -prefix timing
+Graph'
+Done saveTimingGraph
+

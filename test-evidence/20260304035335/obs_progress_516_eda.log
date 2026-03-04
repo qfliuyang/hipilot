@@ -1,0 +1,257 @@
+#Start Detail Routing..
+#start initial detail routing ...
+# ECO: 12.4% of the total area was rechecked for DRC, and 26.6% required routing.
+#   number of violations = 34
+#
+#    By Layer and Type :
+#	         MetSpc    Short   Totals
+#	li1           5        0        5
+#	met1          2        8       10
+#	met2          3        9       12
+#	met3          5        2        7
+#	Totals       15       19       34
+#63 out of 11792 instances (0.5%) need to be verified(marked ipoed), dirty area = 0.3%.
+#0.0% of the total area is being checked for drcs
+#0.0% of the total area was checked
+#   number of violations = 34
+#
+#    By Layer and Type :
+#	         MetSpc    Short   Totals
+#	li1           5        0        5
+#	met1          2        8       10
+#	met2          3        9       12
+#	met3          5        2        7
+#	Totals       15       19       34
+#cpu time = 00:00:11, elapsed time = 00:00:11, memory = 1037.09 (MB), peak = 1161.67 (MB)
+#start 1st optimization iteration ...
+#   number of violations = 5
+#
+#    By Layer and Type :
+#	          Short   Totals
+#	li1           0        0
+#	met1          0        0
+#	met2          5        5
+#	Totals        5        5
+#    number of process antenna violations = 20
+#cpu time = 00:00:01, elapsed time = 00:00:01, memory = 1040.62 (MB), peak = 1161.67 (MB)
+#start 2nd optimization iteration ...
+#   number of violations = 1
+#
+#    By Layer and Type :
+#	          Short   Totals
+#	li1           0        0
+#	met1          0        0
+#	met2          1        1
+#	Totals        1        1
+#    number of process antenna violations = 20
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 1040.74 (MB), peak = 1161.67 (MB)
+#start 3rd optimization iteration ...
+#   number of violations = 0
+#    number of process antenna violations = 20
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 1040.94 (MB), peak = 1161.67 (MB)
+#Complete Detail Routing.
+#Total number of nets with non-default rule or having extra spacing = 192
+#Total wire length = 815138 um.
+#Total half perimeter of net bounding box = 626504 um.
+#Total wire length on LAYER li1 = 1 um.
+#Total wire length on LAYER met1 = 266242 um.
+#Total wire length on LAYER met2 = 254374 um.
+#Total wire length on LAYER met3 = 145005 um.
+#Total wire length on LAYER met4 = 140398 um.
+#Total wire length on LAYER met5 = 9117 um.
+#Total number of vias = 134359
+#Up-Via Summary (total 134359):
+#
+#-----------------------
+# li1             49653
+# met1            64462
+# met2            12221
+# met3             7793
+# met4              230
+#-----------------------
+#                134359
+#
+#Total number of DRC violations = 0
+#Cpu time = 00:00:14
+#Elapsed time = 00:00:14
+#Increased memory = 5.75 (MB)
+#Total memory = 1030.13 (MB)
+#Peak memory = 1161.67 (MB)
+#
+#start routing for process antenna violation fix ...
+#cpu time = 00:00:01, elapsed time = 00:00:01, memory = 1041.05 (MB), peak = 1161.67 (MB)
+#
+#Total number of nets with non-default rule or having extra spacing = 192
+#Total wire length = 815140 um.
+#Total half perimeter of net bounding box = 626504 um.
+#Total wire length on LAYER li1 = 1 um.
+#Total wire length on LAYER met1 = 266242 um.
+#Total wire length on LAYER met2 = 254374 um.
+#Total wire length on LAYER met3 = 145006 um.
+#Total wire length on LAYER met4 = 140400 um.
+#Total wire length on LAYER met5 = 9117 um.
+#Total number of vias = 134361
+#Up-Via Summary (total 134361):
+#
+#-----------------------
+# li1             49653
+# met1            64462
+# met2            12221
+# met3             7795
+# met4              230
+#-----------------------
+#                134361
+#
+#Total number of DRC violations = 0
+#Total number of process antenna violations = 3
+#Total number of net violated process antenna rule = 3 ant fix stage
+#
+#
+#Total number of nets with non-default rule or having extra spacing = 192
+#Total wire length = 815140 um.
+#Total half perimeter of net bounding box = 626504 um.
+#Total wire length on LAYER li1 = 1 um.
+#Total wire length on LAYER met1 = 266242 um.
+#Total wire length on LAYER met2 = 254374 um.
+#Total wire length on LAYER met3 = 145006 um.
+#Total wire length on LAYER met4 = 140400 um.
+#Total wire length on LAYER met5 = 9117 um.
+#Total number of vias = 134361
+#Up-Via Summary (total 134361):
+#
+#-----------------------
+# li1             49653
+# met1            64462
+# met2            12221
+# met3             7795
+# met4              230
+#-----------------------
+#                134361
+#
+#Total number of DRC violations = 0
+#Total number of process antenna violations = 3
+#Total number of net violated process antenna rule = 3
+#
+#detailRoute Statistics:
+#Cpu time = 00:00:15
+#Elapsed time = 00:00:15
+#Increased memory = 5.87 (MB)
+#Total memory = 1030.24 (MB)
+#Peak memory = 1161.67 (MB)
+#Skip updating routing design signature in db-snapshot flow
+#
+#globalDetailRoute statistics:
+#Cpu time = 00:00:20
+#Elapsed time = 00:00:20
+#Increased memory = -119.84 (MB)
+#Total memory = 952.21 (MB)
+#Peak memory = 1161.67 (MB)
+#Number of warnings = 48
+#Total number of warnings = 100
+#Number of fails = 0
+#Total number of fails = 0
+#Complete globalDetailRoute on Wed Mar  4 12:42:15 2026
+#
+**optDesign ... cpu = 0:03:41, real = 0:03:42, mem = 951.6M, totSessionCpu=0:04:12 **
+-routeWithEco false                       # bool, default=false
+-routeSelectedNetOnly false               # bool, default=false
+-routeWithTimingDriven true               # bool, default=false, user setting
+-routeWithSiDriven false                  # bool, default=false
+New Signature Flow (restoreNanoRouteOptions) ....
+Extraction called for design 'ibex_core' of instances=11792 and nets=12230 using extraction engine 'postRo
+ute' at effort level 'low' .
+PostRoute (effortLevel low) RC Extraction called for design ibex_core.
+RC Extraction called in multi-corner(2) mode.
+**WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy
+when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to gener
+ate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_r
+c_corner/update_rc_corner -cap_table'.
+Type 'man IMPEXT-6197' for more detail.
+**WARN: (IMPEXT-3032):	Because the cap table file was not provided, it will be created internally with th
+e following process info:
+* Layer Id             : 1 - M1
+      Thickness        : 0.1
+      Min Width        : 0.17
+      Layer Dielectric : 4.1
+* Layer Id             : 2 - M2
+      Thickness        : 0.35
+      Min Width        : 0.14
+      Layer Dielectric : 4.1
+* Layer Id             : 3 - M3
+      Thickness        : 0.35
+      Min Width        : 0.14
+      Layer Dielectric : 4.1
+* Layer Id             : 4 - M4
+      Thickness        : 0.8
+      Min Width        : 0.3
+      Layer Dielectric : 4.1
+* Layer Id             : 5 - M5
+      Thickness        : 0.8
+      Min Width        : 0.3
+      Layer Dielectric : 4.1
+* Layer Id             : 6 - M6
+      Thickness        : 1.2
+      Min Width        : 1.6
+      Layer Dielectric : 4.1
+extractDetailRC Option : -outfile /tmp/innovus_temp_125007_EDA2035_EDA_FF3yqW/ibex_core_125007_LkWpvH.rcdb
+.d -maxResLength 200  -basic
+RC Mode: PostRoute -effortLevel low [Basic CapTable, LEF Resistances]
+      RC Corner Indexes            0       1
+Capacitance Scaling Factor   : 1.05000 1.00000
+Coupling Cap. Scaling Factor : 1.00000 1.00000
+Resistance Scaling Factor    : 1.05000 1.00000
+Clock Cap. Scaling Factor    : 1.05000 1.00000
+Clock Res. Scaling Factor    : 1.05000 1.00000
+Shrink Factor                : 1.00000
+Initializing multi-corner resistance tables ...
+Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1218.2M)
+Extracted 10.0008% (CPU Time= 0:00:00.5  MEM= 1242.2M)
+Extracted 20.0008% (CPU Time= 0:00:00.7  MEM= 1242.2M)
+Extracted 30.0007% (CPU Time= 0:00:00.8  MEM= 1242.2M)
+Extracted 40.0007% (CPU Time= 0:00:00.9  MEM= 1242.2M)
+Extracted 50.0006% (CPU Time= 0:00:01.2  MEM= 1242.2M)
+Extracted 60.0006% (CPU Time= 0:00:01.5  MEM= 1242.2M)
+Extracted 70.0005% (CPU Time= 0:00:01.9  MEM= 1246.2M)
+Extracted 80.0005% (CPU Time= 0:00:02.2  MEM= 1246.2M)
+Extracted 90.0005% (CPU Time= 0:00:02.4  MEM= 1246.2M)
+Extracted 100% (CPU Time= 0:00:02.9  MEM= 1246.2M)
+Number of Extracted Resistors     : 385237
+Number of Extracted Ground Cap.   : 385252
+Number of Extracted Coupling Cap. : 842456
+Filtering XCap in 'relativeAndCoupling' mode using values coupling_c_threshold=0.4fF, relative_c_threshold
+=1, and total_c_threshold=0fF.
+Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1242.2M)
+PostRoute (effortLevel low) RC Extraction DONE (CPU Time: 0:00:04.1  Real Time: 0:00:03.0  MEM: 1248.246M)
+Starting delay calculation for Setup views
+Starting SI iteration 1 using Infinite Timing Windows
+#################################################################################
+# Design Stage: PostRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC OCV
+# Parasitics Mode: SPEF/RCDB
+# Signoff Settings: SI On
+#################################################################################
+AAE_INFO: 1 threads acquired from CTE.
+Start delay calculation (fullDC) (1 T). (MEM=1238.25)
+Initializing multi-corner resistance tables ...
+Total number of fetched objects 12088
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+AAE_INFO-618: Total number of nets in the design is 12230,  98.8 percent of the nets selected for SI analy
+sis
+End delay calculation. (MEM=1302.5 CPU=0:00:07.3 REAL=0:00:07.0)
+End delay calculation (fullDC). (MEM=1302.5 CPU=0:00:08.0 REAL=0:00:08.0)
+Loading CTE timing window with TwFlowType 0...(CPU = 0:00:00.0, REAL = 0:00:00.0, MEM = 1302.5M)
+Add other clocks and setupCteToAAEClockMapping during iter 1
+Loading CTE timing window is completed (CPU = 0:00:00.1, REAL = 0:00:00.0, MEM = 1302.5M)
+Starting SI iteration 2
+Start delay calculation (fullDC) (1 T). (MEM=1248.62)
+Glitch Analysis: View max_view -- Total Number of Nets Skipped = 0.
+Glitch Analysis: View max_view -- Total Number of Nets Analyzed = 12088.
+Total number of fetched objects 12088
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+AAE_INFO-618: Total number of nets in the design is 12230,  29.3 percent of the nets selected for SI analy
+sis
+End delay calculation. (MEM=1291.3 CPU=0:00:04.0 REAL=0:00:04.0)
+End delay calculation (fullDC). (MEM=1291.3 CPU=0:00:04.1 REAL=0:00:04.0)
+

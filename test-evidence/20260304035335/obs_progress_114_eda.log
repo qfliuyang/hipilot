@@ -1,0 +1,257 @@
+**WARN: (IMPEXT-2773):	The via resistance between layers M3 and M4 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M4 and M5 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M5 and M6 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M1 is not defined in the cap table. Therefore, the
+LEF value 12.2 will be used instead. To avoid this message, update the relevant cap table to include the s
+heet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M2 is not defined in the cap table. Therefore, the
+LEF value 0.125 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M3 is not defined in the cap table. Therefore, the
+LEF value 0.125 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M4 is not defined in the cap table. Therefore, the
+LEF value 0.047 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M5 is not defined in the cap table. Therefore, the
+LEF value 0.047 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M6 is not defined in the cap table. Therefore, the
+LEF value 0.0285 will be used instead. To avoid this message, update the relevant cap table to include the
+ sheet resistance for the specified layer and read it back in.
+Summary of Active RC-Corners :
+
+ Analysis View: max_view
+    RC-Corner Name        : rc_max
+    RC-Corner Index       : 0
+    RC-Corner Temperature : 25 Celsius
+    RC-Corner Cap Table   : ''
+    RC-Corner PreRoute Res Factor         : 1.05
+    RC-Corner PreRoute Cap Factor         : 1.05
+    RC-Corner PostRoute Res Factor        : 1.05 {1.05 1 1}
+    RC-Corner PostRoute Cap Factor        : 1.05 {1.05 1 1}
+    RC-Corner PostRoute XCap Factor       : 1 {1 1 1}
+    RC-Corner PreRoute Clock Res Factor   : 1.05	[Derived from Cap Table]
+    RC-Corner PreRoute Clock Cap Factor   : 1.05	[Derived from Cap Table]
+    RC-Corner PostRoute Clock Cap Factor  : 1.05 {1.05 1 1} 	[Derived from postRoute_cap (effortLevel l
+ow)]
+    RC-Corner PostRoute Clock Res Factor  : 1.05 {1.05 1 1} 	[Derived from postRoute_res (effortLevel l
+ow)]
+
+ Analysis View: min_view
+    RC-Corner Name        : rc_min
+    RC-Corner Index       : 1
+    RC-Corner Temperature : 25 Celsius
+    RC-Corner Cap Table   : ''
+    RC-Corner PreRoute Res Factor         : 1
+    RC-Corner PreRoute Cap Factor         : 1
+    RC-Corner PostRoute Res Factor        : 1 {1 1 1}
+    RC-Corner PostRoute Cap Factor        : 1 {1 1 1}
+    RC-Corner PostRoute XCap Factor       : 1 {1 1 1}
+    RC-Corner PreRoute Clock Res Factor   : 1	[Derived from Cap Table]
+    RC-Corner PreRoute Clock Cap Factor   : 1	[Derived from Cap Table]
+    RC-Corner PostRoute Clock Cap Factor  : 1 {1 1 1} 	[Derived from postRoute_cap (effortLevel low)]
+    RC-Corner PostRoute Clock Res Factor  : 1 {1 1 1} 	[Derived from postRoute_res (effortLevel low)]
+Updating RC grid for preRoute extraction ...
+Initializing multi-corner resistance tables ...
+Start generating vias ..
+#Skip building auto via since it is not turned on.
+Extracting standard cell pins and blockage ......
+Pin and blockage extraction finished
+Via generation completed.
+% Begin Load power constraints ... (date=03/04 12:07:17, mem=701.8M)
+source /home/EDA/ibex_work_upload/result/pr/data/powerplan.enc.dat/ibex_core_power_constraints.tcl
+% End Load power constraints ... (date=03/04 12:07:17, total cpu=0:00:00.0, real=0:00:01.0, peak res=701.9
+M, current mem=701.9M)
+% Begin load AAE data ... (date=03/04 12:07:18, mem=724.7M)
+**WARN: (IMPESI-3505):	setDelayCalMode -eng_copyNetPropToNewNet true (default=false) will be obsoleted al
+ong with its sgs2set equivalent.  This parameter will continue to be supported in the current release, but
+ will be removed in the next major release of the software.
+AAE DB initialization (MEM=858.164 CPU=0:00:00.0 REAL=0:00:00.0)
+% End load AAE data ... (date=03/04 12:07:18, total cpu=0:00:00.5, real=0:00:00.0, peak res=730.8M, curren
+t mem=730.8M)
+Total number of combinational cells: 329
+Total number of sequential cells: 68
+Total number of tristate cells: 13
+Total number of level shifter cells: 7
+Total number of power gating cells: 0
+Total number of isolation cells: 11
+Total number of power switch cells: 0
+Total number of pulse generator cells: 0
+Total number of always on buffers: 0
+Total number of retention cells: 0
+List of usable buffers: sky130_fd_sc_hd__buf_1 sky130_fd_sc_hd__buf_12 sky130_fd_sc_hd__buf_16 sky130_fd_s
+c_hd__buf_2 sky130_fd_sc_hd__buf_4 sky130_fd_sc_hd__buf_6 sky130_fd_sc_hd__buf_8 sky130_fd_sc_hd__clkbuf_1
+ sky130_fd_sc_hd__clkbuf_16 sky130_fd_sc_hd__clkbuf_2 sky130_fd_sc_hd__clkbuf_4 sky130_fd_sc_hd__clkbuf_8
+sky130_fd_sc_hd__dlymetal6s2s_1 sky130_fd_sc_hd__probe_p_8
+Total number of usable buffers: 14
+List of unusable buffers: sky130_fd_sc_hd__probec_p_8
+Total number of unusable buffers: 1
+List of usable inverters: sky130_fd_sc_hd__bufinv_16 sky130_fd_sc_hd__clkinv_1 sky130_fd_sc_hd__bufinv_8 s
+ky130_fd_sc_hd__clkinv_16 sky130_fd_sc_hd__clkinv_2 sky130_fd_sc_hd__clkinv_4 sky130_fd_sc_hd__clkinv_8 sk
+y130_fd_sc_hd__inv_1 sky130_fd_sc_hd__clkinvlp_2 sky130_fd_sc_hd__clkinvlp_4 sky130_fd_sc_hd__inv_12 sky13
+0_fd_sc_hd__inv_16 sky130_fd_sc_hd__inv_2 sky130_fd_sc_hd__inv_4 sky130_fd_sc_hd__inv_6 sky130_fd_sc_hd__i
+nv_8
+Total number of usable inverters: 16
+List of unusable inverters:
+Total number of unusable inverters: 0
+List of identified usable delay cells: sky130_fd_sc_hd__bufbuf_16 sky130_fd_sc_hd__bufbuf_8 sky130_fd_sc_h
+d__clkdlybuf4s15_1 sky130_fd_sc_hd__clkdlybuf4s15_2 sky130_fd_sc_hd__clkdlybuf4s18_1 sky130_fd_sc_hd__clkd
+lybuf4s18_2 sky130_fd_sc_hd__clkdlybuf4s25_1 sky130_fd_sc_hd__clkdlybuf4s50_1 sky130_fd_sc_hd__clkdlybuf4s
+25_2 sky130_fd_sc_hd__clkdlybuf4s50_2 sky130_fd_sc_hd__dlygate4sd2_1 sky130_fd_sc_hd__dlygate4sd1_1 sky130
+_fd_sc_hd__dlygate4sd3_1 sky130_fd_sc_hd__dlymetal6s6s_1 sky130_fd_sc_hd__dlymetal6s4s_1
+Total number of identified usable delay cells: 15
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+**WARN: (IMPCTE-107):	The following globals have been obsoleted since version 20.10-p004_1. They will be
+ removed in the next release.
+timing_enable_default_delay_arc
+#% End load design ... (date=03/04 12:07:18, total cpu=0:00:03.5, real=0:00:05.0, peak res=755.2M, current
+ mem=730.3M)
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPLF-200            4  Pin '%s' in macro '%s' has no ANTENNAGAT...
+WARNING   IMPLF-201            3  Pin '%s' in macro '%s' has no ANTENNADIF...
+WARNING   IMPLF-108            1  There is no overlap layer defined in any...
+WARNING   IMPFP-729            2  error while reading "GlobalNetConnection...
+WARNING   IMPFP-3961           2  The techSite '%s' has no related standar...
+WARNING   IMPEXT-2766         12  The sheet resistance for layer %s is not...
+WARNING   IMPEXT-2773         12  The via resistance between layers %s and...
+WARNING   IMPESI-3505          1  setDelayCalMode -eng_%s (default=%s) wil...
+WARNING   IMPCTE-107           1  The following globals have been obsolete...
+WARNING   TECHLIB-302         12  No function defined for cell '%s'. The c...
+WARNING   TECHLIB-1161         1  The library level attribute %s on line %...
+*** Message Summary: 51 warning(s), 0 error(s)
+
+Reading DEF file '/home/EDA/ibex_work_upload/result/scanchain/data/ibex_core.scan.def', current time is We
+d Mar  4 12:07:18 2026 ...
+--- CASESENSITIVE ON
+--- DIVIDERCHAR '/'
+DEF file '/home/EDA/ibex_work_upload/result/scanchain/data/ibex_core.scan.def' is parsed, current time is
+Wed Mar  4 12:07:18 2026.
+Effort level <high> specified for reg2reg path_group
+**WARN: (IMPOPT-3602):	The specified path group name reg2cg is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <high> specified for reg2cg path_group
+Effort level <low> specified for in2reg path_group
+Effort level <low> specified for reg2out path_group
+Effort level <low> specified for feedthr path_group
+Ignoring {in2reg reg2out feedthr} groups for Hold optimization.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+No user sequential activity specified, applying default sequential activity of "0.2" for Dynamic Power rep
+orting.
+'set_default_switching_activity' finished successfully.
+*** Starting GigaPlace ***
+**INFO: User settings:
+setDesignMode -process                            130
+setExtractRCMode -coupling_c_th                   0.4
+setExtractRCMode -engine                          preRoute
+setExtractRCMode -relative_c_th                   1
+setExtractRCMode -total_c_th                      0
+setDelayCalMode -enable_high_fanout               true
+setDelayCalMode -eng_copyNetPropToNewNet          true
+setDelayCalMode -engine                           aae
+setDelayCalMode -ignoreNetLoad                    false
+setOptMode -ignorePathGroupsForHold               {in2reg reg2out feedthr}
+setPlaceMode -place_detail_legalization_inst_gap  2
+setPlaceMode -place_global_ignore_scan            true
+setPlaceMode -place_global_place_io_pins          false
+setPlaceMode -place_global_reorder_scan           false
+setAnalysisMode -analysisType                     single
+setAnalysisMode -checkType                        setup
+setAnalysisMode -clkSrcPath                       false
+setAnalysisMode -clockPropagation                 forcedIdeal
+setAnalysisMode -cppr                             both
+setRouteMode -earlyGlobalMaxRouteLayer            5
+setRouteMode -earlyGlobalMinRouteLayer            2
+
+#optDebug: fT-E <X 2 3 1 0>
+*** Scan Trace Summary (runtime: cpu: 0:00:00.0 , real: 0:00:00.0):
+Successfully traced 1 scan chain  (total 1940 scan bits).
+Start applying DEF ordered sections ...
+Successfully applied all DEF ordered sections.
+*** Scan Sanity Check Summary:
+*** 1 scan chain  passed sanity check.
+*** Start deleteBufferTree ***
+Info: Detect buffers to remove automatically.
+Analyzing netlist ...
+Updating netlist
+siFlow : Timing analysis mode is single, using late cdB files
+
+*summary: 174 instances (buffers/inverters) removed
+*** Finish deleteBufferTree (0:00:00.9) ***
+Deleted 0 physical inst  (cell - / prefix -).
+INFO: #ExclusiveGroups=0
+INFO: There are no Exclusive Groups.
+No user-set net weight.
+Net fanout histogram:
+2		: 6712 (59.8%) nets
+3		: 1117 (10.0%) nets
+4     -	14	: 3078 (27.4%) nets
+15    -	39	: 240 (2.1%) nets
+40    -	79	: 50 (0.4%) nets
+80    -	159	: 18 (0.2%) nets
+160   -	319	: 0 (0.0%) nets
+320   -	639	: 0 (0.0%) nets
+640   -	1279	: 2 (0.0%) nets
+1280  -	2559	: 2 (0.0%) nets
+2560  -	5119	: 0 (0.0%) nets
+5120+		: 0 (0.0%) nets
+Options: timingDriven clkGateAware ignoreScan pinGuide congEffort=auto gpeffort=medium
+*** Scan Trace Summary (runtime: cpu: 0:00:00.0 , real: 0:00:00.0):
+Successfully traced 1 scan chain  (total 1940 scan bits).
+Start applying DEF ordered sections ...
+Successfully applied all DEF ordered sections.
+*** Scan Sanity Check Summary:
+*** 1 scan chain  passed sanity check.
+#std cell=10919 (0 fixed + 10919 movable) #buf cell=0 #inv cell=799 #block=0 (0 floating + 0 preplaced)
+#ioInst=0 #net=11218 #term=47698 #term/net=4.25, #fixedIo=0, #floatIo=0, #fixedPin=0, #floatPin=257
+stdCell: 10919 single + 0 double + 0 multi
+Total standard cell length = 44.4631 (mm), area = 0.1209 (mm^2)
+Average module density = 0.404.
+Density for the design = 0.404.
+       = stdcell_area 96659 sites (120940 um^2) / alloc_area 239408 sites (299547 um^2).
+Pin Density = 0.1963.
+            = total # of pins 47698 / total area 243006.
+=== lastAutoLevel = 9
+Clock gating cells determined by native netlist tracing.
+Init WL Bound For Global Placement...
+Iteration  1: Total net bbox = 2.087e+05 (1.05e+05 1.03e+05)
+              Est.  stn bbox = 2.277e+05 (1.15e+05 1.13e+05)
+              cpu = 0:00:00.1 real = 0:00:01.0 mem = 969.9M
+Iteration  2: Total net bbox = 2.087e+05 (1.05e+05 1.03e+05)
+              Est.  stn bbox = 2.277e+05 (1.15e+05 1.13e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 969.9M
+*** Finished SKP initialization (cpu=0:00:02.7, real=0:00:02.0)***
+Iteration  3: Total net bbox = 1.419e+05 (6.90e+04 7.29e+04)
+              Est.  stn bbox = 1.634e+05 (7.89e+04 8.45e+04)
+              cpu = 0:00:03.6 real = 0:00:03.0 mem = 1058.6M
+

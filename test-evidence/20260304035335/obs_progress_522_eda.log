@@ -1,0 +1,257 @@
+AAE_INFO: 1 threads acquired from CTE.
+Start delay calculation (fullDC) (1 T). (MEM=1238.25)
+Initializing multi-corner resistance tables ...
+Total number of fetched objects 12088
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+AAE_INFO-618: Total number of nets in the design is 12230,  98.8 percent of the nets selected for SI analy
+sis
+End delay calculation. (MEM=1302.5 CPU=0:00:07.3 REAL=0:00:07.0)
+End delay calculation (fullDC). (MEM=1302.5 CPU=0:00:08.0 REAL=0:00:08.0)
+Loading CTE timing window with TwFlowType 0...(CPU = 0:00:00.0, REAL = 0:00:00.0, MEM = 1302.5M)
+Add other clocks and setupCteToAAEClockMapping during iter 1
+Loading CTE timing window is completed (CPU = 0:00:00.1, REAL = 0:00:00.0, MEM = 1302.5M)
+Starting SI iteration 2
+Start delay calculation (fullDC) (1 T). (MEM=1248.62)
+Glitch Analysis: View max_view -- Total Number of Nets Skipped = 0.
+Glitch Analysis: View max_view -- Total Number of Nets Analyzed = 12088.
+Total number of fetched objects 12088
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+AAE_INFO-618: Total number of nets in the design is 12230,  29.3 percent of the nets selected for SI analy
+sis
+End delay calculation. (MEM=1291.3 CPU=0:00:04.0 REAL=0:00:04.0)
+End delay calculation (fullDC). (MEM=1291.3 CPU=0:00:04.1 REAL=0:00:04.0)
+*** Done Building Timing Graph (cpu=0:00:15.7 real=0:00:16.0 totSessionCpu=0:04:32 mem=1291.3M)
+Finish postRoute recovery in postEcoRoute mode (cpu=0:01:07, real=0:01:06, mem=1249.30M, totSessionCpu=0:0
+4:32).
+**optDesign ... cpu = 0:04:01, real = 0:04:01, mem = 1037.2M, totSessionCpu=0:04:32 **
+
+Latch borrow mode reset to max_borrow
+Reported timing to dir ./timingReports
+**optDesign ... cpu = 0:04:02, real = 0:04:02, mem = 1037.2M, totSessionCpu=0:04:33 **
+
+------------------------------------------------------------
+     optDesign Final SI Timing Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):|  0.136  |  0.136  |  0.259  |  0.539  |  8.963  |  0.749  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |    0    |    0    |    0    |
+|          All Paths:|  7573   |  3880   |  5390   |   101   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      0 (0)       |
+|   max_tran     |      1 (1)       |   -2.556   |      1 (1)       |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 41.621%
+Total number of glitch violations: 4
+------------------------------------------------------------
+**optDesign ... cpu = 0:04:04, real = 0:04:05, mem = 1039.5M, totSessionCpu=0:04:34 **
+ ReSet Options after AAE Based Opt flow
+Opt: RC extraction mode changed to 'detail'
+*** Finished optDesign ***
+Info: Destroy the CCOpt slew target map.
+ Reset EOS DB
+Ignoring AAE DB Resetting ...
+Extraction called for design 'ibex_core' of instances=11792 and nets=12230 using extraction engine 'postRo
+ute' at effort level 'low' .
+PostRoute (effortLevel low) RC Extraction called for design ibex_core.
+RC Extraction called in multi-corner(2) mode.
+**WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy
+when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to gener
+ate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_r
+c_corner/update_rc_corner -cap_table'.
+Type 'man IMPEXT-6197' for more detail.
+**WARN: (IMPEXT-3032):	Because the cap table file was not provided, it will be created internally with th
+e following process info:
+* Layer Id             : 1 - M1
+      Thickness        : 0.1
+      Min Width        : 0.17
+      Layer Dielectric : 4.1
+* Layer Id             : 2 - M2
+      Thickness        : 0.35
+      Min Width        : 0.14
+      Layer Dielectric : 4.1
+* Layer Id             : 3 - M3
+      Thickness        : 0.35
+      Min Width        : 0.14
+      Layer Dielectric : 4.1
+* Layer Id             : 4 - M4
+      Thickness        : 0.8
+      Min Width        : 0.3
+      Layer Dielectric : 4.1
+* Layer Id             : 5 - M5
+      Thickness        : 0.8
+      Min Width        : 0.3
+      Layer Dielectric : 4.1
+* Layer Id             : 6 - M6
+      Thickness        : 1.2
+      Min Width        : 1.6
+      Layer Dielectric : 4.1
+extractDetailRC Option : -outfile /tmp/innovus_temp_125007_EDA2035_EDA_FF3yqW/ibex_core_125007_LkWpvH.rcdb
+.d -maxResLength 200  -basic
+RC Mode: PostRoute -effortLevel low [Basic CapTable, LEF Resistances]
+      RC Corner Indexes            0       1
+Capacitance Scaling Factor   : 1.05000 1.00000
+Coupling Cap. Scaling Factor : 1.00000 1.00000
+Resistance Scaling Factor    : 1.05000 1.00000
+Clock Cap. Scaling Factor    : 1.05000 1.00000
+Clock Res. Scaling Factor    : 1.05000 1.00000
+Shrink Factor                : 1.00000
+Initializing multi-corner resistance tables ...
+Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1249.3M)
+Extracted 10.0008% (CPU Time= 0:00:00.5  MEM= 1265.3M)
+Extracted 20.0008% (CPU Time= 0:00:00.7  MEM= 1265.3M)
+Extracted 30.0007% (CPU Time= 0:00:00.8  MEM= 1265.3M)
+Extracted 40.0007% (CPU Time= 0:00:00.8  MEM= 1265.3M)
+Extracted 50.0006% (CPU Time= 0:00:01.1  MEM= 1265.3M)
+Extracted 60.0006% (CPU Time= 0:00:01.5  MEM= 1265.3M)
+Extracted 70.0005% (CPU Time= 0:00:01.8  MEM= 1269.3M)
+Extracted 80.0005% (CPU Time= 0:00:02.1  MEM= 1269.3M)
+Extracted 90.0005% (CPU Time= 0:00:02.3  MEM= 1269.3M)
+Extracted 100% (CPU Time= 0:00:02.8  MEM= 1269.3M)
+Number of Extracted Resistors     : 385237
+Number of Extracted Ground Cap.   : 385252
+Number of Extracted Coupling Cap. : 842456
+Filtering XCap in 'relativeAndCoupling' mode using values coupling_c_threshold=0.4fF, relative_c_threshold
+=1, and total_c_threshold=0fF.
+Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1277.3M)
+PostRoute (effortLevel low) RC Extraction DONE (CPU Time: 0:00:04.1  Real Time: 0:00:04.0  MEM: 1279.312M)
+Starting delay calculation for Setup views
+Starting SI iteration 1 using Infinite Timing Windows
+#################################################################################
+# Design Stage: PostRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC OCV
+# Parasitics Mode: SPEF/RCDB
+# Signoff Settings: SI On
+#################################################################################
+AAE_INFO: 1 threads acquired from CTE.
+Start delay calculation (fullDC) (1 T). (MEM=1254.63)
+Initializing multi-corner resistance tables ...
+Total number of fetched objects 12088
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+AAE_INFO-618: Total number of nets in the design is 12230,  98.8 percent of the nets selected for SI analy
+sis
+End delay calculation. (MEM=1318.89 CPU=0:00:06.6 REAL=0:00:07.0)
+End delay calculation (fullDC). (MEM=1318.89 CPU=0:00:07.2 REAL=0:00:07.0)
+Loading CTE timing window with TwFlowType 0...(CPU = 0:00:00.0, REAL = 0:00:00.0, MEM = 1318.9M)
+Add other clocks and setupCteToAAEClockMapping during iter 1
+Loading CTE timing window is completed (CPU = 0:00:00.1, REAL = 0:00:00.0, MEM = 1318.9M)
+Starting SI iteration 2
+Start delay calculation (fullDC) (1 T). (MEM=1245.01)
+Glitch Analysis: View max_view -- Total Number of Nets Skipped = 0.
+Glitch Analysis: View max_view -- Total Number of Nets Analyzed = 12088.
+Total number of fetched objects 12088
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+AAE_INFO-618: Total number of nets in the design is 12230,  29.3 percent of the nets selected for SI analy
+sis
+End delay calculation. (MEM=1287.69 CPU=0:00:03.9 REAL=0:00:04.0)
+End delay calculation (fullDC). (MEM=1287.69 CPU=0:00:04.0 REAL=0:00:04.0)
+*** Done Building Timing Graph (cpu=0:00:13.8 real=0:00:14.0 totSessionCpu=0:04:53 mem=1287.7M)
+
+------------------------------------------------------------
+          timeDesign Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):|  0.136  |  0.136  |  0.259  |  0.539  |  8.963  |  0.749  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |    0    |    0    |    0    |
+|          All Paths:|  7573   |  3880   |  5390   |   101   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      0 (0)       |
+|   max_tran     |      1 (1)       |   -2.556   |      1 (1)       |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 41.621%
+Total number of glitch violations: 4
+------------------------------------------------------------
+Reported timing to dir result/pr/report/routing_opt_timing
+Total CPU time: 19.75 sec
+Total Real time: 21.0 sec
+Total Memory Usage: 1239.65625 Mbytes
+Reset AAE Options
+The in-memory database contained RC information but was not saved. To save
+the RC information, use saveDesign's -rc option. Note: Saving RC information can be quite large,
+so it should only be saved when it is really desired.
+#% Begin save design ... (date=03/04 12:42:59, mem=1031.5M)
+% Begin Save ccopt configuration ... (date=03/04 12:42:59, mem=1034.5M)
+% End Save ccopt configuration ... (date=03/04 12:42:59, total cpu=0:00:00.1, real=0:00:00.0, peak res=103
+5.4M, current mem=1035.4M)
+% Begin Save netlist data ... (date=03/04 12:42:59, mem=1035.4M)
+Writing Binary DB to result/pr/data/routing_opt.enc.dat/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/04 12:42:59, total cpu=0:00:00.0, real=0:00:00.0, peak res=1035.6M, c
+urrent mem=1035.6M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/routing_opt.enc.dat/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/04 12:42:59, mem=1036.1M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/04 12:42:59, total cpu=0:00:00.0, real=0:00:00.0, peak res=1036.2M, curre
+nt mem=1036.2M)
+Saving preference file result/pr/data/routing_opt.enc.dat/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/04 12:43:00, mem=1037.0M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/04 12:43:00, total cpu=0:00:00.1, real=0:00:00.0, peak res=1037.3M,
+ current mem=1037.3M)
+Saving PG file result/pr/data/routing_opt.enc.dat/ibex_core.pg.gz, version#2, (Created by Innovus v20.10-p
+004_1 on Wed Mar  4 12:43:00 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=1240.2M) ***
+Saving Drc markers ...
+... 3 markers are saved ...
+... 0 geometry drc markers are saved ...
+... 3 antenna drc markers are saved ...
+% Begin Save placement data ... (date=03/04 12:43:00, mem=1037.7M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/04 12:43:00, total cpu=0:00:00.0, real=0:00:00.0, peak res=1037.8M,
+ current mem=1037.8M)
+% Begin Save routing data ... (date=03/04 12:43:00, mem=1037.8M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.2 real=0:00:01.0 mem=1240.2M) ***
+% End Save routing data ... (date=03/04 12:43:01, total cpu=0:00:00.3, real=0:00:01.0, peak res=1038.0M, c
+urrent mem=1038.0M)
+Saving SCANDEF file ...
+*** Scan Trace Summary (runtime: cpu: 0:00:00.0 , real: 0:00:00.0):
+Successfully traced 1 scan chain  (total 1940 scan bits).
+Start applying DEF ordered sections ...
+Successfully applied all DEF ordered sections.
+*** Scan Sanity Check Summary:
+*** 1 scan chain  passed sanity check.
+Saving property file result/pr/data/routing_opt.enc.dat/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=1434.2M) ***
+#Saving pin access data to file result/pr/data/routing_opt.enc.dat/ibex_core.apa ...
+#
+% Begin Save power constraints data ... (date=03/04 12:43:02, mem=1043.1M)
+% End Save power constraints data ... (date=03/04 12:43:02, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+1043.2M, current mem=1043.2M)
+

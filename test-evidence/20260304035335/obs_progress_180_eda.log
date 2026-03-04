@@ -1,0 +1,257 @@
+    None
+
+*** Finish DRV Fixing (cpu=0:00:01.1 real=0:00:01.0 mem=1286.8M) ***
+
+*** Starting refinePlace (0:05:50 mem=1286.8M) ***
+Total net bbox length = 5.889e+05 (2.585e+05 3.304e+05) (ext = 2.125e+04)
+*** Checked 2 GNC rules.
+*** Applying global-net connections...
+*** Applied 2 GNC rules (cpu = 0:00:00.0)
+**WARN: (IMPSP-315):	Found 1033 instances insts with no PG Term connections.
+Type 'man IMPSP-315' for more detail.
+Move report: Detail placement moves 7 insts, mean move: 0.85 um, max move: 1.84 um
+	Max move on inst (FE_OFC1706_n7452): (303.14, 234.94) --> (304.98, 234.94)
+	Runtime: CPU: 0:00:00.6 REAL: 0:00:01.0 MEM: 1286.8MB
+Summary Report:
+Instances move: 7 (out of 11724 movable)
+Instances flipped: 0
+Mean displacement: 0.85 um
+Max displacement: 1.84 um (Instance: FE_OFC1706_n7452) (303.14, 234.94) -> (304.98, 234.94)
+	Length: 3 sites, height: 1 rows, site name: unithd, cell type: sky130_fd_sc_hd__clkbuf_1
+Total net bbox length = 5.889e+05 (2.586e+05 3.304e+05) (ext = 2.125e+04)
+Runtime: CPU: 0:00:00.6 REAL: 0:00:01.0 MEM: 1286.8MB
+*** Finished refinePlace (0:05:51 mem=1286.8M) ***
+*** maximum move = 1.84 um ***
+*** Finished re-routing un-routed nets (1286.8M) ***
+
+*** Finish Physical Update (cpu=0:00:00.9 real=0:00:01.0 mem=1286.8M) ***
+*** DrvOpt [finish] : cpu/real = 0:00:07.0/0:00:07.0 (1.0), totSession cpu/real = 0:05:51.1/0:05:52.8 (1.0
+), mem = 1267.7M
+End: GigaOpt DRV Optimization
+GigaOpt DRV: restore maxLocalDensity to 0.98
+
+------------------------------------------------------------
+     Summary (cpu=0.12min real=0.12min mem=1220.7M)
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):| -1.982  | -1.982  |  2.305  |  0.347  |  8.308  |  2.749  |
+|           TNS (ns):|-788.802 |-788.802 |  0.000  |  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|  1377   |  1377   |    0    |    0    |    0    |    0    |
+|          All Paths:|  7573   |  3880   |  5390   |   101   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      1 (1)       |
+|   max_tran     |      0 (0)       |   0.000    |      0 (0)       |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 41.447%
+Routing Overflow: 1.23% H and 2.79% V
+------------------------------------------------------------
+**optDesign ... cpu = 0:03:40, real = 0:03:40, mem = 1019.2M, totSessionCpu=0:05:52 **
+*** Timing NOT met, worst failing slack is -1.982
+*** Check timing (0:00:00.0)
+Begin: GigaOpt Optimization in WNS mode
+GigaOpt Checkpoint: Internal optTiming -maxLocalDensity 1.0 -maxLocalDensityForHardenOpt 0.92 -numThreads
+1 -preCTS -wtns -integratedAreaOpt -pgMode all -ipoTgtSlackCoef 1.5 -effTgtSlackCoef 1 -nativePathGroupFlo
+w -NDROptEffortAuto -usefulSkew
+Info: 2 clock nets excluded from IPO operation.
+*** SetupOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:05:51.7/0:05:53.3 (1.
+0), mem = 1220.7M
+*info: 2 clock nets excluded
+*info: 2 special nets excluded.
+*info: 134 no-driver nets excluded.
+** GigaOpt Optimizer WNS Slack -1.982 TNS Slack -788.800 Density 41.45
+OptDebug: Start of Optimizer WNS Pass 0: feedthr in2reg reg2out default* WNS 0.347 TNS 0.000; reg2reg* WNS
+ -1.982 TNS -788.800; HEPG WNS -1.982 TNS -788.800; all paths WNS -1.982 TNS -788.800
+Active Path Group: reg2reg
++--------+---------+--------+---------+----------+------------+--------+----------+---------+-------------
+---------------------------------------+
+|  WNS   | All WNS |  TNS   | All TNS | Density  |    Real    |  Mem   |Worst View|Pathgroup|
+        End Point                      |
++--------+---------+--------+---------+----------+------------+--------+----------+---------+-------------
+---------------------------------------+
+|  -1.982|   -1.982|-788.800| -788.800|    41.45%|   0:00:00.0| 1239.8M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -1.689|   -1.689|-443.357| -443.357|    41.46%|   0:00:00.0| 1282.4M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -1.491|   -1.491|-248.702| -248.702|    41.46%|   0:00:00.0| 1282.4M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -1.406|   -1.406|-157.717| -157.717|    41.46%|   0:00:00.0| 1282.4M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -1.346|   -1.346|-112.274| -112.274|    41.47%|   0:00:01.0| 1290.4M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -1.193|   -1.193| -63.243|  -63.243|    41.49%|   0:00:00.0| 1290.4M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -1.100|   -1.100| -51.785|  -51.785|    41.49%|   0:00:00.0| 1290.4M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -1.008|   -1.008| -47.230|  -47.230|    41.50%|   0:00:00.0| 1290.4M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -0.950|   -0.950| -46.032|  -46.032|    41.50%|   0:00:00.0| 1290.4M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -0.869|   -0.869| -45.257|  -45.257|    41.51%|   0:00:01.0| 1290.4M|  max_view|  reg2reg| gen_regfile_
+ff.register_file_i/rf_reg_q_reg[127]/D |
+|  -0.820|   -0.820| -27.436|  -27.436|    41.53%|   0:00:00.0| 1309.5M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -0.759|   -0.759| -26.980|  -26.980|    41.53%|   0:00:00.0| 1309.5M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -0.682|   -0.682| -26.277|  -26.277|    41.53%|   0:00:00.0| 1309.5M|  max_view|  reg2reg| gen_regfile_
+ff.register_file_i/rf_reg_q_reg[127]/D |
+|  -0.659|   -0.659| -15.463|  -15.463|    41.54%|   0:00:00.0| 1309.5M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -0.532|   -0.532| -14.653|  -14.653|    41.54%|   0:00:01.0| 1309.5M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -0.405|   -0.405| -13.993|  -13.993|    41.55%|   0:00:00.0| 1309.5M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -0.347|   -0.347| -13.379|  -13.379|    41.56%|   0:00:00.0| 1309.5M|  max_view|  reg2reg| gen_regfile_
+ff.register_file_i/rf_reg_q_reg[127]/D |
+|  -0.272|   -0.272|  -0.588|   -0.588|    41.56%|   0:00:00.0| 1309.5M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -0.117|   -0.117|  -0.177|   -0.177|    41.58%|   0:00:00.0| 1309.5M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -0.017|   -0.017|  -0.029|   -0.029|    41.59%|   0:00:00.0| 1309.5M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|   0.034|    0.034|   0.000|    0.000|    41.59%|   0:00:01.0| 1309.5M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|   0.062|    0.069|   0.000|    0.000|    41.60%|   0:00:00.0| 1309.5M|        NA|       NA| NA
+                                       |
+|   0.062|    0.069|   0.000|    0.000|    41.60%|   0:00:00.0| 1309.5M|  max_view|       NA| NA
+                                       |
++--------+---------+--------+---------+----------+------------+--------+----------+---------+-------------
+---------------------------------------+
+
+*** Finish Core Optimize Step (cpu=0:00:04.2 real=0:00:04.0 mem=1309.5M) ***
+
+*** Finished Optimize Step Cumulative (cpu=0:00:04.2 real=0:00:04.0 mem=1309.5M) ***
+OptDebug: End of Optimizer WNS Pass 0: feedthr in2reg reg2out default* WNS 1.372 TNS 0.000; reg2reg* WNS 0
+.069 TNS 0.000; HEPG WNS 0.069 TNS 0.000; all paths WNS 0.069 TNS 0.000
+** GigaOpt Optimizer WNS Slack 0.062 TNS Slack 0.000 Density 41.60
+*** Starting refinePlace (0:06:06 mem=1309.5M) ***
+Total net bbox length = 5.894e+05 (2.588e+05 3.306e+05) (ext = 2.125e+04)
+*** Checked 2 GNC rules.
+*** Applying global-net connections...
+*** Applied 2 GNC rules (cpu = 0:00:00.0)
+**WARN: (IMPSP-315):	Found 1150 instances insts with no PG Term connections.
+Type 'man IMPSP-315' for more detail.
+Move report: Detail placement moves 133 insts, mean move: 1.94 um, max move: 5.48 um
+	Max move on inst (FE_RC_100_0): (238.28, 319.26) --> (235.52, 321.98)
+	Runtime: CPU: 0:00:00.8 REAL: 0:00:01.0 MEM: 1309.5MB
+Summary Report:
+Instances move: 133 (out of 11812 movable)
+Instances flipped: 0
+Mean displacement: 1.94 um
+Max displacement: 5.48 um (Instance: FE_RC_100_0) (238.28, 319.26) -> (235.52, 321.98)
+	Length: 3 sites, height: 1 rows, site name: unithd, cell type: sky130_fd_sc_hd__nand2_1
+Total net bbox length = 5.897e+05 (2.590e+05 3.307e+05) (ext = 2.125e+04)
+Runtime: CPU: 0:00:00.9 REAL: 0:00:01.0 MEM: 1309.5MB
+*** Finished refinePlace (0:06:07 mem=1309.5M) ***
+*** maximum move = 5.48 um ***
+*** Finished re-routing un-routed nets (1309.5M) ***
+
+*** Finish Physical Update (cpu=0:00:01.2 real=0:00:01.0 mem=1309.5M) ***
+** GigaOpt Optimizer WNS Slack 0.062 TNS Slack 0.000 Density 41.60
+Bottom Preferred Layer:
+    None
+Via Pillar Rule:
+    None
+
+*** Finish pre-CTS Setup Fixing (cpu=0:00:06.8 real=0:00:07.0 mem=1309.5M) ***
+
+*** SetupOpt [finish] : cpu/real = 0:00:15.8/0:00:15.9 (1.0), totSession cpu/real = 0:06:07.5/0:06:09.3 (1
+.0), mem = 1290.4M
+End: GigaOpt Optimization in WNS mode
+*** Timing Is met
+*** Check timing (0:00:00.0)
+GigaOpt Checkpoint: Internal reclaim -numThreads 1 -customPhyUpdate -ensureOneAreaReclaim -force -svrRecla
+im -rtrShortNets -preCTS -tgtSlackMult 2 -wtns -noRouteTypeResizePolish -noViewPrune -nativePathGroupFlow
+Info: 2 clock nets excluded from IPO operation.
+Begin: Area Reclaim Optimization
+*** AreaOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:06:07.8/0:06:09.6 (1.0
+), mem = 1246.5M
+Reclaim Optimization WNS Slack 0.000  TNS Slack 0.000 Density 41.60
++----------+---------+--------+--------+------------+--------+
+| Density  | Commits |  WNS   |  TNS   |    Real    |  Mem   |
++----------+---------+--------+--------+------------+--------+
+|    41.60%|        -|   0.000|   0.000|   0:00:00.0| 1246.5M|
+|    41.60%|        0|   0.000|   0.000|   0:00:00.0| 1246.5M|
+|    41.39%|      112|   0.000|   0.000|   0:00:03.0| 1289.2M|
+|    40.49%|      695|  -0.001|  -0.002|   0:00:10.0| 1289.2M|
+|    40.47%|       30|  -0.001|  -0.002|   0:00:01.0| 1289.2M|
+|    40.47%|        1|  -0.001|  -0.002|   0:00:00.0| 1289.2M|
+|    40.47%|        0|  -0.001|  -0.002|   0:00:01.0| 1289.2M|
+|    40.47%|        0|  -0.001|  -0.002|   0:00:00.0| 1289.2M|
++----------+---------+--------+--------+------------+--------+
+Reclaim Optimization End WNS Slack -0.001  TNS Slack -0.002 Density 40.47
+Bottom Preferred Layer:
+    None
+Via Pillar Rule:
+    None
+End: Core Area Reclaim Optimization (cpu = 0:00:15.9) (real = 0:00:16.0) **
+*** Starting refinePlace (0:06:24 mem=1289.2M) ***
+Total net bbox length = 5.903e+05 (2.595e+05 3.308e+05) (ext = 2.124e+04)
+*** Checked 2 GNC rules.
+*** Applying global-net connections...
+*** Applied 2 GNC rules (cpu = 0:00:00.0)
+**WARN: (IMPSP-315):	Found 1028 instances insts with no PG Term connections.
+Type 'man IMPSP-315' for more detail.
+Move report: Detail placement moves 0 insts, mean move: 0.00 um, max move: 0.00 um
+	Runtime: CPU: 0:00:00.7 REAL: 0:00:00.0 MEM: 1289.2MB
+Summary Report:
+Instances move: 0 (out of 11690 movable)
+Instances flipped: 0
+Mean displacement: 0.00 um
+Max displacement: 0.00 um
+Total net bbox length = 5.903e+05 (2.595e+05 3.308e+05) (ext = 2.124e+04)
+Runtime: CPU: 0:00:00.7 REAL: 0:00:00.0 MEM: 1289.2MB
+*** Finished refinePlace (0:06:25 mem=1289.2M) ***
+*** maximum move = 0.00 um ***
+*** Finished re-routing un-routed nets (1289.2M) ***
+

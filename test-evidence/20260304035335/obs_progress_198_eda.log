@@ -1,0 +1,257 @@
+** GigaOpt Optimizer WNS Slack 0.000 TNS Slack 0.000 Density 40.47
+Bottom Preferred Layer:
+    None
+Via Pillar Rule:
+    None
+
+*** Finish pre-CTS Setup Fixing (cpu=0:00:01.5 real=0:00:01.0 mem=1311.0M) ***
+
+*** SetupOpt [finish] : cpu/real = 0:00:07.9/0:00:07.9 (1.0), totSession cpu/real = 0:06:36.3/0:06:38.1 (1
+.0), mem = 1291.9M
+End: GigaOpt TNS non-legal recovery
+
+Active setup views:
+ max_view
+  Dominating endpoints: 0
+  Dominating TNS: -0.000
+
+Extraction called for design 'ibex_core' of instances=11690 and nets=12126 using extraction engine 'preRou
+te' .
+PreRoute RC Extraction called for design ibex_core.
+RC Extraction called in multi-corner(2) mode.
+**WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy
+when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to gener
+ate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_r
+c_corner/update_rc_corner -cap_table'.
+Type 'man IMPEXT-6197' for more detail.
+RCMode: PreRoute
+      RC Corner Indexes            0       1
+Capacitance Scaling Factor   : 1.05000 1.00000
+Resistance Scaling Factor    : 1.05000 1.00000
+Clock Cap. Scaling Factor    : 1.05000 1.00000
+Clock Res. Scaling Factor    : 1.05000 1.00000
+Shrink Factor                : 1.00000
+PreRoute extraction is honoring NDR/Shielding/ExtraSpace for clock nets.
+Skipped RC grid update for preRoute extraction.
+Initializing multi-corner resistance tables ...
+PreRoute RC Extraction DONE (CPU Time: 0:00:00.2  Real Time: 0:00:01.0  MEM: 1279.418M)
+Skewing Data Summary (End_of_FINAL)
+--------------------------------------------------
+ Total skewed count:0
+--------------------------------------------------
+[NR-eGR] Num Prerouted Nets = 0  Num Prerouted Wires = 0
+[NR-eGR] Read numTotalNets=11982  numIgnoredNets=0
+[NR-eGR] There are 2 clock nets ( 0 with NDR ).
+[NR-eGR] ============ Routing rule table ============
+[NR-eGR] Rule id: 0  Nets: 11982
+[NR-eGR] ========================================
+[NR-eGR]
+[NR-eGR] Layer group 1: route 11982 net(s) in layer range [2, 5]
+[NR-eGR] Early Global Route overflow of layer group 1: 4.53% H + 5.32% V. EstWL: 7.110706e+05um
+[NR-eGR] Overflow after Early Global Route (GR compatible) 1.06% H + 2.36% V
+[NR-eGR] Overflow after Early Global Route 1.32% H + 2.60% V
+[NR-eGR] Finished Early Global Route kernel ( CPU: 0.51 sec, Real: 0.52 sec, Curr Mem: 1279.42 MB )
+[hotspot] +------------+---------------+---------------+
+[hotspot] |            |   max hotspot | total hotspot |
+[hotspot] +------------+---------------+---------------+
+[hotspot] | normalized |          0.89 |          9.33 |
+[hotspot] +------------+---------------+---------------+
+Local HotSpot Analysis: normalized max congestion hotspot area = 0.89, normalized total congestion hotspot
+ area = 9.33 (area is in unit of 4 std-cell row bins)
+[hotspot] top 5 congestion hotspot bounding boxes and scores of normalized hotspot
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] | top |            hotspot bbox             | hotspot score |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  1  |   131.94   131.58   153.70   153.34 |        0.89   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  2  |   262.50   153.34   284.26   175.10 |        0.89   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  3  |    23.14   185.98    44.90   207.74 |        0.89   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  4  |    55.78    11.90    77.54    33.66 |        0.44   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  5  |   501.86    77.18   523.62    98.94 |        0.44   |
+[hotspot] +-----+-------------------------------------+---------------+
+Starting delay calculation for Setup views
+#################################################################################
+# Design Stage: PreRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC Non-OCV
+# Parasitics Mode: No SPEF/RCDB
+# Signoff Settings: SI Off
+#################################################################################
+Calculate delays in Single mode...
+Start delay calculation (fullDC) (1 T). (MEM=1269.42)
+Total number of fetched objects 11986
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+End delay calculation. (MEM=1285.89 CPU=0:00:02.4 REAL=0:00:03.0)
+End delay calculation (fullDC). (MEM=1285.89 CPU=0:00:02.9 REAL=0:00:03.0)
+*** Done Building Timing Graph (cpu=0:00:03.9 real=0:00:04.0 totSessionCpu=0:06:42 mem=1285.9M)
+Reported timing to dir ./timingReports
+**optDesign ... cpu = 0:04:30, real = 0:04:31, mem = 1018.3M, totSessionCpu=0:06:42 **
+
+------------------------------------------------------------
+     optDesign Final Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):|  0.000  |  0.000  |  2.304  |  1.164  |  8.308  |  2.749  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |    0    |    0    |    0    |
+|          All Paths:|  7573   |  3880   |  5390   |   101   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      1 (1)       |
+|   max_tran     |      0 (0)       |   0.000    |      0 (0)       |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 40.471%
+Routing Overflow: 1.32% H and 2.60% V
+------------------------------------------------------------
+**optDesign ... cpu = 0:04:31, real = 0:04:33, mem = 1019.8M, totSessionCpu=0:06:43 **
+*** Finished optDesign ***
+#optDebug: fT-D <X 1 0 0 0>
+**place_opt_design ... cpu = 0:06:14, real = 0:06:17, mem = 1183.9M **
+*** Finished GigaPlace ***
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPEXT-6197          3  The Cap table file is not specified. Thi...
+WARNING   IMPEXT-2882          5  Unable to find the resistance for via '%...
+WARNING   IMPSP-315            5  Found %d instances insts with no PG Term...
+WARNING   IMPOPT-576           1  %d nets have unplaced terms.
+WARNING   IMPOPT-665           2  %s : Net has unplaced terms or is connec...
+*** Message Summary: 16 warning(s), 0 error(s)
+
+Usage: (40.0%H 49.4%V) = (4.160e+05um 4.012e+05um) = (152925 147491)
+Overflow: 1621 = 546 (1.32% H) + 1075 (2.60% V)
+
+Congestion distribution:
+
+Remain	cntH		cntV
+--------------------------------------
+ -5:	8	 0.02%	0	 0.00%
+ -4:	16	 0.04%	4	 0.01%
+ -3:	45	 0.11%	28	 0.07%
+ -2:	116	 0.28%	177	 0.43%
+ -1:	254	 0.61%	768	 1.85%
+--------------------------------------
+  0:	514	 1.24%	2451	 5.92%
+  1:	1214	 2.93%	5074	12.25%
+  2:	2379	 5.74%	6610	15.96%
+  3:	3876	 9.36%	6749	16.30%
+  4:	5119	12.36%	5397	13.03%
+  5:	27871	67.30%	14154	34.18%
+Start to check current routing status for nets...
+All nets are already routed correctly.
+End to check current routing status for nets (mem=1183.9M)
+
+------------------------------------------------------------
+          timeDesign Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):|  0.000  |  0.000  |  2.304  |  1.164  |  8.308  |  2.749  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |    0    |    0    |    0    |
+|          All Paths:|  7573   |  3880   |  5390   |   101   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      1 (1)       |
+|   max_tran     |      0 (0)       |   0.000    |      0 (0)       |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 40.471%
+Routing Overflow: 1.32% H and 2.60% V
+------------------------------------------------------------
+Reported timing to dir result/pr/report/placement_timing
+Total CPU time: 2.55 sec
+Total Real time: 4.0 sec
+Total Memory Usage: 1181.898438 Mbytes
+#% Begin save design ... (date=03/04 12:13:39, mem=977.4M)
+% Begin Save ccopt configuration ... (date=03/04 12:13:39, mem=980.4M)
+% End Save ccopt configuration ... (date=03/04 12:13:39, total cpu=0:00:00.0, real=0:00:00.0, peak res=981
+.1M, current mem=981.1M)
+% Begin Save netlist data ... (date=03/04 12:13:39, mem=981.1M)
+Writing Binary DB to result/pr/data/placement.enc.dat/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/04 12:13:39, total cpu=0:00:00.1, real=0:00:00.0, peak res=981.3M, cu
+rrent mem=981.3M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/placement.enc.dat/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/04 12:13:39, mem=981.9M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/04 12:13:39, total cpu=0:00:00.0, real=0:00:00.0, peak res=981.9M, curren
+t mem=981.9M)
+Saving preference file result/pr/data/placement.enc.dat/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/04 12:13:40, mem=982.8M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/04 12:13:40, total cpu=0:00:00.0, real=0:00:00.0, peak res=983.2M,
+current mem=983.2M)
+Saving PG file result/pr/data/placement.enc.dat/ibex_core.pg.gz, version#2, (Created by Innovus v20.10-p00
+4_1 on Wed Mar  4 12:13:40 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=1182.4M) ***
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/04 12:13:40, mem=983.6M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/04 12:13:40, total cpu=0:00:00.0, real=0:00:00.0, peak res=983.7M,
+current mem=983.7M)
+% Begin Save routing data ... (date=03/04 12:13:40, mem=983.7M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.1 real=0:00:01.0 mem=1182.4M) ***
+% End Save routing data ... (date=03/04 12:13:41, total cpu=0:00:00.2, real=0:00:01.0, peak res=984.0M, cu
+rrent mem=984.0M)
+Saving SCANDEF file ...
+*** Scan Trace Summary (runtime: cpu: 0:00:00.0 , real: 0:00:00.0):
+Successfully traced 1 scan chain  (total 1940 scan bits).
+Start applying DEF ordered sections ...
+Successfully applied all DEF ordered sections.
+*** Scan Sanity Check Summary:
+*** 1 scan chain  passed sanity check.
+Saving property file result/pr/data/placement.enc.dat/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=1376.4M) ***
+Saving rc congestion map result/pr/data/placement.enc.dat/ibex_core.congmap.gz ...
+% Begin Save power constraints data ... (date=03/04 12:13:41, mem=984.4M)
+% End Save power constraints data ... (date=03/04 12:13:41, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+984.5M, current mem=984.5M)
+Generated self-contained design placement.enc.dat
+#% End save design ... (date=03/04 12:13:45, total cpu=0:00:05.0, real=0:00:06.0, peak res=987.7M, current
+ mem=987.7M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+STAGE 4 COMPLETE: Placement done
+
+*** Memory Usage v#1 (Current mem = 1217.703M, initial mem = 249.227M) ***
+*** Message Summary: 71 warning(s), 0 error(s)
+
+--- Ending "Innovus" (totcpu=0:06:51, real=0:06:58, mem=1217.7M) ---
+
+[EDA@EDA2035 ibex_work_upload]$

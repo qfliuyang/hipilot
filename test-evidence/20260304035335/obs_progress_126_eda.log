@@ -1,0 +1,257 @@
+Total number of level shifter cells: 7
+Total number of power gating cells: 0
+Total number of isolation cells: 11
+Total number of power switch cells: 0
+Total number of pulse generator cells: 0
+Total number of always on buffers: 0
+Total number of retention cells: 0
+List of usable buffers: sky130_fd_sc_hd__buf_1 sky130_fd_sc_hd__buf_12 sky130_fd_sc_hd__buf_16 sky130_fd_s
+c_hd__buf_2 sky130_fd_sc_hd__buf_4 sky130_fd_sc_hd__buf_6 sky130_fd_sc_hd__buf_8 sky130_fd_sc_hd__clkbuf_1
+ sky130_fd_sc_hd__clkbuf_16 sky130_fd_sc_hd__clkbuf_2 sky130_fd_sc_hd__clkbuf_4 sky130_fd_sc_hd__clkbuf_8
+sky130_fd_sc_hd__dlymetal6s2s_1 sky130_fd_sc_hd__probe_p_8
+Total number of usable buffers: 14
+List of unusable buffers: sky130_fd_sc_hd__probec_p_8
+Total number of unusable buffers: 1
+List of usable inverters: sky130_fd_sc_hd__bufinv_16 sky130_fd_sc_hd__clkinv_1 sky130_fd_sc_hd__bufinv_8 s
+ky130_fd_sc_hd__clkinv_16 sky130_fd_sc_hd__clkinv_2 sky130_fd_sc_hd__clkinv_4 sky130_fd_sc_hd__clkinv_8 sk
+y130_fd_sc_hd__inv_1 sky130_fd_sc_hd__clkinvlp_2 sky130_fd_sc_hd__clkinvlp_4 sky130_fd_sc_hd__inv_12 sky13
+0_fd_sc_hd__inv_16 sky130_fd_sc_hd__inv_2 sky130_fd_sc_hd__inv_4 sky130_fd_sc_hd__inv_6 sky130_fd_sc_hd__i
+nv_8
+Total number of usable inverters: 16
+List of unusable inverters:
+Total number of unusable inverters: 0
+List of identified usable delay cells: sky130_fd_sc_hd__bufbuf_16 sky130_fd_sc_hd__bufbuf_8 sky130_fd_sc_h
+d__clkdlybuf4s15_1 sky130_fd_sc_hd__clkdlybuf4s15_2 sky130_fd_sc_hd__clkdlybuf4s18_1 sky130_fd_sc_hd__clkd
+lybuf4s18_2 sky130_fd_sc_hd__clkdlybuf4s25_1 sky130_fd_sc_hd__clkdlybuf4s50_1 sky130_fd_sc_hd__clkdlybuf4s
+25_2 sky130_fd_sc_hd__clkdlybuf4s50_2 sky130_fd_sc_hd__dlygate4sd2_1 sky130_fd_sc_hd__dlygate4sd1_1 sky130
+_fd_sc_hd__dlygate4sd3_1 sky130_fd_sc_hd__dlymetal6s6s_1 sky130_fd_sc_hd__dlymetal6s4s_1
+Total number of identified usable delay cells: 15
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+**WARN: (IMPCTE-107):	The following globals have been obsoleted since version 20.10-p004_1. They will be
+ removed in the next release.
+timing_enable_default_delay_arc
+#% End load design ... (date=03/04 12:07:18, total cpu=0:00:03.5, real=0:00:05.0, peak res=755.2M, current
+ mem=730.3M)
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPLF-200            4  Pin '%s' in macro '%s' has no ANTENNAGAT...
+WARNING   IMPLF-201            3  Pin '%s' in macro '%s' has no ANTENNADIF...
+WARNING   IMPLF-108            1  There is no overlap layer defined in any...
+WARNING   IMPFP-729            2  error while reading "GlobalNetConnection...
+WARNING   IMPFP-3961           2  The techSite '%s' has no related standar...
+WARNING   IMPEXT-2766         12  The sheet resistance for layer %s is not...
+WARNING   IMPEXT-2773         12  The via resistance between layers %s and...
+WARNING   IMPESI-3505          1  setDelayCalMode -eng_%s (default=%s) wil...
+WARNING   IMPCTE-107           1  The following globals have been obsolete...
+WARNING   TECHLIB-302         12  No function defined for cell '%s'. The c...
+WARNING   TECHLIB-1161         1  The library level attribute %s on line %...
+*** Message Summary: 51 warning(s), 0 error(s)
+
+Reading DEF file '/home/EDA/ibex_work_upload/result/scanchain/data/ibex_core.scan.def', current time is We
+d Mar  4 12:07:18 2026 ...
+--- CASESENSITIVE ON
+--- DIVIDERCHAR '/'
+DEF file '/home/EDA/ibex_work_upload/result/scanchain/data/ibex_core.scan.def' is parsed, current time is
+Wed Mar  4 12:07:18 2026.
+Effort level <high> specified for reg2reg path_group
+**WARN: (IMPOPT-3602):	The specified path group name reg2cg is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <high> specified for reg2cg path_group
+Effort level <low> specified for in2reg path_group
+Effort level <low> specified for reg2out path_group
+Effort level <low> specified for feedthr path_group
+Ignoring {in2reg reg2out feedthr} groups for Hold optimization.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMinRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -bottomRoutingLayer' instead.
+**WARN: (IMPPSP-1003):	Found use of 'setRouteMode -earlyGlobalMaxRouteLayer'. This will continue to work
+in this release; however, it is recommended to use 'setDesignMode -topRoutingLayer' instead.
+##  Process: 130           (User Set)
+##     Node: (not set)
+
+##  Check design process and node:
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 130nm process node: total_c_th=0, rela
+tive_c_th=1 and coupling_c_th=0.4.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Q
+uantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all
+engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'standard'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction
+ mode is 'low'.
+No user sequential activity specified, applying default sequential activity of "0.2" for Dynamic Power rep
+orting.
+'set_default_switching_activity' finished successfully.
+*** Starting GigaPlace ***
+**INFO: User settings:
+setDesignMode -process                            130
+setExtractRCMode -coupling_c_th                   0.4
+setExtractRCMode -engine                          preRoute
+setExtractRCMode -relative_c_th                   1
+setExtractRCMode -total_c_th                      0
+setDelayCalMode -enable_high_fanout               true
+setDelayCalMode -eng_copyNetPropToNewNet          true
+setDelayCalMode -engine                           aae
+setDelayCalMode -ignoreNetLoad                    false
+setOptMode -ignorePathGroupsForHold               {in2reg reg2out feedthr}
+setPlaceMode -place_detail_legalization_inst_gap  2
+setPlaceMode -place_global_ignore_scan            true
+setPlaceMode -place_global_place_io_pins          false
+setPlaceMode -place_global_reorder_scan           false
+setAnalysisMode -analysisType                     single
+setAnalysisMode -checkType                        setup
+setAnalysisMode -clkSrcPath                       false
+setAnalysisMode -clockPropagation                 forcedIdeal
+setAnalysisMode -cppr                             both
+setRouteMode -earlyGlobalMaxRouteLayer            5
+setRouteMode -earlyGlobalMinRouteLayer            2
+
+#optDebug: fT-E <X 2 3 1 0>
+*** Scan Trace Summary (runtime: cpu: 0:00:00.0 , real: 0:00:00.0):
+Successfully traced 1 scan chain  (total 1940 scan bits).
+Start applying DEF ordered sections ...
+Successfully applied all DEF ordered sections.
+*** Scan Sanity Check Summary:
+*** 1 scan chain  passed sanity check.
+*** Start deleteBufferTree ***
+Info: Detect buffers to remove automatically.
+Analyzing netlist ...
+Updating netlist
+siFlow : Timing analysis mode is single, using late cdB files
+
+*summary: 174 instances (buffers/inverters) removed
+*** Finish deleteBufferTree (0:00:00.9) ***
+Deleted 0 physical inst  (cell - / prefix -).
+INFO: #ExclusiveGroups=0
+INFO: There are no Exclusive Groups.
+No user-set net weight.
+Net fanout histogram:
+2		: 6712 (59.8%) nets
+3		: 1117 (10.0%) nets
+4     -	14	: 3078 (27.4%) nets
+15    -	39	: 240 (2.1%) nets
+40    -	79	: 50 (0.4%) nets
+80    -	159	: 18 (0.2%) nets
+160   -	319	: 0 (0.0%) nets
+320   -	639	: 0 (0.0%) nets
+640   -	1279	: 2 (0.0%) nets
+1280  -	2559	: 2 (0.0%) nets
+2560  -	5119	: 0 (0.0%) nets
+5120+		: 0 (0.0%) nets
+Options: timingDriven clkGateAware ignoreScan pinGuide congEffort=auto gpeffort=medium
+*** Scan Trace Summary (runtime: cpu: 0:00:00.0 , real: 0:00:00.0):
+Successfully traced 1 scan chain  (total 1940 scan bits).
+Start applying DEF ordered sections ...
+Successfully applied all DEF ordered sections.
+*** Scan Sanity Check Summary:
+*** 1 scan chain  passed sanity check.
+#std cell=10919 (0 fixed + 10919 movable) #buf cell=0 #inv cell=799 #block=0 (0 floating + 0 preplaced)
+#ioInst=0 #net=11218 #term=47698 #term/net=4.25, #fixedIo=0, #floatIo=0, #fixedPin=0, #floatPin=257
+stdCell: 10919 single + 0 double + 0 multi
+Total standard cell length = 44.4631 (mm), area = 0.1209 (mm^2)
+Average module density = 0.404.
+Density for the design = 0.404.
+       = stdcell_area 96659 sites (120940 um^2) / alloc_area 239408 sites (299547 um^2).
+Pin Density = 0.1963.
+            = total # of pins 47698 / total area 243006.
+=== lastAutoLevel = 9
+Clock gating cells determined by native netlist tracing.
+Init WL Bound For Global Placement...
+Iteration  1: Total net bbox = 2.087e+05 (1.05e+05 1.03e+05)
+              Est.  stn bbox = 2.277e+05 (1.15e+05 1.13e+05)
+              cpu = 0:00:00.1 real = 0:00:01.0 mem = 969.9M
+Iteration  2: Total net bbox = 2.087e+05 (1.05e+05 1.03e+05)
+              Est.  stn bbox = 2.277e+05 (1.15e+05 1.13e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 969.9M
+*** Finished SKP initialization (cpu=0:00:02.7, real=0:00:02.0)***
+Iteration  3: Total net bbox = 1.419e+05 (6.90e+04 7.29e+04)
+              Est.  stn bbox = 1.634e+05 (7.89e+04 8.45e+04)
+              cpu = 0:00:03.6 real = 0:00:03.0 mem = 1058.6M
+Iteration  4: Total net bbox = 2.614e+05 (1.10e+05 1.51e+05)
+              Est.  stn bbox = 3.371e+05 (1.39e+05 1.98e+05)
+              cpu = 0:00:04.7 real = 0:00:05.0 mem = 1083.7M
+Iteration  5: Total net bbox = 2.614e+05 (1.10e+05 1.51e+05)
+              Est.  stn bbox = 3.371e+05 (1.39e+05 1.98e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 1083.7M
+Iteration  6: Total net bbox = 3.578e+05 (1.63e+05 1.94e+05)
+              Est.  stn bbox = 4.833e+05 (2.15e+05 2.68e+05)
+              cpu = 0:00:03.9 real = 0:00:04.0 mem = 1055.7M
+
+Iteration  7: Total net bbox = 4.054e+05 (1.89e+05 2.16e+05)
+              Est.  stn bbox = 5.474e+05 (2.45e+05 3.02e+05)
+              cpu = 0:00:03.3 real = 0:00:04.0 mem = 1054.7M
+Iteration  8: Total net bbox = 4.054e+05 (1.89e+05 2.16e+05)
+              Est.  stn bbox = 5.474e+05 (2.45e+05 3.02e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 1054.7M
+Iteration  9: Total net bbox = 4.431e+05 (2.08e+05 2.36e+05)
+              Est.  stn bbox = 5.965e+05 (2.67e+05 3.29e+05)
+              cpu = 0:00:08.1 real = 0:00:08.0 mem = 1052.3M
+Iteration 10: Total net bbox = 4.431e+05 (2.08e+05 2.36e+05)
+              Est.  stn bbox = 5.965e+05 (2.67e+05 3.29e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 1052.3M
+Iteration 11: Total net bbox = 4.450e+05 (2.01e+05 2.44e+05)
+              Est.  stn bbox = 5.868e+05 (2.57e+05 3.30e+05)
+              cpu = 0:00:02.2 real = 0:00:02.0 mem = 1060.4M
+Iteration 12: Total net bbox = 4.558e+05 (2.12e+05 2.44e+05)
+              Est.  stn bbox = 6.044e+05 (2.70e+05 3.35e+05)
+              cpu = 0:00:14.5 real = 0:00:14.0 mem = 1060.4M
+Iteration 13: Total net bbox = 4.558e+05 (2.12e+05 2.44e+05)
+              Est.  stn bbox = 6.044e+05 (2.70e+05 3.35e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 1060.4M
+Iteration 14: Total net bbox = 4.558e+05 (2.12e+05 2.44e+05)
+              Est.  stn bbox = 6.044e+05 (2.70e+05 3.35e+05)
+              cpu = 0:00:00.0 real = 0:00:00.0 mem = 1060.4M
+Finished Global Placement (cpu=0:00:38.5, real=0:00:40.0, mem=1060.4M)
+Keep Tdgp Graph and DB for later use
+Info: 1 clock gating cells identified, 1 (on average) moved 5/5
+*** Starting refinePlace (0:01:11 mem=1060.4M) ***
+Total net bbox length = 6.298e+05 (2.910e+05 3.388e+05) (ext = 2.409e+04)
+Move report: Detail placement moves 10919 insts, mean move: 2.18 um, max move: 48.86 um
+	Max move on inst (gen_regfile_ff.register_file_i/U357): (33.55, 106.83) --> (25.76, 147.90)
+	Runtime: CPU: 0:00:02.0 REAL: 0:00:02.0 MEM: 1068.5MB
+Summary Report:
+Instances move: 10919 (out of 10919 movable)
+Instances flipped: 0
+Mean displacement: 2.18 um
+Max displacement: 48.86 um (Instance: gen_regfile_ff.register_file_i/U357) (33.546, 106.831) -> (25.76, 14
+7.9)
+	Length: 7 sites, height: 1 rows, site name: unithd, cell type: sky130_fd_sc_hd__o2bb2ai_1
+Total net bbox length = 6.179e+05 (2.798e+05 3.381e+05) (ext = 2.394e+04)
+Runtime: CPU: 0:00:02.0 REAL: 0:00:02.0 MEM: 1068.5MB
+*** Finished refinePlace (0:01:13 mem=1068.5M) ***
+*** Finished Initial Placement (cpu=0:00:41.8, real=0:00:43.0, mem=1068.5M) ***
+
+*** Start incrementalPlace ***
+Init WL Bound for IncrIp in placeDesign ...
+No Views given, use default active views for adaptive view pruning
+SKP will enable view:
+  max_view
+[NR-eGR] Num Prerouted Nets = 0  Num Prerouted Wires = 0
+[NR-eGR] Read numTotalNets=11218  numIgnoredNets=0
+[NR-eGR] There are 2 clock nets ( 0 with NDR ).
+[NR-eGR] ============ Routing rule table ============
+[NR-eGR] Rule id: 0  Nets: 11218
+[NR-eGR] ========================================
+[NR-eGR]
+[NR-eGR] Layer group 1: route 11218 net(s) in layer range [2, 5]
+[NR-eGR] Early Global Route overflow of layer group 1: 9.21% H + 11.32% V. EstWL: 7.747077e+05um
+[NR-eGR] Overflow after Early Global Route (GR compatible) 1.93% H + 5.01% V
+[NR-eGR] Overflow after Early Global Route 2.39% H + 5.94% V
+Early Global Route congestion estimation runtime: 0.53 seconds, mem = 1068.5M
+Local HotSpot Analysis: normalized max congestion hotspot area = 39.67, normalized total congestion hotspo
+t area = 181.56 (area is in unit of 4 std-cell row bins)
+
+=== incrementalPlace Internal Loop 1 ===
+Iteration  7: Total net bbox = 5.458e+05 (2.41e+05 3.04e+05)
+              Est.  stn bbox = 7.069e+05 (3.05e+05 4.01e+05)
+              cpu = 0:00:05.9 real = 0:00:05.0 mem = 1103.6M
+Iteration  8: Total net bbox = 5.391e+05 (2.39e+05 3.00e+05)
+              Est.  stn bbox = 6.997e+05 (3.03e+05 3.97e+05)
+              cpu = 0:00:06.5 real = 0:00:06.0 mem = 1096.6M
+Iteration  9: Total net bbox = 5.429e+05 (2.42e+05 3.01e+05)
+              Est.  stn bbox = 7.016e+05 (3.05e+05 3.96e+05)
+              cpu = 0:00:10.5 real = 0:00:11.0 mem = 1097.7M
+

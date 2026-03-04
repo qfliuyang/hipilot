@@ -1,0 +1,257 @@
+*** DrvOpt [finish] : cpu/real = 0:00:07.5/0:00:07.4 (1.0), totSession cpu/real = 0:00:47.7/0:00:42.6 (1.1
+), mem = 1062.4M
+GigaOpt HFN: restore maxLocalDensity to 0.98
+End: GigaOpt high fanout net optimization
+Begin: GigaOpt Global Optimization
+*info: use new DP (enabled)
+GigaOpt Checkpoint: Internal globalOpt -maxLocalDensity 1.2 -numThreads 1 -postCTS -preRouteDontEndWithRef
+inePlaceIncrSteinerRouteDC -enableHighLayerOpt -maxIter 50 -maxIterForLEPG 50
+Info: 72 nets with fixed/cover wires excluded.
+Info: 72 clock nets excluded from IPO operation.
+*** SetupOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:00:48.0/0:00:42.9 (1.
+1), mem = 1062.4M
+*info: 72 clock nets excluded
+*info: 2 special nets excluded.
+*info: 134 no-driver nets excluded.
+*info: 72 nets with fixed/cover wires excluded.
+** GigaOpt Global Opt WNS Slack -0.383  TNS Slack -208.594
++--------+--------+----------+------------+--------+----------+---------+---------------------------------
+-------------------+
+|  WNS   |  TNS   | Density  |    Real    |  Mem   |Worst View|Pathgroup|                     End Point
+                   |
++--------+--------+----------+------------+--------+----------+---------+---------------------------------
+-------------------+
+|  -0.383|-208.594|    41.12%|   0:00:00.0| 1097.5M|  max_view|  default| gen_regfile_ff.register_file_i/r
+f_reg_q_reg[290]/D |
+Dumping Information for Job 0 **WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M4M5_PR_MR'
+ in Cap table or LEF or OA files. The default value of 4.0 ohms is being assigned. To avoid this, check th
+e Cap table and LEF and OA files, provide the resistance and read the files again.
+
+|  -0.244|  -6.095|    41.15%|   0:00:03.0| 1168.4M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|  -0.168|  -0.275|    41.20%|   0:00:01.0| 1172.4M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|  -0.168|  -0.275|    41.20%|   0:00:00.0| 1172.4M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|  -0.002|  -0.002|    41.22%|   0:00:00.0| 1172.4M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|  -0.002|  -0.002|    41.22%|   0:00:00.0| 1172.4M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|  -0.002|  -0.002|    41.22%|   0:00:00.0| 1172.4M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|  -0.002|  -0.002|    41.22%|   0:00:00.0| 1172.4M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|  -0.002|  -0.002|    41.22%|   0:00:00.0| 1215.0M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|  -0.002|  -0.002|    41.22%|   0:00:00.0| 1215.0M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|  -0.002|  -0.002|    41.22%|   0:00:00.0| 1215.0M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|  -0.002|  -0.002|    41.22%|   0:00:00.0| 1215.0M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|  -0.002|  -0.002|    41.22%|   0:00:00.0| 1215.0M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|  -0.002|  -0.002|    41.22%|   0:00:00.0| 1215.0M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|  -0.002|  -0.002|    41.22%|   0:00:00.0| 1215.0M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|  -0.002|  -0.002|    41.22%|   0:00:00.0| 1215.0M|  max_view|  default| if_stage_i/gen_prefetch_buffer.p
+refetch_buffer_i/f |
+|        |        |          |            |        |          |         | ifo_i/instr_addr_q_reg[31]/D
+                   |
+|   0.000|   0.000|    41.22%|   0:00:00.0| 1215.0M|        NA|       NA| NA
+                   |
++--------+--------+----------+------------+--------+----------+---------+---------------------------------
+-------------------+
+
+*** Finish post-CTS Global Setup Fixing (cpu=0:00:04.4 real=0:00:04.0 mem=1215.0M) ***
+
+*** Finish post-CTS Setup Fixing (cpu=0:00:04.4 real=0:00:04.0 mem=1215.0M) ***
+Bottom Preferred Layer:
++-------------+------------+----------+
+|    Layer    |    CLK     |   Rule   |
++-------------+------------+----------+
+| met2 (z=3)  |         45 | default  |
++-------------+------------+----------+
+| met2 (z=3)  |         27 | cts_1    |
++-------------+------------+----------+
+Via Pillar Rule:
+    None
+** GigaOpt Global Opt End WNS Slack 0.000  TNS Slack 0.000
+*** SetupOpt [finish] : cpu/real = 0:00:13.9/0:00:13.9 (1.0), totSession cpu/real = 0:01:01.9/0:00:56.8 (1
+.1), mem = 1196.0M
+End: GigaOpt Global Optimization
+*** Timing Is met
+*** Check timing (0:00:00.0)
+GigaOpt Checkpoint: Internal reclaim -numThreads 1 -postCTS -doRemoveUselessTerm -tgtSlackMult 3 -routeTyp
+e -noRouteTypeResizePolish -noViewPrune -weedwhack -nonLegal -nativePathGroupFlow
+Info: 72 nets with fixed/cover wires excluded.
+Info: 72 clock nets excluded from IPO operation.
+GigaOpt Checkpoint: Internal reclaim -numThreads 1 -customPhyUpdate -force -svrReclaim -rtrShortNets -post
+CTS -tgtSlackMult 2 -wtns -noRouteTypeResizePolish -noViewPrune -nativePathGroupFlow
+Info: 72 nets with fixed/cover wires excluded.
+Info: 72 clock nets excluded from IPO operation.
+Begin: Area Reclaim Optimization
+*** AreaOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:01:05.3/0:01:00.2 (1.1
+), mem = 1126.0M
+Usable buffer cells for single buffer setup transform:
+sky130_fd_sc_hd__clkbuf_1 sky130_fd_sc_hd__buf_1 sky130_fd_sc_hd__clkbuf_2 sky130_fd_sc_hd__buf_2 sky130_f
+d_sc_hd__clkbuf_4 sky130_fd_sc_hd__buf_4 sky130_fd_sc_hd__buf_6 sky130_fd_sc_hd__clkbuf_8 sky130_fd_sc_hd_
+_probe_p_8 sky130_fd_sc_hd__buf_8 sky130_fd_sc_hd__buf_12 sky130_fd_sc_hd__clkbuf_16 sky130_fd_sc_hd__buf_
+16
+Number of usable buffer cells above: 13
+Reclaim Optimization WNS Slack 0.017  TNS Slack 0.000 Density 41.22
++----------+---------+--------+--------+------------+--------+
+| Density  | Commits |  WNS   |  TNS   |    Real    |  Mem   |
++----------+---------+--------+--------+------------+--------+
+|    41.22%|        -|   0.017|   0.000|   0:00:00.0| 1126.0M|
+|    41.22%|        0|   0.017|   0.000|   0:00:15.0| 1145.1M|
+|    41.22%|        0|   0.017|   0.000|   0:00:00.0| 1145.1M|
+|    41.18%|       23|   0.038|   0.000|   0:00:02.0| 1168.7M|
+|    41.04%|      121|   0.052|   0.000|   0:00:04.0| 1168.7M|
+|    41.04%|        3|   0.047|   0.000|   0:00:00.0| 1168.7M|
+|    41.04%|        0|   0.047|   0.000|   0:00:01.0| 1168.7M|
+|    41.04%|        0|   0.047|   0.000|   0:00:00.0| 1168.7M|
++----------+---------+--------+--------+------------+--------+
+Reclaim Optimization End WNS Slack 0.047  TNS Slack 0.000 Density 41.04
+Bottom Preferred Layer:
++-------------+------------+----------+
+|    Layer    |    CLK     |   Rule   |
++-------------+------------+----------+
+| met2 (z=3)  |         45 | default  |
++-------------+------------+----------+
+| met2 (z=3)  |         27 | cts_1    |
++-------------+------------+----------+
+Via Pillar Rule:
+    None
+End: Core Area Reclaim Optimization (cpu = 0:00:25.3) (real = 0:00:26.0) **
+*** Starting refinePlace (0:01:28 mem=1168.7M) ***
+Total net bbox length = 5.990e+05 (2.646e+05 3.344e+05) (ext = 2.155e+04)
+*** Checked 2 GNC rules.
+*** Applying global-net connections...
+*** Applied 2 GNC rules (cpu = 0:00:00.0)
+**WARN: (IMPSP-315):	Found 1077 instances insts with no PG Term connections.
+Type 'man IMPSP-315' for more detail.
+Move report: Detail placement moves 107 insts, mean move: 1.56 um, max move: 4.56 um
+	Max move on inst (FE_OFC94_n3158): (466.90, 153.34) --> (465.06, 156.06)
+	Runtime: CPU: 0:00:00.6 REAL: 0:00:00.0 MEM: 1171.8MB
+Summary Report:
+Instances move: 107 (out of 11668 movable)
+Instances flipped: 0
+Mean displacement: 1.56 um
+Max displacement: 4.56 um (Instance: FE_OFC94_n3158) (466.9, 153.34) -> (465.06, 156.06)
+	Length: 3 sites, height: 1 rows, site name: unithd, cell type: sky130_fd_sc_hd__inv_2
+Total net bbox length = 5.991e+05 (2.646e+05 3.345e+05) (ext = 2.155e+04)
+Runtime: CPU: 0:00:00.6 REAL: 0:00:00.0 MEM: 1171.8MB
+*** Finished refinePlace (0:01:29 mem=1171.8M) ***
+*** maximum move = 4.56 um ***
+*** Finished re-routing un-routed nets (1171.8M) ***
+
+*** Finish Physical Update (cpu=0:00:00.9 real=0:00:00.0 mem=1171.8M) ***
+*** AreaOpt [finish] : cpu/real = 0:00:23.7/0:00:23.8 (1.0), totSession cpu/real = 0:01:29.0/0:01:23.9 (1.
+1), mem = 1171.8M
+End: Area Reclaim Optimization (cpu=0:00:26, real=0:00:27, mem=1107.70M, totSessionCpu=0:01:29).
+[NR-eGR] Num Prerouted Nets = 72  Num Prerouted Wires = 6885
+[NR-eGR] Read numTotalNets=12031  numIgnoredNets=72
+[NR-eGR] ============ Routing rule table ============
+[NR-eGR] Rule id: 0  Nets: 11959
+[NR-eGR] Rule id: 1  Rule name: cts_1  Nets: 0
+[NR-eGR] Rule id: 2  Nets: 0
+[NR-eGR] ========================================
+[NR-eGR]
+[NR-eGR] Layer group 1: route 11959 net(s) in layer range [2, 5]
+[NR-eGR] Early Global Route overflow of layer group 1: 5.39% H + 7.79% V. EstWL: 6.968776e+05um
+[NR-eGR] Overflow after Early Global Route (GR compatible) 1.45% H + 3.60% V
+[NR-eGR] Overflow after Early Global Route 1.80% H + 4.09% V
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR]    li1  (1F) length: 4.600000e+00um, number of vias: 49080
+[NR-eGR]   met1  (2H) length: 2.387769e+05um, number of vias: 85356
+[NR-eGR]   met2  (3V) length: 3.154716e+05um, number of vias: 9380
+[NR-eGR]   met3  (4H) length: 1.014406e+05um, number of vias: 5452
+[NR-eGR]   met4  (5V) length: 8.709175e+04um, number of vias: 0
+[NR-eGR] Total length: 7.427854e+05um, number of vias: 149268
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR] Total eGR-routed clock nets wire length: 0.000000e+00um
+[NR-eGR] --------------------------------------------------------------------------
+[NR-eGR] Finished Early Global Route kernel ( CPU: 0.91 sec, Real: 0.93 sec, Curr Mem: 1105.76 MB )
+Extraction called for design 'ibex_core' of instances=11739 and nets=12177 using extraction engine 'preRou
+te' .
+PreRoute RC Extraction called for design ibex_core.
+RC Extraction called in multi-corner(2) mode.
+**WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy
+when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to gener
+ate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_r
+c_corner/update_rc_corner -cap_table'.
+Type 'man IMPEXT-6197' for more detail.
+RCMode: PreRoute
+      RC Corner Indexes            0       1
+Capacitance Scaling Factor   : 1.05000 1.00000
+Resistance Scaling Factor    : 1.05000 1.00000
+Clock Cap. Scaling Factor    : 1.05000 1.00000
+Clock Res. Scaling Factor    : 1.05000 1.00000
+Shrink Factor                : 1.00000
+PreRoute extraction is honoring NDR/Shielding/ExtraSpace for clock nets.
+Updating RC grid for preRoute extraction ...
+Initializing multi-corner resistance tables ...
+PreRoute RC Extraction DONE (CPU Time: 0:00:00.2  Real Time: 0:00:00.0  MEM: 1105.762M)
+Compute RC Scale Done ...
+[hotspot] +------------+---------------+---------------+
+[hotspot] |            |   max hotspot | total hotspot |
+[hotspot] +------------+---------------+---------------+
+[hotspot] | normalized |          6.00 |         40.89 |
+[hotspot] +------------+---------------+---------------+
+Local HotSpot Analysis: normalized max congestion hotspot area = 6.00, normalized total congestion hotspot
+ area = 40.89 (area is in unit of 4 std-cell row bins)
+[hotspot] top 5 congestion hotspot bounding boxes and scores of normalized hotspot
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] | top |            hotspot bbox             | hotspot score |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  1  |   480.10   273.02   501.86   305.66 |        4.67   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  2  |     1.38   327.42    34.02   349.18 |        4.22   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  3  |   121.06   273.02   142.82   294.78 |        3.56   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  4  |   121.06   207.74   142.82   229.50 |        1.33   |
+[hotspot] +-----+-------------------------------------+---------------+
+[hotspot] |  5  |   110.18    66.30   131.94    88.06 |        0.89   |
+[hotspot] +-----+-------------------------------------+---------------+
+#################################################################################
+# Design Stage: PreRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC Non-OCV
+# Parasitics Mode: No SPEF/RCDB
+# Signoff Settings: SI Off
+#################################################################################
+Calculate delays in Single mode...
+Start delay calculation (fullDC) (1 T). (MEM=1095.76)
+

@@ -1,0 +1,257 @@
+# met4              230
+#-----------------------
+#                134116
+#
+#   number of violations = 0
+#cpu time = 00:00:05, elapsed time = 00:00:05, memory = 1008.86 (MB), peak = 1106.13 (MB)
+#CELL_VIEW ibex_core,init has 0 DRC violations
+#Total number of DRC violations = 0
+#Total number of process antenna violations = 4
+#Total number of net violated process antenna rule = 4
+#Post Route wire spread is done.
+#Total number of nets with non-default rule or having extra spacing = 192
+#Total wire length = 814811 um.
+#Total half perimeter of net bounding box = 626300 um.
+#Total wire length on LAYER li1 = 1 um.
+#Total wire length on LAYER met1 = 266110 um.
+#Total wire length on LAYER met2 = 254238 um.
+#Total wire length on LAYER met3 = 144960 um.
+#Total wire length on LAYER met4 = 140385 um.
+#Total wire length on LAYER met5 = 9117 um.
+#Total number of vias = 134116
+#Up-Via Summary (total 134116):
+#
+#-----------------------
+# li1             49613
+# met1            64305
+# met2            12182
+# met3             7786
+# met4              230
+#-----------------------
+#                134116
+#
+#detailRoute Statistics:
+#Cpu time = 00:00:32
+#Elapsed time = 00:00:32
+#Increased memory = -3.22 (MB)
+#Total memory = 998.05 (MB)
+#Peak memory = 1106.13 (MB)
+#Skip updating routing design signature in db-snapshot flow
+#
+#globalDetailRoute statistics:
+#Cpu time = 00:00:39
+#Elapsed time = 00:00:39
+#Increased memory = -83.19 (MB)
+#Total memory = 935.18 (MB)
+#Peak memory = 1106.13 (MB)
+#Number of warnings = 50
+#Total number of warnings = 52
+#Number of fails = 0
+#Total number of fails = 0
+#Complete globalDetailRoute on Wed Mar  4 12:41:00 2026
+#
+**optDesign ... cpu = 0:02:27, real = 0:02:27, mem = 935.2M, totSessionCpu=0:02:57 **
+-routeWithEco false                       # bool, default=false
+-routeSelectedNetOnly false               # bool, default=false
+-routeWithTimingDriven true               # bool, default=false, user setting
+-routeWithSiDriven false                  # bool, default=false
+New Signature Flow (restoreNanoRouteOptions) ....
+Extraction called for design 'ibex_core' of instances=11772 and nets=12210 using extraction engine 'postRo
+ute' at effort level 'low' .
+PostRoute (effortLevel low) RC Extraction called for design ibex_core.
+RC Extraction called in multi-corner(2) mode.
+**WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy
+when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to gener
+ate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_r
+c_corner/update_rc_corner -cap_table'.
+Type 'man IMPEXT-6197' for more detail.
+**WARN: (IMPEXT-3032):	Because the cap table file was not provided, it will be created internally with th
+e following process info:
+* Layer Id             : 1 - M1
+      Thickness        : 0.1
+      Min Width        : 0.17
+      Layer Dielectric : 4.1
+* Layer Id             : 2 - M2
+      Thickness        : 0.35
+      Min Width        : 0.14
+      Layer Dielectric : 4.1
+* Layer Id             : 3 - M3
+      Thickness        : 0.35
+      Min Width        : 0.14
+      Layer Dielectric : 4.1
+* Layer Id             : 4 - M4
+      Thickness        : 0.8
+      Min Width        : 0.3
+      Layer Dielectric : 4.1
+* Layer Id             : 5 - M5
+      Thickness        : 0.8
+      Min Width        : 0.3
+      Layer Dielectric : 4.1
+* Layer Id             : 6 - M6
+      Thickness        : 1.2
+      Min Width        : 1.6
+      Layer Dielectric : 4.1
+extractDetailRC Option : -outfile /tmp/innovus_temp_125007_EDA2035_EDA_FF3yqW/ibex_core_125007_LkWpvH.rcdb
+.d -maxResLength 200  -basic
+RC Mode: PostRoute -effortLevel low [Basic CapTable, LEF Resistances]
+      RC Corner Indexes            0       1
+Capacitance Scaling Factor   : 1.05000 1.00000
+Coupling Cap. Scaling Factor : 1.00000 1.00000
+Resistance Scaling Factor    : 1.05000 1.00000
+Clock Cap. Scaling Factor    : 1.05000 1.00000
+Clock Res. Scaling Factor    : 1.05000 1.00000
+Shrink Factor                : 1.00000
+Initializing multi-corner resistance tables ...
+Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1169.2M)
+Extracted 10.0006% (CPU Time= 0:00:00.5  MEM= 1195.2M)
+Extracted 20.0007% (CPU Time= 0:00:00.7  MEM= 1195.2M)
+Extracted 30.0005% (CPU Time= 0:00:00.8  MEM= 1195.2M)
+Extracted 40.0007% (CPU Time= 0:00:00.9  MEM= 1195.2M)
+Extracted 50.0008% (CPU Time= 0:00:01.1  MEM= 1195.2M)
+Extracted 60.0006% (CPU Time= 0:00:01.4  MEM= 1195.2M)
+Extracted 70.0007% (CPU Time= 0:00:01.8  MEM= 1199.2M)
+Extracted 80.0005% (CPU Time= 0:00:02.1  MEM= 1199.2M)
+Extracted 90.0007% (CPU Time= 0:00:02.3  MEM= 1199.2M)
+Extracted 100% (CPU Time= 0:00:02.8  MEM= 1199.2M)
+Number of Extracted Resistors     : 387545
+Number of Extracted Ground Cap.   : 387564
+Number of Extracted Coupling Cap. : 849724
+Filtering XCap in 'relativeAndCoupling' mode using values coupling_c_threshold=0.4fF, relative_c_threshold
+=1, and total_c_threshold=0fF.
+Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 1197.2M)
+PostRoute (effortLevel low) RC Extraction DONE (CPU Time: 0:00:04.0  Real Time: 0:00:04.0  MEM: 1203.188M)
+**optDesign ... cpu = 0:02:31, real = 0:02:31, mem = 939.4M, totSessionCpu=0:03:01 **
+Starting delay calculation for Setup views
+Starting SI iteration 1 using Infinite Timing Windows
+#################################################################################
+# Design Stage: PostRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC OCV
+# Parasitics Mode: SPEF/RCDB
+# Signoff Settings: SI On
+#################################################################################
+AAE_INFO: 1 threads acquired from CTE.
+Start delay calculation (fullDC) (1 T). (MEM=1166.21)
+Initializing multi-corner resistance tables ...
+Total number of fetched objects 12068
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+AAE_INFO-618: Total number of nets in the design is 12210,  98.8 percent of the nets selected for SI analy
+sis
+End delay calculation. (MEM=1234.99 CPU=0:00:06.5 REAL=0:00:07.0)
+End delay calculation (fullDC). (MEM=1234.99 CPU=0:00:07.1 REAL=0:00:07.0)
+Loading CTE timing window with TwFlowType 0...(CPU = 0:00:00.0, REAL = 0:00:00.0, MEM = 1235.0M)
+Add other clocks and setupCteToAAEClockMapping during iter 1
+Loading CTE timing window is completed (CPU = 0:00:00.1, REAL = 0:00:00.0, MEM = 1235.0M)
+Starting SI iteration 2
+Start delay calculation (fullDC) (1 T). (MEM=1197.11)
+Glitch Analysis: View max_view -- Total Number of Nets Skipped = 0.
+Glitch Analysis: View max_view -- Total Number of Nets Analyzed = 12068.
+Total number of fetched objects 12068
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+AAE_INFO-618: Total number of nets in the design is 12210,  31.5 percent of the nets selected for SI analy
+sis
+End delay calculation. (MEM=1239.79 CPU=0:00:04.1 REAL=0:00:04.0)
+End delay calculation (fullDC). (MEM=1239.79 CPU=0:00:04.2 REAL=0:00:04.0)
+*** Done Building Timing Graph (cpu=0:00:14.7 real=0:00:15.0 totSessionCpu=0:03:16 mem=1239.8M)
+
+------------------------------------------------------------
+       Post-ecoRoute Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):| -0.086  | -0.086  |  0.264  |  0.326  |  4.848  |  0.758  |
+|           TNS (ns):| -1.995  | -1.995  |  0.000  |  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|   59    |   59    |    0    |    0    |    0    |    0    |
+|          All Paths:|  7573   |  3880   |  5390   |   101   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      0 (0)       |
+|   max_tran     |      1 (1)       |   -2.556   |      1 (1)       |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 41.491%
+Total number of glitch violations: 4
+------------------------------------------------------------
+**optDesign ... cpu = 0:02:46, real = 0:02:46, mem = 1027.3M, totSessionCpu=0:03:17 **
+Executing marking Critical Nets1
+*** Timing NOT met, worst failing slack is -0.086
+*** Check timing (0:00:00.0)
+Begin: GigaOpt Optimization in post-eco TNS mode (Recovery)
+GigaOpt Checkpoint: Internal optTiming -postEco -postEcoLefSafe -maxLocalDensity 1.0 -numThreads 1  -allEn
+dPoints -nativePathGroupFlow
+Info: 72 clock nets excluded from IPO operation.
+*** SetupOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:03:16.7/0:03:27.9 (0.
+9), mem = 1197.8M
+*info: 72 clock nets excluded
+*info: 2 special nets excluded.
+*info: 136 no-driver nets excluded.
+** GigaOpt Optimizer WNS Slack -0.086 TNS Slack -1.995 Density 41.49
+OptDebug: Start of Optimizer TNS Pass: feedthr in2reg reg2out default* WNS 0.264 TNS 0.000; reg2reg* WNS -
+0.086 TNS -1.995; HEPG WNS -0.086 TNS -1.995; all paths WNS -0.086 TNS -1.995
+Active Path Group: reg2reg
++--------+---------+--------+---------+----------+------------+--------+----------+---------+-------------
+---------------------------------------+
+|  WNS   | All WNS |  TNS   | All TNS | Density  |    Real    |  Mem   |Worst View|Pathgroup|
+        End Point                      |
++--------+---------+--------+---------+----------+------------+--------+----------+---------+-------------
+---------------------------------------+
+|  -0.086|   -0.086|  -1.995|   -1.995|    41.49%|   0:00:00.0| 1315.7M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
+|  -0.086|   -0.086|  -1.995|   -1.995|    41.49%|   0:00:00.0| 1315.7M|  max_view|  reg2reg| if_stage_i/g
+en_prefetch_buffer.prefetch_buffer_i/f |
+|        |         |        |         |          |            |        |          |         | ifo_i/instr_
+addr_q_reg[31]/D                       |
++--------+---------+--------+---------+----------+------------+--------+----------+---------+-------------
+---------------------------------------+
+
+*** Finish Core Optimize Step (cpu=0:00:00.1 real=0:00:00.0 mem=1315.7M) ***
+Checking setup slack degradation ...
+
+*** Finished Optimize Step Cumulative (cpu=0:00:00.2 real=0:00:01.0 mem=1315.7M) ***
+OptDebug: End of Optimizer TNS Pass: feedthr in2reg reg2out default* WNS 0.264 TNS 0.000; reg2reg* WNS -0.
+086 TNS -1.995; HEPG WNS -0.086 TNS -1.995; all paths WNS -0.086 TNS -1.995
+Bottom Preferred Layer:
++-------------+------------+------------+----------+
+|    Layer    |   GPS_LA   |    CLK     |   Rule   |
++-------------+------------+------------+----------+
+| met2 (z=3)  |          0 |         45 | default  |
+| met3 (z=4)  |          3 |          0 | default  |
++-------------+------------+------------+----------+
+| met2 (z=3)  |          0 |         27 | cts_1    |
++-------------+------------+------------+----------+
+Via Pillar Rule:
+    None
+
+*** Finish Post Route Setup Fixing (cpu=0:00:00.4 real=0:00:01.0 mem=1315.7M) ***
+*** SetupOpt [finish] : cpu/real = 0:00:08.3/0:00:08.3 (1.0), totSession cpu/real = 0:03:25.0/0:03:36.2 (0
+.9), mem = 1280.6M
+End: GigaOpt Optimization in post-eco TNS mode
+Running postRoute recovery in postEcoRoute mode
+**optDesign ... cpu = 0:02:54, real = 0:02:55, mem = 1110.3M, totSessionCpu=0:03:25 **
+Checking setup slack degradation ...
+Checking DRV degradation...
+**INFO: Skipping DRV recovery as drv did not degrade beyond margin
+New Signature Flow (doPostRouteRecovery) ....
+Begin: GigaOpt WNS recovery
+Begin: GigaOpt Optimization in WNS mode (Recovery)
+GigaOpt Checkpoint: Internal optTiming -maxLocalDensity 0.96 -numThreads 1 -postRoute -nativePathGroupFlow
+ -categoryTargetSlacks {  0 45 1 45 }
+Info: 72 clock nets excluded from IPO operation.
+*** SetupOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:03:25.5/0:03:36.7 (0.
+9), mem = 1257.6M
+

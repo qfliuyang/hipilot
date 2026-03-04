@@ -1,0 +1,257 @@
+    Clock DAG primary half-corner transition distribution after 'Approximately balancing fragments step':
+      Trunk : target=0.133ns count=27 avg=0.105ns sd=0.023ns min=0.008ns max=0.132ns {1 <= 0.080ns, 16 <=
+0.106ns, 3 <= 0.120ns, 2 <= 0.126ns, 5 <= 0.133ns}
+      Leaf  : target=0.133ns count=45 avg=0.116ns sd=0.008ns min=0.091ns max=0.133ns {0 <= 0.080ns, 3 <= 0
+.106ns, 27 <= 0.120ns, 9 <= 0.126ns, 6 <= 0.133ns}
+    Clock DAG library cell distribution after 'Approximately balancing fragments step' {count}:
+       Invs: sky130_fd_sc_hd__clkinv_16: 62 sky130_fd_sc_hd__clkinv_8: 6 sky130_fd_sc_hd__clkinv_4: 1 sky1
+30_fd_sc_hd__clkinv_2: 1
+      NICGs: sky130_fd_sc_hd__and2_4: 1
+    Legalizer API calls during this step: 0 succeeded with high effort: 0 succeeded with medium effort: 0
+succeeded with low effort: 0 succeeded with basic effort: 0 succeeded with basic unbounded effort: 0
+  Approximately balancing fragments step done. (took cpu=0:00:00.6 real=0:00:00.6)
+  Clock DAG stats after Approximately balancing fragments:
+    cell counts      : b=0, i=70, icg=0, nicg=1, l=0, total=71
+    cell areas       : b=0.000um^2, i=1973.142um^2, icg=0.000um^2, nicg=8.758um^2, l=0.000um^2, total=1981
+.901um^2
+    cell capacitance : b=0.000pF, i=2.650pF, icg=0.000pF, nicg=0.002pF, l=0.000pF, total=2.653pF
+    sink capacitance : count=1941, total=4.752pF, avg=0.002pF, sd=0.000pF, min=0.002pF, max=0.003pF
+    wire capacitance : top=0.000pF, trunk=0.721pF, leaf=2.549pF, total=3.270pF
+    wire lengths     : top=0.000um, trunk=3959.846um, leaf=17310.357um, total=21270.203um
+    hp wire lengths  : top=0.000um, trunk=3194.780um, leaf=7477.590um, total=10672.370um
+  Clock DAG net violations after Approximately balancing fragments: none
+  Clock DAG primary half-corner transition distribution after Approximately balancing fragments:
+    Trunk : target=0.133ns count=27 avg=0.105ns sd=0.023ns min=0.008ns max=0.132ns {1 <= 0.080ns, 16 <= 0.
+106ns, 3 <= 0.120ns, 2 <= 0.126ns, 5 <= 0.133ns}
+    Leaf  : target=0.133ns count=45 avg=0.116ns sd=0.008ns min=0.091ns max=0.133ns {0 <= 0.080ns, 3 <= 0.1
+06ns, 27 <= 0.120ns, 9 <= 0.126ns, 6 <= 0.133ns}
+  Clock DAG library cell distribution after Approximately balancing fragments {count}:
+     Invs: sky130_fd_sc_hd__clkinv_16: 62 sky130_fd_sc_hd__clkinv_8: 6 sky130_fd_sc_hd__clkinv_4: 1 sky130
+_fd_sc_hd__clkinv_2: 1
+    NICGs: sky130_fd_sc_hd__and2_4: 1
+  Primary reporting skew groups after Approximately balancing fragments:
+    skew_group core_clock/common: insertion delay [min=0.713, max=0.774], skew [0.061 vs 0.153]
+  Skew group summary after Approximately balancing fragments:
+    skew_group core_clock/common: insertion delay [min=0.713, max=0.774], skew [0.061 vs 0.153]
+  Improving fragments clock skew...
+    Clock DAG stats after 'Improving fragments clock skew':
+      cell counts      : b=0, i=70, icg=0, nicg=1, l=0, total=71
+      cell areas       : b=0.000um^2, i=1973.142um^2, icg=0.000um^2, nicg=8.758um^2, l=0.000um^2, total=19
+81.901um^2
+      cell capacitance : b=0.000pF, i=2.650pF, icg=0.000pF, nicg=0.002pF, l=0.000pF, total=2.653pF
+      sink capacitance : count=1941, total=4.752pF, avg=0.002pF, sd=0.000pF, min=0.002pF, max=0.003pF
+      wire capacitance : top=0.000pF, trunk=0.721pF, leaf=2.549pF, total=3.270pF
+      wire lengths     : top=0.000um, trunk=3959.846um, leaf=17310.357um, total=21270.203um
+      hp wire lengths  : top=0.000um, trunk=3194.780um, leaf=7477.590um, total=10672.370um
+    Clock DAG net violations after 'Improving fragments clock skew': none
+    Clock DAG primary half-corner transition distribution after 'Improving fragments clock skew':
+      Trunk : target=0.133ns count=27 avg=0.105ns sd=0.023ns min=0.008ns max=0.132ns {1 <= 0.080ns, 16 <=
+0.106ns, 3 <= 0.120ns, 2 <= 0.126ns, 5 <= 0.133ns}
+      Leaf  : target=0.133ns count=45 avg=0.116ns sd=0.008ns min=0.091ns max=0.133ns {0 <= 0.080ns, 3 <= 0
+.106ns, 27 <= 0.120ns, 9 <= 0.126ns, 6 <= 0.133ns}
+    Clock DAG library cell distribution after 'Improving fragments clock skew' {count}:
+       Invs: sky130_fd_sc_hd__clkinv_16: 62 sky130_fd_sc_hd__clkinv_8: 6 sky130_fd_sc_hd__clkinv_4: 1 sky1
+30_fd_sc_hd__clkinv_2: 1
+      NICGs: sky130_fd_sc_hd__and2_4: 1
+    Primary reporting skew groups after 'Improving fragments clock skew':
+      skew_group core_clock/common: insertion delay [min=0.713, max=0.774], skew [0.061 vs 0.153]
+    Skew group summary after 'Improving fragments clock skew':
+      skew_group core_clock/common: insertion delay [min=0.713, max=0.774], skew [0.061 vs 0.153]
+    Legalizer API calls during this step: 0 succeeded with high effort: 0 succeeded with medium effort: 0
+succeeded with low effort: 0 succeeded with basic effort: 0 succeeded with basic unbounded effort: 0
+  Improving fragments clock skew done. (took cpu=0:00:00.1 real=0:00:00.1)
+  Approximately balancing step...
+    Resolve constraints - Approximately balancing...
+    Resolving skew group constraints...
+      Solving LP: 1 skew groups; 3 fragments, 3 fraglets and 4 vertices; 25 variables and 66 constraints;
+tolerance 1
+    Resolving skew group constraints done.
+    Resolve constraints - Approximately balancing done. (took cpu=0:00:00.1 real=0:00:00.1)
+    Approximately balancing...
+      Approximately balancing, wire and cell delays...
+      Approximately balancing, wire and cell delays, iteration 1...
+        Clock DAG stats after Approximately balancing, wire and cell delays, iteration 1:
+          cell counts      : b=0, i=70, icg=0, nicg=1, l=0, total=71
+          cell areas       : b=0.000um^2, i=1973.142um^2, icg=0.000um^2, nicg=8.758um^2, l=0.000um^2, tota
+l=1981.901um^2
+          cell capacitance : b=0.000pF, i=2.650pF, icg=0.000pF, nicg=0.002pF, l=0.000pF, total=2.653pF
+          sink capacitance : count=1941, total=4.752pF, avg=0.002pF, sd=0.000pF, min=0.002pF, max=0.003pF
+          wire capacitance : top=0.000pF, trunk=0.721pF, leaf=2.549pF, total=3.270pF
+          wire lengths     : top=0.000um, trunk=3959.846um, leaf=17310.357um, total=21270.203um
+          hp wire lengths  : top=0.000um, trunk=3194.780um, leaf=7477.590um, total=10672.370um
+        Clock DAG net violations after Approximately balancing, wire and cell delays, iteration 1: none
+        Clock DAG primary half-corner transition distribution after Approximately balancing, wire and cell
+ delays, iteration 1:
+          Trunk : target=0.133ns count=27 avg=0.105ns sd=0.023ns min=0.008ns max=0.132ns {1 <= 0.080ns, 16
+ <= 0.106ns, 3 <= 0.120ns, 2 <= 0.126ns, 5 <= 0.133ns}
+          Leaf  : target=0.133ns count=45 avg=0.116ns sd=0.008ns min=0.091ns max=0.133ns {0 <= 0.080ns, 3
+<= 0.106ns, 27 <= 0.120ns, 9 <= 0.126ns, 6 <= 0.133ns}
+        Clock DAG library cell distribution after Approximately balancing, wire and cell delays, iteration
+ 1 {count}:
+           Invs: sky130_fd_sc_hd__clkinv_16: 62 sky130_fd_sc_hd__clkinv_8: 6 sky130_fd_sc_hd__clkinv_4: 1
+sky130_fd_sc_hd__clkinv_2: 1
+          NICGs: sky130_fd_sc_hd__and2_4: 1
+      Approximately balancing, wire and cell delays, iteration 1 done.
+      Approximately balancing, wire and cell delays done. (took cpu=0:00:00.0 real=0:00:00.0)
+    Approximately balancing done.
+    Clock DAG stats after 'Approximately balancing step':
+      cell counts      : b=0, i=70, icg=0, nicg=1, l=0, total=71
+      cell areas       : b=0.000um^2, i=1973.142um^2, icg=0.000um^2, nicg=8.758um^2, l=0.000um^2, total=19
+81.901um^2
+      cell capacitance : b=0.000pF, i=2.650pF, icg=0.000pF, nicg=0.002pF, l=0.000pF, total=2.653pF
+      sink capacitance : count=1941, total=4.752pF, avg=0.002pF, sd=0.000pF, min=0.002pF, max=0.003pF
+      wire capacitance : top=0.000pF, trunk=0.721pF, leaf=2.549pF, total=3.270pF
+      wire lengths     : top=0.000um, trunk=3959.846um, leaf=17310.357um, total=21270.203um
+      hp wire lengths  : top=0.000um, trunk=3194.780um, leaf=7477.590um, total=10672.370um
+    Clock DAG net violations after 'Approximately balancing step': none
+    Clock DAG primary half-corner transition distribution after 'Approximately balancing step':
+      Trunk : target=0.133ns count=27 avg=0.105ns sd=0.023ns min=0.008ns max=0.132ns {1 <= 0.080ns, 16 <=
+0.106ns, 3 <= 0.120ns, 2 <= 0.126ns, 5 <= 0.133ns}
+      Leaf  : target=0.133ns count=45 avg=0.116ns sd=0.008ns min=0.091ns max=0.133ns {0 <= 0.080ns, 3 <= 0
+.106ns, 27 <= 0.120ns, 9 <= 0.126ns, 6 <= 0.133ns}
+    Clock DAG library cell distribution after 'Approximately balancing step' {count}:
+       Invs: sky130_fd_sc_hd__clkinv_16: 62 sky130_fd_sc_hd__clkinv_8: 6 sky130_fd_sc_hd__clkinv_4: 1 sky1
+30_fd_sc_hd__clkinv_2: 1
+      NICGs: sky130_fd_sc_hd__and2_4: 1
+    Primary reporting skew groups after 'Approximately balancing step':
+      skew_group core_clock/common: insertion delay [min=0.713, max=0.774], skew [0.061 vs 0.153]
+    Skew group summary after 'Approximately balancing step':
+      skew_group core_clock/common: insertion delay [min=0.713, max=0.774], skew [0.061 vs 0.153]
+    Legalizer API calls during this step: 0 succeeded with high effort: 0 succeeded with medium effort: 0
+succeeded with low effort: 0 succeeded with basic effort: 0 succeeded with basic unbounded effort: 0
+  Approximately balancing step done. (took cpu=0:00:00.2 real=0:00:00.2)
+  Fixing clock tree overload...
+    Fixing clock tree overload: ...20% ...40% ...60% ...80% ...100%
+    Clock DAG stats after 'Fixing clock tree overload':
+      cell counts      : b=0, i=70, icg=0, nicg=1, l=0, total=71
+      cell areas       : b=0.000um^2, i=1973.142um^2, icg=0.000um^2, nicg=8.758um^2, l=0.000um^2, total=19
+81.901um^2
+      cell capacitance : b=0.000pF, i=2.650pF, icg=0.000pF, nicg=0.002pF, l=0.000pF, total=2.653pF
+      sink capacitance : count=1941, total=4.752pF, avg=0.002pF, sd=0.000pF, min=0.002pF, max=0.003pF
+      wire capacitance : top=0.000pF, trunk=0.721pF, leaf=2.549pF, total=3.270pF
+      wire lengths     : top=0.000um, trunk=3959.846um, leaf=17310.357um, total=21270.203um
+      hp wire lengths  : top=0.000um, trunk=3194.780um, leaf=7477.590um, total=10672.370um
+    Clock DAG net violations after 'Fixing clock tree overload': none
+    Clock DAG primary half-corner transition distribution after 'Fixing clock tree overload':
+      Trunk : target=0.133ns count=27 avg=0.105ns sd=0.023ns min=0.008ns max=0.132ns {1 <= 0.080ns, 16 <=
+0.106ns, 3 <= 0.120ns, 2 <= 0.126ns, 5 <= 0.133ns}
+      Leaf  : target=0.133ns count=45 avg=0.116ns sd=0.008ns min=0.091ns max=0.133ns {0 <= 0.080ns, 3 <= 0
+.106ns, 27 <= 0.120ns, 9 <= 0.126ns, 6 <= 0.133ns}
+    Clock DAG library cell distribution after 'Fixing clock tree overload' {count}:
+       Invs: sky130_fd_sc_hd__clkinv_16: 62 sky130_fd_sc_hd__clkinv_8: 6 sky130_fd_sc_hd__clkinv_4: 1 sky1
+30_fd_sc_hd__clkinv_2: 1
+      NICGs: sky130_fd_sc_hd__and2_4: 1
+    Primary reporting skew groups after 'Fixing clock tree overload':
+      skew_group core_clock/common: insertion delay [min=0.713, max=0.774], skew [0.061 vs 0.153]
+    Skew group summary after 'Fixing clock tree overload':
+      skew_group core_clock/common: insertion delay [min=0.713, max=0.774], skew [0.061 vs 0.153]
+    Legalizer API calls during this step: 0 succeeded with high effort: 0 succeeded with medium effort: 0
+succeeded with low effort: 0 succeeded with basic effort: 0 succeeded with basic unbounded effort: 0
+  Fixing clock tree overload done. (took cpu=0:00:00.0 real=0:00:00.0)
+  Approximately balancing paths...
+    Added 0 buffers.
+    Clock DAG stats after 'Approximately balancing paths':
+      cell counts      : b=0, i=70, icg=0, nicg=1, l=0, total=71
+      cell areas       : b=0.000um^2, i=1973.142um^2, icg=0.000um^2, nicg=8.758um^2, l=0.000um^2, total=19
+81.901um^2
+      cell capacitance : b=0.000pF, i=2.650pF, icg=0.000pF, nicg=0.002pF, l=0.000pF, total=2.653pF
+      sink capacitance : count=1941, total=4.752pF, avg=0.002pF, sd=0.000pF, min=0.002pF, max=0.003pF
+      wire capacitance : top=0.000pF, trunk=0.721pF, leaf=2.549pF, total=3.270pF
+      wire lengths     : top=0.000um, trunk=3959.846um, leaf=17310.357um, total=21270.203um
+      hp wire lengths  : top=0.000um, trunk=3194.780um, leaf=7477.590um, total=10672.370um
+    Clock DAG net violations after 'Approximately balancing paths': none
+    Clock DAG primary half-corner transition distribution after 'Approximately balancing paths':
+      Trunk : target=0.133ns count=27 avg=0.105ns sd=0.023ns min=0.008ns max=0.132ns {1 <= 0.080ns, 16 <=
+0.106ns, 3 <= 0.120ns, 2 <= 0.126ns, 5 <= 0.133ns}
+      Leaf  : target=0.133ns count=45 avg=0.116ns sd=0.008ns min=0.091ns max=0.133ns {0 <= 0.080ns, 3 <= 0
+.106ns, 27 <= 0.120ns, 9 <= 0.126ns, 6 <= 0.133ns}
+    Clock DAG library cell distribution after 'Approximately balancing paths' {count}:
+       Invs: sky130_fd_sc_hd__clkinv_16: 62 sky130_fd_sc_hd__clkinv_8: 6 sky130_fd_sc_hd__clkinv_4: 1 sky1
+30_fd_sc_hd__clkinv_2: 1
+      NICGs: sky130_fd_sc_hd__and2_4: 1
+    Primary reporting skew groups after 'Approximately balancing paths':
+      skew_group core_clock/common: insertion delay [min=0.713, max=0.774, avg=0.746, sd=0.016], skew [0.0
+61 vs 0.153], 100% {0.713, 0.774} (wid=0.037 ws=0.026) (gid=0.757 gs=0.061)
+    Skew group summary after 'Approximately balancing paths':
+      skew_group core_clock/common: insertion delay [min=0.713, max=0.774, avg=0.746, sd=0.016], skew [0.0
+61 vs 0.153], 100% {0.713, 0.774} (wid=0.037 ws=0.026) (gid=0.757 gs=0.061)
+    Legalizer API calls during this step: 0 succeeded with high effort: 0 succeeded with medium effort: 0
+succeeded with low effort: 0 succeeded with basic effort: 0 succeeded with basic unbounded effort: 0
+  Approximately balancing paths done. (took cpu=0:00:00.1 real=0:00:00.1)
+  Stage::Balancing done. (took cpu=0:00:01.1 real=0:00:01.1)
+  Stage::Polishing...
+  Merging balancing drivers for power...
+    Tried: 73 Succeeded: 0
+    Clock tree timing engine global stage delay update for delay_max:setup.late...
+    Clock tree timing engine global stage delay update for delay_max:setup.late done. (took cpu=0:00:00.1
+real=0:00:00.1)
+    Clock DAG stats after 'Merging balancing drivers for power':
+      cell counts      : b=0, i=70, icg=0, nicg=1, l=0, total=71
+      cell areas       : b=0.000um^2, i=1973.142um^2, icg=0.000um^2, nicg=8.758um^2, l=0.000um^2, total=19
+81.901um^2
+      cell capacitance : b=0.000pF, i=2.650pF, icg=0.000pF, nicg=0.002pF, l=0.000pF, total=2.653pF
+      sink capacitance : count=1941, total=4.752pF, avg=0.002pF, sd=0.000pF, min=0.002pF, max=0.003pF
+      wire capacitance : top=0.000pF, trunk=0.721pF, leaf=2.549pF, total=3.270pF
+      wire lengths     : top=0.000um, trunk=3959.846um, leaf=17310.357um, total=21270.203um
+      hp wire lengths  : top=0.000um, trunk=3194.780um, leaf=7477.590um, total=10672.370um
+    Clock DAG net violations after 'Merging balancing drivers for power': none
+    Clock DAG primary half-corner transition distribution after 'Merging balancing drivers for power':
+      Trunk : target=0.133ns count=27 avg=0.105ns sd=0.023ns min=0.008ns max=0.132ns {1 <= 0.080ns, 16 <=
+0.106ns, 3 <= 0.120ns, 2 <= 0.126ns, 5 <= 0.133ns}
+      Leaf  : target=0.133ns count=45 avg=0.116ns sd=0.008ns min=0.091ns max=0.133ns {0 <= 0.080ns, 3 <= 0
+.106ns, 27 <= 0.120ns, 9 <= 0.126ns, 6 <= 0.133ns}
+    Clock DAG library cell distribution after 'Merging balancing drivers for power' {count}:
+       Invs: sky130_fd_sc_hd__clkinv_16: 62 sky130_fd_sc_hd__clkinv_8: 6 sky130_fd_sc_hd__clkinv_4: 1 sky1
+30_fd_sc_hd__clkinv_2: 1
+      NICGs: sky130_fd_sc_hd__and2_4: 1
+    Primary reporting skew groups after 'Merging balancing drivers for power':
+      skew_group core_clock/common: insertion delay [min=0.713, max=0.775], skew [0.063 vs 0.153]
+    Skew group summary after 'Merging balancing drivers for power':
+      skew_group core_clock/common: insertion delay [min=0.713, max=0.775], skew [0.063 vs 0.153]
+    Legalizer API calls during this step: 0 succeeded with high effort: 0 succeeded with medium effort: 0
+succeeded with low effort: 0 succeeded with basic effort: 0 succeeded with basic unbounded effort: 0
+  Merging balancing drivers for power done. (took cpu=0:00:00.2 real=0:00:00.2)
+  Improving clock skew...
+    Clock DAG stats after 'Improving clock skew':
+      cell counts      : b=0, i=70, icg=0, nicg=1, l=0, total=71
+      cell areas       : b=0.000um^2, i=1973.142um^2, icg=0.000um^2, nicg=8.758um^2, l=0.000um^2, total=19
+81.901um^2
+      cell capacitance : b=0.000pF, i=2.650pF, icg=0.000pF, nicg=0.002pF, l=0.000pF, total=2.653pF
+      sink capacitance : count=1941, total=4.752pF, avg=0.002pF, sd=0.000pF, min=0.002pF, max=0.003pF
+      wire capacitance : top=0.000pF, trunk=0.721pF, leaf=2.549pF, total=3.270pF
+      wire lengths     : top=0.000um, trunk=3959.846um, leaf=17310.357um, total=21270.203um
+      hp wire lengths  : top=0.000um, trunk=3194.780um, leaf=7477.590um, total=10672.370um
+    Clock DAG net violations after 'Improving clock skew': none
+    Clock DAG primary half-corner transition distribution after 'Improving clock skew':
+      Trunk : target=0.133ns count=27 avg=0.105ns sd=0.023ns min=0.008ns max=0.132ns {1 <= 0.080ns, 16 <=
+0.106ns, 3 <= 0.120ns, 2 <= 0.126ns, 5 <= 0.133ns}
+      Leaf  : target=0.133ns count=45 avg=0.116ns sd=0.008ns min=0.091ns max=0.133ns {0 <= 0.080ns, 3 <= 0
+.106ns, 27 <= 0.120ns, 9 <= 0.126ns, 6 <= 0.133ns}
+    Clock DAG library cell distribution after 'Improving clock skew' {count}:
+       Invs: sky130_fd_sc_hd__clkinv_16: 62 sky130_fd_sc_hd__clkinv_8: 6 sky130_fd_sc_hd__clkinv_4: 1 sky1
+30_fd_sc_hd__clkinv_2: 1
+      NICGs: sky130_fd_sc_hd__and2_4: 1
+    Primary reporting skew groups after 'Improving clock skew':
+      skew_group core_clock/common: insertion delay [min=0.713, max=0.775, avg=0.746, sd=0.016], skew [0.0
+63 vs 0.153], 100% {0.713, 0.775} (wid=0.037 ws=0.027) (gid=0.758 gs=0.064)
+    Skew group summary after 'Improving clock skew':
+      skew_group core_clock/common: insertion delay [min=0.713, max=0.775, avg=0.746, sd=0.016], skew [0.0
+63 vs 0.153], 100% {0.713, 0.775} (wid=0.037 ws=0.027) (gid=0.758 gs=0.064)
+    Legalizer API calls during this step: 0 succeeded with high effort: 0 succeeded with medium effort: 0
+succeeded with low effort: 0 succeeded with basic effort: 0 succeeded with basic unbounded effort: 0
+  Improving clock skew done. (took cpu=0:00:00.1 real=0:00:00.1)
+  Moving gates to reduce wire capacitance...
+    Modified slew target multipliers. Leaf=(1 to 0.9) Trunk=(1 to 0.95) Top=(1 to 0.95)
+    Iteration 1...
+      Artificially removing short and long paths...
+        Legalizer API calls during this step: 0 succeeded with high effort: 0 succeeded with medium effort
+: 0 succeeded with low effort: 0 succeeded with basic effort: 0 succeeded with basic unbounded effort: 0
+      Artificially removing short and long paths done. (took cpu=0:00:00.0 real=0:00:00.0)
+      Moving gates to reduce wire capacitance - iteration 1: WireCapReduction...
+        Legalizer API calls during this step: 319 succeeded with high effort: 319 succeeded with medium ef
+fort: 0 succeeded with low effort: 0 succeeded with basic effort: 0 succeeded with basic unbounded effort:
+ 0
+      Moving gates to reduce wire capacitance - iteration 1: WireCapReduction done. (took cpu=0:00:00.3 re
+al=0:00:00.3)
+      Moving gates to reduce wire capacitance - iteration 1: MoveGates...
+        Moving gates: ...20% ...40% ...60% ...80%

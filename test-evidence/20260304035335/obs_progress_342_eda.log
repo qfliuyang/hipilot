@@ -1,0 +1,257 @@
+onCpu=0:01:59 mem=1170.2M ***
+Running 'restoreTimingGraph -file /tmp/innovus_temp_115825_EDA2035_EDA_t85Hwx/opt_timing_graph_AHyE2c/timi
+ngGraph.tgz -dir /tmp/innovus_temp_115825_EDA2035_EDA_t85Hwx/opt_timing_graph_AHyE2c -prefix timingGraph'
+Done restoreTimingGraph
+Done building cte setup timing graph (fixHold) cpu=0:00:07.0 real=0:00:07.0 totSessionCpu=0:02:00 mem=1183
+.3M ***
+
+*Info: minBufDelay = 97.6 ps, libStdDelay = 41.6 ps, minBufSize = 3753600 (3.0)
+*Info: worst delay setup view: max_view
+
+------------------------------------------------------------
+             Initial Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+Hold  views included:
+ min_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):|  0.019  |  0.019  |  1.923  |  1.224  |  8.256  |  2.702  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |    0    |    0    |    0    |
+|          All Paths:|  7573   |  3880   |  5390   |   101   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Hold mode      |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):|  0.249  |  0.441  |   N/A   |   N/A   |  0.249  |   N/A   |
+|           TNS (ns):|  0.000  |  0.000  |   N/A   |   N/A   |  0.000  |   N/A   |
+|    Violating Paths:|    0    |    0    |   N/A   |   N/A   |    0    |   N/A   |
+|          All Paths:|  7573   |  3880   |   N/A   |   N/A   |    1    |   N/A   |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      0 (0)       |
+|   max_tran     |      0 (0)       |   0.000    |      0 (0)       |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 41.052%
+------------------------------------------------------------
+**optDesign ... cpu = 0:00:16, real = 0:00:16, mem = 982.3M, totSessionCpu=0:02:03 **
+*** HoldOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:02:03.2/0:01:59.2 (1.0
+), mem = 1155.3M
+*info: Run optDesign holdfix with 1 thread.
+Info: 72 nets with fixed/cover wires excluded.
+Info: 72 clock nets excluded from IPO operation.
+*** Hold timing is met. Hold fixing is not needed
+**INFO: total 0 insts, 0 nets marked don't touch
+**INFO: total 0 insts, 0 nets marked don't touch DB property
+**INFO: total 0 insts, 0 nets unmarked don't touch
+
+*** HoldOpt [finish] : cpu/real = 0:00:00.1/0:00:00.1 (1.0), totSession cpu/real = 0:02:03.3/0:01:59.4 (1.
+0), mem = 1156.3M
+
+Active setup views:
+ max_view
+  Dominating endpoints: 0
+  Dominating TNS: -0.000
+
+Reported timing to dir ./timingReports
+**optDesign ... cpu = 0:00:16, real = 0:00:16, mem = 985.0M, totSessionCpu=0:02:04 **
+Running 'saveTimingGraph -compress -file /tmp/innovus_temp_115825_EDA2035_EDA_t85Hwx/opt_timing_graph_SFKI
+tt/timingGraph.tgz -dir /tmp/innovus_temp_115825_EDA2035_EDA_t85Hwx/opt_timing_graph_SFKItt -prefix timing
+Graph'
+Done saveTimingGraph
+Starting delay calculation for Hold views
+#################################################################################
+# Design Stage: PreRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC Non-OCV
+# Parasitics Mode: No SPEF/RCDB
+# Signoff Settings: SI Off
+#################################################################################
+Calculate delays in Single mode...
+Start delay calculation (fullDC) (1 T). (MEM=1171.37)
+Total number of fetched objects 12043
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+End delay calculation. (MEM=1206.91 CPU=0:00:02.2 REAL=0:00:02.0)
+End delay calculation (fullDC). (MEM=1206.91 CPU=0:00:02.7 REAL=0:00:03.0)
+*** Done Building Timing Graph (cpu=0:00:03.6 real=0:00:04.0 totSessionCpu=0:02:08 mem=1206.9M)
+Running 'restoreTimingGraph -file /tmp/innovus_temp_115825_EDA2035_EDA_t85Hwx/opt_timing_graph_SFKItt/timi
+ngGraph.tgz -dir /tmp/innovus_temp_115825_EDA2035_EDA_t85Hwx/opt_timing_graph_SFKItt -prefix timingGraph'
+Done restoreTimingGraph
+
+------------------------------------------------------------
+     optDesign Final Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+Hold  views included:
+ min_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):|  0.019  |  0.019  |  1.923  |  1.224  |  8.256  |  2.702  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |    0    |    0    |    0    |
+|          All Paths:|  7573   |  3880   |  5390   |   101   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Hold mode      |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):|  0.249  |  0.441  |  3.138  |  3.986  |  0.249  |  7.075  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |    0    |    0    |    0    |
+|          All Paths:|  7573   |  3880   |  5390   |   101   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      0 (0)       |
+|   max_tran     |      0 (0)       |   0.000    |      0 (0)       |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 41.052%
+Routing Overflow: 1.80% H and 4.09% V
+------------------------------------------------------------
+**optDesign ... cpu = 0:00:24, real = 0:00:25, mem = 982.7M, totSessionCpu=0:02:11 **
+*** Finished optDesign ***
+Info: Destroy the CCOpt slew target map.
+Start to check current routing status for nets...
+All nets are already routed correctly.
+End to check current routing status for nets (mem=1119.9M)
+
+------------------------------------------------------------
+          timeDesign Summary
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):|  0.019  |  0.019  |  1.923  |  1.224  |  8.256  |  2.702  |
+|           TNS (ns):|  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |  0.000  |
+|    Violating Paths:|    0    |    0    |    0    |    0    |    0    |    0    |
+|          All Paths:|  7573   |  3880   |  5390   |   101   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      0 (0)       |
+|   max_tran     |      0 (0)       |   0.000    |      0 (0)       |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 41.052%
+Routing Overflow: 1.80% H and 4.09% V
+------------------------------------------------------------
+Reported timing to dir result/pr/report/cts_opt_timing
+Total CPU time: 2.58 sec
+Total Real time: 4.0 sec
+Total Memory Usage: 1119.890625 Mbytes
+#% Begin save design ... (date=03/04 12:24:58, mem=937.9M)
+% Begin Save ccopt configuration ... (date=03/04 12:24:58, mem=940.9M)
+% End Save ccopt configuration ... (date=03/04 12:24:58, total cpu=0:00:00.1, real=0:00:00.0, peak res=942
+.2M, current mem=942.2M)
+% Begin Save netlist data ... (date=03/04 12:24:58, mem=942.2M)
+Writing Binary DB to result/pr/data/post_cts_opt.enc.dat/ibex_core.v.bin in single-threaded mode...
+% End Save netlist data ... (date=03/04 12:24:58, total cpu=0:00:00.1, real=0:00:00.0, peak res=942.4M, cu
+rrent mem=942.4M)
+Saving symbol-table file ...
+Saving congestion map file result/pr/data/post_cts_opt.enc.dat/ibex_core.route.congmap.gz ...
+% Begin Save AAE data ... (date=03/04 12:24:58, mem=943.1M)
+Saving AAE Data ...
+% End Save AAE data ... (date=03/04 12:24:58, total cpu=0:00:00.0, real=0:00:00.0, peak res=943.1M, curren
+t mem=943.1M)
+Saving preference file result/pr/data/post_cts_opt.enc.dat/gui.pref.tcl ...
+Saving mode setting ...
+Saving global file ...
+% Begin Save floorplan data ... (date=03/04 12:24:59, mem=943.8M)
+Saving floorplan file ...
+% End Save floorplan data ... (date=03/04 12:24:59, total cpu=0:00:00.0, real=0:00:00.0, peak res=944.2M,
+current mem=944.2M)
+Saving PG file result/pr/data/post_cts_opt.enc.dat/ibex_core.pg.gz, version#2, (Created by Innovus v20.10-
+p004_1 on Wed Mar  4 12:24:59 2026)
+*** Completed savePGFile (cpu=0:00:00.0 real=0:00:00.0 mem=1120.4M) ***
+Saving Drc markers ...
+... No Drc file written since there is no markers found.
+% Begin Save placement data ... (date=03/04 12:24:59, mem=944.7M)
+** Saving stdCellPlacement_binary (version# 2) ...
+Save Adaptive View Pruning View Names to Binary file
+% End Save placement data ... (date=03/04 12:24:59, total cpu=0:00:00.0, real=0:00:00.0, peak res=944.7M,
+current mem=944.7M)
+% Begin Save routing data ... (date=03/04 12:24:59, mem=944.7M)
+Saving route file ...
+*** Completed saveRoute (cpu=0:00:00.1 real=0:00:00.0 mem=1120.4M) ***
+% End Save routing data ... (date=03/04 12:24:59, total cpu=0:00:00.2, real=0:00:00.0, peak res=944.9M, cu
+rrent mem=944.9M)
+Saving SCANDEF file ...
+*** Scan Trace Summary (runtime: cpu: 0:00:00.0 , real: 0:00:00.0):
+Successfully traced 1 scan chain  (total 1940 scan bits).
+Start applying DEF ordered sections ...
+Successfully applied all DEF ordered sections.
+*** Scan Sanity Check Summary:
+*** 1 scan chain  passed sanity check.
+Saving property file result/pr/data/post_cts_opt.enc.dat/ibex_core.prop
+*** Completed saveProperty (cpu=0:00:00.0 real=0:00:00.0 mem=1314.4M) ***
+#Saving pin access data to file result/pr/data/post_cts_opt.enc.dat/ibex_core.apa ...
+% Begin Save power constraints data ... (date=03/04 12:25:00, mem=946.0M)
+% End Save power constraints data ... (date=03/04 12:25:00, total cpu=0:00:00.0, real=0:00:00.0, peak res=
+946.0M, current mem=946.0M)
+Generated self-contained design post_cts_opt.enc.dat
+#% End save design ... (date=03/04 12:25:04, total cpu=0:00:05.1, real=0:00:06.0, peak res=949.4M, current
+ mem=949.4M)
+*** Message Summary: 0 warning(s), 0 error(s)
+
+STAGE 6 COMPLETE: Post-CTS optimization done
+
+*** Memory Usage v#1 (Current mem = 1160.727M, initial mem = 249.227M) ***
+*** Message Summary: 72 warning(s), 0 error(s)
+
+--- Ending "Innovus" (totcpu=0:02:19, real=0:02:20, mem=1160.7M) ---
+
+[EDA@EDA2035 ibex_work_upload]$ cd /home/EDA/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$ innovus -no_gui
+C: unknown locale
+
+Cadence Innovus(TM) Implementation System.
+Copyright 2020 Cadence Design Systems, Inc. All rights reserved worldwide.
+
+Version:	v20.10-p004_1, built Thu May 7 20:02:41 PDT 2020
+Options:	-no_gui
+Date:		Wed Mar  4 12:27:17 2026
+Host:		EDA2035 (x86_64 w/Linux 3.10.0-1160.119.1.el7.x86_64) (3cores*6cpus*Intel(R) Core(TM) i7-8
+559U CPU @ 2.70GHz 8192KB)
+OS:		CentOS Linux release 7.9.2009 (Core)
+
+License:
+		invs	Innovus Implementation System	20.1	checkout succeeded
+		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required
+CPU count.
+

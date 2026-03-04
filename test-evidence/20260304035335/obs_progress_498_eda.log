@@ -1,0 +1,257 @@
+#  met2         12(0.19%)      0(0.00%)   (0.19%)
+#  met3          1(0.02%)      0(0.00%)   (0.02%)
+#  met4          5(0.08%)      0(0.00%)   (0.08%)
+#  met5          0(0.00%)      0(0.00%)   (0.00%)
+#  ----------------------------------------------
+#     Total     33(0.12%)      2(0.01%)   (0.12%)
+#
+#  The worst congested Gcell overcon (routing demand over resource in number of tracks) = 2
+#  Overflow after GR: 0.06% H + 0.06% V
+#
+#Complete Global Routing.
+#Total number of nets with non-default rule or having extra spacing = 192
+#Total wire length = 813185 um.
+#Total half perimeter of net bounding box = 626300 um.
+#Total wire length on LAYER li1 = 1 um.
+#Total wire length on LAYER met1 = 265872 um.
+#Total wire length on LAYER met2 = 253192 um.
+#Total wire length on LAYER met3 = 144733 um.
+#Total wire length on LAYER met4 = 140287 um.
+#Total wire length on LAYER met5 = 9101 um.
+#Total number of vias = 133498
+#Up-Via Summary (total 133498):
+#
+#-----------------------
+# li1             49544
+# met1            63868
+# met2            12109
+# met3             7751
+# met4              226
+#-----------------------
+#                133498
+#
+#Total number of involved priority nets 3
+#Maximum src to sink distance for priority net 844.4
+#Average of max src_to_sink distance for priority net 382.2
+#Average of ave src_to_sink distance for priority net 281.4
+#Max overcon = 3 tracks.
+#Total overcon = 0.21%.
+#Worst layer Gcell overcon rate = 0.35%.
+#
+#Global routing statistics:
+#Cpu time = 00:00:01
+#Elapsed time = 00:00:01
+#Increased memory = 10.90 (MB)
+#Total memory = 990.65 (MB)
+#Peak memory = 1106.13 (MB)
+#
+#Finished global routing on Wed Mar  4 12:40:26 2026
+#
+#
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 989.98 (MB), peak = 1106.13 (MB)
+#Start Track Assignment.
+#Done with 116 horizontal wires in 3 hboxes and 33 vertical wires in 3 hboxes.
+#Done with 9 horizontal wires in 3 hboxes and 5 vertical wires in 3 hboxes.
+#Complete Track Assignment.
+#Total number of nets with non-default rule or having extra spacing = 192
+#Total wire length = 813885 um.
+#Total half perimeter of net bounding box = 626300 um.
+#Total wire length on LAYER li1 = 1 um.
+#Total wire length on LAYER met1 = 266325 um.
+#Total wire length on LAYER met2 = 253261 um.
+#Total wire length on LAYER met3 = 144807 um.
+#Total wire length on LAYER met4 = 140390 um.
+#Total wire length on LAYER met5 = 9101 um.
+#Total number of vias = 133498
+#Up-Via Summary (total 133498):
+#
+#-----------------------
+# li1             49544
+# met1            63868
+# met2            12109
+# met3             7751
+# met4              226
+#-----------------------
+#                133498
+#
+#cpu time = 00:00:02, elapsed time = 00:00:02, memory = 1000.97 (MB), peak = 1106.13 (MB)
+#
+#number of short segments in preferred routing layers
+#	met3      Total
+#	2         2
+#
+#Routing data preparation, pin analysis, global routing and track assignment statistics:
+#Cpu time = 00:00:06
+#Elapsed time = 00:00:06
+#Increased memory = 41.04 (MB)
+#Total memory = 1001.27 (MB)
+#Peak memory = 1106.13 (MB)
+#
+#Start Detail Routing..
+#start initial detail routing ...
+# ECO: 14.8% of the total area was rechecked for DRC, and 54.4% required routing.
+#   number of violations = 41
+#
+#    By Layer and Type :
+#	         MetSpc    Short   Totals
+#	li1           2        0        2
+#	met1          0       10       10
+#	met2          0       13       13
+#	met3         12        4       16
+#	Totals       14       27       41
+#253 out of 11772 instances (2.1%) need to be verified(marked ipoed), dirty area = 1.2%.
+#0.0% of the total area is being checked for drcs
+#0.0% of the total area was checked
+#   number of violations = 41
+#
+#    By Layer and Type :
+#	         MetSpc    Short   Totals
+#	li1           2        0        2
+#	met1          0       10       10
+#	met2          0       13       13
+#	met3         12        4       16
+#	Totals       14       27       41
+#cpu time = 00:00:21, elapsed time = 00:00:21, memory = 1016.40 (MB), peak = 1106.13 (MB)
+#start 1st optimization iteration ...
+#   number of violations = 2
+#
+#    By Layer and Type :
+#	         MetSpc    Short   Totals
+#	li1           0        0        0
+#	met1          0        1        1
+#	met2          0        0        0
+#	met3          1        0        1
+#	Totals        1        1        2
+#    number of process antenna violations = 36
+#cpu time = 00:00:01, elapsed time = 00:00:01, memory = 1013.28 (MB), peak = 1106.13 (MB)
+#start 2nd optimization iteration ...
+#   number of violations = 1
+#
+#    By Layer and Type :
+#	          Short   Totals
+#	li1           0        0
+#	met1          1        1
+#	Totals        1        1
+#    number of process antenna violations = 36
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 1013.61 (MB), peak = 1106.13 (MB)
+#start 3rd optimization iteration ...
+#   number of violations = 0
+#    number of process antenna violations = 36
+#cpu time = 00:00:00, elapsed time = 00:00:00, memory = 1014.73 (MB), peak = 1106.13 (MB)
+#Complete Detail Routing.
+#Total number of nets with non-default rule or having extra spacing = 192
+#Total wire length = 813666 um.
+#Total half perimeter of net bounding box = 626300 um.
+#Total wire length on LAYER li1 = 1 um.
+#Total wire length on LAYER met1 = 265859 um.
+#Total wire length on LAYER met2 = 253596 um.
+#Total wire length on LAYER met3 = 144837 um.
+#Total wire length on LAYER met4 = 140272 um.
+#Total wire length on LAYER met5 = 9101 um.
+#Total number of vias = 134102
+#Up-Via Summary (total 134102):
+#
+#-----------------------
+# li1             49613
+# met1            64305
+# met2            12182
+# met3             7776
+# met4              226
+#-----------------------
+#                134102
+#
+#Total number of DRC violations = 0
+#Cpu time = 00:00:24
+#Elapsed time = 00:00:24
+#Increased memory = -4.66 (MB)
+#Total memory = 996.61 (MB)
+#Peak memory = 1106.13 (MB)
+#
+#start routing for process antenna violation fix ...
+#cpu time = 00:00:01, elapsed time = 00:00:01, memory = 1009.61 (MB), peak = 1106.13 (MB)
+#
+#Total number of nets with non-default rule or having extra spacing = 192
+#Total wire length = 813681 um.
+#Total half perimeter of net bounding box = 626300 um.
+#Total wire length on LAYER li1 = 1 um.
+#Total wire length on LAYER met1 = 265859 um.
+#Total wire length on LAYER met2 = 253596 um.
+#Total wire length on LAYER met3 = 144838 um.
+#Total wire length on LAYER met4 = 140270 um.
+#Total wire length on LAYER met5 = 9117 um.
+#Total number of vias = 134116
+#Up-Via Summary (total 134116):
+#
+#-----------------------
+# li1             49613
+# met1            64305
+# met2            12182
+# met3             7786
+# met4              230
+#-----------------------
+#                134116
+#
+#Total number of DRC violations = 0
+#Total number of process antenna violations = 3
+#Total number of net violated process antenna rule = 3 ant fix stage
+#
+#
+#Total number of nets with non-default rule or having extra spacing = 192
+#Total wire length = 813681 um.
+#Total half perimeter of net bounding box = 626300 um.
+#Total wire length on LAYER li1 = 1 um.
+#Total wire length on LAYER met1 = 265859 um.
+#Total wire length on LAYER met2 = 253596 um.
+#Total wire length on LAYER met3 = 144838 um.
+#Total wire length on LAYER met4 = 140270 um.
+#Total wire length on LAYER met5 = 9117 um.
+#Total number of vias = 134116
+#Up-Via Summary (total 134116):
+#
+#-----------------------
+# li1             49613
+# met1            64305
+# met2            12182
+# met3             7786
+# met4              230
+#-----------------------
+#                134116
+#
+#Total number of DRC violations = 0
+#Total number of process antenna violations = 4
+#Total number of net violated process antenna rule = 4
+#
+#
+#Start Post Route wire spreading..
+#
+#Start data preparation for wire spreading...
+#
+#Data preparation is done on Wed Mar  4 12:40:54 2026
+#
+#
+#Start Post Route Wire Spread.
+#Done with 1230 horizontal wires in 5 hboxes and 1801 vertical wires in 5 hboxes.
+#Complete Post Route Wire Spread.
+#
+#Total number of nets with non-default rule or having extra spacing = 192
+#Total wire length = 814811 um.
+#Total half perimeter of net bounding box = 626300 um.
+#Total wire length on LAYER li1 = 1 um.
+#Total wire length on LAYER met1 = 266110 um.
+#Total wire length on LAYER met2 = 254238 um.
+#Total wire length on LAYER met3 = 144960 um.
+#Total wire length on LAYER met4 = 140385 um.
+#Total wire length on LAYER met5 = 9117 um.
+#Total number of vias = 134116
+#Up-Via Summary (total 134116):
+#
+#-----------------------
+# li1             49613
+# met1            64305
+# met2            12182
+# met3             7786
+# met4              230
+#-----------------------
+#                134116
+#
+

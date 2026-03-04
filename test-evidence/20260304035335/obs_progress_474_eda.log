@@ -1,0 +1,257 @@
+Total number of pulse generator cells: 0
+Total number of always on buffers: 0
+Total number of retention cells: 0
+List of usable buffers: sky130_fd_sc_hd__buf_1 sky130_fd_sc_hd__buf_12 sky130_fd_sc_hd__buf_16 sky130_fd_s
+c_hd__buf_2 sky130_fd_sc_hd__buf_4 sky130_fd_sc_hd__buf_6 sky130_fd_sc_hd__buf_8 sky130_fd_sc_hd__clkbuf_1
+ sky130_fd_sc_hd__clkbuf_16 sky130_fd_sc_hd__clkbuf_2 sky130_fd_sc_hd__clkbuf_4 sky130_fd_sc_hd__clkbuf_8
+sky130_fd_sc_hd__dlymetal6s2s_1 sky130_fd_sc_hd__probe_p_8
+Total number of usable buffers: 14
+List of unusable buffers: sky130_fd_sc_hd__probec_p_8
+Total number of unusable buffers: 1
+List of usable inverters: sky130_fd_sc_hd__bufinv_16 sky130_fd_sc_hd__clkinv_1 sky130_fd_sc_hd__bufinv_8 s
+ky130_fd_sc_hd__clkinv_16 sky130_fd_sc_hd__clkinv_2 sky130_fd_sc_hd__clkinv_4 sky130_fd_sc_hd__clkinv_8 sk
+y130_fd_sc_hd__inv_1 sky130_fd_sc_hd__clkinvlp_2 sky130_fd_sc_hd__clkinvlp_4 sky130_fd_sc_hd__inv_12 sky13
+0_fd_sc_hd__inv_16 sky130_fd_sc_hd__inv_2 sky130_fd_sc_hd__inv_4 sky130_fd_sc_hd__inv_6 sky130_fd_sc_hd__i
+nv_8
+Total number of usable inverters: 16
+List of unusable inverters:
+Total number of unusable inverters: 0
+List of identified usable delay cells: sky130_fd_sc_hd__bufbuf_16 sky130_fd_sc_hd__bufbuf_8 sky130_fd_sc_h
+d__clkdlybuf4s15_1 sky130_fd_sc_hd__clkdlybuf4s15_2 sky130_fd_sc_hd__clkdlybuf4s18_1 sky130_fd_sc_hd__clkd
+lybuf4s18_2 sky130_fd_sc_hd__clkdlybuf4s25_1 sky130_fd_sc_hd__clkdlybuf4s50_1 sky130_fd_sc_hd__clkdlybuf4s
+25_2 sky130_fd_sc_hd__clkdlybuf4s50_2 sky130_fd_sc_hd__dlygate4sd2_1 sky130_fd_sc_hd__dlygate4sd1_1 sky130
+_fd_sc_hd__dlygate4sd3_1 sky130_fd_sc_hd__dlymetal6s6s_1 sky130_fd_sc_hd__dlymetal6s4s_1
+Total number of identified usable delay cells: 15
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+**WARN: (IMPCTE-107):	The following globals have been obsoleted since version 20.10-p004_1. They will be
+ removed in the next release.
+timing_enable_default_delay_arc
+#% End load design ... (date=03/04 12:38:33, total cpu=0:00:04.7, real=0:00:07.0, peak res=821.5M, current
+ mem=804.7M)
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPLF-200            4  Pin '%s' in macro '%s' has no ANTENNAGAT...
+WARNING   IMPLF-201            3  Pin '%s' in macro '%s' has no ANTENNADIF...
+WARNING   IMPLF-108            1  There is no overlap layer defined in any...
+WARNING   IMPFP-3961           2  The techSite '%s' has no related standar...
+WARNING   IMPEXT-2766         12  The sheet resistance for layer %s is not...
+WARNING   IMPEXT-2773         12  The via resistance between layers %s and...
+WARNING   IMPESI-3505          1  setDelayCalMode -eng_%s (default=%s) wil...
+WARNING   IMPOPT-3602          4  The specified path group name %s is not ...
+WARNING   IMPCTE-107           1  The following globals have been obsolete...
+WARNING   IMPPSP-1003          2  Found use of '%s'. This will continue to...
+WARNING   TECHLIB-302         12  No function defined for cell '%s'. The c...
+WARNING   TECHLIB-1161         1  The library level attribute %s on line %...
+*** Message Summary: 55 warning(s), 0 error(s)
+
+**optDesign ... cpu = 0:00:00, real = 0:00:00, mem = 804.7M, totSessionCpu=0:00:31 **
+**WARN: (IMPOPT-576):	2 nets have unplaced terms.
+Type 'man IMPOPT-576' for more detail.
+**INFO: User settings:
+setNanoRouteMode -drouteEndIteration                            70
+setNanoRouteMode -drouteFixAntenna                              true
+setNanoRouteMode -drouteUseMultiCutViaEffort                    medium
+setNanoRouteMode -extractThirdPartyCompatible                   false
+setNanoRouteMode -grouteExpTdStdDelay                           41.6
+setNanoRouteMode -grouteExpTdUseTifTimingEngineForImportDesign  false
+setNanoRouteMode -routeBottomRoutingLayer                       2
+setNanoRouteMode -routeTopRoutingLayer                          6
+setNanoRouteMode -routeWithTimingDriven                         true
+setDesignMode -process                                          130
+setExtractRCMode -basic                                         true
+setExtractRCMode -coupled                                       true
+setExtractRCMode -coupling_c_th                                 0.4
+setExtractRCMode -engine                                        postRoute
+setExtractRCMode -extended                                      false
+setExtractRCMode -minNetTermNrToBeInMem                         50
+setExtractRCMode -relative_c_th                                 1
+setExtractRCMode -total_c_th                                    0
+setUsefulSkewMode -ecoRoute                                     false
+setDelayCalMode -enable_high_fanout                             true
+setDelayCalMode -eng_copyNetPropToNewNet                        true
+setDelayCalMode -engine                                         aae
+setDelayCalMode -ignoreNetLoad                                  false
+setDelayCalMode -SIAware                                        true
+setOptMode -activeHoldViews                                     { min_view }
+setOptMode -activeSetupViews                                    { max_view }
+setOptMode -autoHoldViews                                       { min_view}
+setOptMode -autoSetupViews                                      { max_view}
+setOptMode -autoTDGRSetupViews                                  { max_view}
+setOptMode -autoViewHoldTargetSlack                             0
+setOptMode -drcMargin                                           0
+setOptMode -fixDrc                                              true
+setOptMode -fixFanoutLoad                                       true
+setOptMode -ignorePathGroupsForHold                             {in2reg reg2out feedthr}
+setOptMode -optimizeFF                                          true
+setOptMode -preserveAllSequential                               false
+setOptMode -setupTargetSlack                                    0
+setSIMode -separate_delta_delay_on_data                         true
+setPlaceMode -place_detail_legalization_inst_gap                2
+setPlaceMode -place_global_ignore_scan                          true
+setPlaceMode -place_global_place_io_pins                        false
+setPlaceMode -place_global_reorder_scan                         false
+setAnalysisMode -analysisType                                   onChipVariation
+setAnalysisMode -checkType                                      setup
+setAnalysisMode -clkSrcPath                                     true
+setAnalysisMode -clockPropagation                               sdcControl
+setAnalysisMode -cppr                                           both
+setAnalysisMode -skew                                           true
+setAnalysisMode -usefulSkew                                     true
+
+**INFO: setDesignMode -flowEffort standard -> setting 'setOptMode -allEndPoints true' for the duration of
+this command.
+Disable merging buffers from different footprints for postRoute code for non-MSV designs
+info: unfix 1 clock instance placement location
+info: this clock instance will be remarked as fixed at the end of optimiztion
+Need call spDPlaceInit before registerPrioInstLoc.
+GigaOpt running with 1 threads.
+**WARN: (IMPOPT-665):	test_si : Net has unplaced terms or is connected to uplaced instances in design.
+Type 'man IMPOPT-665' for more detail.
+**WARN: (IMPOPT-665):	test_so : Net has unplaced terms or is connected to uplaced instances in design.
+Type 'man IMPOPT-665' for more detail.
+**optDesign ... cpu = 0:00:04, real = 0:00:04, mem = 798.1M, totSessionCpu=0:00:34 **
+Existing Dirty Nets : 0
+New Signature Flow (optDesignCheckOptions) ....
+#Taking db snapshot
+#Taking db snapshot ... done
+Begin checking placement ... (start mem=946.0M, init mem=952.0M)
+*info: Placed = 11747          (Fixed = 71)
+*info: Unplaced = 0
+Placement Density:41.05%(124817/304049)
+Placement Density (including fixed std cells):41.05%(124817/304049)
+Finished checkPlace (total: cpu=0:00:00.4, real=0:00:00.0; vio checks: cpu=0:00:00.4, real=0:00:00.0; mem=
+955.0M)
+ Initial DC engine is -> aae
+
+ AAE-Opt:: Current number of nets in RC Memory -> 100 K
+
+
+ AAE-Opt:: New number of nets in RC Memory -> 100 K
+
+Reset EOS DB
+Ignoring AAE DB Resetting ...
+ Set Options for AAE Based Opt flow
+*** optDesign -postRoute ***
+DRC Margin: user margin 0.0; extra margin 0
+Setup Target Slack: user slack 0
+Hold Target Slack: user slack 0
+INFO****: The delay profiles based on paritioning incorrect, turning off vt filtering
+Opt: RC extraction mode changed to 'detail'
+** INFO : this run is activating 'postRoute' automaton
+Extraction called for design 'ibex_core' of instances=11747 and nets=12185 using extraction engine 'postRo
+ute' at effort level 'low' .
+PostRoute (effortLevel low) RC Extraction called for design ibex_core.
+RC Extraction called in multi-corner(2) mode.
+**WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy
+when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to gener
+ate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_r
+c_corner/update_rc_corner -cap_table'.
+Type 'man IMPEXT-6197' for more detail.
+**WARN: (IMPEXT-3032):	Because the cap table file was not provided, it will be created internally with th
+e following process info:
+* Layer Id             : 1 - M1
+      Thickness        : 0.1
+      Min Width        : 0.17
+      Layer Dielectric : 4.1
+* Layer Id             : 2 - M2
+      Thickness        : 0.35
+      Min Width        : 0.14
+      Layer Dielectric : 4.1
+* Layer Id             : 3 - M3
+      Thickness        : 0.35
+      Min Width        : 0.14
+      Layer Dielectric : 4.1
+* Layer Id             : 4 - M4
+      Thickness        : 0.8
+      Min Width        : 0.3
+      Layer Dielectric : 4.1
+* Layer Id             : 5 - M5
+      Thickness        : 0.8
+      Min Width        : 0.3
+      Layer Dielectric : 4.1
+* Layer Id             : 6 - M6
+      Thickness        : 1.2
+      Min Width        : 1.6
+      Layer Dielectric : 4.1
+extractDetailRC Option : -outfile /tmp/innovus_temp_125007_EDA2035_EDA_FF3yqW/ibex_core_125007_LkWpvH.rcdb
+.d  -basic
+RC Mode: PostRoute -effortLevel low [Basic CapTable, LEF Resistances]
+      RC Corner Indexes            0       1
+Capacitance Scaling Factor   : 1.05000 1.00000
+Coupling Cap. Scaling Factor : 1.00000 1.00000
+Resistance Scaling Factor    : 1.05000 1.00000
+Clock Cap. Scaling Factor    : 1.05000 1.00000
+Clock Res. Scaling Factor    : 1.05000 1.00000
+Shrink Factor                : 1.00000
+Initializing multi-corner resistance tables ...
+Checking LVS Completed (CPU Time= 0:00:00.1  MEM= 957.0M)
+Extracted 10.0007% (CPU Time= 0:00:00.5  MEM= 990.0M)
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'L1M1_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+Extracted 20.0005% (CPU Time= 0:00:00.6  MEM= 995.0M)
+Extracted 30.0008% (CPU Time= 0:00:00.7  MEM= 998.0M)
+Extracted 40.0006% (CPU Time= 0:00:00.8  MEM= 1000.0M)
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M1M2_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+Extracted 50.0009% (CPU Time= 0:00:01.0  MEM= 1004.0M)
+Extracted 60.0007% (CPU Time= 0:00:01.4  MEM= 1008.0M)
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M2M3_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M3M4_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+Extracted 70.0005% (CPU Time= 0:00:01.7  MEM= 1015.0M)
+**WARN: (IMPEXT-2882):	Unable to find the resistance for via 'M4M5_PR' in Cap table or LEF or OA files. T
+he default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, p
+rovide the resistance and read the files again.
+Extracted 80.0008% (CPU Time= 0:00:02.0  MEM= 1016.0M)
+Extracted 90.0006% (CPU Time= 0:00:02.2  MEM= 1016.0M)
+Extracted 100% (CPU Time= 0:00:02.6  MEM= 1019.0M)
+Number of Extracted Resistors     : 378493
+Number of Extracted Ground Cap.   : 378527
+Number of Extracted Coupling Cap. : 829228
+Filtering XCap in 'relativeAndCoupling' mode using values coupling_c_threshold=0.4fF, relative_c_threshold
+=1, and total_c_threshold=0fF.
+Checking LVS Completed (CPU Time= 0:00:00.0  MEM= 1017.0M)
+PostRoute (effortLevel low) RC Extraction DONE (CPU Time: 0:00:03.7  Real Time: 0:00:03.0  MEM: 1016.988M)
+Initializing multi-corner resistance tables ...
+Starting delay calculation for Hold views
+#################################################################################
+# Design Stage: PostRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC OCV
+# Parasitics Mode: SPEF/RCDB
+# Signoff Settings: SI Off
+#################################################################################
+Start delay calculation (fullDC) (1 T). (MEM=1016.99)
+Total number of fetched objects 12043
+AAE_INFO: Total number of nets for which stage creation was skipped for all views 0
+End delay calculation. (MEM=1131.52 CPU=0:00:02.7 REAL=0:00:02.0)
+End delay calculation (fullDC). (MEM=1104.44 CPU=0:00:03.2 REAL=0:00:03.0)
+*** Done Building Timing Graph (cpu=0:00:04.1 real=0:00:04.0 totSessionCpu=0:00:43.8 mem=1104.4M)
+Done building cte hold timing graph (HoldAware) cpu=0:00:04.8 real=0:00:05.0 totSessionCpu=0:00:43.8 mem=1
+104.4M ***
+Starting delay calculation for Setup views
+Starting SI iteration 1 using Infinite Timing Windows
+#################################################################################
+# Design Stage: PostRoute
+# Design Name: ibex_core
+# Design Mode: 130nm
+# Analysis Mode: MMMC OCV
+# Parasitics Mode: SPEF/RCDB
+# Signoff Settings: SI On
+#################################################################################
+AAE_INFO: 1 threads acquired from CTE.
+Start delay calculation (fullDC) (1 T). (MEM=1079.76)
+**WARN: (IMPESI-3140):	Bumpy transitions may exist in the design which may lead to inaccurate delay compu
+tation. To report/analyze the nets having bumpy transition, please enable delay report and use command 're
+port_noise -bumpy_waveform -threshold 0' after timing analysis. Delay report is enabled by setting 'set_si
+_mode -enable_delay_report true' before timing analysis.
+Type 'man IMPESI-3140' for more detail.
+

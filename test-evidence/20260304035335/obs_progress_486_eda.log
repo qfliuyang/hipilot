@@ -1,0 +1,257 @@
+    Clock DAG net violations after 'PRO Fixing DRVs':
+      Remaining Transition : {count=7, worst=[0.008ns, 0.007ns, 0.004ns, 0.003ns, 0.003ns, 0.003ns, 0.003n
+s]} avg=0.005ns sd=0.002ns sum=0.032ns
+    Clock DAG primary half-corner transition distribution after 'PRO Fixing DRVs':
+      Trunk : target=0.133ns count=27 avg=0.098ns sd=0.020ns min=0.025ns max=0.136ns {2 <= 0.080ns, 18 <=
+0.106ns, 3 <= 0.120ns, 3 <= 0.126ns, 0 <= 0.133ns} {1 <= 0.140ns, 0 <= 0.146ns, 0 <= 0.160ns, 0 <= 0.199ns
+, 0 > 0.199ns}
+      Leaf  : target=0.133ns count=45 avg=0.124ns sd=0.009ns min=0.098ns max=0.141ns {0 <= 0.080ns, 2 <= 0
+.106ns, 11 <= 0.120ns, 13 <= 0.126ns, 13 <= 0.133ns} {4 <= 0.140ns, 2 <= 0.146ns, 0 <= 0.160ns, 0 <= 0.199
+ns, 0 > 0.199ns}
+    Clock DAG library cell distribution after 'PRO Fixing DRVs' {count}:
+       Invs: sky130_fd_sc_hd__clkinv_16: 62 sky130_fd_sc_hd__clkinv_8: 5 sky130_fd_sc_hd__clkinv_4: 2 sky1
+30_fd_sc_hd__clkinv_2: 1
+      NICGs: sky130_fd_sc_hd__and2_4: 1
+    Primary reporting skew groups after 'PRO Fixing DRVs':
+      skew_group default.core_clock/common: unconstrained
+    Skew group summary after 'PRO Fixing DRVs':
+      skew_group core_clock/common: insertion delay [min=0.665, max=0.807, avg=0.741, sd=0.039], skew [0.1
+41 vs 0.154], 100% {0.665, 0.807} (wid=0.047 ws=0.030) (gid=0.771 gs=0.125)
+    Legalizer API calls during this step: 8 succeeded with high effort: 8 succeeded with medium effort: 0
+succeeded with low effort: 0 succeeded with basic effort: 0 succeeded with basic unbounded effort: 0
+  PRO Fixing DRVs done. (took cpu=0:00:00.1 real=0:00:00.1)
+  Reconnecting optimized routes...
+  Reconnecting optimized routes done. (took cpu=0:00:00.0 real=0:00:00.0)
+  Set dirty flag on 0 instances, 0 nets
+  Clock tree timing engine global stage delay update for delay_max:setup.late...
+  Clock tree timing engine global stage delay update for delay_max:setup.late done. (took cpu=0:00:00.1 re
+al=0:00:00.1)
+  Clock DAG stats PRO final:
+    cell counts      : b=0, i=70, icg=0, nicg=1, l=0, total=71
+    cell areas       : b=0.000um^2, i=1965.635um^2, icg=0.000um^2, nicg=8.758um^2, l=0.000um^2, total=1974
+.394um^2
+    cell capacitance : b=0.000pF, i=2.640pF, icg=0.000pF, nicg=0.002pF, l=0.000pF, total=2.642pF
+    sink capacitance : count=1941, total=4.752pF, avg=0.002pF, sd=0.000pF, min=0.002pF, max=0.003pF
+    wire capacitance : top=0.000pF, trunk=0.569pF, leaf=3.380pF, total=3.949pF
+    wire lengths     : top=0.000um, trunk=3346.200um, leaf=18535.740um, total=21881.940um
+    hp wire lengths  : top=0.000um, trunk=2513.760um, leaf=7633.700um, total=10147.460um
+  Clock DAG net violations PRO final:
+    Remaining Transition : {count=7, worst=[0.008ns, 0.007ns, 0.004ns, 0.003ns, 0.003ns, 0.003ns, 0.003ns]
+} avg=0.005ns sd=0.002ns sum=0.032ns
+  Clock DAG primary half-corner transition distribution PRO final:
+    Trunk : target=0.133ns count=27 avg=0.098ns sd=0.020ns min=0.025ns max=0.136ns {2 <= 0.080ns, 18 <= 0.
+106ns, 3 <= 0.120ns, 3 <= 0.126ns, 0 <= 0.133ns} {1 <= 0.140ns, 0 <= 0.146ns, 0 <= 0.160ns, 0 <= 0.199ns,
+0 > 0.199ns}
+    Leaf  : target=0.133ns count=45 avg=0.124ns sd=0.009ns min=0.098ns max=0.141ns {0 <= 0.080ns, 2 <= 0.1
+06ns, 11 <= 0.120ns, 13 <= 0.126ns, 13 <= 0.133ns} {4 <= 0.140ns, 2 <= 0.146ns, 0 <= 0.160ns, 0 <= 0.199ns
+, 0 > 0.199ns}
+  Clock DAG library cell distribution PRO final {count}:
+     Invs: sky130_fd_sc_hd__clkinv_16: 62 sky130_fd_sc_hd__clkinv_8: 5 sky130_fd_sc_hd__clkinv_4: 2 sky130
+_fd_sc_hd__clkinv_2: 1
+    NICGs: sky130_fd_sc_hd__and2_4: 1
+  Primary reporting skew groups PRO final:
+    skew_group default.core_clock/common: unconstrained
+  Skew group summary PRO final:
+    skew_group core_clock/common: insertion delay [min=0.665, max=0.807, avg=0.741, sd=0.039], skew [0.141
+ vs 0.154], 100% {0.665, 0.807} (wid=0.047 ws=0.030) (gid=0.771 gs=0.125)
+PRO done.
+Restoring CTS place status for unmodified clock tree cells and sinks.
+Net route status summary:
+  Clock:        72 (unrouted=0, trialRouted=0, noStatus=0, routed=72, fixed=0, [crossesIlmBoundary=0, tooF
+ewTerms=0, (crossesIlmBoundary AND tooFewTerms=0)])
+  Non-clock: 12113 (unrouted=146, trialRouted=0, noStatus=0, routed=11967, fixed=0, [crossesIlmBoundary=0,
+ tooFewTerms=145, (crossesIlmBoundary AND tooFewTerms=0)])
+Updating delays...
+Updating delays done.
+PRO done. (took cpu=0:00:01.4 real=0:00:01.4)
+**INFO: Start fixing DRV (Mem = 1097.11M) ...
+Begin: GigaOpt DRV Optimization
+Glitch fixing enabled
+GigaOpt Checkpoint: Internal optDRV -postRoute -max_tran -max_cap -max_fanout -maintainWNS -setupTNSCostFa
+ctor 0.3 -maxLocalDensity 0.96 -numThreads 1  -glitch
+Info: 72 clock nets excluded from IPO operation.
+*** DrvOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:01:04.5/0:01:15.6 (0.9)
+, mem = 1097.1M
+DRV pessimism of 5.00% is used for tran, 5.00% for cap, 5.00% for fanout, on top of margin 0.00%
+**INFO: Disabling fanout fix in postRoute stage.
++---------------------------------------------------------------------------------------------------------
+------------------------------------------------------------+
+|        max-tran       |        max-cap        |  max-fanout |  max-length |    glitch   |       setup
+    |        |        |        |       |          |         |
++---------------------------------------------------------------------------------------------------------
+------------------------------------------------------------+
+| nets | terms|  wViol  | nets | terms|  wViol  | nets | terms| nets | terms| nets | terms|   WNS   |   TN
+S   |  #Buf  |  #Inv  | #Resize|Density|   Real   |   Mem   |
++---------------------------------------------------------------------------------------------------------
+------------------------------------------------------------+
+|    47|   236|    -2.63|    46|    46|    -0.05|     0|     0|     0|     0|     7|     7|    -3.02| -324
+0.74|       0|       0|       0|  41.05|          |         |
+|     1|     1|    -2.63|     0|     0|     0.00|     0|     0|     0|     0|     2|     2|    -3.08| -320
+8.86|      24|       0|      28|  41.13| 0:00:21.0|  1305.5M|
+|     1|     1|    -2.63|     0|     0|     0.00|     0|     0|     0|     0|     0|     0|    -3.08| -320
+7.49|       1|       0|       1|  41.14| 0:00:01.0|  1305.5M|
+|     1|     1|    -2.56|     0|     0|     0.00|     0|     0|     0|     0|     0|     0|    -3.08| -320
+7.49|       0|       0|       0|  41.14| 0:00:00.0|  1305.5M|
++---------------------------------------------------------------------------------------------------------
+------------------------------------------------------------+
+Bottom Preferred Layer:
++-------------+------------+------------+----------+
+|    Layer    |   GPS_LA   |    CLK     |   Rule   |
++-------------+------------+------------+----------+
+| met2 (z=3)  |          0 |         45 | default  |
+| met3 (z=4)  |          3 |          0 | default  |
++-------------+------------+------------+----------+
+| met2 (z=3)  |          0 |         27 | cts_1    |
++-------------+------------+------------+----------+
+Via Pillar Rule:
+    None
+
+
+=======================================================================
+                Reasons for remaining drv violations
+=======================================================================
+*info: Total 1 net(s) have violations which can't be fixed by DRV optimization.
+
+MultiBuffering failure reasons
+------------------------------------------------
+*info:     1 net(s): Could not be fixed as the violating term's net is not routed.
+
+
+*** Finish DRV Fixing (cpu=0:00:22.8 real=0:00:23.0 mem=1305.5M) ***
+
+*** DrvOpt [finish] : cpu/real = 0:00:30.3/0:00:30.3 (1.0), totSession cpu/real = 0:01:34.8/0:01:45.9 (0.9
+), mem = 1286.4M
+Running refinePlace -preserveRouting true -hardFence false
+*** Starting refinePlace (0:01:35 mem=1286.4M) ***
+*** Checked 2 GNC rules.
+*** Applying global-net connections...
+*** Applied 2 GNC rules (cpu = 0:00:00.0)
+**WARN: (IMPSP-315):	Found 1110 instances insts with no PG Term connections.
+Type 'man IMPSP-315' for more detail.
+Move report: Detail placement moves 4 insts, mean move: 2.85 um, max move: 4.10 um
+	Max move on inst (U4999): (530.84, 191.42) --> (532.22, 188.70)
+	Runtime: CPU: 0:00:00.6 REAL: 0:00:01.0 MEM: 1286.4MB
+Summary Report:
+Instances move: 4 (out of 11701 movable)
+Instances flipped: 0
+Mean displacement: 2.85 um
+Max displacement: 4.10 um (Instance: U4999) (530.84, 191.42) -> (532.22, 188.7)
+	Length: 3 sites, height: 1 rows, site name: unithd, cell type: sky130_fd_sc_hd__nor2_1
+Runtime: CPU: 0:00:00.6 REAL: 0:00:01.0 MEM: 1286.4MB
+*** Finished refinePlace (0:01:35 mem=1286.4M) ***
+End: GigaOpt DRV Optimization
+**optDesign ... cpu = 0:01:05, real = 0:01:05, mem = 1014.2M, totSessionCpu=0:01:35 **
+*info:
+**INFO: Completed fixing DRV (CPU Time = 0:00:31, Mem = 1176.44M).
+
+------------------------------------------------------------
+     SI Timing Summary (cpu=0.52min real=0.52min mem=1176.4M)
+------------------------------------------------------------
+
+Setup views included:
+ max_view
+
++--------------------+---------+---------+---------+---------+---------+---------+
+|     Setup mode     |   all   | reg2reg | in2reg  | reg2out | default | feedthr |
++--------------------+---------+---------+---------+---------+---------+---------+
+|           WNS (ns):| -3.077  | -3.077  |  0.226  | -1.735  |  4.873  | -0.775  |
+|           TNS (ns):| -3207.5 | -3203.7 |  0.000  | -2.970  |  0.000  | -0.775  |
+|    Violating Paths:|  1579   |  1574   |    0    |    4    |    0    |    1    |
+|          All Paths:|  7573   |  3880   |  5390   |   101   |    1    |   32    |
++--------------------+---------+---------+---------+---------+---------+---------+
+
++----------------+-------------------------------+------------------+
+|                |              Real             |       Total      |
+|    DRVs        +------------------+------------+------------------|
+|                |  Nr nets(terms)  | Worst Vio  |  Nr nets(terms)  |
++----------------+------------------+------------+------------------+
+|   max_cap      |      0 (0)       |   0.000    |      0 (0)       |
+|   max_tran     |      1 (1)       |   -2.556   |      1 (1)       |
+|   max_fanout   |      0 (0)       |     0      |      0 (0)       |
+|   max_length   |      0 (0)       |     0      |      0 (0)       |
++----------------+------------------+------------+------------------+
+
+Density: 41.137%
+Total number of glitch violations: 0
+------------------------------------------------------------
+**optDesign ... cpu = 0:01:05, real = 0:01:06, mem = 1011.4M, totSessionCpu=0:01:36 **
+*** Timing NOT met, worst failing slack is -3.077
+*** Check timing (0:00:00.0)
+Begin: GigaOpt Optimization in WNS mode
+GigaOpt Checkpoint: Internal optTiming -maxLocalDensity 0.96 -numThreads 1 -postRoute -usefulSkew -nativeP
+athGroupFlow
+Info: 72 clock nets excluded from IPO operation.
+*** SetupOpt [begin] : cpu/real = 0:00:00.0/0:00:00.0 (0.0), totSession cpu/real = 0:01:36.3/0:01:47.4 (0.
+9), mem = 1166.9M
+*info: 72 clock nets excluded
+*info: 2 special nets excluded.
+*info: 136 no-driver nets excluded.
+** GigaOpt Optimizer WNS Slack -3.077 TNS Slack -3207.489 Density 41.14
+OptDebug: Start of Optimizer WNS Pass 0: feedthr in2reg reg2out default* WNS -1.735 TNS -3.745; reg2reg* W
+NS -3.077 TNS -3203.744; HEPG WNS -3.077 TNS -3203.744; all paths WNS -3.077 TNS -3207.489
+Active Path Group: reg2reg
++--------+---------+---------+---------+----------+------------+--------+----------+---------+------------
+----------------------------------------+
+|  WNS   | All WNS |   TNS   | All TNS | Density  |    Real    |  Mem   |Worst View|Pathgroup|
+         End Point                      |
++--------+---------+---------+---------+----------+------------+--------+----------+---------+------------
+----------------------------------------+
+|  -3.077|   -3.077|-3203.744|-3207.489|    41.14%|   0:00:00.0| 1240.0M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[665]/D |
+|  -2.895|   -2.895|-2864.942|-2867.882|    41.14%|   0:00:00.0| 1286.7M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[919]/D |
+|  -2.855|   -2.855|-2859.944|-2862.884|    41.14%|   0:00:00.0| 1286.7M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[665]/D |
+|  -2.793|   -2.793|-2571.077|-2574.016|    41.15%|   0:00:01.0| 1286.7M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[665]/D |
+|  -2.704|   -2.704|-2437.826|-2440.765|    41.15%|   0:00:00.0| 1287.7M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[388]/D |
+|  -2.526|   -2.526|-2237.609|-2240.497|    41.16%|   0:00:01.0| 1326.8M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[667]/D |
+|  -2.375|   -2.375|-2228.209|-2231.097|    41.16%|   0:00:00.0| 1326.8M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[665]/D |
+|  -2.217|   -2.217|-2218.233|-2221.121|    41.16%|   0:00:00.0| 1326.8M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[667]/D |
+|  -2.193|   -2.193|-2204.506|-2207.394|    41.16%|   0:00:00.0| 1326.8M|  max_view|  reg2reg| cs_register
+s_i/mcycle_counter_i/counter_q_reg[42]/ |
+|        |         |         |         |          |            |        |          |         | D
+                                        |
+|  -2.168|   -2.168|-2179.935|-2182.822|    41.16%|   0:00:01.0| 1326.8M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[663]/D |
+|  -1.990|   -1.990|-1940.885|-1943.772|    41.17%|   0:00:00.0| 1327.8M|  max_view|  reg2reg| cs_register
+s_i/mcycle_counter_i/counter_q_reg[22]/ |
+|        |         |         |         |          |            |        |          |         | D
+                                        |
+|  -1.939|   -1.939|-1859.082|-1861.835|    41.18%|   0:00:01.0| 1327.8M|  max_view|  reg2reg| cs_register
+s_i/minstret_counter_i/counter_q_reg[63 |
+|        |         |         |         |          |            |        |          |         | ]/D
+                                        |
+|  -1.913|   -1.913|-1823.716|-1826.391|    41.18%|   0:00:00.0| 1327.8M|  max_view|  reg2reg| cs_register
+s_i/minstret_counter_i/counter_q_reg[63 |
+|        |         |         |         |          |            |        |          |         | ]/D
+                                        |
+|  -1.863|   -1.863|-1758.230|-1760.756|    41.18%|   0:00:00.0| 1327.8M|  max_view|  reg2reg| cs_register
+s_i/minstret_counter_i/counter_q_reg[63 |
+|        |         |         |         |          |            |        |          |         | ]/D
+                                        |
+|  -1.795|   -1.795|-1708.251|-1710.704|    41.19%|   0:00:00.0| 1327.8M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[966]/D |
+|  -1.700|   -1.700|-1660.209|-1662.662|    41.19%|   0:00:01.0| 1327.8M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[124]/D |
+|  -1.659|   -1.659|-1655.043|-1657.496|    41.20%|   0:00:00.0| 1327.8M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[124]/D |
+|  -1.622|   -1.622| -893.302| -894.855|    41.20%|   0:00:01.0| 1327.8M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[124]/D |
+|  -1.540|   -1.540| -875.535| -877.088|    41.20%|   0:00:00.0| 1327.8M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[124]/D |
+|  -1.495|   -1.495| -865.753| -867.306|    41.20%|   0:00:00.0| 1327.8M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[124]/D |
+|  -1.456|   -1.456| -857.316| -858.869|    41.21%|   0:00:00.0| 1327.8M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[124]/D |
+|  -1.391|   -1.391| -843.323| -844.877|    41.21%|   0:00:00.0| 1327.8M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[124]/D |
+|  -1.322|   -1.322| -829.186| -830.739|    41.21%|   0:00:00.0| 1327.8M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[124]/D |
+|  -1.291|   -1.291| -827.716| -829.269|    41.22%|   0:00:01.0| 1327.8M|  max_view|  reg2reg| gen_regfile
+_ff.register_file_i/rf_reg_q_reg[862]/D |
+

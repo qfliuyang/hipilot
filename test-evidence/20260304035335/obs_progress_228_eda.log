@@ -1,0 +1,257 @@
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M1 is not defined in the cap table. Therefore, the
+LEF value 12.2 will be used instead. To avoid this message, update the relevant cap table to include the s
+heet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M2 is not defined in the cap table. Therefore, the
+LEF value 0.125 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M3 is not defined in the cap table. Therefore, the
+LEF value 0.125 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M4 is not defined in the cap table. Therefore, the
+LEF value 0.047 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M5 is not defined in the cap table. Therefore, the
+LEF value 0.047 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M6 is not defined in the cap table. Therefore, the
+LEF value 0.0285 will be used instead. To avoid this message, update the relevant cap table to include the
+ sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2773):	The via resistance between layers POLY and M1 could not be determined from the LEF
+ technology file because the via resistance specification is missing. A default of 4 Ohms will be used as
+via resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M1 and M2 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M2 and M3 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M3 and M4 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M4 and M5 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2773):	The via resistance between layers M5 and M6 could not be determined from the LEF t
+echnology file because the via resistance specification is missing. A default of 4 Ohms will be used as vi
+a resistance between these layers.
+Type 'man IMPEXT-2773' for more detail.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M1 is not defined in the cap table. Therefore, the
+LEF value 12.2 will be used instead. To avoid this message, update the relevant cap table to include the s
+heet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M2 is not defined in the cap table. Therefore, the
+LEF value 0.125 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M3 is not defined in the cap table. Therefore, the
+LEF value 0.125 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M4 is not defined in the cap table. Therefore, the
+LEF value 0.047 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M5 is not defined in the cap table. Therefore, the
+LEF value 0.047 will be used instead. To avoid this message, update the relevant cap table to include the
+sheet resistance for the specified layer and read it back in.
+**WARN: (IMPEXT-2766):	The sheet resistance for layer M6 is not defined in the cap table. Therefore, the
+LEF value 0.0285 will be used instead. To avoid this message, update the relevant cap table to include the
+ sheet resistance for the specified layer and read it back in.
+Summary of Active RC-Corners :
+
+ Analysis View: max_view
+    RC-Corner Name        : rc_max
+    RC-Corner Index       : 0
+    RC-Corner Temperature : 25 Celsius
+    RC-Corner Cap Table   : ''
+    RC-Corner PreRoute Res Factor         : 1.05
+    RC-Corner PreRoute Cap Factor         : 1.05
+    RC-Corner PostRoute Res Factor        : 1.05 {1.05 1 1}
+    RC-Corner PostRoute Cap Factor        : 1.05 {1.05 1 1}
+    RC-Corner PostRoute XCap Factor       : 1 {1 1 1}
+    RC-Corner PreRoute Clock Res Factor   : 1.05	[Derived from Cap Table]
+    RC-Corner PreRoute Clock Cap Factor   : 1.05	[Derived from Cap Table]
+    RC-Corner PostRoute Clock Cap Factor  : 1.05 {1.05 1 1} 	[Derived from postRoute_cap (effortLevel l
+ow)]
+    RC-Corner PostRoute Clock Res Factor  : 1.05 {1.05 1 1} 	[Derived from postRoute_res (effortLevel l
+ow)]
+
+ Analysis View: min_view
+    RC-Corner Name        : rc_min
+    RC-Corner Index       : 1
+    RC-Corner Temperature : 25 Celsius
+    RC-Corner Cap Table   : ''
+    RC-Corner PreRoute Res Factor         : 1
+    RC-Corner PreRoute Cap Factor         : 1
+    RC-Corner PostRoute Res Factor        : 1 {1 1 1}
+    RC-Corner PostRoute Cap Factor        : 1 {1 1 1}
+    RC-Corner PostRoute XCap Factor       : 1 {1 1 1}
+    RC-Corner PreRoute Clock Res Factor   : 1	[Derived from Cap Table]
+    RC-Corner PreRoute Clock Cap Factor   : 1	[Derived from Cap Table]
+    RC-Corner PostRoute Clock Cap Factor  : 1 {1 1 1} 	[Derived from postRoute_cap (effortLevel low)]
+    RC-Corner PostRoute Clock Res Factor  : 1 {1 1 1} 	[Derived from postRoute_res (effortLevel low)]
+Updating RC grid for preRoute extraction ...
+Initializing multi-corner resistance tables ...
+Loading rc congestion map /home/EDA/ibex_work_upload/result/pr/data/placement.enc.dat/ibex_core.congmap.gz
+ ...
+Start generating vias ..
+#Skip building auto via since it is not turned on.
+Extracting standard cell pins and blockage ......
+Pin and blockage extraction finished
+Via generation completed.
+% Begin Load power constraints ... (date=03/04 12:17:13, mem=732.4M)
+source /home/EDA/ibex_work_upload/result/pr/data/placement.enc.dat/ibex_core_power_constraints.tcl
+'set_default_switching_activity' finished successfully.
+% End Load power constraints ... (date=03/04 12:17:13, total cpu=0:00:00.0, real=0:00:01.0, peak res=738.9
+M, current mem=738.9M)
+% Begin load AAE data ... (date=03/04 12:17:14, mem=781.6M)
+**WARN: (IMPESI-3505):	setDelayCalMode -eng_copyNetPropToNewNet true (default=false) will be obsoleted al
+ong with its sgs2set equivalent.  This parameter will continue to be supported in the current release, but
+ will be removed in the next major release of the software.
+AAE DB initialization (MEM=915.703 CPU=0:00:00.0 REAL=0:00:00.0)
+% End load AAE data ... (date=03/04 12:17:14, total cpu=0:00:00.5, real=0:00:00.0, peak res=788.1M, curren
+t mem=788.1M)
+Total number of combinational cells: 329
+Total number of sequential cells: 68
+Total number of tristate cells: 13
+Total number of level shifter cells: 7
+Total number of power gating cells: 0
+Total number of isolation cells: 11
+Total number of power switch cells: 0
+Total number of pulse generator cells: 0
+Total number of always on buffers: 0
+Total number of retention cells: 0
+List of usable buffers: sky130_fd_sc_hd__buf_1 sky130_fd_sc_hd__buf_12 sky130_fd_sc_hd__buf_16 sky130_fd_s
+c_hd__buf_2 sky130_fd_sc_hd__buf_4 sky130_fd_sc_hd__buf_6 sky130_fd_sc_hd__buf_8 sky130_fd_sc_hd__clkbuf_1
+ sky130_fd_sc_hd__clkbuf_16 sky130_fd_sc_hd__clkbuf_2 sky130_fd_sc_hd__clkbuf_4 sky130_fd_sc_hd__clkbuf_8
+sky130_fd_sc_hd__dlymetal6s2s_1 sky130_fd_sc_hd__probe_p_8
+Total number of usable buffers: 14
+List of unusable buffers: sky130_fd_sc_hd__probec_p_8
+Total number of unusable buffers: 1
+List of usable inverters: sky130_fd_sc_hd__bufinv_16 sky130_fd_sc_hd__clkinv_1 sky130_fd_sc_hd__bufinv_8 s
+ky130_fd_sc_hd__clkinv_16 sky130_fd_sc_hd__clkinv_2 sky130_fd_sc_hd__clkinv_4 sky130_fd_sc_hd__clkinv_8 sk
+y130_fd_sc_hd__inv_1 sky130_fd_sc_hd__clkinvlp_2 sky130_fd_sc_hd__clkinvlp_4 sky130_fd_sc_hd__inv_12 sky13
+0_fd_sc_hd__inv_16 sky130_fd_sc_hd__inv_2 sky130_fd_sc_hd__inv_4 sky130_fd_sc_hd__inv_6 sky130_fd_sc_hd__i
+nv_8
+Total number of usable inverters: 16
+List of unusable inverters:
+Total number of unusable inverters: 0
+List of identified usable delay cells: sky130_fd_sc_hd__bufbuf_16 sky130_fd_sc_hd__bufbuf_8 sky130_fd_sc_h
+d__clkdlybuf4s15_1 sky130_fd_sc_hd__clkdlybuf4s15_2 sky130_fd_sc_hd__clkdlybuf4s18_1 sky130_fd_sc_hd__clkd
+lybuf4s18_2 sky130_fd_sc_hd__clkdlybuf4s25_1 sky130_fd_sc_hd__clkdlybuf4s50_1 sky130_fd_sc_hd__clkdlybuf4s
+25_2 sky130_fd_sc_hd__clkdlybuf4s50_2 sky130_fd_sc_hd__dlygate4sd2_1 sky130_fd_sc_hd__dlygate4sd1_1 sky130
+_fd_sc_hd__dlygate4sd3_1 sky130_fd_sc_hd__dlymetal6s6s_1 sky130_fd_sc_hd__dlymetal6s4s_1
+Total number of identified usable delay cells: 15
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+**WARN: (IMPCTE-107):	The following globals have been obsoleted since version 20.10-p004_1. They will be
+ removed in the next release.
+timing_enable_default_delay_arc
+#% End load design ... (date=03/04 12:17:14, total cpu=0:00:04.2, real=0:00:05.0, peak res=812.5M, current
+ mem=787.6M)
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary
+WARNING   IMPLF-200            4  Pin '%s' in macro '%s' has no ANTENNAGAT...
+WARNING   IMPLF-201            3  Pin '%s' in macro '%s' has no ANTENNADIF...
+WARNING   IMPLF-108            1  There is no overlap layer defined in any...
+WARNING   IMPFP-3961           2  The techSite '%s' has no related standar...
+WARNING   IMPEXT-2766         12  The sheet resistance for layer %s is not...
+WARNING   IMPEXT-2773         12  The via resistance between layers %s and...
+WARNING   IMPESI-3505          1  setDelayCalMode -eng_%s (default=%s) wil...
+WARNING   IMPOPT-3602          4  The specified path group name %s is not ...
+WARNING   IMPCTE-107           1  The following globals have been obsolete...
+WARNING   IMPPSP-1003          2  Found use of '%s'. This will continue to...
+WARNING   TECHLIB-302         12  No function defined for cell '%s'. The c...
+WARNING   TECHLIB-1161         1  The library level attribute %s on line %...
+*** Message Summary: 55 warning(s), 0 error(s)
+
+**WARN: (IMPOPT-3593):	The cell 0x1 is not defined in any library file. If you wish to use this cell plea
+se ensure a timing library file defining this cell is bound to each timing analysis-view.
+Type 'man IMPOPT-3593' for more detail.
+**WARN: (IMPOPT-3593):	The cell 0x2 is not defined in any library file. If you wish to use this cell plea
+se ensure a timing library file defining this cell is bound to each timing analysis-view.
+Type 'man IMPOPT-3593' for more detail.
+**WARN: (IMPOPT-3593):	The cell 0x3 is not defined in any library file. If you wish to use this cell plea
+se ensure a timing library file defining this cell is bound to each timing analysis-view.
+Type 'man IMPOPT-3593' for more detail.
+**WARN: (IMPOPT-3593):	The cell 0x4 is not defined in any library file. If you wish to use this cell plea
+se ensure a timing library file defining this cell is bound to each timing analysis-view.
+Type 'man IMPOPT-3593' for more detail.
+**WARN: (IMPOPT-3593):	The cell 0x5 is not defined in any library file. If you wish to use this cell plea
+se ensure a timing library file defining this cell is bound to each timing analysis-view.
+Type 'man IMPOPT-3593' for more detail.
+
+Usage: setNanoRouteMode [-help] [-reset] [-dbAdjustAutoViaWeight {true|false}]
+                        [-dbAllowInstanceOverlaps {true|false}] [-dbIgnoreFollowPinShape {true|false}]
+                        [-dbProcessNode <value>] [-dbRcExtractionCorner <value>]
+                        [-dbSkipAnalog {true|false}] [-dbViaWeight <value>]
+                        [-drouteAddPassiveFillOnlyOnLayers <value>] [-drouteAntennaEcoListFile <value>]
+                        [-drouteAutoStop {true|false}] [-drouteCheckMarOnCellPin {true|false}]
+                        [-drouteEndIteration <value>] [-drouteFixAntenna {true|false}]
+                        [-drouteMinLengthForWireSpreading <value>]
+                        [-drouteMinLengthForWireWidening <value>]
+                        [-drouteMinSlackForWireOptimization <value>] [-drouteNoTaperInLayers <value>]
+                        [-drouteNoTaperOnOutputPin <value>] [-drouteOnGridOnly <value>]
+                        [-droutePostRouteLithoRepair {true|false}] [-droutePostRouteSpreadWire <value>]
+                        [-droutePostRouteSwapVia <value>] [-droutePostRouteSwapViaPriority <value>]
+                        [-droutePostRouteViaPillarEffort <value>] [-droutePostRouteWidenWire <value>]
+                        [-droutePostRouteWidenWireRule <value>] [-drouteSearchAndRepair {true|false}]
+                        [-drouteSignOffEffort <value>] [-drouteUseMultiCutViaEffort <value>]
+                        [-envNumberFailLimit <value>] [-envNumberProcessor <value>]
+                        [-envNumberWarningLimit <value>] [-envThirdPartyData {true|false}]
+                        [-hfrouteConstraintGroups <value>] [-hfrouteMatchReportFile <value>]
+                        [-hfrouteNumReserveLayers <value>] [-hfrouteRemoveFloatingShield {true|false}]
+                        [-hfrouteSearchRepair <value>] [-hfrouteShieldTrimLength <value>]
+                        [-routeAddAntennaInstPrefix <value>]
+                        [-routeAllowPinAsFeedthrough {true|TRUE|false|FALSE|none|NONE|output|input|inout}]
+                        [-routeAntennaCellName <value>] [-routeConcurrentMinimizeViaCountEffort <value>]
+                        [-routeConnectToBump {true|false}] [-routeDesignFixClockNets {true|false}]
+                        [-routeDesignRouteClockNetsFirst {true|false}]
+                        [-routeEnableNdrSiLimitLength <value>] [-routeEnforceNdrOnSpecialNetWire <value>]
+                        [-routeExtraViaEnclosure <value>] [-routeHonorPowerDomain {true|false}]
+                        [-routeIgnoreAntennaTopCellPin {true|false}]
+                        [-routeInsertAntennaDiode {true|false}]
+                        [-routeInsertDiodeForClockNets {true|false}]
+                        [-routeRelaxedNdrSpacingToPGNets <value>]
+                        [-routeReserveSpaceForMultiCut {true|false}] [-routeReverseDirection <value>]
+                        [-routeSelectedNetOnly {true|false}] [-routeShieldCrosstieOffset <value>]
+                        [-routeStrictlyHonorNonDefaultRule <value>] [-routeStripeLayerRange <value>]
+                        [-routeTieNetToShape <value>] [-routeTrimPullBackDistanceFromBoundary <value>]
+                        [-routeTrunkWithClusterTargetSize <value>] [-routeUnconnectedPorts {true|false}]
+                        [-routeUseAutoVia <value>] [-routeWithEco {true|false}]
+                        [-routeWithLithoDriven {true|false}] [-routeWithSiDriven {true|false}]
+                        [-routeWithTimingDriven {true|false}] [-routeWithTrimMetal <value>]
+                        [-routeWithViaInPin <value>] [-routeWithViaOnlyForMacroCellPin <value>]
+                        [-routeWithViaOnlyForStandardCellPin <value>]
+
+**ERROR: (IMPTCM-48):	"-routeBottomRouting" is not a legal option for command "setNanoRouteMode". Either
+ the current option or an option prior to it is not specified correctly.
+
+innovus 2> source /tmp/hipilot-EDA/exec/hipilot_exec_1772597843168.tcl
+#% Begin load design ... (date=03/04 12:17:23, mem=788.2M)
+
+
+ERROR: **ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+
+**ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+    while executing
+"error $catchMsg"
+    (procedure "restoreDesign" line 31)
+
+**ERROR: (IMPIMEX-7031):	restoreDesign more than once in the same Innovus session is dangerous and
+not recommended. Some internal state of applications or global settings cannot be reset, so it's not relia
+ble enough in real flow. If you are just experimenting and/or debugging and accept the risks, you can set
+the global restore_db_stop_at_design_in_memory to 0 and try again.
+
+innovus 3>
