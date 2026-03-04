@@ -1,0 +1,40 @@
+[
+  {
+    "stage": "full_flow",
+    "scores": {
+      "L1_prompt_delivery": {
+        "score": 1,
+        "detail": "Claude responded to the command"
+      },
+      "L2_intent_recognition": {
+        "score": 1,
+        "detail": "Claude understood the task (mentions: design, innovus, flow, stage, placement, routing, cts)"
+      },
+      "L3_mcp_tool_usage": {
+        "score": 0,
+        "detail": "No MCP tool usage or EDA activity detected"
+      },
+      "L4_eda_execution": {
+        "score": 0,
+        "detail": "No significant EDA tool output"
+      },
+      "L5_qor_assessment": {
+        "score": 0.5,
+        "detail": "Partial QoR: WNS=0.606, TNS=N/A"
+      }
+    },
+    "total_score": 2.5,
+    "max_score": 5,
+    "status": "partial",
+    "failure_classification": {
+      "category": "ENVIRONMENT",
+      "summary": "MCP tools not available",
+      "action": "Check settings.json MCP server registration"
+    },
+    "mcp_calls_count": null,
+    "evidence_summary": {
+      "claude_output_lines": 50,
+      "eda_output_lines": 2
+    }
+  }
+]
