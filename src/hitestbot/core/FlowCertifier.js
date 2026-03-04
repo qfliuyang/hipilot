@@ -1036,8 +1036,38 @@ export class FlowCertifier {
     const found = mcpIndicators.filter(k => claudeOutput.includes(k));
     const edaHasActivity = edaOutput.includes('innovus') || edaOutput.includes('icc2') ||
       edaOutput.includes('source ') || edaOutput.includes('report_timing') || edaOutput.length > 500;
-    if (found.length >= 2 && edaHasActivity) return { score: 1.0, detail: `MCP tools used (${found.join(', ')}), EDA tool active` };
-    if (found.length >= 1 || edaHasActivity) return { score: 0.5, detail: `Partial: MCP(${found.join(',') || 'none'}), EDA(${edaHasActivity ? 'active' : 'idle'})` };
+
+    // For long-running flows, check MCP log file as additional evidence
+    // This handles cases where early MCP calls scrolled out of tmux buffer
+    let mcpLogEvidence = null;
+    try {
+      if (existsSync(this.mcpLogPath)) {
+        const mcpLog = readFileSync(this.mcpLogPath, 'utf-8');
+        const mcpCalls = mcpLog.split('\n').filter(line => line.includes('"tool"') && line.includes('"ok"'));
+        if (mcpCalls.length > 5) {
+          mcpLogEvidence = { count: mcpCalls.length, tools: [...new Set(mcpCalls.map(l => {
+            const match = l.match(/"tool":"([^"]+)"/);
+            return match ? match[1] : 'unknown';
+          }))].slice(0, 3) }; // Top 3 tools used
+        }
+      }
+    } catch (e) {
+      // MCP log check failed, fall back to pane-based scoring
+    }
+
+    // Scoring logic with MCP log fallback
+    if ((found.length >= 2 || (mcpLogEvidence && mcpLogEvidence.count >= 5)) && edaHasActivity) {
+      const detail = mcpLogEvidence
+        ? `MCP tools used (${mcpLogEvidence.count} calls: ${mcpLogEvidence.tools.join(', ')}), EDA tool active`
+        : `MCP tools used (${found.join(', ')}), EDA tool active`;
+      return { score: 1.0, detail };
+    }
+    if (found.length >= 1 || (mcpLogEvidence && mcpLogEvidence.count >= 1) || edaHasActivity) {
+      const mcpDetail = mcpLogEvidence
+        ? `MCP(${mcpLogEvidence.count} calls)`
+        : `MCP(${found.join(',') || 'none'})`;
+      return { score: 0.5, detail: `Partial: ${mcpDetail}, EDA(${edaHasActivity ? 'active' : 'idle'})` };
+    }
     if (claudeOutput.includes('tmux send-keys') || claudeOutput.includes('bash:')) return { score: 0.0, detail: 'Claude used direct bash/tmux instead of MCP tools' };
     return { score: 0.0, detail: 'No MCP tool usage or EDA activity detected' };
   }
@@ -1048,7 +1078,21 @@ export class FlowCertifier {
       if (pat.test(edaOutput)) return { score: 0.0, detail: `EDA error: ${edaOutput.match(pat)[0]}` };
     }
 
-    // Check for EDA tool prompt (strongest signal: tool ran and returned)
+    // Check for successful completion patterns (highest priority for long-running flows)
+    // These indicate the EDA tool completed its work successfully, even if it exited
+    const completionPatterns = [
+      /STAGE \d+ COMPLETE/i,
+      /GDS output.*complete/i,
+      /Ending "Innovus".*mem=/i,
+      /All stages completed successfully/i,
+      /streamOut.*completed/i,
+      /saveDesign.*completed/i,
+    ];
+    for (const pat of completionPatterns) {
+      if (pat.test(edaOutput)) return { score: 1.0, detail: 'EDA tool completed successfully' };
+    }
+
+    // Check for EDA tool prompt (strong signal: tool ran and returned)
     const promptPatterns = [/innovus\s*\d+>/i, /icc2_shell>/i, /pt_shell>/i];
     for (const pat of promptPatterns) {
       if (pat.test(edaOutput)) return { score: 1.0, detail: 'EDA tool ran and returned to prompt' };
@@ -1074,10 +1118,25 @@ export class FlowCertifier {
   }
 
   _scoreQoR(claudeOutput) {
+    // Standard format: "WNS: 0.136" or "WNS 0.136"
     const wnsMatch = claudeOutput.match(/WNS[:\s]*(-?[\d.]+)/i);
     const tnsMatch = claudeOutput.match(/TNS[:\s]*(-?[\d.]+)/i);
-    if (wnsMatch && tnsMatch) return { score: 1.0, detail: `QoR reported: WNS=${wnsMatch[1]}, TNS=${tnsMatch[1]}` };
-    if (wnsMatch || tnsMatch) return { score: 0.5, detail: `Partial QoR: WNS=${wnsMatch?.[1] ?? 'N/A'}, TNS=${tnsMatch?.[1] ?? 'N/A'}` };
+
+    // Table format: "│ WNS (Setup) │ +0.136 ns │" or "WNS (Setup) | +0.136"
+    const wnsTableMatch = claudeOutput.match(/WNS.*[│┃|]\s*([+-]?[\d.]+)\s*ns/i);
+    const tnsTableMatch = claudeOutput.match(/TNS.*[│┃|]\s*([+-]?[\d.]+)\s*ns/i);
+
+    // Parenthetical format: "WNS (Setup) +0.136" without table chars
+    const wnsParenMatch = claudeOutput.match(/WNS\s*\(\s*\w+\s*\)\s*([+-]?[\d.]+)/i);
+    const tnsParenMatch = claudeOutput.match(/TNS\s*\(\s*\w+\s*\)\s*([+-]?[\d.]+)/i);
+
+    // Extract values using first matching pattern
+    const wns = wnsMatch?.[1] || wnsTableMatch?.[1] || wnsParenMatch?.[1];
+    const tns = tnsMatch?.[1] || tnsTableMatch?.[1] || tnsParenMatch?.[1];
+
+    if (wns && tns) return { score: 1.0, detail: `QoR reported: WNS=${wns}, TNS=${tns}` };
+    if (wns || tns) return { score: 0.5, detail: `Partial QoR: WNS=${wns ?? 'N/A'}, TNS=${tns ?? 'N/A'}` };
+
     const metricsKeywords = ['timing', 'violation', 'slack', 'pass', 'fail', 'score'];
     const found = metricsKeywords.filter(k => claudeOutput.toLowerCase().includes(k));
     if (found.length >= 2) return { score: 0.5, detail: `Claude discussed metrics (${found.join(', ')}) but no WNS/TNS numbers` };
