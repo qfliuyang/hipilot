@@ -1,169 +1,397 @@
-# AI in ASIC: A Developer's Guide for Chip Designers
+# AI in ASIC: The Complete Developer's Guide
 
-> **Building AI Agents for Chip Design: Concepts, Architecture, and Development**
+> **Building Intelligent Agents for Chip Design: From Concept to Code**
 >
-> *You design complex silicon. Understanding AI development is simpler than you think.*
+> *A layered journey from silicon expertise to AI development*
 
 ---
 
 ## Table of Contents
 
-1. [The Agent Revolution: Why Hardware Engineers Must Understand AI](#chapter-1-the-agent-revolution)
-2. [Agent Architecture: The Three-Layer Model](#chapter-2-agent-architecture)
-3. [MCP: The Protocol That Makes AI Agents Work](#chapter-3-mcp)
-4. [Skills: Encoding Expertise as Agent Instructions](#chapter-4-skills)
-5. [The HiPilot Codebase: A Walkthrough](#chapter-5-codebase-walkthrough)
-6. [Development Patterns for ASIC Engineers](#chapter-6-development-patterns)
-7. [Building Your First Agent Extension](#chapter-7-building-extensions)
+1. [The Paradigm Shift: Why Agents, Why Now](#chapter-1-the-paradigm-shift)
+2. [The Coding Language of AI: JavaScript for Hardware Engineers](#chapter-2-javascript)
+3. [The Three-Layer Architecture Unveiled](#chapter-3-architecture)
+4. [MCP: The Protocol That Binds It All](#chapter-4-mcp)
+5. [Skills: Encoding RTL2GDS Expertise](#chapter-5-skills)
+6. [The HiPilot Codebase: A Complete Walkthrough](#chapter-6-codebase)
+7. [Building Your First Extension](#chapter-7-extension)
 
 ---
 
-## Chapter 1: The Agent Revolution
+## Chapter 1: The Paradigm Shift
 
-### What Are AI Agents?
+### From Scripts to Agents: A Historical Parallel
 
-An **AI Agent** is a system that:
-1. **Perceives** its environment (reads files, captures output, monitors state)
-2. **Decides** what to do (uses LLM reasoning to plan actions)
-3. **Acts** on its decisions (runs tools, executes commands, generates code)
-4. **Learns** from feedback (adjusts based on results)
+**1990s: The Dawn of ASIC Automation**
 
-**Think of it like an automated regression suite**—but instead of running fixed test vectors, it reasons about what tests to run based on what it discovers.
+Chip designers manually placed cells, routed wires, and checked timing by hand. Then synthesis tools emerged—*scripts* that automated the transformation from RTL to gates.
 
-### The Shift: From Scripts to Agents
-
-**Traditional EDA Automation (Scripts):**
 ```
-Fixed Flow: Step A → Step B → Step C → Report
-- Cannot adapt to errors
-- Hardcoded decisions
-- Brittle to changes
+Manual Design → Scripted Synthesis → Automated P&R
 ```
 
-**AI Agents (HiPilot):**
+**2020s: The Dawn of AI Agents**
+
+We stand at a similar inflection point. Traditional EDA scripts are giving way to **AI Agents**—systems that don't just execute predetermined steps, but *reason* about what steps to take based on context.
+
 ```
-Intelligent Flow: Observe → Reason → Act → Verify → Iterate
-- Adapts when tools fail
-- Makes decisions based on context
-- Self-correcting
+Fixed Scripts → Intelligent Agents → Autonomous Design
 ```
 
-### Why Hardware Engineers Are Uniquely Qualified
+### What Is an AI Agent?
 
-| Skill from ASIC Design | Translates To |
-|------------------------|---------------|
-| Understanding timing constraints | Defining agent success criteria |
-| Debugging DRC violations | Debugging agent behavior |
-| Writing Tcl/Perl scripts | Creating agent tools |
-| Knowledge of EDA tool quirks | Encoding expertise into agent logic |
-| Corner case analysis | Edge case handling in agents |
+An **AI Agent** is a computational entity that:
 
-**You already think in terms of state machines, timing diagrams, and verification. Agent development uses the same mental models.**
+1. **Perceives** its environment (reads output, monitors state, captures results)
+2. **Reasons** about what to do (uses LLM to plan actions)
+3. **Acts** through tools (executes commands, runs analyses)
+4. **Learns** from feedback (adapts based on outcomes)
+
+**Think of it as a senior engineer who:**
+- Reads the design state like you read a timing report
+- Decides next steps like you decide between useful skew and buffering
+- Executes through tools like you execute Tcl in Innovus
+- Adapts when things fail ( CTS skew too high? Try a different tree topology)
+
+### The RTL2GDS Example: Why It Matters
+
+The RTL-to-GDS flow is the perfect example because it embodies everything complex about chip design:
+
+- **Multi-stage:** 9+ distinct phases (synthesis, floorplan, placement, CTS, routing...)
+- **Interdependent:** Decisions in placement affect CTS; CTS affects routing
+- **Error-prone:** Each stage can fail in dozens of ways
+- **Context-dependent:** The right fix depends on the specific violation, technology, constraints
+
+**Traditional approach:** Write a monolithic script that runs all stages sequentially. When it fails at stage 5, you manually debug, fix, and restart from stage 4.
+
+**Agent approach:** An intelligent system that runs each stage, checks results, adapts to errors, and decides whether to proceed, retry, or try an alternative approach.
 
 ---
 
-## Chapter 2: Agent Architecture
+## Chapter 2: The Coding Language of AI
 
-### The Three-Layer Model
+### JavaScript: The Language of HiPilot
 
-Every AI agent system has three layers. Understanding this architecture is key to development.
+**Wait, JavaScript? Not Python? Not C++?**
 
+Yes, JavaScript. Here's why:
+
+1. **Node.js** allows JavaScript to run as a server (not just in browsers)
+2. **JSON** (JavaScript Object Notation) is the lingua franca of modern APIs
+3. **npm** has the largest ecosystem of open-source packages
+4. **MCP SDK** (Model Context Protocol) is written in JavaScript/TypeScript
+
+**But don't panic.** If you understand Tcl (which you do), JavaScript is surprisingly similar:
+
+| Concept | Tcl | JavaScript |
+|---------|-----|------------|
+| Variables | `set x 5` | `let x = 5;` |
+| Conditionals | `if {$x > 0} {puts "positive"}` | `if (x > 0) { console.log("positive"); }` |
+| Loops | `foreach item $list { ... }` | `for (let item of list) { ... }` |
+| Functions | `proc myFunc {arg} { return $arg }` | `function myFunc(arg) { return arg; }` |
+| Lists | `list 1 2 3` | `[1, 2, 3]` |
+| Dictionaries | `dict set obj key value` | `obj.key = value` or `obj[key] = value` |
+
+### JavaScript Crash Course for ASIC Engineers
+
+#### 2.1 Variables and Types
+
+```javascript
+// Numbers (like integer/float in Tcl)
+let utilization = 0.75;
+let cellCount = 15000;
+
+// Strings (like in Tcl)
+let designName = "ibex_core";
+let report = `Setup WNS: ${wns}ns`;  // Template string with interpolation
+
+// Booleans
+let isRouted = true;
+let hasViolations = false;
+
+// Arrays (like Tcl lists)
+let stages = ["synthesis", "floorplan", "placement", "cts", "routing"];
+let firstStage = stages[0];  // "synthesis"
+
+// Objects (like Tcl dicts, but more powerful)
+let timingReport = {
+    wns: -0.059,
+    tns: -0.921,
+    violatingPaths: 44,
+    isClean: false
+};
+
+// Access like dict
+let worstSlack = timingReport.wns;  // -0.059
+let totalSlack = timingReport["tns"];  // -0.921
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  LAYER 3: ORCHESTRATION (The Brain)                            │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  Large Language Model (Claude)                          │   │
-│  │  - Interprets user intent                               │   │
-│  │  - Plans sequences of actions                           │   │
-│  │  - Reasons about tool outputs                           │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                          │                                      │
-│  Uses: Skills, Templates, Context                              │
-└──────────────────────────┼──────────────────────────────────────┘
-                           │ MCP Protocol (JSON-RPC)
-┌──────────────────────────┼──────────────────────────────────────┐
-│  LAYER 2: PROTOCOL (The Nervous System)                        │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  MCP Server (Node.js)                                   │   │
-│  │  - Receives structured requests                         │   │
-│  │  - Manages tool execution                               │   │
-│  │  - Returns structured responses                         │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                          │                                      │
-│  Transforms: Intent → Action                                   │
-└──────────────────────────┼──────────────────────────────────────┘
-                           │ System Calls / tmux
-┌──────────────────────────┼──────────────────────────────────────┐
-│  LAYER 1: EXECUTION (The Hands)                                │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  EDA Tools (Innovus, ICC2, PrimeTime)                   │   │
-│  │  - Execute Tcl commands                                 │   │
-│  │  - Generate reports                                     │   │
-│  │  - Return output                                        │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                          │                                      │
-│  Produces: Results, QoR, Files                                 │
-└─────────────────────────────────────────────────────────────────┘
+
+#### 2.2 Functions
+
+```javascript
+// Basic function (like Tcl proc)
+function calculateDensity(area, totalArea) {
+    return area / totalArea;
+}
+
+// Function with default parameter
+function reportTiming(maxPaths = 10, pathType = "summary") {
+    return `Reporting ${maxPaths} paths as ${pathType}`;
+}
+
+// Arrow function (shorter syntax, commonly used)
+const isTimingClean = (wns) => wns >= 0;
+
+// Async function (critical for AI agents - handles waiting)
+async function runPlacement(timeoutSeconds) {
+    console.log("Starting placement...");
+    // Wait for placement to complete
+    await sleep(timeoutSeconds * 1000);
+    console.log("Placement complete!");
+    return { status: "success", density: 0.75 };
+}
 ```
 
-### Layer 1: Execution (You Know This)
+#### 2.3 Control Flow
 
-This is the EDA tools you use daily. No new concepts here.
+```javascript
+// If/else (like Tcl if)
+if (wns < 0) {
+    console.log("Setup violation detected");
+    runOptimization();
+} else if (wns < 0.010) {
+    console.log("Close to target, minor tweaks needed");
+} else {
+    console.log("Timing clean!");
+}
 
-```tcl
-# Layer 1: Standard EDA Tcl
-report_timing -max_paths 10 -outfile timing.rpt
+// Switch (like Tcl switch)
+switch (stage) {
+    case "placement":
+        runPlacement();
+        break;
+    case "cts":
+        runCTS();
+        break;
+    case "routing":
+        runRouting();
+        break;
+    default:
+        console.log("Unknown stage");
+}
+
+// For loop (like Tcl for/foreach)
+for (let i = 0; i < stages.length; i++) {
+    console.log(`Stage ${i}: ${stages[i]}`);
+}
+
+// For-of loop (like Tcl foreach)
+for (let stage of stages) {
+    console.log(`Running ${stage}...`);
+}
+
+// While loop (process until done)
+while (hasViolations) {
+    fixViolations();
+    hasViolations = checkViolations();
+}
 ```
 
-### Layer 2: Protocol (The New Concept)
+#### 2.4 Working with Data (Arrays and Objects)
 
-**MCP** is the bridge. It translates between:
-- **Natural language intent** ("check timing")
-- **Structured tool calls** (`{"tool": "eda.execute_and_verify", "params": {...}}`)
-- **System commands** (`tmux send-keys`, file I/O)
+```javascript
+// Array operations (like Tcl list operations)
+let violations = [
+    { path: "reg1_to_reg2", slack: -0.050 },
+    { path: "reg3_to_reg4", slack: -0.120 },
+    { path: "reg5_to_reg6", slack: -0.030 }
+];
 
-**Key Insight:** MCP is like a standardized API layer. Without it, every AI would need custom code for every tool.
+// Filter: Get only critical violations
+let critical = violations.filter(v => v.slack < -0.100);
+// Result: [{ path: "reg3_to_reg4", slack: -0.120 }]
 
-### Layer 3: Orchestration (The Intelligence)
+// Map: Extract just the path names
+let paths = violations.map(v => v.path);
+// Result: ["reg1_to_reg2", "reg3_to_reg4", "reg5_to_reg6"]
 
-The LLM (Claude) acts as the orchestrator. It:
-1. Reads skills (your documented expertise)
-2. Plans multi-step workflows
-3. Decides which tools to call
-4. Interprets results and adapts
+// Find: Get first violation matching condition
+let worst = violations.find(v => v.slack < -0.100);
+// Result: { path: "reg3_to_reg4", slack: -0.120 }
+
+// Reduce: Sum all negative slack (TNS calculation)
+let tns = violations.reduce((sum, v) => sum + v.slack, 0);
+// Result: -0.200
+```
+
+#### 2.5 Asynchronous Programming (The Key Concept)
+
+**This is crucial for AI agents.** EDA tools take time. You can't just wait synchronously—you need to handle asynchronous operations.
+
+```javascript
+// Promise: A value that will exist in the future
+const placementPromise = new Promise((resolve, reject) => {
+    // Start placement
+    runInnovus("place_opt_design");
+
+    // When placement finishes, resolve the promise
+    setTimeout(() => {
+        if (placementSucceeded) {
+            resolve({ density: 0.75, status: "success" });
+        } else {
+            reject(new Error("Placement failed"));
+        }
+    }, 60000);  // 60 seconds
+});
+
+// Using async/await (cleaner syntax)
+async function runRTL2GDS() {
+    try {
+        // Each 'await' pauses execution until the promise resolves
+        await runSynthesis();
+        await runFloorplan();
+        await runPlacement();
+        await runCTS();
+        await runRouting();
+        await exportGDS();
+
+        console.log("RTL2GDS complete!");
+    } catch (error) {
+        console.error("Flow failed:", error.message);
+    }
+}
+```
+
+#### 2.6 Modules and Imports
+
+```javascript
+// Import built-in modules (like Tcl 'package require')
+import { readFileSync, writeFileSync } from 'fs';
+import { join } from 'path';
+import { execSync } from 'child_process';
+
+// Import from local files
+import { FlowCertifier } from './src/hitestbot/core/FlowCertifier.js';
+
+// Import from npm packages
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+```
 
 ---
 
-## Chapter 3: MCP Deep Dive
+## Chapter 3: The Three-Layer Architecture
 
-### Why MCP Exists
+### The Architecture of Intelligence
 
-**The Problem:** Every AI assistant needs to interact with external tools. Without a standard:
+Every AI agent system—from HiPilot to ChatGPT plugins—follows a three-layer architecture. Understanding these layers is essential for development.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  LAYER 3: ORCHESTRATION                                             │
+│  "The Brain" - Decides what to do                                   │
+├─────────────────────────────────────────────────────────────────────┤
+│  • Large Language Model (Claude)                                    │
+│  • Interprets user intent ("run rtl2gds")                           │
+│  • Plans multi-step workflows                                       │
+│  • Reads skills (your expertise)                                    │
+│  • Decides which tools to call                                      │
+│  • Reasons about results                                            │
+└─────────────────────────────────────────────────────────────────────┘
+                              │
+                              │ MCP Protocol (JSON-RPC)
+                              ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│  LAYER 2: PROTOCOL                                                  │
+│  "The Nervous System" - Transmits and translates                    │
+├─────────────────────────────────────────────────────────────────────┤
+│  • MCP Server (Node.js process)                                     │
+│  • Receives structured requests                                     │
+│  • Validates parameters against schemas                             │
+│  • Manages tool execution lifecycle                                 │
+│  • Returns structured responses                                     │
+│  • Handles errors and retries                                       │
+└─────────────────────────────────────────────────────────────────────┘
+                              │
+                              │ System Calls (tmux, filesystem)
+                              ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│  LAYER 1: EXECUTION                                                 │
+│  "The Hands" - Does the actual work                                 │
+├─────────────────────────────────────────────────────────────────────┤
+│  • EDA Tools (Innovus, ICC2, PrimeTime)                             │
+│  • Executes Tcl commands                                            │
+│  • Generates reports and data files                                 │
+│  • Returns raw output                                               │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Layer 3: Orchestration (The RTL2GDS Intelligence)
+
+When you type `/rtl2gds` in HiPilot, here's what happens at Layer 3:
+
+```
+User: "/rtl2gds"
+    │
+    ▼
+Claude reads the command
+    │
+    ▼
+Claude loads the skill: skills/ibex-rtl2gds-flow.md
+    │
+    ▼
+Claude creates a plan:
+    Stage 1: Design Init → Stage 2: Floorplan → Stage 3: Power Planning
+    → Stage 4: Placement → Stage 5: CTS → Stage 6: Post-CTS Opt
+    → Stage 7: Routing → Stage 8: Route Opt → Stage 9: Chip Finish
+    │
+    ▼
+For each stage:
+    1. Load stage-specific Tcl from skill
+    2. Call MCP to execute
+    3. Wait for completion
+    4. Check results (QoR, errors)
+    5. If error → diagnose and retry
+    6. If success → save checkpoint, proceed to next stage
+    │
+    ▼
+Report final results with WNS/TNS
+```
+
+**The key insight:** Claude doesn't just run commands—it maintains state, makes decisions, and adapts. Like you would.
+
+### Layer 2: Protocol (The MCP Reality)
+
+**What is MCP and why does it exist?**
+
+MCP (Model Context Protocol) is a standardized way for AI systems to interact with external tools. Without MCP:
 - Every tool needs custom integration code
 - Security is inconsistent
 - Context management is ad-hoc
+- Tool discovery is impossible
 
-**The Solution:** Model Context Protocol (MCP)
-- Standardized communication
-- Secure sandboxing
-- Structured inputs/outputs
-- Tool discovery
+**With MCP:**
+- Standard JSON-RPC communication
+- Structured tool schemas
+- Built-in error handling
+- Automatic tool discovery
 
-### MCP Architecture
+### Layer 1: Execution (The EDA Tools)
 
-```
-┌─────────────┐     JSON-RPC      ┌─────────────┐     System Calls    ┌─────────────┐
-│   Claude    │ ◄────────────────► │  MCP Server │ ◄──────────────────► │  EDA Tool   │
-│   (Client)  │    stdin/stdout    │  (Bridge)   │    tmux/process     │  (Target)   │
-└─────────────┘                    └─────────────┘                     └─────────────┘
-```
+This is your domain. Innovus, ICC2, PrimeTime—these are the tools that do the actual work. The agent doesn't replace them; it orchestrates them.
 
-**Critical Concept:** MCP servers are **child processes** of Claude. They communicate over stdin/stdout using JSON-RPC—not network sockets.
+---
 
-### MCP Message Flow
+## Chapter 4: MCP Deep Dive
 
-**1. Tool Discovery (Initialization)**
+### MCP in the RTL2GDS Context
 
+Let's trace a single MCP call through the RTL2GDS flow: executing Stage 4 (Placement).
+
+#### Step 1: Tool Discovery
+
+When Claude starts, it asks the MCP server: *"What tools do you have?"*
+
+**Request (from Claude to MCP):**
 ```json
 {
   "jsonrpc": "2.0",
@@ -173,7 +401,7 @@ The LLM (Claude) acts as the orchestrator. It:
 }
 ```
 
-Response:
+**Response (from MCP to Claude):**
 ```json
 {
   "jsonrpc": "2.0",
@@ -181,13 +409,59 @@ Response:
   "result": {
     "tools": [
       {
+        "name": "eda.detect_tool",
+        "description": "Check if EDA tool is running in the target pane",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
         "name": "eda.execute_and_verify",
         "description": "Execute Tcl in EDA tool and verify success",
         "inputSchema": {
           "type": "object",
           "properties": {
-            "tcl": {"type": "string"},
-            "timeout": {"type": "number"}
+            "tcl": {
+              "type": "string",
+              "description": "Tcl commands to execute"
+            },
+            "description": {
+              "type": "string",
+              "description": "What this execution does (for logging)"
+            },
+            "timeout": {
+              "type": "number",
+              "description": "Timeout in seconds (default: 60)"
+            }
+          },
+          "required": ["tcl"]
+        }
+      },
+      {
+        "name": "eda.diagnose_error",
+        "description": "Analyze EDA error output and suggest fixes",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "output": {
+              "type": "string",
+              "description": "Error output from EDA tool"
+            }
+          },
+          "required": ["output"]
+        }
+      },
+      {
+        "name": "qor.snapshot",
+        "description": "Save timing metrics for comparison",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Snapshot identifier"
+            }
           }
         }
       }
@@ -196,8 +470,11 @@ Response:
 }
 ```
 
-**2. Tool Invocation**
+#### Step 2: Tool Invocation (Running Placement)
 
+Claude decides to run placement. It constructs the Tcl and calls the MCP tool.
+
+**Request:**
 ```json
 {
   "jsonrpc": "2.0",
@@ -206,421 +483,594 @@ Response:
   "params": {
     "name": "eda.execute_and_verify",
     "arguments": {
-      "tcl": "report_timing -max_paths 10",
-      "timeout": 60
+      "tcl": "# Stage 4: Placement\nsource /home/EDA/ibex_work_upload/result/pr/data/floor_plan.enc\nplace_opt_design\nsetPlaceMode -place_detail_opt true\nplaceDesign\nsaveDesign result/pr/data/placement.enc\nputs \"PLACEMENT_COMPLETE\"",
+      "description": "Stage 4 Placement: place_opt_design",
+      "timeout": 300
     }
   }
 }
 ```
 
-Response:
+#### Step 3: MCP Server Processing
+
+The MCP server receives this request and:
+
+1. Validates the parameters against the schema
+2. Writes the Tcl to a temporary file
+3. Sends it to the EDA pane via tmux
+4. Monitors for completion
+5. Captures the output
+6. Checks for errors
+7. Extracts QoR metrics
+
+**What happens inside the server:**
+```javascript
+async function handleExecuteAndVerify(args) {
+    const { tcl, description, timeout = 60 } = args;
+
+    // 1. Write Tcl to temp file
+    const tmpFile = `/tmp/hipilot/placement_${Date.now()}.tcl`;
+    await writeFile(tmpFile, tcl);
+
+    // 2. Send to Innovus via tmux
+    execSync(`tmux -L hipilot send-keys -t hipilot:0.1 "source ${tmpFile}" C-m`);
+
+    // 3. Poll for completion
+    const startTime = Date.now();
+    while (Date.now() - startTime < timeout * 1000) {
+        const output = execSync('tmux -L hipilot capture-pane -p -t hipilot:0.1');
+
+        if (output.includes('PLACEMENT_COMPLETE')) {
+            // Execution finished
+            const errors = extractErrors(output);
+            const qor = extractQoR(output);
+
+            return {
+                content: [{ type: 'text', text: output }],
+                isError: errors.length > 0,
+                result: {
+                    status: errors.length > 0 ? 'error' : 'success',
+                    errors,
+                    qor
+                }
+            };
+        }
+
+        await sleep(1000);  // Wait 1 second before checking again
+    }
+
+    // Timeout
+    return {
+        isError: true,
+        content: [{ type: 'text', text: 'Placement timed out' }]
+    };
+}
+```
+
+#### Step 4: Response to Claude
+
+**Response:**
 ```json
 {
   "jsonrpc": "2.0",
   "id": 2,
   "result": {
     "content": [
-      {"type": "text", "text": "Setup WNS: -0.059ns"}
+      {
+        "type": "text",
+        "text": "... (full Innovus output) ..."
+      }
     ],
-    "isError": false
+    "isError": false,
+    "result": {
+      "status": "success",
+      "errors": [],
+      "qor": {
+        "wns": -0.123,
+        "tns": -2.456,
+        "violatingPaths": 15
+      }
+    }
   }
 }
 ```
 
-### MCP Server Structure (Code Walkthrough)
+#### Step 5: Claude's Decision
 
-Here's how an MCP server actually works:
+Claude sees:
+- Status: success
+- WNS: -0.123ns (negative, but acceptable)
+- Violating paths: 15
+
+It decides: *"Placement succeeded. WNS is -0.123ns with 15 violations. This is acceptable to proceed to CTS. I'll save a QoR snapshot and continue."*
+
+**Next MCP call:**
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "qor.snapshot",
+    "arguments": {
+      "name": "after_placement",
+      "description": "Post-placement timing before CTS"
+    }
+  }
+}
+```
+
+### Why This Architecture Matters
+
+**Separation of Concerns:**
+- Claude (Layer 3) focuses on *what* to do and *why*
+- MCP (Layer 2) focuses on *how* to communicate
+- EDA tools (Layer 1) focus on *doing* the work
+
+**Testability:**
+- You can test the MCP server independently
+- You can test Claude's reasoning with mock MCP responses
+- You can test EDA tools the traditional way
+
+**Extensibility:**
+- Add new tools to MCP without changing Claude
+- Improve Claude's reasoning without touching MCP
+- Swap EDA tools (Innovus ↔ ICC2) without changing layers 2-3
+
+---
+
+## Chapter 5: Skills—Encoding RTL2GDS Expertise
+
+### What Is a Skill?
+
+A **skill** is your expertise written in a format that an AI can follow. It's not code—it's a structured methodology.
+
+**Analogy:**
+- A skill is like the **training manual** you write for a new college hire
+- It explains *what* to do, *why* to do it, and *what to do when things go wrong*
+- The AI reads it and follows your methodology
+
+### Anatomy of a Production Skill
+
+Here's the actual `rtl2gds.md` skill used by HiPilot:
+
+```markdown
+---
+name: /rtl2gds
+description: >
+  Run the complete Innovus RTL-to-GDS flow for the Ibex design.
+  You drive each stage yourself using MCP tools.
+---
+
+# RTL-to-GDS Flow
+
+## Overview
+
+This skill orchestrates a complete 9-stage RTL-to-GDS implementation:
+1. Design Init + MMMC
+2. Floorplan
+3. Power Planning
+4. Placement
+5. Clock Tree Synthesis
+6. Post-CTS Optimization
+7. Routing
+8. Post-Route Optimization
+9. Chip Finish + GDS Export
+
+Each stage is executed independently for clean database management.
+
+## Critical Rule
+
+**Do NOT call `workflow.run` or `eda.rtl2gds.run_full_flow`.**
+You orchestrate every stage yourself. If a stage fails, you diagnose and fix it.
+Batch executors bypass your intelligence—don't use them.
+
+## Stage Execution Pattern
+
+For each stage, follow this exact sequence:
+
+1. **Get the Tcl:** Load the skill to get stage-specific Tcl
+2. **Execute:** Call `eda.execute_and_verify` with the complete Tcl block
+3. **Check Result:** Read the response (status, errors, warnings, qor)
+4. **Handle Errors:** If errors, call `eda.diagnose_error` and retry
+5. **If Success:** Call `qor.snapshot` with a descriptive name
+6. **Report:** Tell the engineer: "Stage X: done. WNS=Y, violations=Z"
+7. **Proceed:** Only continue when current stage succeeds
+
+## The 10 Stages
+
+| # | Stage | Tool | Timeout | Key Checks |
+|---|-------|------|---------|------------|
+| 0 | Synthesis + DFT | dc_shell | 300s | Check netlist exists |
+| 1 | Design Init + MMMC | innovus | 180s | MMMC views active |
+| 2 | Floorplan | innovus | 120s | Die area, IO placement |
+| 3 | Power Planning | innovus | 120s | VDD/VSS stripes |
+| 4 | Placement | innovus | 300s | WNS after placement |
+| 5 | CTS | innovus | 300s | Skew target met |
+| 6 | Post-CTS Opt | innovus | 300s | Setup/hold clean |
+| 7 | Routing | innovus | 600s | DRC clean |
+| 8 | Route Opt | innovus | 300s | Post-route timing |
+| 9 | Chip Finish + GDS | innovus | 300s | GDS exported |
+
+## Error Recovery Protocol
+
+When a stage fails, follow this priority:
+
+1. **First failure:** Diagnose with `eda.diagnose_error`, fix, retry immediately
+2. **Second failure:** Try alternative approach (different Tcl options)
+3. **Third failure:** Take detailed notes, try creative solution
+4. **Only then:** Report to engineer with full history
+
+### Example: Placement Failure Recovery
+
+```
+Stage: Placement
+Result: FAILED - High congestion at 80% utilization
+
+Action:
+1. session.add_note({category:"error",
+     content:"Placement failed, high congestion at 80% utilization"})
+2. Fix: Adjust utilization to 70% with setPlaceMode
+3. Retry: PLACEMENT SUCCEEDED
+4. Continue to CTS
+```
+
+## Final QoR Summary (REQUIRED)
+
+After Stage 9, you MUST extract and display final timing metrics.
+
+**Step 1:** Run timing extraction
+```
+mcp__hipilot-eda__eda.execute_and_verify({
+  tcl: "timeDesign -postRoute -prefix final_summary...",
+  description: "Extract final timing metrics",
+  timeout: 120
+})
+```
+
+**Step 2:** Save snapshot
+```
+mcp__hipilot-eda__qor.snapshot({
+  name: "rtl2gds_final",
+  description: "Final QoR after complete RTL-to-GDS flow"
+})
+```
+
+**Step 3:** Report to engineer with EXPLICIT numbers
+
+Format:
+```
+✅ RTL-to-GDS Flow Complete!
+
+Final QoR Summary:
+┌──────────────────┬──────────────────────────────┐
+│ Metric           │ Value                        │
+├──────────────────┼──────────────────────────────┤
+│ WNS (Setup)      │ X.XXX ns    ← REQUIRED       │
+│ TNS (Setup)      │ X.XXX ns    ← REQUIRED       │
+│ Setup Violations │ N paths     ← REQUIRED       │
+│ Hold Violations  │ N paths                      │
+│ GDS              │ result/pr/data/ibex_core.gds │
+└──────────────────┴──────────────────────────────┘
+```
+
+**CRITICAL:** You MUST include actual WNS and TNS numbers.
+Do not say "flow complete" without showing timing metrics.
+```
+
+### Deep Concept: Skills as State Machines
+
+A skill implicitly defines a state machine. For RTL2GDS:
+
+```
+[INITIAL]
+    │
+    ▼ (Load skill, detect tool)
+[TOOL_READY]
+    │
+    ▼ (Execute Stage 1)
+[STAGE_1_RUNNING]
+    │
+    ├── Error ──► [DIAGNOSE_ERROR] ──► [STAGE_1_RUNNING] (retry)
+    │
+    └── Success ──► [STAGE_1_COMPLETE]
+                    │
+                    ▼ (Save checkpoint)
+              [STAGE_2_RUNNING]
+                    │
+                    ... (repeat for all stages)
+                    │
+                    ▼
+              [ALL_STAGES_COMPLETE]
+                    │
+                    ▼ (Extract QoR)
+              [REPORTING]
+                    │
+                    ▼
+              [COMPLETE]
+```
+
+Each state transition is a decision point. The skill tells the AI:
+- What to check at each state
+- What to do on success
+- How to handle errors
+- When to stop and ask for help
+
+### Skill Design Principles
+
+**1. Explicit Decision Points**
+
+Don't say: *"Fix timing issues"*
+Say: *"If WNS < -0.100ns, use useful skew. If -0.100ns ≤ WNS < 0, use cell sizing. If WNS ≥ 0, proceed to next stage."*
+
+**2. Error Recovery Paths**
+
+Every error should have a documented recovery strategy:
+
+```markdown
+## Common Errors
+
+### Error: "High congestion during placement"
+**Cause:** Target utilization too high
+**Fix:**
+1. Reduce target utilization: `setPlaceMode -place_detail_utilization 0.70`
+2. Retry placement
+3. If still failing, consider macro placement adjustment
+
+### Error: "Clock tree synthesis failed"
+**Cause:** Unrealistic skew target
+**Fix:**
+1. Relax skew target: `setCTSMode -target_skew 0.200`
+2. Check clock root constraints
+```
+
+**3. Verification Checkpoints**
+
+Every major action should have a verification step:
+
+```markdown
+### After Placement
+
+Verify:
+- [ ] Placement completed without errors
+- [ ] Utilization < 85%
+- [ ] Congestion map acceptable
+- [ ] WNS recorded (even if negative)
+- [ ] Checkpoint saved
+```
+
+---
+
+## Chapter 6: The HiPilot Codebase—Complete Walkthrough
+
+### Project Structure
+
+```
+hipilot/
+├── bin/hipilot                    # Entry point bash script
+│
+├── servers/                       # LAYER 2: MCP Protocol
+│   ├── eda/index.js              # EDA tool MCP server (57 tools)
+│   ├── tmux/index.js             # Tmux pane MCP server (8 tools)
+│   └── knowledge/index.js        # Skills/knowledge MCP server (7 tools)
+│
+├── skills/                        # LAYER 3: Agent Instructions
+│   ├── ibex-rtl2gds-flow.md      # Main RTL2GDS skill
+│   ├── fix-setup-timing.md       # Timing closure skill
+│   ├── cts-clock-tree.md         # CTS skill
+│   └── ... (36 skills total)
+│
+├── templates/                     # Tcl generation
+│   ├── cadence/                  # Innovus templates (11)
+│   └── synopsys/                 # ICC2 templates (11)
+│
+├── src/
+│   ├── hitestbot/                # Testing framework
+│   │   └── core/
+│   │       ├── FlowCertifier.js  # Virtual human tester
+│   │       ├── FlowReporter.js   # Report generation
+│   │       └── ObservationPoint.js # Evidence capture
+│   │
+│   ├── lib/                      # Shared utilities
+│   │   ├── paths.js             # Path resolution
+│   │   ├── mode.js              # Manual/auto mode
+│   │   └── mcp-logger.js        # MCP call logging
+│   │
+│   └── cli.js                    # TUI dashboard
+│
+└── deploy/eda-server/            # Deployment to EDA server
+    ├── CLAUDE.md                 # AI identity (HiPilot's "constitution")
+    └── .claude/commands/         # Slash commands
+        └── rtl2gds.md            # The /rtl2gds command
+```
+
+### The EDA MCP Server (servers/eda/index.js)
+
+This is the heart of Layer 2. Let's walk through the key components:
+
+#### 1. Tool Registration
 
 ```javascript
-// servers/eda/index.js - Simplified Core
+// servers/eda/index.js - Lines 1-100 (simplified)
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { execSync } from 'child_process';
+import { writeFileSync, readFileSync } from 'fs';
+import { join } from 'path';
 
-// 1. Define available tools
+// Tool definitions with schemas
 const TOOLS = [
   {
     name: 'eda.execute_and_verify',
-    description: 'Execute Tcl and check for errors',
+    description: 'Execute Tcl in EDA tool and verify success',
     inputSchema: {
       type: 'object',
       properties: {
-        tcl: { type: 'string', description: 'Tcl commands to execute' },
-        timeout: { type: 'number', description: 'Timeout in seconds' }
+        tcl: {
+          type: 'string',
+          description: 'Tcl commands to execute in the EDA tool'
+        },
+        description: {
+          type: 'string',
+          description: 'Human-readable description of what this does'
+        },
+        timeout: {
+          type: 'number',
+          description: 'Timeout in seconds (default: 60)',
+          default: 60
+        }
       },
       required: ['tcl']
     }
   },
   {
     name: 'eda.detect_tool',
-    description: 'Check if EDA tool is running',
-    inputSchema: { type: 'object', properties: {} }
+    description: 'Detect which EDA tool is running (if any)',
+    inputSchema: {
+      type: 'object',
+      properties: {}
+    }
+  },
+  {
+    name: 'eda.diagnose_error',
+    description: 'Analyze EDA error output and suggest fixes',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        output: {
+          type: 'string',
+          description: 'Error output from EDA tool'
+        }
+      },
+      required: ['output']
+    }
   }
 ];
+```
 
-// 2. Create server instance
+#### 2. Server Initialization
+
+```javascript
+// servers/eda/index.js - Lines 100-150
+
+// Create MCP server instance
 const server = new Server(
-  { name: 'hipilot-eda', version: '0.7.0' },
-  { capabilities: { tools: {} } }
+  {
+    name: 'hipilot-eda',
+    version: '0.7.0'
+  },
+  {
+    capabilities: {
+      tools: {}  // We provide tools
+    }
+  }
 );
 
-// 3. Handle tool list requests
-server.setRequestHandler('tools/list', async () => ({
-  tools: TOOLS
-}));
+// Set up request handlers
+server.setRequestHandler('tools/list', async () => {
+  return { tools: TOOLS };
+});
+```
 
-// 4. Handle tool execution
+#### 3. The Core: execute_and_verify
+
+```javascript
+// servers/eda/index.js - Lines 150-250
+
 server.setRequestHandler('tools/call', async (request) => {
   const { name, arguments: args } = request.params;
 
   switch (name) {
     case 'eda.execute_and_verify':
-      return await executeTcl(args.tcl, args.timeout);
+      return await executeAndVerify(args);
     case 'eda.detect_tool':
-      return await detectRunningTool();
+      return await detectTool();
+    case 'eda.diagnose_error':
+      return await diagnoseError(args.output);
     default:
       throw new Error(`Unknown tool: ${name}`);
   }
 });
 
-// 5. Execute Tcl (Layer 1 interaction)
-async function executeTcl(tcl, timeout) {
-  // Write Tcl to temp file
-  const tmpFile = `/tmp/hipilot_${Date.now()}.tcl`;
-  await writeFile(tmpFile, tcl);
-
-  // Send to tmux (EDA pane)
-  execSync(`tmux -L hipilot send-keys -t hipilot:0.1 "source ${tmpFile}" C-m`);
-
-  // Wait and capture output
-  await sleep(timeout * 1000);
-  const output = execSync('tmux -L hipilot capture-pane -p -t hipilot:0.1');
-
-  // Check for errors
-  const hasError = /\*\*ERROR/i.test(output);
-
-  return {
-    content: [{ type: 'text', text: output }],
-    isError: hasError
-  };
-}
-
-// 6. Start listening on stdin
-const transport = new StdioServerTransport();
-await server.connect(transport);
-```
-
-**Key Takeaways:**
-- Tools are registered in a list with schemas
-- Claude calls them by name with arguments
-- Server handles the messy system-level work
-- Response goes back as structured JSON
-
----
-
-## Chapter 4: Skills Deep Dive
-
-### What Skills Really Are
-
-**Skills are not code.** Skills are **structured expertise** that the LLM reads and follows.
-
-**Analogy:**
-- A skill is like a **detailed runbook** you write for a new hire
-- The new hire (AI) reads it and follows the steps
-- If something goes wrong, they refer to the troubleshooting section
-
-### Skill as State Machine
-
-A skill implicitly defines a state machine:
-
-```
-[Start]
-   │
-   ▼
-[Check Prerequisites] ──No──► [Report Error]
-   │                            │
-  Yes                           ▼
-   │                         [End]
-   ▼
-[Step 1: Analyze]
-   │
-   ▼
-[Step 2: Execute Fix] ◄──────► [Handle Errors]
-   │                              │
-   ▼                              │
-[Step 3: Verify] ────Fail───────┘
-   │
-  Pass
-   │
-   ▼
-[Report Success]
-   │
-   ▼
-[End]
-```
-
-### Skill Structure (Production-Quality)
-
-```markdown
----
-name: timing-closure-expert
-description: |
-  Expert-level timing closure methodology for advanced nodes.
-  Handles setup violations through useful skew, sizing, and buffering.
-  Includes hold fixing and DRV cleanup.
-author: "Senior PD Engineer"
-version: "1.2.0"
-prerequisites:
-  - design_stage: "placed_or_routed"
-  - required_views: ["setup", "hold"]
-  - tools: ["innovus", "tempus"]
----
-
-# Timing Closure Expert Methodology
-
-## Overview
-
-This skill implements a systematic approach to timing closure that prioritizes:
-1. Setup fixing with minimal area impact
-2. Hold closure without creating new setup violations
-3. DRV cleanup as final polish
-
-## Decision Tree
-
-```
-WNS < 0?
-├── Yes → High Fanout? → Yes → Buffer insertion
-│         └── No  → Long wire? → Yes → Rebuffer net
-│                   └── No  → High cell delay? → Yes → Upsize cell
-│                             └── No → Useful skew
-└── No  → Check Hold
-          ├── Hold violations → Delay data path
-          └── Clean DRVs
-```
-
-## Implementation
-
-### Phase 1: Analysis (Always Do This First)
-
-Collect metrics before any changes:
-
-```tcl
-# Capture baseline
-set baseline_wns [get_metric timing.setup.WNS]
-set baseline_tns [get_metric timing.setup.TNS]
-set violation_count [get_metric timing.setup.numViolatingPaths]
-
-report_timing -max_paths 50 -max_slack 0 -outfile pre_fix_analysis.rpt
-```
-
-**Decision Point:** If violations > 1000, consider global optimization before local fixes.
-
-### Phase 2: Setup Fixing (Priority Order)
-
-#### Strategy A: Useful Skew (Lowest Cost)
-
-When to use:
-- Design is post-CTS
-- Clock skew > 100ps available
-- No hold margin constraints
-
-```tcl
-setOptMode -usefulSkew true
-setOptMode -usefulSkewPreCTS false
-setOptMode -usefulSkewPostCTS true
-optDesign -postCTS -setup
-```
-
-**Risk:** May worsen hold. Monitor hold WNS after this step.
-
-#### Strategy B: Cell Sizing (Medium Cost)
-
-When to use:
-- Cell delay dominates path delay
-- Congestion < 80%
-
-```tcl
-# Target specific cells on critical paths
-set crit_cells [get_cells -of_pins [get_pins -filter "slack < 0"]]
-ecoChangeCell -upsize -cells $crit_cells
-optDesign -postRoute -setup -incremental
-```
-
-#### Strategy C: Buffer Insertion (Higher Cost)
-
-When to use:
-- Wire delay dominates
-- Long nets without buffers
-
-```tcl
-set long_nets [get_nets -filter "total_delay > 0.5"]
-addBuffer -net $long_nets -cell BUFX2
-```
-
-### Phase 3: Hold Fixing
-
-**Constraint:** Must not degrade setup WNS by > 50ps.
-
-```tcl
-# Check setup margin
-set setup_margin [expr [get_metric timing.setup.WNS] - (-0.050)]
-
-if {$setup_margin > 0} {
-  # Safe to use useful skew for hold
-  setOptMode -usefulSkewHold true
-  optDesign -postCTS -hold
-} else {
-  # Use buffer insertion (safer)
-  addDelay -pins [get_pins -filter "hold_slack < 0"] -cell DELAYX1
-}
-```
-
-### Phase 4: Verification
-
-Required checks before completion:
-
-- [ ] Setup WNS ≥ target (typically 0 or -0.010)
-- [ ] Hold WNS ≥ 0
-- [ ] DRV count < 100
-- [ ] Congestion < 85%
-- [ ] No new timing paths created
-
-## Error Recovery
-
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| "Useful skew failed" | Hold margin insufficient | Switch to buffer insertion |
-| "Sizing caused congestion" | Area increase too high | Size only top 20% critical cells |
-| "DRV explosion" | Rebuffering created overlaps | Run ecoRoute -fix_drc |
-| "OptDesign diverged" | Conflicting constraints | Check MMMC view consistency |
-
-## Success Metrics
-
-```tcl
-# Final report
-puts "=== Timing Closure Summary ==="
-puts "Setup WNS: [get_metric timing.setup.WNS] (target: 0)"
-puts "Setup TNS: [get_metric timing.setup.TNS]"
-puts "Hold WNS: [get_metric timing.hold.WNS]"
-puts "DRV Count: [get_metric drc.total_count]"
-puts "Congestion: [get_metric route.congestion]"
-```
-
-Acceptable: All metrics green OR setup WNS within 10ps of target with closure plan.
-```
-
-### Deep Concept: Skills as Constraint Satisfaction
-
-A skill is essentially a **constraint satisfaction problem**:
-
-- **Hard constraints:** Must be satisfied (hold timing ≥ 0)
-- **Soft constraints:** Optimize if possible (setup timing ≥ 0)
-- **Resource constraints:** Limited by area, power, congestion
-- **Decision variables:** Which optimization strategy to apply
-
-The AI uses the skill as a heuristic guide to navigate this search space.
-
----
-
-## Chapter 5: The HiPilot Codebase Walkthrough
-
-### Project Structure
-
-```
-hipilot/
-├── bin/hipilot                    # Entry point (bash)
-├── servers/                       # MCP Layer (Layer 2)
-│   ├── eda/index.js              # EDA tool MCP server
-│   ├── tmux/index.js             # Tmux/pane MCP server
-│   └── knowledge/index.js        # Skills/knowledge MCP server
-├── skills/                        # Agent instructions (Layer 3)
-│   ├── fix-setup-timing.md
-│   ├── cts-clock-tree.md
-│   └── ... (36 skills)
-├── templates/                     # Tcl generation
-│   ├── cadence/
-│   └── synopsys/
-└── src/hitestbot/                # Testing framework
-    └── core/FlowCertifier.js     # Virtual human tester
-```
-
-### Key File: EDA MCP Server
-
-```javascript
-// servers/eda/index.js - Architecture Overview
-
-// ┌─────────────────────────────────────────┐
-// │  MCP Server (Node.js Process)           │
-// │  - Spawned by Claude on startup         │
-// │  - Communicates via stdin/stdout        │
-// │  - Lifespan: As long as Claude runs     │
-// └─────────────────────────────────────────┘
-
-// Tool Registry: What capabilities we expose
-const toolRegistry = {
-  // Tool discovery
-  'tools/list': handleToolList,
-
-  // Core execution
-  'tools/call': handleToolCall,
-
-  // Resource management (for context)
-  'resources/list': handleResourceList,
-  'resources/read': handleResourceRead
-};
-
-// The "execute_and_verify" tool (most important)
-async function handleExecuteAndVerify(args) {
-  const { tcl, description, timeout = 60 } = args;
-
-  // 1. Generate execution context
+async function executeAndVerify({ tcl, description, timeout = 60 }) {
+  // Get tmux socket from environment
+  const socket = process.env.HIPILOT_SESSION || 'hipilot';
+
+  // Create unique execution ID
   const execId = `exec_${Date.now()}`;
-  const tmpFile = `/tmp/hipilot/${execId}.tcl`;
+  const tmpFile = join('/tmp', `hipilot_${execId}.tcl`);
 
-  // 2. Write Tcl to temp file
-  await fs.writeFile(tmpFile, `
-    # HiPilot execution: ${description}
-    puts "HIPILOT_START:${execId}"
-    ${tcl}
-    puts "HIPILOT_END:${execId}"
-  `);
+  // Wrap Tcl with markers for completion detection
+  const wrappedTcl = `
+puts "HIPILOT_START:${execId}"
+${tcl}
+puts "HIPILOT_END:${execId}"
+`;
 
-  // 3. Send to EDA tool via tmux
-  execSync(`
-    tmux -L hipilot send-keys -t hipilot:0.1 \
-    "source ${tmpFile}" C-m
-  `);
+  // Write to temp file
+  writeFileSync(tmpFile, wrappedTcl);
 
-  // 4. Poll for completion
+  // Send to EDA pane via tmux
+  const tmuxCmd = `tmux -L ${socket} send-keys -t ${socket}:0.1 "source ${tmpFile}" C-m`;
+  execSync(tmuxCmd);
+
+  // Poll for completion
   const startTime = Date.now();
-  while (Date.now() - startTime < timeout * 1000) {
-    const paneOutput = execSync(
-      'tmux -L hipilot capture-pane -p -t hipilot:0.1'
-    );
+  const timeoutMs = timeout * 1000;
 
-    if (paneOutput.includes(`HIPILOT_END:${execId}`)) {
-      // Execution complete - analyze results
-      const errors = extractErrors(paneOutput);
-      const qor = extractQoR(paneOutput);
+  while (Date.now() - startTime < timeoutMs) {
+    // Capture pane output
+    const captureCmd = `tmux -L ${socket} capture-pane -p -t ${socket}:0.1`;
+    const output = execSync(captureCmd, { encoding: 'utf-8' });
+
+    // Check for completion marker
+    if (output.includes(`HIPILOT_END:${execId}`)) {
+      // Extract section between markers
+      const startIdx = output.indexOf(`HIPILOT_START:${execId}`);
+      const endIdx = output.indexOf(`HIPILOT_END:${execId}`);
+      const executionOutput = output.substring(startIdx, endIdx);
+
+      // Check for errors
+      const errorPatterns = [/\*\*ERROR/i, /FATAL/i, /Command not found/i];
+      const errors = [];
+      for (const pattern of errorPatterns) {
+        if (pattern.test(executionOutput)) {
+          errors.push(`Error pattern matched: ${pattern}`);
+        }
+      }
+
+      // Extract QoR metrics
+      const qor = extractQoR(executionOutput);
 
       return {
-        status: errors.length > 0 ? 'error' : 'success',
-        errors,
-        qor,
-        output: paneOutput
+        content: [
+          { type: 'text', text: executionOutput }
+        ],
+        isError: errors.length > 0,
+        result: {
+          status: errors.length > 0 ? 'error' : 'success',
+          errors,
+          qor
+        }
       };
     }
 
+    // Wait before checking again
     await sleep(1000);
   }
 
-  return { status: 'timeout', error: 'Execution timed out' };
+  // Timeout
+  return {
+    content: [{ type: 'text', text: 'Execution timed out' }],
+    isError: true
+  };
 }
 
-// QoR Extraction: The magic that makes L5 scoring work
 function extractQoR(output) {
-  const wnsMatch = output.match(/WNS[:\s]+([\-\d.]+)/i);
-  const tnsMatch = output.match(/TNS[:\s]+([\-\d.]+)/i);
+  // Extract timing metrics using regex
+  const wnsMatch = output.match(/WNS[:\s]+([\-\d.]+)\s*ns/i);
+  const tnsMatch = output.match(/TNS[:\s]+([\-\d.]+)\s*ns/i);
 
   return {
     wns: wnsMatch ? parseFloat(wnsMatch[1]) : null,
@@ -630,305 +1080,365 @@ function extractQoR(output) {
 }
 ```
 
-### Key File: FlowCertifier (Testing)
+#### 4. Server Startup
 
 ```javascript
-// src/hitestbot/core/FlowCertifier.js - Testing Architecture
+// servers/eda/index.js - Lines 250-270
 
-/**
- * FlowCertifier is a "virtual human" that:
- * 1. Launches HiPilot like a user would
- * 2. Types commands into Claude's input
- * 3. Captures both panes (screenshots + logs)
- * 4. Scores based on what a human would observe
- *
- * This is NOT unit testing. It's behavioral verification.
- */
+async function main() {
+  // Create transport (stdin/stdout)
+  const transport = new StdioServerTransport();
+
+  // Connect server to transport
+  await server.connect(transport);
+
+  // Log to stderr (stdout is for MCP protocol)
+  console.error('HiPilot EDA MCP Server running on stdio');
+}
+
+main().catch(console.error);
+```
+
+### The FlowCertifier (src/hitestbot/core/FlowCertifier.js)
+
+This is the testing framework—the "virtual human" that uses HiPilot.
+
+#### Key Concept: Observation Points
+
+```javascript
+// src/hitestbot/core/FlowCertifier.js - Simplified
 
 class FlowCertifier {
-  // State detection: What would a human see?
-  detectState(claudePane, edaPane) {
-    // Working: Claude output changing
-    if (claudePane.changed) return { state: 'working' };
-
-    // Waiting: EDA running, Claude idle
-    if (edaPane.changing && claudePane.idle) {
-      return { state: 'waiting_for_eda' };
-    }
-
-    // Done: Claude prompt visible
-    if (claudePane.contains('❯') && claudePane.idle) {
-      return { state: 'done' };
-    }
-
-    // Needs approval: Manual mode prompt
-    if (claudePane.contains('bypass permissions')) {
-      return { state: 'needs_approval' };
-    }
-
-    return { state: 'idle' };
+  constructor(options) {
+    this.session = options.session || 'hipilot';
+    this.socket = options.socket || 'hipilot';
+    this.evidenceDir = options.evidenceDir;
+    this.observations = [];
   }
 
-  // L1-L5 Scoring (What humans observe)
-  scoreExecution(claudeOutput, edaOutput) {
+  // Capture a snapshot of both panes
+  async captureObservation(label) {
+    // Capture Claude pane (left)
+    const claudeOutput = execSync(
+      `tmux -L ${this.socket} capture-pane -p -t ${this.socket}:0.0`
+    );
+
+    // Capture EDA pane (right)
+    const edaOutput = execSync(
+      `tmux -L ${this.socket} capture-pane -p -t ${this.socket}:0.1`
+    );
+
+    // Take screenshot
+    execSync(`import -window root ${this.evidenceDir}/obs_${label}.png`);
+
+    // Save logs
+    writeFileSync(
+      `${this.evidenceDir}/obs_${label}_claude.log`,
+      claudeOutput
+    );
+    writeFileSync(
+      `${this.evidenceDir}/obs_${label}_eda.log`,
+      edaOutput
+    );
+
+    return { claude: claudeOutput, eda: edaOutput };
+  }
+
+  // Main testing loop
+  async runFlow(command) {
+    // 1. Launch HiPilot
+    await this.launchHiPilot();
+
+    // 2. Wait for Claude to be ready
+    await this.waitForClaudeReady();
+
+    // 3. Type the command
+    await this.typeCommand(command);
+
+    // 4. Watch and observe
+    await this.watchFlow();
+
+    // 5. Score the result
+    return this.scoreResult();
+  }
+
+  // The scoring engine (L1-L5)
+  scoreResult() {
+    const before = this.observations[0];
+    const after = this.observations[this.observations.length - 1];
+
     return {
-      L1: this.scoreResponse(claudeOutput),      // Did Claude respond?
-      L2: this.scoreIntent(claudeOutput),        // Did it understand?
-      L3: this.scoreToolUsage(claudeOutput, edaOutput), // Used MCP?
-      L4: this.scoreEdaExecution(edaOutput),     // EDA success?
-      L5: this.scoreQoR(claudeOutput)            // Reported metrics?
+      L1: this.scoreL1(before, after),
+      L2: this.scoreL2(after),
+      L3: this.scoreL3(after),
+      L4: this.scoreL4(after),
+      L5: this.scoreL5(after)
     };
   }
 
-  // L5: The critical score for ASIC
-  scoreQoR(claudeOutput) {
-    // Human looks for: "WNS: X.XXX ns"
-    const hasWNS = /WNS[:\s]+[\-\d.]+\s*ns/i.test(claudeOutput);
-    const hasTNS = /TNS[:\s]+[\-\d.]+\s*ns/i.test(claudeOutput);
+  // L5: QoR Assessment (the critical one)
+  scoreL5(observation) {
+    const claudeOutput = observation.claude;
 
-    if (hasWNS && hasTNS) return { score: 1.0, reason: 'Explicit WNS/TNS' };
-    if (hasWNS || hasTNS) return { score: 0.5, reason: 'Partial QoR' };
-    return { score: 0.0, reason: 'No QoR reported' };
+    // Look for explicit WNS/TNS numbers
+    const wnsMatch = claudeOutput.match(/WNS[:\s]+([\-\d.]+)\s*ns/i);
+    const tnsMatch = claudeOutput.match(/TNS[:\s]+([\-\d.]+)\s*ns/i);
+
+    if (wnsMatch && tnsMatch) {
+      return {
+        score: 1.0,
+        detail: `WNS=${wnsMatch[1]}ns, TNS=${tnsMatch[1]}ns`
+      };
+    }
+
+    if (wnsMatch || tnsMatch) {
+      return { score: 0.5, detail: 'Partial QoR' };
+    }
+
+    return { score: 0.0, detail: 'No QoR reported' };
   }
 }
 ```
 
 ---
 
-## Chapter 6: Development Patterns for ASIC Engineers
+## Chapter 7: Building Your First Extension
 
-### Pattern 1: The Verification Mindset
+### Exercise: Add a Power Analysis Capability
 
-In ASIC, you verify at every step:
-```
-Synthesis → Equivalence Check → Place → Timing Check → Route → DRC
-```
+Let's build a complete extension that adds power analysis to HiPilot.
 
-In agent development, same principle:
-```
-Write Skill → Test with HiTestBot → Analyze Evidence → Refine
-```
+#### Step 1: Create the Skill
 
-### Pattern 2: State Machine Thinking
-
-You already design state machines. Apply that to agent behavior:
-
-```javascript
-// State machine for a routing agent
-const routingStates = {
-  INITIAL: {
-    onEnter: () => loadDesign(),
-    transitions: {
-      DESIGN_LOADED: 'CHECK_CONGESTION'
-    }
-  },
-  CHECK_CONGESTION: {
-    onEnter: () => analyzeCongestion(),
-    transitions: {
-      HIGH_CONGESTION: 'OPTIMIZE_PLACEMENT',
-      ACCEPTABLE: 'RUN_ROUTING'
-    }
-  },
-  RUN_ROUTING: {
-    onEnter: () => routeDesign(),
-    transitions: {
-      SUCCESS: 'VERIFY_DRC',
-      CONGESTION_ERROR: 'CHECK_CONGESTION',
-      COMPLETION_ERROR: 'REPORT_FAILURE'
-    }
-  },
-  // ... more states
-};
-```
-
-### Pattern 3: The Constraint-Driven Approach
-
-ASIC: Timing constraints → Implementation
-Agent: Success criteria → Skill design
-
-Define your "signoff criteria" before writing the skill:
+Create `skills/power-analysis-expert.md`:
 
 ```markdown
-## Success Criteria (Signoff)
-
-Before this skill completes, the following must be true:
-
-1. Timing Constraints
-   - Setup WNS ≥ -0.050ns (or signoff target)
-   - Hold WNS ≥ 0
-
-2. Physical Constraints
-   - Congestion < 85%
-   - DRV count < 100
-
-3. Verification
-   - timeDesign report generated
-   - All metrics captured in QoR snapshot
-```
-
-### Pattern 4: Corner Case Handling
-
-You handle corners in silicon. Handle them in agents:
-
-```markdown
-## Corner Cases
-
-### Case 1: Clock Gating with Async Reset
-- **Scenario:** Clock gating cell has async reset path
-- **Risk:** Hold violations on async pins
-- **Handling:** Skip useful skew for async paths. Use `set_false_path` verification.
-
-### Case 2: Multi-Bit Flip-Flop Banks
-- **Scenario:** Data path goes through MBFF
-- **Risk:** Sizing affects multiple bits
-- **Handling:** Use `ecoChangeCell` with `-cell_list` to maintain matching.
-
-### Case 3: Low Power Islands
-- **Scenario:** Path crosses power domain
-- **Risk:** Level shifter insertion affects timing
-- **Handling:** Check UPF constraints before optimization.
-```
-
+---
+name: power-analysis-expert
+description: |
+  Analyze power consumption and suggest optimizations.
+  Covers dynamic power, leakage, and clock gating efficiency.
+version: "1.0.0"
 ---
 
-## Chapter 7: Building Your First Agent Extension
+# Power Analysis Expert
 
-### Exercise: Extend HiPilot with a Power Analysis Skill
+## When to Use
 
-**Goal:** Create a skill that analyzes power and suggests optimizations.
+- After placement or routing for power estimation
+- When power exceeds budget
+- For clock gating efficiency review
 
-**Architecture Plan:**
+## Analysis Flow
 
-```
-User Request: "Analyze power consumption"
-    │
-    ▼
-Skill: power-analysis-expert
-    │
-    ├── Step 1: Generate power report (Template)
-    │   └── Template: cadence/report_power.tcl
-    │
-    ├── Step 2: Analyze results (AI reasoning)
-    │   └── Check efficiency, identify hotspots
-    │
-    ├── Step 3: Suggest optimizations (Conditional logic)
-    │   ├── If clock power high → Clock gating suggestions
-    │   ├── If leakage high → VT swap suggestions
-    │   └── If dynamic high → Activity analysis
-    │
-    └── Step 4: Generate action plan (Output formatting)
-```
-
-**Implementation Steps:**
-
-1. **Create the skill file** (`skills/power-analysis.md`)
-2. **Create the template** (`templates/cadence/report_power.tcl`)
-3. **Test with HiTestBot**
-4. **Analyze evidence and refine**
-
-**Key Code:**
-
-```markdown
-## Power Analysis Logic
-
-### Data Collection
+### Phase 1: Data Collection
 
 ```tcl
-# Generate comprehensive power report
+# Generate power reports
 report_power -outfile power_summary.rpt
-report_power -hier -outfile power_hier.rpt
+report_power -hier -outfile power_hierarchical.rpt
 report_clock_gating -outfile clock_gating.rpt
+
+# Extract key metrics
+set total_power [get_metric power.total]
+set dynamic_power [get_metric power.dynamic]
+set leakage_power [get_metric power.leakage]
+set cg_efficiency [get_metric clock_gating.efficiency]
+
+puts "Total Power: ${total_power} mW"
+puts "Dynamic: ${dynamic_power} mW ([expr $dynamic_power/$total_power*100]%)"
+puts "Leakage: ${leakage_power} mW ([expr $leakage_power/$total_power*100]%)"
+puts "CG Efficiency: ${cg_efficiency}%"
 ```
 
-### Analysis Decision Tree
+### Phase 2: Analysis & Recommendations
 
+**If dynamic power > 70% of total:**
+- High switching activity
+- Recommendation: Activity analysis, clock gating improvements
+
+**If leakage > 40% of total:**
+- Technology or low-power mode issue
+- Recommendation: HVT cell swap, power gating
+
+**If clock gating efficiency < 85%:**
+- Gating opportunities missed
+- Recommendation: Review enable conditions, add gaters
+
+### Phase 3: Report Generation
+
+Format:
 ```
-Total Power > Budget?
-├── Yes → Which component dominates?
-│         ├── Leakage (static) → VT optimization
-│         ├── Dynamic (switching) → Activity reduction
-│         └── Clock → Gating efficiency improvement
-└── No  → Report "Power within spec"
+📊 Power Analysis Report
+
+Total Power: XXX mW
+├── Dynamic: XXX mW (XX%)
+├── Leakage: XXX mW (XX%)
+└── Clock:   XXX mW (XX%)
+
+Clock Gating Efficiency: XX%
+
+Recommendations:
+1. [Specific recommendation based on analysis]
+2. [Another recommendation]
+```
 ```
 
-### Automated Optimization Suggestions
+#### Step 2: Create the Template
+
+Create `templates/cadence/report_power.tcl`:
 
 ```tcl
-# If clock power is high
-set cg_efficiency [get_metric clock_gating.efficiency]
-if {$cg_efficiency < 85} {
-  puts "RECOMMENDATION: Clock gating efficiency at ${cg_efficiency}%"
-  puts "  Action: Review clock gating enable conditions"
-  puts "  Command: report_clock_gating -inefficient"
-}
+{# Power Analysis Template #}
+{# Usage: Comprehensive power reporting #}
 
-# If leakage is high
-set leakage_ratio [expr [get_metric power.leakage] / [get_metric power.total]]
-if {$leakage_ratio > 0.4} {
-  puts "RECOMMENDATION: Leakage is ${leakage_ratio*100}% of total power"
-  puts "  Action: Consider HVT cell swap for non-critical paths"
+{# Basic power report #}
+report_power -outfile {{ output_dir }}/power_summary.rpt
+
+{# Hierarchical breakdown #}
+{% if hierarchical %}
+report_power -hier -outfile {{ output_dir }}/power_hier.rpt
+{% endif %}
+
+{# Clock gating analysis #}
+{% if analyze_clock_gating %}
+report_clock_gating -outfile {{ output_dir }}/clock_gating.rpt
+{% endif %}
+
+{# Activity analysis for high-power nets #}
+{% if activity_analysis %}
+report_switching_activity -outfile {{ output_dir }}/activity.rpt
+{% endif %}
+```
+
+#### Step 3: Test It
+
+```bash
+# Deploy to EDA server
+node src/hitestbot/infra/deploy_hipilot.js
+
+# Test with HiTestBot
+bin/hitestbot-eda "analyze power consumption"
+```
+
+#### Step 4: Analyze Evidence
+
+Check `test-evidence/latest/`:
+- Did AI load the skill?
+- Did it call the right MCP tools?
+- Did it format the report correctly?
+
+#### Step 5: Iterate
+
+Based on evidence, refine:
+- Clarify ambiguous instructions
+- Add error handling
+- Improve report formatting
+
+---
+
+## Appendix A: JavaScript Quick Reference
+
+### Variables
+```javascript
+let x = 5;              // Mutable
+const y = 10;           // Immutable
+var z = 15;             // Old style (avoid)
+```
+
+### Functions
+```javascript
+// Declaration
+function add(a, b) { return a + b; }
+
+// Arrow function
+const add = (a, b) => a + b;
+
+// Async function
+async function fetchData() { ... }
+```
+
+### Arrays
+```javascript
+let arr = [1, 2, 3];
+arr.push(4);            // Add to end
+arr.pop();              // Remove from end
+arr.filter(x => x > 1); // [2, 3]
+arr.map(x => x * 2);    // [2, 4, 6]
+```
+
+### Objects
+```javascript
+let obj = { a: 1, b: 2 };
+obj.a;                  // 1
+obj['b'];               // 2
+obj.c = 3;              // Add property
+```
+
+### Async/Await
+```javascript
+async function main() {
+  const result = await someAsyncOperation();
+  console.log(result);
 }
 ```
+
+## Appendix B: MCP Tool Reference
+
+| Tool | Purpose | Example Use |
+|------|---------|-------------|
+| `eda.detect_tool` | Check if EDA tool running | Before starting work |
+| `eda.start_tool` | Launch Innovus/ICC2 | When no tool detected |
+| `eda.execute_and_verify` | Run Tcl and check | Every stage execution |
+| `eda.diagnose_error` | Get error analysis | When errors occur |
+| `eda.generate_tcl` | Use template | For standard reports |
+| `knowledge.get_skill` | Load skill | At flow start |
+| `qor.snapshot` | Save metrics | After each stage |
+
+## Appendix C: Development Workflow
+
+```
+1. Define success criteria
+   ↓
+2. Write skill (explain to a new hire)
+   ↓
+3. Create template (if needed)
+   ↓
+4. Test with HiTestBot
+   ↓
+5. Analyze evidence
+   ↓
+6. Refine
+   ↓
+7. Repeat 4-6 until satisfied
 ```
 
 ---
 
-## Appendix: Concept Map
-
-```
-Agent Development (HiPilot)
-│
-├── Core Concepts
-│   ├── Agent: Perceive → Decide → Act → Learn
-│   ├── MCP: Standardized tool protocol (JSON-RPC)
-│   ├── Skills: Structured expertise (Markdown)
-│   └── Templates: Parameterized Tcl (Nunjucks)
-│
-├── Architecture Layers
-│   ├── Layer 3 (Orchestration): LLM reasoning
-│   ├── Layer 2 (Protocol): MCP servers
-│   └── Layer 1 (Execution): EDA tools
-│
-├── Development Workflow
-│   ├── Define success criteria (like timing constraints)
-│   ├── Write skill (like a runbook)
-│   ├── Create template (if needed)
-│   ├── Test with HiTestBot (like simulation)
-│   └── Analyze evidence (like debugging waveforms)
-│
-└── ASIC Analogies
-    ├── Skills ↔ Runbooks
-    ├── Templates ↔ Parameterized scripts
-    ├── MCP ↔ Standard cell library interface
-    ├── HiTestBot ↔ Testbench
-    └── Evidence ↔ Waveforms/VCD
-```
-
----
-
-## You're Ready to Build
+## Conclusion: You Are Ready
 
 You now understand:
-- ✅ **Agent architecture** (three-layer model)
-- ✅ **MCP protocol** (how AI talks to tools)
-- ✅ **Skills** (encoding expertise as instructions)
-- ✅ **Development patterns** (verification mindset, state machines)
-- ✅ **Code structure** (how HiPilot actually works)
+- ✅ **Agent architecture** (three layers, state machines)
+- ✅ **JavaScript** (the language of AI development)
+- ✅ **MCP** (the protocol binding it all together)
+- ✅ **Skills** (encoding RTL2GDS expertise)
+- ✅ **The codebase** (how HiPilot actually works)
+- ✅ **Extension patterns** (how to add capabilities)
 
-**Your ASIC expertise is the differentiator.** The AI provides the reasoning layer. You provide the methodology.
+**Your ASIC knowledge is the differentiator.** The AI provides reasoning. You provide the methodology.
 
-**Start here:**
+**Start building:**
 1. Pick a task you do frequently
-2. Write it as a skill (explain to a new hire)
-3. Test it
-4. Iterate
+2. Write it as a skill
+3. Test with HiTestBot
+4. Iterate based on evidence
 
-*Welcome to AI-assisted chip design.* 🚀
+*The future of chip design is AI-assisted. You're now equipped to build it.* 🚀
 
 ---
 
 **Resources:**
-- HiPilot Source: `/home/EDA/hipilot/current/`
-- Skills: `skills/`
-- Templates: `templates/`
+- HiPilot: `/home/EDA/hipilot/current/`
+- This Cookbook: `docs/AI_ASIC_COOKBOOK.md`
 - MCP SDK: https://github.com/modelcontextprotocol
+- JavaScript Guide: https://developer.mozilla.org/en-US/docs/Web/JavaScript
