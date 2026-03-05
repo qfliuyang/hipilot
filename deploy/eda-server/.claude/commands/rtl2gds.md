@@ -73,14 +73,50 @@ Each stage is a **standalone tool invocation** — the tool starts, loads the pr
 
 **Tool switching:** Stage 0 uses `dc_shell`, stages 1-9 use `innovus`. The skill has the exact Tcl for each stage.
 
-### 4. Final summary
+### 4. Extract and Report Final Timing Metrics
 
-After all stages, tell the engineer:
-- How many stages passed and failed
-- Final WNS and TNS (setup and hold)
-- DRC violation count (if you ran a DRC check)
-- Which stages needed error recovery
-- Where the saved design files are
+After Stage 9 completes, you MUST extract and display the final timing metrics. The engineer needs to see explicit WNS/TNS values.
+
+**Step 1: Generate and run a timing report to get current WNS/TNS**
+```
+mcp__hipilot-eda__eda.execute_and_verify({
+  tcl: "timeDesign -postRoute -prefix final_summary -outDir result/pr/report/final_timing\nputs \"FINAL_WNS=[get_metric timing.setup.WNS]\"\nputs \"FINAL_TNS=[get_metric timing.setup.TNS]\"\nputs \"FINAL_VIOLATIONS=[get_metric timing.setup.numViolatingPaths]\"",
+  description: "Extract final timing metrics",
+  timeout: 120
+})
+```
+
+**Step 2: Call qor.snapshot to save the metrics**
+```
+mcp__hipilot-eda__qor.snapshot({name: "rtl2gds_final", description: "Final QoR after complete RTL-to-GDS flow"})
+```
+
+**Step 3: Report to the engineer with EXPLICIT timing numbers**
+
+Format your final report as a table:
+
+```
+✅ RTL-to-GDS Flow Complete!
+
+Final QoR Summary:
+┌──────────────────┬───────────────────────────────────────────┐
+│      Metric      │                   Value                   │
+├──────────────────┼───────────────────────────────────────────┤
+│ WNS (Setup)      │ X.XXX ns                                  │
+├──────────────────┼───────────────────────────────────────────┤
+│ TNS (Setup)      │ X.XXX ns                                  │
+├──────────────────┼───────────────────────────────────────────┤
+│ Setup Violations │ N paths                                   │
+├──────────────────┼───────────────────────────────────────────┤
+│ Hold Violations  │ N paths                                   │
+├──────────────────┼───────────────────────────────────────────┤
+│ GDS              │ result/pr/data/ibex_core.gds              │
+└──────────────────┴───────────────────────────────────────────┘
+
+All stages completed: X passed, Y failed
+```
+
+**CRITICAL:** You MUST include the actual WNS and TNS numbers in your final report. Do not say "flow complete" without showing the timing metrics.
 
 ### Rules
 

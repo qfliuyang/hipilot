@@ -576,7 +576,7 @@ export class FlowCertifier {
     try {
       const output = execSync(`bash ${binPath} --no-terminal 2>&1`, {
         encoding: 'utf-8', timeout: 300000,
-        env: { ...process.env, HIPILOT_SESSION: this.session },
+        env: { ...process.env, HIPILOT_SESSION: this.session, HIPILOT_TEST_LOG: this.mcpLogPath },
       });
       this._runLog(`bin/hipilot --no-terminal output:\n${output}`);
     } catch (e) {
@@ -775,6 +775,11 @@ export class FlowCertifier {
     // Check for stage completion message - a human would see "STAGE X COMPLETE"
     const stageComplete = /STAGE\s+\d+\s+COMPLETE|stage.*complete/i.test(claude);
 
+    // Check for full RTL2GDS flow completion - all stages done + GDS exported
+    // This allows early test termination instead of waiting for full timeout
+    const rtl2gdsComplete = /RTL-to-GDS\s+Flow\s+Complete|All\s+stages\s+completed|GDS:\s+result\/pr\/data\/ibex_core\.gds/i.test(claude) &&
+      /STAGE\s+9\s+COMPLETE|chip_done\.enc/i.test(claude);
+
     // Check if Claude is just monitoring (only doing eda.peek/get_status)
     // A human would recognize this pattern: repeated "👁️ EDA Pane Snapshot" with similar content
     const isMonitoringPattern = recentClaudeOutputs.length >= 3 &&
@@ -793,6 +798,11 @@ export class FlowCertifier {
     // Stage completion is a strong signal of done
     if (stageComplete && !claudeThinking) {
       return { state: 'done', detail: 'Stage completion detected' };
+    }
+
+    // Full RTL2GDS flow completion - early termination to avoid long timeout
+    if (rtl2gdsComplete && !claudeThinking) {
+      return { state: 'done', detail: 'RTL2GDS flow complete (all 9 stages + GDS)' };
     }
 
     // Claude is actively thinking — definitely working
@@ -1073,13 +1083,10 @@ export class FlowCertifier {
   }
 
   _scoreEdaExecution(edaOutput) {
-    const errorPatterns = [/\*\*ERROR/i, /FATAL/i, /syntax error/i, /unknown command/i];
-    for (const pat of errorPatterns) {
-      if (pat.test(edaOutput)) return { score: 0.0, detail: `EDA error: ${edaOutput.match(pat)[0]}` };
-    }
-
-    // Check for successful completion patterns (highest priority for long-running flows)
-    // These indicate the EDA tool completed its work successfully, even if it exited
+    // Check for successful completion patterns FIRST (highest priority for long-running flows)
+    // This takes precedence over errors because EDA tools may recover from early errors
+    // and still complete the flow successfully. The final state matters more than
+    // transient errors in the scrollback buffer.
     const completionPatterns = [
       /STAGE \d+ COMPLETE/i,
       /GDS output.*complete/i,
@@ -1090,6 +1097,12 @@ export class FlowCertifier {
     ];
     for (const pat of completionPatterns) {
       if (pat.test(edaOutput)) return { score: 1.0, detail: 'EDA tool completed successfully' };
+    }
+
+    // Only check for errors if no successful completion was found
+    const errorPatterns = [/\*\*ERROR/i, /FATAL/i, /syntax error/i, /unknown command/i];
+    for (const pat of errorPatterns) {
+      if (pat.test(edaOutput)) return { score: 0.0, detail: `EDA error: ${edaOutput.match(pat)[0]}` };
     }
 
     // Check for EDA tool prompt (strong signal: tool ran and returned)
