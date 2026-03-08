@@ -1,0 +1,109 @@
+[
+  {
+    "stage": "full_flow",
+    "transcript": {
+      "subjects": [
+        {
+          "name": "Communication",
+          "score": 100,
+          "grade": "A+",
+          "grade_points": 4,
+          "weight": 1,
+          "status": "PASS"
+        },
+        {
+          "name": "Methodology",
+          "score": 100,
+          "grade": "A+",
+          "grade_points": 4,
+          "weight": 1.5,
+          "status": "PASS"
+        },
+        {
+          "name": "Process",
+          "score": 100,
+          "grade": "A+",
+          "grade_points": 4,
+          "weight": 2,
+          "status": "PASS"
+        },
+        {
+          "name": "Execution",
+          "score": 0,
+          "grade": "F",
+          "grade_points": 0,
+          "weight": 1.5,
+          "status": "FAIL"
+        },
+        {
+          "name": "Results",
+          "score": 50,
+          "grade": "F",
+          "grade_points": 0,
+          "weight": 1,
+          "status": "FAIL"
+        },
+        {
+          "name": "Human-Like",
+          "score": 80,
+          "grade": "B-",
+          "grade_points": 2.7,
+          "weight": 2.5,
+          "status": "PASS"
+        }
+      ],
+      "gpa": 2.61,
+      "overall_percentage": 72,
+      "final_grade": "C-"
+    },
+    "scores": {
+      "L1_prompt_delivery": {
+        "score": 1,
+        "detail": "Claude responded to the command"
+      },
+      "L2_intent_recognition": {
+        "score": 1,
+        "detail": "Claude understood the task (mentions: design, innovus, flow, placement, routing, cts)"
+      },
+      "L3_mcp_tool_usage": {
+        "score": 1,
+        "detail": "MCP tools used (4789 calls: eda.detect_tool, eda.start_tool, knowledge.get_skill), EDA tool active"
+      },
+      "L3b_process_validation": {
+        "score": 1,
+        "detail": "Correct process: synthesis used dc_shell as expected",
+        "validation": {
+          "stage": "synthesis",
+          "tool": "dc_shell",
+          "correct": true
+        }
+      },
+      "L4_eda_execution": {
+        "score": 0,
+        "detail": "EDA error: **ERROR"
+      },
+      "L5_qor_assessment": {
+        "score": 0.5,
+        "detail": "Claude discussed metrics (timing, pass) but no WNS/TNS numbers"
+      }
+    },
+    "total_score": 4.5,
+    "max_score": 6,
+    "status": "partial",
+    "assessment": "PARTIAL - Needs improvement (GPA: 2.61, Grade: C-)",
+    "recommendations": [
+      "Check EDA tool setup and Tcl syntax.",
+      "Verify QoR extraction and reporting."
+    ],
+    "failure_classification": {
+      "category": "ENVIRONMENT",
+      "summary": "EDA error: **ERROR",
+      "action": "Fix EDA server setup"
+    },
+    "mcp_calls_count": null,
+    "evidence_summary": {
+      "claude_output_lines": 200,
+      "eda_output_lines": 200
+    }
+  }
+]

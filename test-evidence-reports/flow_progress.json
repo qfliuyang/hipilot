@@ -1,0 +1,146 @@
+{
+  "test_name": "/rtl2gds",
+  "timestamp": "20260308122508",
+  "duration_s": 1203,
+  "total_stages": 1,
+  "completed_stages": 1,
+  "progress_pct": 100,
+  "total_score": 4.5,
+  "max_score": 6,
+  "transcript": {
+    "subjects": [
+      {
+        "name": "Communication",
+        "score": 100,
+        "grade": "A+",
+        "grade_points": 4,
+        "weight": 1,
+        "status": "PASS"
+      },
+      {
+        "name": "Methodology",
+        "score": 100,
+        "grade": "A+",
+        "grade_points": 4,
+        "weight": 1.5,
+        "status": "PASS"
+      },
+      {
+        "name": "Process",
+        "score": 100,
+        "grade": "A+",
+        "grade_points": 4,
+        "weight": 2,
+        "status": "PASS"
+      },
+      {
+        "name": "Execution",
+        "score": 0,
+        "grade": "F",
+        "grade_points": 0,
+        "weight": 1.5,
+        "status": "FAIL"
+      },
+      {
+        "name": "Results",
+        "score": 50,
+        "grade": "F",
+        "grade_points": 0,
+        "weight": 1,
+        "status": "FAIL"
+      },
+      {
+        "name": "Human-Like",
+        "score": 80,
+        "grade": "B-",
+        "grade_points": 2.7,
+        "weight": 2.5,
+        "status": "PASS"
+      }
+    ],
+    "gpa": 2.61,
+    "overall_percentage": 72,
+    "final_grade": "C-"
+  },
+  "gpa": 2.61,
+  "final_grade": "C-",
+  "assessment": "PARTIAL - Needs improvement (GPA: 2.61, Grade: C-)",
+  "recommendations": [
+    "Check EDA tool setup and Tcl syntax.",
+    "Verify QoR extraction and reporting."
+  ],
+  "blocking_stage": null,
+  "blocking_category": null,
+  "stages": [
+    {
+      "name": "full_flow",
+      "score": 4.5,
+      "max_score": 6,
+      "status": "partial",
+      "transcript": {
+        "subjects": [
+          {
+            "name": "Communication",
+            "score": 100,
+            "grade": "A+",
+            "grade_points": 4,
+            "weight": 1,
+            "status": "PASS"
+          },
+          {
+            "name": "Methodology",
+            "score": 100,
+            "grade": "A+",
+            "grade_points": 4,
+            "weight": 1.5,
+            "status": "PASS"
+          },
+          {
+            "name": "Process",
+            "score": 100,
+            "grade": "A+",
+            "grade_points": 4,
+            "weight": 2,
+            "status": "PASS"
+          },
+          {
+            "name": "Execution",
+            "score": 0,
+            "grade": "F",
+            "grade_points": 0,
+            "weight": 1.5,
+            "status": "FAIL"
+          },
+          {
+            "name": "Results",
+            "score": 50,
+            "grade": "F",
+            "grade_points": 0,
+            "weight": 1,
+            "status": "FAIL"
+          },
+          {
+            "name": "Human-Like",
+            "score": 80,
+            "grade": "B-",
+            "grade_points": 2.7,
+            "weight": 2.5,
+            "status": "PASS"
+          }
+        ],
+        "gpa": 2.61,
+        "overall_percentage": 72,
+        "final_grade": "C-"
+      },
+      "failure_category": "ENVIRONMENT",
+      "scores": {
+        "L1_prompt_delivery": 1,
+        "L2_intent_recognition": 1,
+        "L3_mcp_tool_usage": 1,
+        "L3b_process_validation": 1,
+        "L4_eda_execution": 0,
+        "L5_qor_assessment": 0.5
+      }
+    }
+  ]
+}
