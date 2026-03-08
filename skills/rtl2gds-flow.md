@@ -54,25 +54,35 @@ HiPilot will execute the full flow, reporting progress at each stage.
 
 ## MCP Commands (runtime usage)
 
-When running on the EDA server with HiPilot:
+When running on the EDA server with HiPilot, use the recommended pattern for intelligent flow control:
 
-- **Full-flow execution (P&R onwards) using the builtin workflow:**
+- **Stage-by-stage execution (RECOMMENDED):**
 
-```bash
-rtl2gds.run_full_flow {"design":"ibex"}
-# or, equivalently:
-workflow.run {"name":"rtl2gds","params":{"design":"ibex"}}
+```javascript
+// 1. Detect or start the correct tool
+eda.detect_tool({})
+// If no tool: eda.start_tool({tool: "innovus", design_dir: "/path/to/design"})
+
+// 2. Load the specific flow skill
+knowledge.get_skill({name: "ibex-rtl2gds-flow"})
+
+// 3. Execute each stage with verification
+eda.execute_and_verify({
+  tcl: stage_tcl_from_skill,
+  description: "Stage N: Description",
+  timeout: 600,
+  extract_qor: true
+})
+
+// 4. Capture QoR snapshot after each stage
+qor.snapshot({name: "after_stage_N", description: "QoR after stage N"})
+
+// 5. Continue to next stage...
 ```
 
-- **Single-stage execution for targeted reruns:**
+**⚠️ AVOID deprecated batch executors:** `workflow.run`, `rtl2gds.run_full_flow`, `rtl2gds.run_stage`
 
-```bash
-rtl2gds.run_stage {"stage":"floorplan","design":"ibex"}
-rtl2gds.run_stage {"stage":"placement","design":"ibex"}
-rtl2gds.run_stage {"stage":"cts","design":"ibex"}
-rtl2gds.run_stage {"stage":"routing","design":"ibex"}
-rtl2gds.run_stage {"stage":"chip_finish","design":"ibex"}
-```
+These bypass HiPilot's intelligence and error handling. Always execute stages individually.
 
 This generic `rtl2gds-flow` skill describes the **overall RTL→GDS methodology**; design-specific skills like `/ibex-rtl2gds-flow` provide concrete parameter choices (paths, clocks, technology) for a particular chip.
 

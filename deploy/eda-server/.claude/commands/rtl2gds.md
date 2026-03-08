@@ -21,16 +21,22 @@ mcp__hipilot-eda__eda.get_status
 ```
 If this fails, tell the engineer "MCP servers are not connected" and stop.
 
-### 1. Make sure Innovus is running
+### 1. Check current tool and load the flow guide
 
 ```
 mcp__hipilot-eda__eda.detect_tool({})
+mcp__hipilot-knowledge__knowledge.get_skill({name: "ibex-rtl2gds-flow"})
 ```
 
-If no tool is running:
+**CRITICAL:** Do NOT start any tool yet. First read the skill to understand the flow stages.
 
-```
-mcp__hipilot-eda__eda.start_tool({tool: "innovus", design_dir: "/home/EDA/ibex_work_upload"})
+**Tool Usage by Stage:**
+- Stage 0 (Synthesis): Use **dc_shell**
+- Stages 1-9 (P&R): Use **innovus**
+
+Use the `HIPILOT_DESIGN_DIR` environment variable for the design directory:
+```javascript
+const designDir = process.env.HIPILOT_DESIGN_DIR || "/home/EDA/ibex_work_upload";
 ```
 
 ### 2. Load the flow guide
@@ -41,7 +47,9 @@ mcp__hipilot-knowledge__knowledge.get_skill({name: "ibex-rtl2gds-flow"})
 
 Read the skill carefully. It contains the exact file paths (DEF, LEF, SDC), Tcl commands, and methodology for every stage. The Tcl in the skill is specific to the Ibex design on this server.
 
-### 3. Execute each stage
+### 4. Execute each stage
+
+**CRITICAL:** Run ALL stages from Stage 0 through Stage 9. NEVER skip a stage just because output files exist. HiPilot runs the COMPLETE flow.
 
 For each stage, follow this exact pattern:
 
@@ -60,7 +68,7 @@ Each stage is a **standalone tool invocation** — the tool starts, loads the pr
 
 | # | Stage | Tool | Timeout | Notes |
 |---|-------|------|---------|-------|
-| 0 | Synthesis + DFT | dc_shell | 300s | RTL → gate-level netlist. Skip if `result/syn/data/ibex_core.syn.v` already exists. |
+| 0 | Synthesis + DFT | dc_shell | 300s | RTL → gate-level netlist. **ALWAYS run — never skip.** |
 | 1 | Design Init + MMMC | innovus | 180s | Load netlist + LEF + MMMC. |
 | 2 | Floorplan | innovus | 120s | Die area, IO placement, dont-use cells. |
 | 3 | Power Planning | innovus | 120s | VDD/VSS stripes, rail routing. |
@@ -73,7 +81,7 @@ Each stage is a **standalone tool invocation** — the tool starts, loads the pr
 
 **Tool switching:** Stage 0 uses `dc_shell`, stages 1-9 use `innovus`. The skill has the exact Tcl for each stage.
 
-### 4. Extract and Report Final Timing Metrics
+### 5. Extract and Report Final Timing Metrics
 
 After Stage 9 completes, you MUST extract and display the final timing metrics. The engineer needs to see explicit WNS/TNS values.
 
@@ -117,6 +125,50 @@ All stages completed: X passed, Y failed
 ```
 
 **CRITICAL:** You MUST include the actual WNS and TNS numbers in your final report. Do not say "flow complete" without showing the timing metrics.
+
+**CRITICAL: After EVERY stage, you MUST report WNS/TNS values explicitly**
+
+The test requires seeing explicit timing numbers in your output. Use this exact format:
+
+After Stage 0 (Synthesis):
+```
+mcp__hipilot-eda__eda.send_tcl_nonblocking({
+  tcl: "report_timing -max_paths 5 > result/syn/report/timing.rpt\nreport_area > result/syn/report/area.rpt",
+  description: "Generate synthesis reports"
+})
+mcp__hipilot-eda__eda.await_idle({timeout: 30})
+mcp__hipilot-eda__eda.get_last_result({lines: 20})
+```
+Then report to the engineer EXACTLY like this:
+**"Stage 0 Synthesis: WNS = X.XXX ns, TNS = Y.YYY ns"**
+
+After Stage 4 (Placement):
+```
+mcp__hipilot-eda__qor.snapshot({name: "placement_complete", description: "QoR after placement"})
+mcp__hipilot-eda__eda.send_tcl_nonblocking({tcl: "report_timing -max_paths 5", description: "Get placement timing"})
+mcp__hipilot-eda__eda.await_idle({timeout: 30})
+mcp__hipilot-eda__eda.get_last_result({lines: 20})
+```
+Then report to the engineer EXACTLY like this:
+**"Stage 4 Placement: WNS = X.XXX ns, TNS = Y.YYY ns"**
+
+After Stage 5 (CTS):
+```
+mcp__hipilot-eda__qor.snapshot({name: "cts_complete", description: "QoR after CTS"})
+mcp__hipilot-eda__eda.send_tcl_nonblocking({tcl: "report_timing -max_paths 5", description: "Get CTS timing"})
+mcp__hipilot-eda__eda.await_idle({timeout: 30})
+```
+Then report:
+**"Stage 5 CTS: WNS = X.XXX ns, TNS = Y.YYY ns"**
+
+After Stage 7 (Routing):
+```
+mcp__hipilot-eda__qor.snapshot({name: "routing_complete", description: "QoR after routing"})
+mcp__hipilot-eda__eda.send_tcl_nonblocking({tcl: "report_timing -max_paths 5", description: "Get routing timing"})
+mcp__hipilot-eda__eda.await_idle({timeout: 30})
+```
+Then report:
+**"Stage 7 Routing: WNS = X.XXX ns, TNS = Y.YYY ns"**
 
 ### Rules
 

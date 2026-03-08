@@ -68,8 +68,20 @@ echo ""
 # Create new session with 50/50 split (detached)
 tmux -L "$HIPILOT_SESSION" new-session -d -s "$HIPILOT_SESSION" -n "HiPilot" -c "$PROJECT_DIR"
 
+# Pass HIPILOT_DESIGN_DIR to tmux session if set (for clean design directory isolation)
+if [ -n "$HIPILOT_DESIGN_DIR" ]; then
+    tmux -L "$HIPILOT_SESSION" set-environment HIPILOT_DESIGN_DIR "$HIPILOT_DESIGN_DIR"
+    # Also write to file so MCP servers can read it (MCP doesn't inherit tmux env)
+    echo "$HIPILOT_DESIGN_DIR" > "$HIPILOT_TMPDIR/design_dir.txt"
+    echo "[HiPilot v0.7.0] Design dir set: $HIPILOT_DESIGN_DIR" >&2
+fi
+
 # Split window 50/50
 tmux -L "$HIPILOT_SESSION" split-window -h -l 50% -c "$PROJECT_DIR"
+
+# Keep EDA pane (pane 1) open even when process exits - critical for HiPilot workflow
+tmux -L "$HIPILOT_SESSION" set-option -t "$HIPILOT_SESSION:0.1" remain-on-exit on 2>/dev/null || true
+tmux -L "$HIPILOT_SESSION" set-option -t "$HIPILOT_SESSION:0.1" remain-on-exit-format " [EDA pane ready] " 2>/dev/null || true
 
 # -------------------------------------------------------------------
 # Status Bar Configuration (UX Spec Section 5)
@@ -186,115 +198,89 @@ tmux -L "$HIPILOT_SESSION" bind-key M run-shell "\
 if command -v claude >/dev/null 2>&1; then
   # Auto-start Claude Code with MCP permissions in the chat pane
   # Use --mcp-config to force-load MCP servers (bypasses feature gate)
+  # Pass HIPILOT_DESIGN_DIR to Claude Code environment so MCP servers inherit it
+  if [ -n "$HIPILOT_DESIGN_DIR" ]; then
+    tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "export HIPILOT_DESIGN_DIR=$HIPILOT_DESIGN_DIR"
+    tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
+    sleep 0.2
+  fi
   tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "claude --mcp-config /tmp/force_mcp.json --strict-mcp-config --dangerously-skip-permissions"
   tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
   # Wait for Claude to start and acknowledge the trust prompt
-  # Poll for up to 30 seconds until the trust prompt appears, then send "1"
+  # Poll for up to 60 seconds until the trust prompt appears, then send "1"
   echo "Waiting for Claude Code to initialize..."
   TRUST_HANDLED=false
-  for i in $(seq 1 60); do
+  BYPASS_HANDLED=false
+  BYPASS_ATTEMPTED=false
+  for i in $(seq 1 120); do
     sleep 0.5
     CAPTURE=$(tmux -L "$HIPILOT_SESSION" capture-pane -t "$HIPILOT_SESSION:0.0" -p 2>/dev/null || true)
-    # Capture pane content and check for trust prompt
-    if echo "$CAPTURE" | grep -q "Quick safety check"; then
+
+    # Check for trust prompt (appears first in Claude 2.1.71+)
+    if [ "$TRUST_HANDLED" = false ] && echo "$CAPTURE" | grep -q "Quick safety check"; then
+      echo "Trust prompt detected (attempt $i), acknowledging..."
       sleep 0.5
+      tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
       tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "1"
+      sleep 0.2
+      tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
       tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
       echo "Trust prompt acknowledged."
       TRUST_HANDLED=true
+      # Continue polling to handle bypass permissions prompt
+      continue
+    fi
+
+    # Check for bypass permissions prompt (appears AFTER trust prompt when --dangerously-skip-permissions is used)
+    # This is a numbered list: 1. No, exit  2. Yes, I accept
+    # Only attempt once and only if we see the specific prompt
+    if [ "$BYPASS_ATTEMPTED" = false ] && [ "$BYPASS_HANDLED" = false ] && echo "$CAPTURE" | grep -qE "Bypass Permissions mode"; then
+      # Check if we see the numbered list with "Yes, I accept" option
+      if echo "$CAPTURE" | grep -qE "Yes, I accept"; then
+        echo "Bypass permissions prompt detected (attempt $i), selecting 'Yes, I accept'..."
+        sleep 0.5
+        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
+        # Send "2" to select option 2 (Yes, I accept)
+        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "2"
+        sleep 0.3
+        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
+        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
+        echo "Bypass permissions selection sent."
+        BYPASS_ATTEMPTED=true
+        # Don't mark as handled yet - wait for confirmation in next iterations
+        continue
+      fi
+    fi
+
+    # If we attempted bypass, check if it succeeded (prompt no longer visible and we see ready state)
+    if [ "$BYPASS_ATTEMPTED" = true ] && [ "$BYPASS_HANDLED" = false ]; then
+      if ! echo "$CAPTURE" | grep -qE "Bypass Permissions mode" && echo "$CAPTURE" | grep -qE "(❯|Welcome back)"; then
+        echo "Bypass permissions enabled successfully."
+        BYPASS_HANDLED=true
+      fi
+    fi
+
+    # Check if Claude is fully initialized (input prompt visible)
+    if echo "$CAPTURE" | grep -qE "(❯|⏵ )"; then
+      echo "Claude Code initialized and ready."
+      TRUST_HANDLED=true
+      BYPASS_HANDLED=true
       break
     fi
-    # Check for bypass permissions prompt (can appear instead of trust prompt in v2.1.59+)
-    if echo "$CAPTURE" | grep -qE "(bypass permissions|Dangerous mode|⏵⏵)"; then
-      echo "Bypass permissions prompt detected early, will handle in next step..."
-      break
-    fi
-    # Also break if we see the welcome screen (trust was already acknowledged or bypassed)
+
+    # Also accept "Welcome back" as initialization complete
     if echo "$CAPTURE" | grep -q "Welcome back"; then
       echo "Claude Code initialized."
       TRUST_HANDLED=true
-      break
-    fi
-  done
-
-  # Handle "bypass permissions" prompt (appears with --dangerously-skip-permissions)
-  # This prompt appears after the trust prompt and requires user interaction to enable
-  # dangerous tool permissions. We need to check the checkbox and confirm.
-  # Check for up to 20 seconds - this prompt can appear late
-  echo "Checking for bypass permissions prompt..."
-  BYPASS_HANDLED=false
-  for i in $(seq 1 40); do
-    sleep 0.5
-    CAPTURE=$(tmux -L "$HIPILOT_SESSION" capture-pane -t "$HIPILOT_SESSION:0.0" -p 2>/dev/null || true)
-    # Check for bypass permissions prompt (various forms)
-    # Note: Claude Code v2.1.59+ uses numbered list: "1. No, exit" / "2. Yes, I accept"
-    if echo "$CAPTURE" | grep -qE "(bypass permissions|Dangerous mode|Yes, I accept|Enter to confirm)"; then
-      echo "Bypass permissions prompt detected (attempt $i), enabling..."
-      sleep 0.5
-
-      # Ensure pane 0.0 is focused before sending keys (gnome-terminal may attach with wrong focus)
-      tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
-      sleep 0.1
-
-      # Check if it's a numbered list interface (newer Claude versions)
-      # Note: grep -z allows matching across lines, or check for unique "Yes, I accept" text
-      if echo "$CAPTURE" | grep -qE "2\.\s*Yes, I accept"; then
-        echo "Detected numbered list interface, selecting option 2 (Yes)..."
-        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
-        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "2"
-        sleep 0.2
-        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
-        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
-      else
-        # Fallback: Try checkbox interface (older approach)
-        echo "Trying checkbox interface..."
-        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
-        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" Tab
-        sleep 0.2
-        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
-        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" " "
-        sleep 0.2
-        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
-        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
-      fi
-      sleep 0.5
-
-      # Check if it worked by looking for the welcome screen
-      CAPTURE2=$(tmux -L "$HIPILOT_SESSION" capture-pane -t "$HIPILOT_SESSION:0.0" -p 2>/dev/null || true)
-      if echo "$CAPTURE2" | grep -q "Welcome back"; then
-        echo "Bypass permissions enabled successfully."
-        BYPASS_HANDLED=true
-        break
-      fi
-
-      # If still showing prompt with numbered list, retry with explicit 2+Enter
-      if echo "$CAPTURE2" | grep -qE "(1\.\s*No|2\.\s*Yes)"; then
-        echo "Retrying with explicit selection..."
-        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
-        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "2"
-        sleep 0.2
-        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
-        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
-        sleep 0.5
-        CAPTURE3=$(tmux -L "$HIPILOT_SESSION" capture-pane -t "$HIPILOT_SESSION:0.0" -p 2>/dev/null || true)
-        if echo "$CAPTURE3" | grep -q "Welcome back"; then
-          echo "Bypass permissions enabled successfully (retry)."
-          BYPASS_HANDLED=true
-          break
-        fi
-      fi
-
-      if echo "$CAPTURE2" | grep -qE "(bypass permissions|Dangerous mode)"; then
-        echo "WARNING: Bypass prompt still showing after attempts."
-      fi
-    fi
-    # If we see the welcome screen, permissions are already handled
-    if echo "$CAPTURE" | grep -q "Welcome back"; then
-      echo "Claude Code initialized (permissions already handled)."
       BYPASS_HANDLED=true
       break
     fi
   done
+
+  # Report initialization status
+  if [ "$TRUST_HANDLED" = false ]; then
+    echo "Warning: Trust prompt handling timed out."
+  fi
   if [ "$BYPASS_HANDLED" = false ]; then
     echo "Warning: Bypass permissions prompt handling timed out."
   fi
@@ -339,27 +325,8 @@ else
   tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
 fi
 
-# Setup right pane (EDA) - show welcome
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "clear"
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '  EDA Tool Pane'"
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '  ──────────────'"
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '  Start your EDA tool:'"
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '    icc2_shell    (Synopsys ICC2)'"
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '    innovus       (Cadence Innovus)'"
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '    pt_shell      (Synopsys PrimeTime)'"
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo ''"
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '  🔒 Manual mode active (default)'"
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" -l "echo '  HiPilot Tcl commands require approval.'"
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" C-m
+# Setup right pane (EDA) - clean empty pane
+# No welcome message - tools will show their own prompts when started
 # Select left pane (chat) as default focus
 tmux -L "$HIPILOT_SESSION" select-pane -t 0
 

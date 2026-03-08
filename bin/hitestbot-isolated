@@ -1,0 +1,78 @@
+#!/bin/bash
+# IsolatedTestRunner — Run HiTestBot in a completely isolated environment
+#
+# For each test:
+# 1. Creates unique test directory: /home/EDA/hipilot_test/runs/TIMESTAMP/
+# 2. Deploys HiPilot code to test directory (isolated from shared deployment)
+# 3. Extracts clean Ibex design to test directory
+# 4. Configures MCP servers to use test directory
+# 5. Runs HiTestBot
+# 6. Collects evidence in test directory
+#
+# Usage:
+#   bin/hitestbot-isolated                    # Run default test (/rtl2gds)
+#   bin/hitestbot-isolated /rtl2gds           # Run specific command
+#   bin/hitestbot-isolated "fix setup timing" # Run any command
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+SSH_HOST="${HIPILOT_SSH_HOST:-EDA@192.168.112.163}"
+export SSHPASS="${SSHPASS:-${HIPILOT_SSH_PASS:-eda2020}}"
+NODE_PATH="${HIPILOT_NODE_PATH:-/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin}"
+
+COMMAND="${1:-/rtl2gds}"
+MAX_WAIT_MS="${HITESTBOT_MAX_WAIT:-300000}"
+
+echo "════════════════════════════════════════════════════════════════"
+echo "  HiTestBot — Isolated Test Environment"
+echo "════════════════════════════════════════════════════════════════"
+echo ""
+echo "This will:"
+echo "  1. Create isolated test directory under /home/EDA/hipilot_test/runs/"
+echo "  2. Deploy HiPilot code to test directory"
+echo "  3. Extract clean Ibex design"
+echo "  4. Configure MCP servers for isolated session"
+echo "  5. Run HiTestBot"
+echo "  6. Collect evidence in test directory"
+echo ""
+echo "Command:     $COMMAND"
+echo "Max Wait:    $((MAX_WAIT_MS / 1000))s"
+echo ""
+
+# Check SSH connectivity
+echo "Checking SSH connectivity..."
+if ! sshpass -e ssh -o ConnectTimeout=10 -o StrictHostKeyChecking=no "$SSH_HOST" "echo 'SSH OK'" >/dev/null 2>&1; then
+  echo "ERROR: Cannot connect to EDA server ($SSH_HOST)"
+  exit 1
+fi
+
+# Upload and run IsolatedTestRunner
+echo "Uploading IsolatedTestRunner..."
+sshpass -e scp -o StrictHostKeyChecking=no "$PROJECT_DIR/src/hitestbot/infra/IsolatedTestRunner.mjs" "$SSH_HOST:/tmp/IsolatedTestRunner.mjs"
+
+echo "Starting isolated test..."
+echo ""
+sshpass -e ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=15 -o ServerAliveCountMax=3 \
+  "$SSH_HOST" "
+export HIPILOT_EDA_SERVER=1
+export PATH=${NODE_PATH}:\$PATH
+export DISPLAY=:0
+export SSHPASS='${SSHPASS}'
+cd /home/EDA/hipilot/current
+node /tmp/IsolatedTestRunner.mjs '$COMMAND' $MAX_WAIT_MS
+"
+
+EXIT_CODE=$?
+
+if [ $EXIT_CODE -eq 0 ]; then
+  echo ""
+  echo "✅ Test completed successfully"
+else
+  echo ""
+  echo "❌ Test failed with exit code: $EXIT_CODE"
+fi
+
+exit $EXIT_CODE

@@ -35,13 +35,44 @@ export class FlowReporter {
     const failedStages = stageResults.filter(s => s.status === 'fail').length;
     const completedStages = passedStages + partialStages;
     const progressPct = totalStages > 0 ? Math.round((completedStages / totalStages) * 100) : 0;
+
+    // Get first result for transcript (university-style scoring)
+    const result = stageResults[0] || {};
+    const transcript = result.transcript;
+    const hasTranscript = transcript && transcript.subjects;
+
+    // Legacy score calculation
     const totalScore = stageResults.reduce((s, r) => s + r.total_score, 0);
-    const maxScore = totalStages * 5;
+    const maxScore = stageResults.reduce((s, r) => s + r.max_score, 0) || (totalStages * 5);
 
     // Find blocking stage
     const blockingStage = stageResults.find(s => s.status === 'fail');
 
     let md = `# HiPilot Flow Certification Report\n\n`;
+
+    // University-Style Transcript (if available)
+    if (hasTranscript) {
+      md += `## Academic Transcript\n\n`;
+      md += `| Subject | Score | Grade | Weight | Status |\n`;
+      md += `|---------|-------|-------|--------|--------|\n`;
+      for (const subject of transcript.subjects) {
+        const icon = subject.status === 'PASS' ? '✅' : '❌';
+        md += `| ${subject.name} | ${subject.score}% | ${subject.grade} | ${subject.weight}x | ${icon} ${subject.status} |\n`;
+      }
+      md += `\n`;
+      md += `**GPA: ${transcript.gpa}/4.0** | **Final Grade: ${transcript.final_grade}** | **Overall: ${transcript.overall_percentage}%**\n\n`;
+      md += `*Assessment: ${result.assessment || 'N/A'}*\n\n`;
+
+      if (result.recommendations && result.recommendations.length > 0) {
+        md += `**Recommendations:**\n`;
+        for (const rec of result.recommendations) {
+          md += `- ${rec}\n`;
+        }
+        md += `\n`;
+      }
+      md += `---\n\n`;
+    }
+
     md += `## Executive Summary\n\n`;
     const overallStatus = failedStages === 0
       ? (partialStages > 0 ? 'PARTIAL PASS' : 'PASS')
@@ -51,6 +82,18 @@ export class FlowReporter {
     md += `| **Overall** | ${overallStatus} |\n`;
     md += `| Workflow | ${workflowName} |\n`;
     md += `| Progress | ${completedStages}/${totalStages} stages (${progressPct}%) |\n`;
+    if (hasTranscript) {
+      md += `| GPA | ${transcript.gpa}/4.0 (${transcript.final_grade}) |\n`;
+      // Find Human-Like subject and display prominently
+      const humanLike = transcript.subjects.find(s => s.name === 'Human-Like');
+      if (humanLike) {
+        const humanLevel = humanLike.score >= 80 ? '🟢 Human-like' :
+                          humanLike.score >= 60 ? '🟡 Semi-human' :
+                          humanLike.score >= 40 ? '🟠 Partially human' :
+                          humanLike.score >= 20 ? '🔴 Machine-like' : '⚫ Dead machine';
+        md += `| **Human Level** | ${humanLevel} (${humanLike.score}%) |\n`;
+      }
+    }
     md += `| Score | ${totalScore.toFixed(1)}/${maxScore} |\n`;
     md += `| Duration | ${totalS}s |\n`;
     if (blockingStage) {
@@ -99,12 +142,28 @@ export class FlowReporter {
     md += `---\n\n## Stage Scorecards\n\n`;
     for (const sr of stageResults) {
       const icon = sr.status === 'pass' ? '✅' : sr.status === 'partial' ? '⚠️' : '❌';
-      md += `### ${sr.stage} (${sr.total_score.toFixed(1)}/5.0) ${icon}\n\n`;
+      const max = sr.max_score || 5.0;
+      md += `### ${sr.stage} (${sr.total_score.toFixed(1)}/${max.toFixed(1)}) ${icon}\n\n`;
+
+      // Show transcript if available
+      if (sr.transcript) {
+        md += `**University Transcript:**\n`;
+        md += `| Subject | Score | Grade | Weight |\n`;
+        md += `|---------|-------|-------|--------|\n`;
+        for (const subject of sr.transcript.subjects) {
+          const statusIcon = subject.status === 'PASS' ? '✓' : '✗';
+          md += `| ${subject.name} | ${subject.score}% | ${subject.grade} | ${subject.weight}x ${statusIcon} |\n`;
+        }
+        md += `\n**GPA: ${sr.transcript.gpa}/4.0** | **Grade: ${sr.transcript.final_grade}**\n\n`;
+      }
+
+      // Show detailed scores
+      md += `**Detailed Scores:**\n\n`;
       md += `| Layer | Score | Detail |\n`;
       md += `|-------|-------|--------|\n`;
-      for (const [key, val] of Object.entries(sr.scores)) {
-        const layerName = key.replace('_', ' ');
-        md += `| ${layerName} | ${val.score.toFixed(1)} | ${val.detail} |\n`;
+      for (const [key, val] of Object.entries(sr.scores || {})) {
+        const layerName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        md += `| ${layerName} | ${val.score?.toFixed(1) || 'N/A'} | ${val.detail || 'N/A'} |\n`;
       }
       md += '\n';
 
@@ -195,7 +254,11 @@ export class FlowReporter {
     const partialStages = stageResults.filter(s => s.status === 'partial').length;
     const completedStages = passedStages + partialStages;
     const totalScore = stageResults.reduce((s, r) => s + r.total_score, 0);
+    const maxScore = stageResults.reduce((s, r) => s + (r.max_score || 5), 0);
     const blockingStage = stageResults.find(s => s.status === 'fail');
+
+    // Get first result for transcript
+    const result = stageResults[0] || {};
 
     return {
       test_name: workflowName,
@@ -205,16 +268,24 @@ export class FlowReporter {
       completed_stages: completedStages,
       progress_pct: totalStages > 0 ? Math.round((completedStages / totalStages) * 100) : 0,
       total_score: totalScore,
-      max_score: totalStages * 5,
+      max_score: maxScore,
+      // University-style transcript
+      transcript: result.transcript || null,
+      gpa: result.transcript?.gpa || null,
+      final_grade: result.transcript?.final_grade || null,
+      assessment: result.assessment || null,
+      recommendations: result.recommendations || [],
       blocking_stage: blockingStage?.stage || null,
       blocking_category: blockingStage?.failure_classification?.category || null,
       stages: stageResults.map(sr => ({
         name: sr.stage,
         score: sr.total_score,
+        max_score: sr.max_score || 5,
         status: sr.status,
+        transcript: sr.transcript || null,
         failure_category: sr.failure_classification?.category || null,
         scores: Object.fromEntries(
-          Object.entries(sr.scores).map(([k, v]) => [k, v.score])
+          Object.entries(sr.scores || {}).map(([k, v]) => [k, v.score])
         ),
       })),
     };

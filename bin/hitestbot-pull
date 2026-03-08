@@ -41,5 +41,7 @@ else
   sshpass -e scp -r $SSH_OPTS "$SSH_HOST:$REMOTE_EVIDENCE/$LATEST" "$LOCAL_EVIDENCE/"
   # Create symlink to latest
   ln -sfn "$LATEST" "$LOCAL_EVIDENCE/latest"
+  # Also pull MCP log for that test run
+  sshpass -e scp $SSH_OPTS "$SSH_HOST:/tmp/hipilot_test_mcp.jsonl" "$LOCAL_EVIDENCE/$LATEST/mcp_log.jsonl" 2>/dev/null || true
   echo "Done. Evidence in $LOCAL_EVIDENCE/$LATEST/ (symlinked to $LOCAL_EVIDENCE/latest)"
 fi

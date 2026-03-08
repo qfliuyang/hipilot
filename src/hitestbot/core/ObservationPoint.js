@@ -48,19 +48,19 @@ export class ObservationPoint {
       catch { return ''; }
     });
 
-    // Capture Claude pane (pane 0)
+    // Capture Claude pane (pane 0) - increased scrollback to catch stage completions
     let claudePane = '';
     try {
       claudePane = await Promise.resolve(
-        exec(`${tmuxCmd} capture-pane -t ${session}:0.0 -p -S -200 2>/dev/null || echo ""`)
+        exec(`${tmuxCmd} capture-pane -t ${session}:0.0 -p -S -1000 2>/dev/null || echo ""`)
       );
     } catch {}
 
-    // Capture EDA pane (pane 1)
+    // Capture EDA pane (pane 1) - increased scrollback to catch stage completions
     let edaPane = '';
     try {
       edaPane = await Promise.resolve(
-        exec(`${tmuxCmd} capture-pane -t ${session}:0.1 -p -S -200 2>/dev/null || echo ""`)
+        exec(`${tmuxCmd} capture-pane -t ${session}:0.1 -p -S -1000 2>/dev/null || echo ""`)
       );
     } catch {}
 
@@ -99,8 +99,8 @@ export class ObservationPoint {
       content: {
         claude_pane_lines: claudePane.split('\n').length,
         eda_pane_lines: edaPane.split('\n').length,
-        claude_pane_last50: claudePane.split('\n').slice(-50).join('\n'),
-        eda_pane_last50: edaPane.split('\n').slice(-50).join('\n'),
+        claude_pane_last50: claudePane.split('\n').slice(-200).join('\n'),
+        eda_pane_last50: edaPane.split('\n').slice(-200).join('\n'),
       },
       context,
     };

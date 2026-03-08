@@ -29,7 +29,16 @@ import { join, basename } from 'path';
 import { ObservationPoint } from './ObservationPoint.js';
 import { FlowReporter } from './FlowReporter.js';
 
-const POLL_INTERVAL_MS = 5000;
+// Adaptive polling intervals based on detected state - optimized for faster response
+const POLL_INTERVALS = {
+  working: 2000,        // Poll faster when Claude is actively producing output (2s)
+  waiting_for_eda: 8000, // Poll slower during long EDA execution (8s)
+  idle: 3000,           // Moderate when both panes idle
+  needs_approval: 500,  // Very fast response for approvals (0.5s)
+  asking_question: 1000, // Fast response for questions (1s)
+  bypass_permissions: 500, // Fast for permission bypass (0.5s)
+};
+const DEFAULT_POLL_INTERVAL_MS = 3000;
 const CLAUDE_READY_TIMEOUT_MS = 120000;
 
 // ═══════════════════════════════════════════════════════════════════
@@ -60,6 +69,48 @@ const CLAUDE_READY_TIMEOUT_MS = 120000;
 //    - MCP logs are collected AFTER the test from files HiPilot wrote
 //    - HiTestBot cannot create or modify MCP log entries
 // ═══════════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════════
+//  STAGE-TOOL VALIDATION MAP
+//
+//  RTL2GDS flow has strict tool requirements per stage:
+//  - Stage 0 (Synthesis): MUST use dc_shell
+//  - Stages 1-9 (Physical Design): MUST use innovus
+//  - Signoff: SHOULD use pt_shell
+//
+//  These constraints are fundamental to the flow. A human engineer
+//  would never try to run synthesis in innovus - that's a process error.
+// ═══════════════════════════════════════════════════════════════════
+const STAGE_TOOL_MAP = {
+  // Stage 0: Synthesis - ONLY dc_shell is valid
+  'synthesis': { tool: 'dc_shell', stage: 0, required: true },
+  'compile': { tool: 'dc_shell', stage: 0, required: true },
+  'dc': { tool: 'dc_shell', stage: 0, required: true },
+  'elaborate': { tool: 'dc_shell', stage: 0, required: true },
+
+  // Stages 1-9: Physical Design - ONLY innovus is valid
+  'init_design': { tool: 'innovus', stage: 1, required: true },
+  'init': { tool: 'innovus', stage: 1, required: true },
+  'floorplan': { tool: 'innovus', stage: 2, required: true },
+  'floorplanning': { tool: 'innovus', stage: 2, required: true },
+  'power_plan': { tool: 'innovus', stage: 3, required: true },
+  'powerplan': { tool: 'innovus', stage: 3, required: true },
+  'placement': { tool: 'innovus', stage: 4, required: true },
+  'place': { tool: 'innovus', stage: 4, required: true },
+  'cts': { tool: 'innovus', stage: 5, required: true },
+  'clock_tree': { tool: 'innovus', stage: 5, required: true },
+  'post_cts_opt': { tool: 'innovus', stage: 6, required: true },
+  'routing': { tool: 'innovus', stage: 7, required: true },
+  'route': { tool: 'innovus', stage: 7, required: true },
+  'routing_opt': { tool: 'innovus', stage: 8, required: true },
+  'chip_finish': { tool: 'innovus', stage: 9, required: true },
+  'chip_done': { tool: 'innovus', stage: 9, required: true },
+  'stream_out': { tool: 'innovus', stage: 9, required: true },
+
+  // Signoff
+  'sta': { tool: 'pt_shell', stage: 10, required: false },
+  'primetime': { tool: 'pt_shell', stage: 10, required: false },
+};
 
 // A human does NOT stare at a timer. They glance at the screen and read:
 // - Is there a prompt (❯, >, $, innovus N>)? → terminal is idle, ready for input
@@ -110,12 +161,17 @@ export class FlowCertifier {
     this._paneLog = [];
     this._ffmpegPid = null;
     this._videoFile = null;
+    this._lastCompletedStage = 0; // Track RTL2GDS stage progress
+    this.lastCommand = null;
   }
 
   /**
    * Prepare a clean design copy for this test run.
    * Extracts ibex_demo.tar into a timestamped directory so each test
    * starts from scratch — no leftover results from previous runs.
+   *
+   * Also removes ALL pre-existing design outputs to ensure stages don't
+   * skip just because files exist. HiPilot must run the complete flow.
    *
    * Returns the path to the clean work directory.
    */
@@ -146,11 +202,58 @@ export class FlowCertifier {
         ? join(this.testWorkDir, contents[0])
         : this.testWorkDir;
 
+      // Also clean outputs from the extracted copy
+      this._removeExistingOutputs(designDir);
+
       this._runLog(`Clean design at: ${designDir}`);
       return designDir;
     } catch (e) {
       this._runLog(`Failed to extract design: ${e.message}`);
       return null;
+    }
+  }
+
+  /**
+   * Remove ALL existing design outputs to force complete flow execution.
+   * HiPilot should never skip a stage just because files exist.
+   */
+  _removeExistingOutputs(designDir) {
+    if (!existsSync(designDir)) return;
+
+    this._runLog(`Removing existing outputs from: ${designDir}`);
+
+    const outputDirs = [
+      'result',
+      'result/syn',
+      'result/pr',
+      'result/scanchain',
+      '*.enc',
+      '*.enc.dat',
+      '*.log',
+      '*.rpt',
+    ];
+
+    for (const dir of outputDirs) {
+      try {
+        const path = join(designDir, dir);
+        if (existsSync(path)) {
+          execSync(`rm -rf "${path}"`, { encoding: 'utf-8', timeout: 10000 });
+          this._runLog(`  Removed: ${path}`);
+        }
+      } catch (e) {
+        this._runLog(`  Warning: Could not remove ${dir}: ${e.message}`);
+      }
+    }
+
+    // Specifically remove the synthesis netlist that causes skips
+    const netlistPath = join(designDir, 'result/syn/data/ibex_core.syn.v');
+    if (existsSync(netlistPath)) {
+      try {
+        execSync(`rm -f "${netlistPath}"`, { encoding: 'utf-8', timeout: 5000 });
+        this._runLog(`  Removed synthesis netlist: ${netlistPath}`);
+      } catch (e) {
+        this._runLog(`  Warning: Could not remove netlist: ${e.message}`);
+      }
     }
   }
 
@@ -198,8 +301,8 @@ export class FlowCertifier {
       this._ffmpegPid = parseInt(pid, 10);
       writeFileSync(pidFile, String(this._ffmpegPid));
 
-      // Verify ffmpeg started
-      execSync('sleep 2', { timeout: 5000 });
+      // Verify ffmpeg started (reduced from 2s to 1s)
+      execSync('sleep 1', { timeout: 5000 });
       try {
         process.kill(this._ffmpegPid, 0); // check if alive
         this._runLog(`Video recording started: PID=${this._ffmpegPid}, resolution=${resolution}`);
@@ -223,8 +326,8 @@ export class FlowCertifier {
       process.kill(this._ffmpegPid, 'SIGINT');
       this._runLog(`Sent SIGINT to ffmpeg PID=${this._ffmpegPid}`);
 
-      // Wait a few seconds for ffmpeg to finalize
-      execSync('sleep 3', { timeout: 10000 });
+      // Wait for ffmpeg to finalize (reduced from 3s to 2s)
+      execSync('sleep 2', { timeout: 10000 });
 
       // Check if still running, force kill if needed
       try {
@@ -286,6 +389,45 @@ export class FlowCertifier {
     });
 
     return { claude, eda };
+  }
+
+  // Parallel version for faster capture during watch loop
+  async _logPanesParallel(label) {
+    const ts = new Date().toISOString();
+    const elapsed = this.recordingStartTime
+      ? ((Date.now() - this.recordingStartTime) / 1000).toFixed(1)
+      : '0.0';
+
+    // Capture both panes in parallel for speed
+    const [claude, eda] = await Promise.all([
+      this._capturePaneAsync('0.0'),
+      this._capturePaneAsync('0.1')
+    ]);
+
+    this._paneLog.push({
+      timestamp: ts,
+      elapsed_s: parseFloat(elapsed),
+      video_offset_s: this.recordingStartTime ? (Date.now() - this.recordingStartTime) / 1000 : null,
+      label,
+      claude_lines: claude.split('\n').length,
+      eda_lines: eda.split('\n').length,
+      claude_last10: claude.split('\n').filter(l => l.trim()).slice(-10).join('\n'),
+      eda_last10: eda.split('\n').filter(l => l.trim()).slice(-10).join('\n'),
+    });
+
+    return { claude, eda };
+  }
+
+  // Async wrapper for pane capture
+  _capturePaneAsync(paneId) {
+    return new Promise((resolve) => {
+      try {
+        const result = this._capturePane(paneId);
+        resolve(result);
+      } catch (e) {
+        resolve('');
+      }
+    });
   }
 
   _savePaneLog() {
@@ -562,7 +704,7 @@ export class FlowCertifier {
     this._runLog('Stale processes cleaned');
   }
 
-  async launchHiPilot() {
+  async launchHiPilot(cleanDesignDir = null) {
     this._runLog('Phase 1: Launching HiPilot...');
 
     // Kill ALL stale processes (EDA tools, tmux, ffmpeg) — critical for clean test
@@ -572,11 +714,17 @@ export class FlowCertifier {
     const binPath = this.hipilotBin || join(this._projectRoot(), 'bin', 'hipilot');
     const projectDir = this._projectRoot();
 
+    // Build env vars - include clean design directory if provided
+    const envVars = { ...process.env, HIPILOT_SESSION: this.session, HIPILOT_TEST_LOG: this.mcpLogPath };
+    if (cleanDesignDir) {
+      envVars.HIPILOT_DESIGN_DIR = cleanDesignDir;
+    }
+
     // Step 1: Create the tmux session (headless — reliable)
     try {
       const output = execSync(`bash ${binPath} --no-terminal 2>&1`, {
         encoding: 'utf-8', timeout: 300000,
-        env: { ...process.env, HIPILOT_SESSION: this.session, HIPILOT_TEST_LOG: this.mcpLogPath },
+        env: envVars,
       });
       this._runLog(`bin/hipilot --no-terminal output:\n${output}`);
     } catch (e) {
@@ -644,7 +792,7 @@ export class FlowCertifier {
 
     // Center the window. Try xdotool first (more reliable on CentOS 7), wmctrl as fallback.
     try {
-      execSync('sleep 2', { timeout: 5000 });
+      execSync('sleep 1', { timeout: 5000 });
       const winW = Math.round(screenW * 0.8);
       const winH = Math.round(screenH * 0.8);
       const posX = Math.round((screenW - winW) / 2);
@@ -660,37 +808,112 @@ export class FlowCertifier {
     }
   }
 
+  /**
+   * Update MCP settings.json on the EDA server with HIPILOT_DESIGN_DIR.
+   * This is CRITICAL because MCP servers get their environment from settings.json,
+   * not from the shell environment.
+   */
+  async _updateMcpSettings(designDir) {
+    const SSH_HOST = process.env.HIPILOT_SSH_HOST || 'EDA@192.168.112.163';
+    const SSH_PASS = process.env.HIPILOT_SSH_PASS || 'eda2020';
+    const REMOTE_SETTINGS = '/home/EDA/.claude/settings.json';
+
+    // HiPilot code directory - always use the deployed version
+    const hipilotDir = '/home/EDA/hipilot/current';
+
+    try {
+      // Read current settings from EDA server
+      const readCmd = `SSHPASS=${SSH_PASS} sshpass -e ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 ${SSH_HOST} 'cat ${REMOTE_SETTINGS} 2>/dev/null || echo "{}"'`;
+      const settingsJson = execSync(readCmd, { encoding: 'utf-8', timeout: 15000 });
+      const settings = JSON.parse(settingsJson);
+
+      // Patch each MCP server to include HIPILOT_DESIGN_DIR in env
+      const mcpServers = settings.mcpServers || {};
+      for (const serverName of Object.keys(mcpServers)) {
+        if (!mcpServers[serverName].env) {
+          mcpServers[serverName].env = {};
+        }
+        mcpServers[serverName].env.HIPILOT_DESIGN_DIR = designDir;
+
+        // CRITICAL: Update MCP server paths to use freshly deployed code
+        if (serverName === 'hipilot-eda') {
+          mcpServers[serverName].args = [`${hipilotDir}/servers/eda/index.js`];
+        } else if (serverName === 'hipilot-tmux') {
+          mcpServers[serverName].args = [`${hipilotDir}/servers/tmux/index.js`];
+        } else if (serverName === 'hipilot-knowledge') {
+          mcpServers[serverName].args = [`${hipilotDir}/servers/knowledge/index.js`];
+        }
+      }
+
+      // Also ensure global env section has it (for newer Claude Code versions)
+      if (!settings.env) {
+        settings.env = {};
+      }
+      settings.env.HIPILOT_DESIGN_DIR = designDir;
+
+      // Write updated settings back to EDA server
+      const updatedJson = JSON.stringify(settings, null, 2);
+      const writeCmd = `SSHPASS=${SSH_PASS} sshpass -e ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 ${SSH_HOST} 'cat > ${REMOTE_SETTINGS}' << 'EOFSETTINGS'\n${updatedJson}\nEOFSETTINGS`;
+      execSync(writeCmd, { encoding: 'utf-8', timeout: 15000 });
+
+      this._runLog(`MCP settings.json updated with HIPILOT_DESIGN_DIR=${designDir}`);
+      this._runLog(`MCP servers now using code from: ${hipilotDir}`);
+    } catch (err) {
+      this._runLog(`WARNING: Failed to update MCP settings.json: ${err.message}`);
+      this._runLog('MCP servers may use default design directory instead of clean directory');
+      // Don't throw - we can still try to run the test
+    }
+  }
+
   async waitForClaudeReady() {
-    this._runLog('Phase 2: Waiting for Claude Code to be ready...');
+    this._runLog('Phase 2: Waiting for Claude Code to be ready (prompt + MCP servers)...');
     const start = Date.now();
+    let attempt = 0;
+    let promptDetectedTime = null;
 
     while (Date.now() - start < CLAUDE_READY_TIMEOUT_MS) {
       const claudeOutput = this._capturePane('0.0');
       const lines = claudeOutput.split('\n').filter(l => l.trim());
       const lastLine = lines[lines.length - 1] || '';
 
-      // Claude Code is ready when ANY of these appear ANYWHERE in the capture:
-      // - The ❯ prompt character (Claude Code's input prompt)
-      // - "Welcome" message (Claude Code welcome screen)
-      // - "bypass permissions" (Claude started but permissions prompt showing)
-      const isReady =
-        claudeOutput.includes('❯') ||
-        claudeOutput.includes('Welcome') ||
-        claudeOutput.includes('bypass permissions') ||
-        claudeOutput.includes('Claude Code') ||
-        claudeOutput.includes('Opus');
-
-      if (isReady) {
-        this._runLog(`Claude Code ready (${((Date.now() - start) / 1000).toFixed(1)}s), captured ${claudeOutput.length} chars`);
-        return true;
-      }
-
+      // Check for fatal errors first
       if (claudeOutput.includes('Claude CLI not found')) {
         this._runLog('Claude CLI not installed — left pane shows fallback');
         return false;
       }
 
-      await this._sleep(3000);
+      // Claude Code prompt detected
+      const hasPrompt = claudeOutput.includes('❯') ||
+        claudeOutput.includes('Welcome') ||
+        claudeOutput.includes('Claude Code');
+
+      // MCP servers are ready when we see tool output patterns
+      // This indicates MCP servers have initialized and are responding
+      const mcpReady = /mcp__hipilot-|eda\.(detect_tool|get_status|start_tool)/i.test(claudeOutput) ||
+        /MCP.*tool|tools\/list|server.*ready/i.test(claudeOutput);
+
+      if (hasPrompt && !promptDetectedTime) {
+        promptDetectedTime = Date.now();
+        this._runLog(`Prompt detected after ${((promptDetectedTime - start) / 1000).toFixed(1)}s, waiting for MCP servers...`);
+      }
+
+      // Consider ready when:
+      // 1. Prompt is visible AND
+      // 2. Either MCP tools are responding OR we've waited 10s after prompt (give MCP time to init)
+      const timeSincePrompt = promptDetectedTime ? Date.now() - promptDetectedTime : 0;
+      const isReady = hasPrompt && (mcpReady || timeSincePrompt > 10000);
+
+      if (isReady) {
+        const elapsed = (Date.now() - start) / 1000;
+        const mcpStatus = mcpReady ? 'MCP ready' : 'MCP timeout (proceeding anyway)';
+        this._runLog(`Claude Code ready (${elapsed.toFixed(1)}s), ${mcpStatus}, captured ${claudeOutput.length} chars`);
+        return true;
+      }
+
+      // Exponential backoff: start fast (1s), gradually increase to max (3s)
+      attempt++;
+      const delayMs = Math.min(1000 * Math.min(attempt, 3), 3000);
+      await this._sleep(delayMs);
     }
 
     this._runLog(`Claude Code not ready after ${CLAUDE_READY_TIMEOUT_MS / 1000}s`);
@@ -745,9 +968,17 @@ export class FlowCertifier {
       if (pat.test(claude)) return { state: 'error', detail: claude.match(pat)[0] };
     }
 
+    // Check for Claude's ready prompt — the cursor is blinking at ❯ or >
+    // This is the clearest signal: Claude finished and is waiting for next input
+    const claudePromptReady = /^[>❯]\s*$/.test(lastLine) ||
+      /^❯\s/.test(lastLine) ||
+      lastLine.includes('What can I help') ||
+      lastLine.includes('How can I help');
+
     // Check for bypass permissions prompt (Claude Code dangerous mode) — CRITICAL
     // This must be checked BEFORE thinking/working states
-    if (/bypass permissions|Dangerous mode|⏵⏵/.test(claude)) {
+    // BUT only if Claude is NOT already ready (avoid matching old scrollback text)
+    if (!claudePromptReady && /bypass permissions|Dangerous mode|⏵⏵/.test(claude)) {
       return { state: 'bypass_permissions' };
     }
 
@@ -761,32 +992,59 @@ export class FlowCertifier {
       }
     }
 
-    // Check for Claude's ready prompt — the cursor is blinking at ❯ or >
-    // This is the clearest signal: Claude finished and is waiting for next input
-    const claudePromptReady = /^[>❯]\s*$/.test(lastLine) ||
-      /^❯\s/.test(lastLine) ||
-      lastLine.includes('What can I help') ||
-      lastLine.includes('How can I help');
-
     // Check if Claude is actively thinking (spinner visible)
     const claudeThinking = /thinking|Drizzling|Working|Generating/i.test(lastLine) ||
       /[⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏✶●◉⠿]/.test(lastLine);
 
-    // Check for stage completion message - a human would see "STAGE X COMPLETE"
-    const stageComplete = /STAGE\s+\d+\s+COMPLETE|stage.*complete/i.test(claude);
+    // Track stage completion - extract stage numbers from "Stage X COMPLETE" or "Stage X completed" messages
+    // Use matchAll to find ALL stage completions, keeping the highest stage number
+    // Matches: "STAGE 3 COMPLETE", "Stage 2 completed successfully", "Stage 4 Complete"
+    const stageCompletionRegex = /Stage\s+(\d+)\s+(?:COMPLETE|completed|Complete)/gi;
+    let stageMatch;
+    let matchCount = 0;
+    while ((stageMatch = stageCompletionRegex.exec(claude)) !== null) {
+      matchCount++;
+      const stageNum = parseInt(stageMatch[1], 10);
+      if (stageNum > this._lastCompletedStage) {
+        this._lastCompletedStage = stageNum;
+        this._runLog(`Stage ${stageNum} completion detected (match #${matchCount})`);
+      }
+    }
+    if (matchCount > 0) {
+      this._runLog(`Stage regex found ${matchCount} matches, lastCompletedStage=${this._lastCompletedStage}`);
+    }
 
-    // Check for full RTL2GDS flow completion - all stages done + GDS exported
-    // This allows early test termination instead of waiting for full timeout
-    const rtl2gdsComplete = /RTL-to-GDS\s+Flow\s+Complete|All\s+stages\s+completed|GDS:\s+result\/pr\/data\/ibex_core\.gds/i.test(claude) &&
-      /STAGE\s+9\s+COMPLETE|chip_done\.enc/i.test(claude);
+    // Check for stage completion message (various formats)
+    const stageComplete = /Stage\s+\d+\s+(?:COMPLETE|completed|Complete)/i.test(claude);
+
+    // Check for full RTL2GDS flow completion - Stage 9 is the final stage
+    // Only mark as complete when Stage 9 is done AND Claude is at prompt
+    const rtl2gdsComplete = this._lastCompletedStage >= 9 && claudePromptReady && !claudeThinking;
 
     // Check if Claude is just monitoring (only doing eda.peek/get_status)
     // A human would recognize this pattern: repeated "👁️ EDA Pane Snapshot" with similar content
     const isMonitoringPattern = recentClaudeOutputs.length >= 3 &&
       recentClaudeOutputs.every(out => /👁️.*EDA Pane Snapshot|eda\.(peek|get_status)/i.test(out));
 
+    // Check if Claude just said "Proceeding to Stage..." - if so, don't treat as done
+    // This happens between stages when Claude is preparing the next stage
+    const justProceeding = /Proceeding to Stage \d+/i.test(claude) &&
+      claudePromptReady && !claudeChanged;
+
+    // For RTL2GDS flow, don't mark as done until Stage 9 is complete
+    // For other flows, use the normal prompt detection
+    const isRtl2gdsFlow = /rtl2gds|RTL.to.GDS/i.test(claude);
+    const rtl2gdsDone = isRtl2gdsFlow && this._lastCompletedStage >= 9 && claudePromptReady;
+
     // If Claude shows prompt AND (pane didn't change OR only monitoring) → done
-    if (claudePromptReady && (!claudeChanged || isMonitoringPattern)) {
+    // BUT not if we just saw "Proceeding to Stage..." (between stages)
+    // AND for RTL2GDS, require Stage 9 to be complete
+    if (claudePromptReady && (!claudeChanged || isMonitoringPattern) && !justProceeding) {
+      // For RTL2GDS flow, only exit if Stage 9 is done OR we've been idle for a while
+      if (isRtl2gdsFlow && this._lastCompletedStage < 9) {
+        // Still in middle of RTL2GDS flow - don't mark as done yet
+        return { state: 'idle', detail: `Claude prompt visible but only Stage ${this._lastCompletedStage} complete` };
+      }
       return { state: 'done', detail: `Claude prompt: "${lastLine.trim()}"` };
     }
 
@@ -802,7 +1060,7 @@ export class FlowCertifier {
 
     // Full RTL2GDS flow completion - early termination to avoid long timeout
     if (rtl2gdsComplete && !claudeThinking) {
-      return { state: 'done', detail: 'RTL2GDS flow complete (all 9 stages + GDS)' };
+      return { state: 'done', detail: 'RTL2GDS flow complete (all 9 stages + GDS)', earlyCompletion: true };
     }
 
     // Claude is actively thinking — definitely working
@@ -858,16 +1116,24 @@ export class FlowCertifier {
     let pollCount = 0;
     let lastState = 'working';
 
+    // Adaptive timeout: extend when stages complete (rewards progress)
+    let currentMaxWaitMs = maxWaitMs;
+    let lastCompletedStageAtStart = this._lastCompletedStage || 0;
+    let extensionsUsed = 0;
+    const MAX_EXTENSIONS = 3; // Max 3 extensions (e.g., 5min → 20min total)
+
     // Track recent Claude outputs to detect monitoring pattern (eda.peek loops)
     const recentClaudeOutputs = [];
     const MONITORING_WINDOW = 5; // Keep last 5 outputs to detect pattern
 
-    while (Date.now() - start < maxWaitMs) {
-      await this._sleep(POLL_INTERVAL_MS);
+    while (Date.now() - start < currentMaxWaitMs) {
+      // Use adaptive polling interval based on current state
+      const pollInterval = POLL_INTERVALS[lastState] || DEFAULT_POLL_INTERVAL_MS;
+      await this._sleep(pollInterval);
       pollCount++;
 
-      // Log both panes continuously — this is what a human sees
-      const panes = this._logPanes(`poll_${pollCount}`);
+      // Log both panes continuously — this is what a human sees (parallel capture)
+      const panes = await this._logPanesParallel(`poll_${pollCount}`);
 
       // Track what changed — a human notices when text appears or stops
       const claudeChanged = panes.claude !== lastClaudeOutput;
@@ -884,7 +1150,24 @@ export class FlowCertifier {
       }
 
       // Detect state — what would a human see?
-      const { state, detail } = this._detectState(panes.claude, panes.eda, claudeChanged, edaChanged, recentClaudeOutputs);
+      const { state, detail, earlyCompletion } = this._detectState(panes.claude, panes.eda, claudeChanged, edaChanged, recentClaudeOutputs);
+
+      // Adaptive timeout extension: reward progress with more time
+      const stagesCompleted = this._lastCompletedStage || 0;
+      if (stagesCompleted > lastCompletedStageAtStart && extensionsUsed < MAX_EXTENSIONS) {
+        const extension = 600000; // +10 minutes per stage completion
+        currentMaxWaitMs += extension;
+        extensionsUsed++;
+        lastCompletedStageAtStart = stagesCompleted;
+        this._runLog(`Stage ${stagesCompleted} complete — timeout extended by ${extension / 1000}s (now ${(currentMaxWaitMs / 1000).toFixed(0)}s max)`);
+      }
+
+      // Early termination if completion detected
+      if (earlyCompletion) {
+        this._runLog('Early completion detected — stopping watch');
+        this._takeScreenshot('flow_done_early');
+        break;
+      }
 
       if (state !== lastState) {
         this._runLog(`State: ${lastState} → ${state}${detail ? ` (${detail})` : ''}`);
@@ -923,11 +1206,11 @@ export class FlowCertifier {
         this._takeScreenshot('bypass_permissions');
         // Navigate to checkbox (Tab), toggle (Space), confirm (Enter)
         this._sendKeysToClaude('Tab');
-        await this._sleep(300);
+        await this._sleep(100);
         this._sendKeysToClaude(' ');
-        await this._sleep(300);
+        await this._sleep(100);
         this._sendKeysToClaude('C-m');
-        await this._sleep(500);
+        await this._sleep(200);
         lastClaudeChangeTime = Date.now();
         continue;
       }
@@ -992,27 +1275,145 @@ export class FlowCertifier {
     const claudeAfter = afterObs.content?.claude_pane_last50 || '';
     const edaAfter = afterObs.content?.eda_pane_last50 || '';
 
-    const scores = {
-      L1_prompt_delivery: this._scoreResponse(claudeBefore, claudeAfter),
-      L2_intent_recognition: this._scoreIntent(claudeAfter),
-      L3_mcp_tool_usage: this._scoreToolUsage(claudeAfter, edaAfter),
-      L4_eda_execution: this._scoreEdaExecution(edaAfter),
-      L5_qor_assessment: this._scoreQoR(claudeAfter),
+    // ═══════════════════════════════════════════════════════════════════
+    //  UNIVERSITY-STYLE SCORING SYSTEM
+    //
+    //  Like a university transcript with multiple subjects:
+    //  - Each subject has a raw score (0-100) and letter grade (A-F)
+    //  - GPA is calculated from letter grades
+    //  - Final assessment considers all subjects
+    //
+    //  Subjects (dimensions of evaluation):
+    //  1. Communication (L1-L2) - Did Claude understand and respond?
+    //  2. Methodology (L3) - Did Claude use correct tools/interface?
+    //  3. Process Validation - Did Claude use the RIGHT tool for each stage?
+    //  4. Execution (L4) - Did the EDA tool run successfully?
+    //  5. Results (L5) - Were QoR metrics reported correctly?
+    // ═══════════════════════════════════════════════════════════════════
+
+    // Raw component scores (0-1 scale)
+    const response = this._scoreResponse(claudeBefore, claudeAfter);
+    const intent = this._scoreIntent(claudeAfter);
+    const toolUsage = this._scoreToolUsage(claudeAfter, edaAfter);
+    const processValidation = this._scoreProcessValidation(claudeAfter, edaAfter);
+    const edaExecution = this._scoreEdaExecution(edaAfter);
+    const qor = this._scoreQoR(claudeAfter, edaAfter);
+
+    // Subject 1: Communication (Response + Intent)
+    const communication = {
+      name: 'Communication',
+      components: { response, intent },
+      raw_score: (response.score + intent.score) / 2 * 100,
+      weight: 1.0,
     };
 
-    const totalScore = Object.values(scores).reduce((sum, s) => sum + s.score, 0);
-    const status = totalScore >= 4.0 ? 'pass' : totalScore >= 2.0 ? 'partial' : 'fail';
+    // Subject 2: Methodology (MCP Tool Usage)
+    const methodology = {
+      name: 'Methodology',
+      components: { toolUsage },
+      raw_score: toolUsage.score * 100,
+      weight: 1.5, // Higher weight - using MCP correctly is fundamental
+    };
 
-    const classification = status !== 'pass'
+    // Subject 3: Process Validation (Correct tool for stage)
+    const process = {
+      name: 'Process',
+      components: { processValidation },
+      raw_score: processValidation.score * 100,
+      weight: 2.0, // HIGHEST weight - correct process is CRITICAL
+    };
+
+    // Subject 4: Execution (EDA tool success)
+    const execution = {
+      name: 'Execution',
+      components: { edaExecution },
+      raw_score: edaExecution.score * 100,
+      weight: 1.5,
+    };
+
+    // Subject 5: Results (QoR reporting)
+    const results = {
+      name: 'Results',
+      components: { qor },
+      raw_score: qor.score * 100,
+      weight: 1.0,
+    };
+
+    // Subject 6: Human-Like Quality (NEW - How human-like was the interaction?)
+    // This measures the core value of HiPilot - behaving like an expert human engineer
+    const humanLike = this._scoreHumanLike(claudeAfter, edaAfter);
+    const humanLikeSubject = {
+      name: 'Human-Like',
+      components: { humanLike },
+      raw_score: humanLike.score * 100,
+      weight: 2.5, // HIGHEST weight - this is HiPilot's core differentiator
+    };
+
+    // All subjects for GPA calculation
+    const subjects = [communication, methodology, process, execution, results, humanLikeSubject];
+
+    // Calculate letter grades and grade points for each subject
+    for (const subject of subjects) {
+      subject.grade = this._scoreToLetter(subject.raw_score);
+      subject.grade_points = this._letterToGradePoints(subject.grade);
+      subject.status = subject.raw_score >= 60 ? 'PASS' : 'FAIL';
+    }
+
+    // Calculate weighted GPA (0.0 - 4.0 scale)
+    const totalWeight = subjects.reduce((sum, s) => sum + s.weight, 0);
+    const weightedGradePoints = subjects.reduce((sum, s) => sum + (s.grade_points * s.weight), 0);
+    const gpa = weightedGradePoints / totalWeight;
+
+    // Calculate overall percentage
+    const totalRawScore = subjects.reduce((sum, s) => sum + s.raw_score, 0);
+    const overallPercentage = totalRawScore / subjects.length;
+
+    // Final assessment
+    let finalGrade = this._scoreToLetter(overallPercentage);
+    let assessment = this._assessPerformance(subjects, gpa, finalGrade);
+
+    // Legacy L1-L5 scores for backward compatibility
+    const scores = {
+      L1_prompt_delivery: response,
+      L2_intent_recognition: intent,
+      L3_mcp_tool_usage: toolUsage,
+      L3b_process_validation: processValidation, // NEW: Process validation
+      L4_eda_execution: edaExecution,
+      L5_qor_assessment: qor,
+    };
+
+    // Total legacy score (for reference)
+    const totalScore = Object.values(scores).reduce((sum, s) => sum + s.score, 0);
+
+    // Classification if not passing
+    const classification = assessment.status !== 'PASS'
       ? this._classifyFailure(scores, claudeAfter, edaAfter)
       : null;
 
     return {
       stage: 'full_flow',
+      // University-style transcript
+      transcript: {
+        subjects: subjects.map(s => ({
+          name: s.name,
+          score: Math.round(s.raw_score),
+          grade: s.grade,
+          grade_points: s.grade_points,
+          weight: s.weight,
+          status: s.status,
+        })),
+        gpa: Math.round(gpa * 100) / 100,
+        overall_percentage: Math.round(overallPercentage),
+        final_grade: finalGrade,
+      },
+      // Legacy scores (backward compatibility)
       scores,
       total_score: totalScore,
-      max_score: 5.0,
-      status,
+      max_score: 6.0, // Now 6 components with process validation
+      // Assessment
+      status: assessment.status.toLowerCase(),
+      assessment: assessment.summary,
+      recommendations: assessment.recommendations,
       failure_classification: classification,
       mcp_calls_count: null,
       evidence_summary: {
@@ -1020,6 +1421,94 @@ export class FlowCertifier {
         eda_output_lines: edaAfter.split('\n').length,
       },
     };
+  }
+
+  /**
+   * Convert percentage score to letter grade
+   */
+  _scoreToLetter(score) {
+    if (score >= 97) return 'A+';
+    if (score >= 93) return 'A';
+    if (score >= 90) return 'A-';
+    if (score >= 87) return 'B+';
+    if (score >= 83) return 'B';
+    if (score >= 80) return 'B-';
+    if (score >= 77) return 'C+';
+    if (score >= 73) return 'C';
+    if (score >= 70) return 'C-';
+    if (score >= 67) return 'D+';
+    if (score >= 63) return 'D';
+    if (score >= 60) return 'D-';
+    return 'F';
+  }
+
+  /**
+   * Convert letter grade to grade points (GPA scale)
+   */
+  _letterToGradePoints(grade) {
+    const scale = {
+      'A+': 4.0, 'A': 4.0, 'A-': 3.7,
+      'B+': 3.3, 'B': 3.0, 'B-': 2.7,
+      'C+': 2.3, 'C': 2.0, 'C-': 1.7,
+      'D+': 1.3, 'D': 1.0, 'D-': 0.7,
+      'F': 0.0,
+    };
+    return scale[grade] || 0.0;
+  }
+
+  /**
+   * Assess overall performance and generate recommendations
+   */
+  _assessPerformance(subjects, gpa, finalGrade) {
+    // Critical subjects that must pass
+    const criticalSubjects = ['Process', 'Methodology'];
+    const failedCritical = subjects.filter(s =>
+      criticalSubjects.includes(s.name) && s.status === 'FAIL'
+    );
+
+    // Generate recommendations based on subject performance
+    const recommendations = [];
+
+    for (const subject of subjects) {
+      if (subject.raw_score < 60) {
+        switch (subject.name) {
+          case 'Process':
+            recommendations.push('CRITICAL: Review RTL2GDS flow stages and tool usage. Synthesis requires dc_shell, physical design requires innovus.');
+            break;
+          case 'Methodology':
+            recommendations.push('Improve MCP tool usage - avoid direct bash/tmux commands.');
+            break;
+          case 'Execution':
+            recommendations.push('Check EDA tool setup and Tcl syntax.');
+            break;
+          case 'Results':
+            recommendations.push('Verify QoR extraction and reporting.');
+            break;
+          case 'Communication':
+            recommendations.push('Improve prompt understanding and response quality.');
+            break;
+        }
+      }
+    }
+
+    // Determine status
+    let status, summary;
+
+    if (failedCritical.length > 0) {
+      status = 'FAIL';
+      summary = `FAILED: Critical subject(s) failing: ${failedCritical.map(s => s.name).join(', ')}. GPA: ${gpa.toFixed(2)}`;
+    } else if (gpa >= 3.0) {
+      status = 'PASS';
+      summary = `PASSED with ${finalGrade} (GPA: ${gpa.toFixed(2)})`;
+    } else if (gpa >= 2.0) {
+      status = 'PARTIAL';
+      summary = `PARTIAL - Needs improvement (GPA: ${gpa.toFixed(2)}, Grade: ${finalGrade})`;
+    } else {
+      status = 'FAIL';
+      summary = `FAILED (GPA: ${gpa.toFixed(2)}, Grade: ${finalGrade})`;
+    }
+
+    return { status, summary, recommendations };
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -1050,9 +1539,13 @@ export class FlowCertifier {
     // For long-running flows, check MCP log file as additional evidence
     // This handles cases where early MCP calls scrolled out of tmux buffer
     let mcpLogEvidence = null;
+    // Check evidence dir first (for pulled evidence), then fall back to default path
+    const mcpLogPathToUse = existsSync(join(this.evidenceDir, 'mcp_log.jsonl'))
+      ? join(this.evidenceDir, 'mcp_log.jsonl')
+      : this.mcpLogPath;
     try {
-      if (existsSync(this.mcpLogPath)) {
-        const mcpLog = readFileSync(this.mcpLogPath, 'utf-8');
+      if (existsSync(mcpLogPathToUse)) {
+        const mcpLog = readFileSync(mcpLogPathToUse, 'utf-8');
         const mcpCalls = mcpLog.split('\n').filter(line => line.includes('"tool"') && line.includes('"ok"'));
         if (mcpCalls.length > 5) {
           mcpLogEvidence = { count: mcpCalls.length, tools: [...new Set(mcpCalls.map(l => {
@@ -1082,11 +1575,97 @@ export class FlowCertifier {
     return { score: 0.0, detail: 'No MCP tool usage or EDA activity detected' };
   }
 
-  _scoreEdaExecution(edaOutput) {
-    // Check for successful completion patterns FIRST (highest priority for long-running flows)
-    // This takes precedence over errors because EDA tools may recover from early errors
-    // and still complete the flow successfully. The final state matters more than
-    // transient errors in the scrollback buffer.
+  _scoreEdaExecution(edaOutput, finalObservation = null) {
+    // Read the FULL EDA pane log from evidence directory (has full scrollback, not truncated)
+    let fullEdaOutput = edaOutput;
+    let fullLogUsed = false;
+    try {
+      const fullLogPath = join(this.evidenceDir, 'obs_after_flow_eda.log');
+      if (existsSync(fullLogPath)) {
+        fullEdaOutput = readFileSync(fullLogPath, 'utf-8');
+        fullLogUsed = true;
+      }
+    } catch (e) {
+      // Fall back to provided edaOutput if full log not available
+    }
+
+    // Read MCP log to extract tool execution events
+    // Check evidence dir first (for pulled evidence), then fall back to default path
+    let mcpLog = '';
+    const mcpLogPathToUse = existsSync(join(this.evidenceDir, 'mcp_log.jsonl'))
+      ? join(this.evidenceDir, 'mcp_log.jsonl')
+      : this.mcpLogPath;
+    let mcpEvents = {
+      toolStarts: [],
+      tclExecutions: [],
+      awaitIdle: [],
+      executeVerify: [],
+      errors: []
+    };
+    try {
+      if (existsSync(mcpLogPathToUse)) {
+        mcpLog = readFileSync(mcpLogPathToUse, 'utf-8');
+        const lines = mcpLog.split('\n').filter(l => l.trim());
+        for (const line of lines) {
+          try {
+            const json = JSON.parse(line);
+            // Track tool starts
+            if (json.tool === 'start_tool' && json.params?.tool) {
+              mcpEvents.toolStarts.push({ tool: json.params.tool, ts: json.ts });
+            }
+            // Track Tcl executions
+            if (json.tool === 'send_tcl_nonblocking' || json.tool === 'send_tcl') {
+              mcpEvents.tclExecutions.push({ desc: json.params?.description || json.params?.tcl?.slice(0, 50), ts: json.ts });
+            }
+            // Track await_idle (indicates tool was running)
+            if (json.tool === 'await_idle' && json.meta?.idle === true) {
+              mcpEvents.awaitIdle.push({ state: json.meta?.state, lastLine: json.meta?.last_line, ts: json.ts });
+            }
+            // Track execute_and_verify calls
+            if (json.tool === 'execute_and_verify') {
+              mcpEvents.executeVerify.push({ desc: json.params?.description, ts: json.ts, ok: json.ok });
+            }
+            // Track errors
+            if (json.error || (json.meta && json.meta.error)) {
+              mcpEvents.errors.push({ error: json.error || json.meta?.error, ts: json.ts });
+            }
+          } catch (e) {
+            // Skip malformed JSON lines
+          }
+        }
+      }
+    } catch (e) {
+      // MCP log not available
+    }
+
+    this._debugLog('Execution Scoring Debug:', {
+      fullLogUsed,
+      edaOutputLength: fullEdaOutput.length,
+      mcpToolStarts: mcpEvents.toolStarts.length,
+      mcpTclExecutions: mcpEvents.tclExecutions.length,
+      mcpAwaitIdle: mcpEvents.awaitIdle.length,
+      mcpExecuteVerify: mcpEvents.executeVerify.length,
+      mcpErrors: mcpEvents.errors.length
+    });
+
+    // Use full EDA log for all pattern checks
+    const checkOutput = fullEdaOutput;
+
+    // CRITICAL: Check for bash errors FIRST - these indicate tool crash
+    // Pattern: "bash: <command>: command not found" means Tcl was sent to bash shell
+    const bashErrorPattern = /bash:\s*\w+:\s*command not found/i;
+    if (bashErrorPattern.test(checkOutput)) {
+      const match = checkOutput.match(bashErrorPattern);
+      return { score: 0.0, detail: `Tool crashed to bash: ${match[0]}` };
+    }
+
+    // Check for bash prompt - indicates tool exited unexpectedly
+    const bashPromptPattern = /^\[.*@.*\].*[$#]$/m;
+    if (bashPromptPattern.test(checkOutput)) {
+      return { score: 0.0, detail: 'EDA pane shows bash prompt - tool crashed' };
+    }
+
+    // Check for successful completion patterns in full log
     const completionPatterns = [
       /STAGE \d+ COMPLETE/i,
       /GDS output.*complete/i,
@@ -1096,41 +1675,324 @@ export class FlowCertifier {
       /saveDesign.*completed/i,
     ];
     for (const pat of completionPatterns) {
-      if (pat.test(edaOutput)) return { score: 1.0, detail: 'EDA tool completed successfully' };
+      if (pat.test(checkOutput)) return { score: 1.0, detail: 'EDA tool completed successfully' };
     }
 
-    // Only check for errors if no successful completion was found
+    // Check for EDA errors in full log
     const errorPatterns = [/\*\*ERROR/i, /FATAL/i, /syntax error/i, /unknown command/i];
     for (const pat of errorPatterns) {
-      if (pat.test(edaOutput)) return { score: 0.0, detail: `EDA error: ${edaOutput.match(pat)[0]}` };
+      if (pat.test(checkOutput)) return { score: 0.0, detail: `EDA error: ${checkOutput.match(pat)[0]}` };
     }
 
     // Check for EDA tool prompt (strong signal: tool ran and returned)
-    const promptPatterns = [/innovus\s*\d+>/i, /icc2_shell>/i, /pt_shell>/i];
+    const promptPatterns = [/innovus\s*\d+>/i, /icc2_shell>/i, /pt_shell>/i, /dc_shell\s*>/i];
     for (const pat of promptPatterns) {
-      if (pat.test(edaOutput)) return { score: 1.0, detail: 'EDA tool ran and returned to prompt' };
+      if (pat.test(checkOutput)) return { score: 1.0, detail: 'EDA tool ran and returned to prompt' };
     }
 
-    // Check for EDA tool activity (weaker: tool output without prompt)
+    // Check for EDA tool activity in full log (weaker: tool output without prompt)
+    // Includes patterns for Cadence Innovus, Synopsys ICC2/DC, and PrimeTime outputs
     const activityPatterns = [
+      // Command patterns
       /reading lef/i, /init_design/i, /floorPlan/i, /place_opt/i, /ccopt/i,
       /routeDesign/i, /optDesign/i, /timeDesign/i, /saveDesign/i,
       /checkDesign/i, /source.*\.tcl/i, /source.*\.enc/i,
+      // Innovus placement patterns
+      /GigaPlace/i, /Iteration\s+\d+.*Total net bbox/i, /placement.*cpu/i,
+      /Placement optimization completed/i, /Estimated.*wirelength/i,
+      // Innovus general patterns
+      /% Begin.*load.*data/i, /% End.*load.*data/i,
+      /Loading.*file/i, /Reading.*file/i, /Parsing.*complete/i,
+      // CTS patterns
+      /Clock Tree Synthesis/i, /clock tree.*delay/i, /skew.*target/i,
+      // Routing patterns
+      /NanoRoute/i, /Global Route/i, /Detailed Route/i, /routing.*completed/i,
+      // Optimization patterns
+      /deleteBufferTree/i, /optDesign.*cpu/i, /Optimization.*complete/i,
+      // Checkpoint patterns
+      /.*\.enc.*loaded/i, /.*\.enc.*saved/i, /restoreDesign/i,
+      // Synthesis patterns
+      /compile_ultra/i, /elaborate/i, /analyze/i, /link/i,
+      /synthesis.*completed/i, /Design.*compiled/i,
     ];
     for (const pat of activityPatterns) {
-      if (pat.test(edaOutput)) return { score: 0.5, detail: `EDA tool active: ${edaOutput.match(pat)[0]}` };
+      if (pat.test(checkOutput)) return { score: 0.5, detail: `EDA tool active: ${checkOutput.match(pat)[0]}` };
+    }
+
+    // FALLBACK: Use MCP log evidence if pane capture is insufficient
+    // This handles the case where tmux capture-pane returns truncated output
+    if (mcpEvents.toolStarts.length > 0 && mcpEvents.tclExecutions.length > 0) {
+      // We have evidence that tools were started and Tcl was sent
+      const tools = mcpEvents.toolStarts.map(e => e.tool).filter((v, i, a) => a.indexOf(v) === i);
+      const tclCount = mcpEvents.tclExecutions.length;
+      return { score: 0.5, detail: `EDA tool execution detected via MCP (${tools.join(', ')}: ${tclCount} Tcl commands)` };
+    }
+
+    // If we have execute_and_verify calls, that's strong evidence of execution
+    if (mcpEvents.executeVerify.length > 0) {
+      const count = mcpEvents.executeVerify.length;
+      return { score: 0.5, detail: `EDA execution verified (${count} execute_and_verify calls)` };
     }
 
     // If the pane only has the welcome message or shell prompt, no tool ran
-    if (edaOutput.includes('Start your EDA tool') || edaOutput.includes('EDA Tool Pane')) {
+    if (checkOutput.includes('Start your EDA tool') || checkOutput.includes('EDA Tool Pane')) {
       return { score: 0.0, detail: 'EDA pane shows only welcome message — no tool started' };
     }
 
-    if (edaOutput.length < 100) return { score: 0.0, detail: 'No significant EDA tool output' };
+    if (checkOutput.length < 100) return { score: 0.0, detail: 'No significant EDA tool output' };
     return { score: 0.0, detail: 'EDA pane has text but no tool activity detected' };
   }
 
-  _scoreQoR(claudeOutput) {
+  /**
+   * Process Validation - Check that the correct tool was used for each stage.
+   *
+   * This is CRITICAL: correct process is more important than results.
+   * A human engineer knows:
+   *   - Stage 0 (Synthesis): MUST use dc_shell, NEVER innovus
+   *   - Stages 1-9 (Physical Design): MUST use innovus
+   *   - Signoff: SHOULD use pt_shell
+   *
+   * If synthesis is attempted in innovus, that's a fundamental error.
+   * Results from wrong-tool execution are meaningless.
+   */
+  _scoreProcessValidation(claudeOutput, edaOutput) {
+    // Read the FULL EDA pane log from evidence directory (has full scrollback, not truncated)
+    let fullEdaOutput = edaOutput;
+    let fullLogUsed = false;
+    try {
+      const fullLogPath = join(this.evidenceDir, 'obs_after_flow_eda.log');
+      this._debugLog('Looking for full EDA log:', { evidenceDir: this.evidenceDir, fullLogPath, exists: existsSync(fullLogPath) });
+      if (existsSync(fullLogPath)) {
+        fullEdaOutput = readFileSync(fullLogPath, 'utf-8');
+        fullLogUsed = true;
+        this._debugLog('Full EDA log loaded:', { length: fullEdaOutput.length });
+      } else {
+        this._debugLog('Full EDA log not found, using truncated output:', { length: edaOutput.length });
+      }
+    } catch (e) {
+      this._debugLog('Error reading full EDA log:', { error: e.message });
+      // Fall back to provided edaOutput if full log not available
+    }
+
+    // Read MCP log to extract tool execution sequence
+    // First check evidence dir (for pulled evidence), then fall back to default path
+    let mcpLog = '';
+    let mcpLogPathToUse = this.mcpLogPath;
+    const evidenceMcpLog = join(this.evidenceDir, 'mcp_log.jsonl');
+    if (existsSync(evidenceMcpLog)) {
+      mcpLogPathToUse = evidenceMcpLog;
+    }
+    try {
+      if (existsSync(mcpLogPathToUse)) {
+        mcpLog = readFileSync(mcpLogPathToUse, 'utf-8');
+      }
+    } catch (e) {
+      // MCP log not available - fall back to pane analysis
+    }
+
+    // Extract tool execution sequence from MCP log
+    const toolEvents = [];
+    const switchEvents = [];
+    if (mcpLog) {
+      const lines = mcpLog.split('\n').filter(l => l.trim());
+      for (const line of lines) {
+        try {
+          const json = JSON.parse(line);
+          // Look for eda.start_tool calls
+          if ((json.tool === 'start_tool' || json.tool === 'eda.start_tool') && json.params?.tool) {
+            const toolName = json.params.tool;
+            if (['innovus', 'dc_shell', 'pt_shell', 'icc2'].includes(toolName)) {
+              toolEvents.push({ tool: toolName, ts: json.ts, type: 'start' });
+            }
+          }
+          // Look for eda.switch_tool calls
+          if ((json.tool === 'switch_tool' || json.tool === 'eda.switch_tool') && json.params?.to_tool) {
+            const toTool = json.params.to_tool;
+            if (['innovus', 'dc_shell', 'pt_shell', 'icc2'].includes(toTool)) {
+              switchEvents.push({ tool: toTool, ts: json.ts, type: 'switch', from: json.params.from_tool });
+            }
+          }
+          // Also check for tool detection with tool name
+          if (json.tool === 'detect_tool' && json.params?.tool_name) {
+            const detectedName = json.params.tool_name.toLowerCase();
+            if (detectedName.includes('innovus')) toolEvents.push({ tool: 'innovus', ts: json.ts, type: 'detect' });
+            else if (detectedName.includes('dc_shell') || detectedName.includes('designcompiler')) toolEvents.push({ tool: 'dc_shell', ts: json.ts, type: 'detect' });
+            else if (detectedName.includes('pt_shell') || detectedName.includes('primetime')) toolEvents.push({ tool: 'pt_shell', ts: json.ts, type: 'detect' });
+            else if (detectedName.includes('icc2')) toolEvents.push({ tool: 'icc2', ts: json.ts, type: 'detect' });
+          }
+        } catch (e) {
+          // Skip malformed JSON lines
+          continue;
+        }
+      }
+    }
+
+    // Combine all tool events and sort by timestamp
+    const allToolEvents = [...toolEvents, ...switchEvents].sort((a, b) => {
+      return new Date(a.ts || 0) - new Date(b.ts || 0);
+    });
+
+    // Get unique tools used (in order)
+    const toolsUsed = [];
+    const seenTools = new Set();
+    for (const evt of allToolEvents) {
+      if (!seenTools.has(evt.tool)) {
+        seenTools.add(evt.tool);
+        toolsUsed.push(evt.tool);
+      }
+    }
+
+    // Infer stages from Claude's output and command context
+    const command = this.lastCommand || '';
+    const lowerClaude = claudeOutput.toLowerCase();
+    const lowerEda = fullEdaOutput.toLowerCase();
+
+    // Detect what stage the flow was attempting
+    let attemptedStage = null;
+    let attemptedTool = null;
+
+    // Check command for stage hints
+    if (command.includes('rtl2gds') || command.includes('full flow')) {
+      // Full flow - should start with dc_shell for synthesis
+      attemptedStage = 'synthesis';
+      attemptedTool = 'dc_shell';
+    } else if (command.includes('synthesis') || command.includes('compile') || command.includes('syn')) {
+      attemptedStage = 'synthesis';
+      attemptedTool = 'dc_shell';
+    } else if (command.includes('init')) {
+      attemptedStage = 'init_design';
+      attemptedTool = 'innovus';
+    } else if (command.includes('floorplan')) {
+      attemptedStage = 'floorplan';
+      attemptedTool = 'innovus';
+    } else if (command.includes('place')) {
+      attemptedStage = 'placement';
+      attemptedTool = 'innovus';
+    } else if (command.includes('cts')) {
+      attemptedStage = 'cts';
+      attemptedTool = 'innovus';
+    } else if (command.includes('route')) {
+      attemptedStage = 'routing';
+      attemptedTool = 'innovus';
+    }
+
+    // Check what tool actually ran in EDA pane
+    let actualTool = null;
+    if (lowerEda.includes('dc_shell') || /dc_shell\s*>/i.test(edaOutput)) {
+      actualTool = 'dc_shell';
+    } else if (lowerEda.includes('innovus') || /innovus\s*\d+>/i.test(edaOutput)) {
+      actualTool = 'innovus';
+    } else if (lowerEda.includes('pt_shell') || /pt_shell\s*>/i.test(edaOutput)) {
+      actualTool = 'pt_shell';
+    } else if (lowerEda.includes('icc2') || /icc2_shell\s*>/i.test(edaOutput)) {
+      actualTool = 'icc2';
+    }
+
+    // Use MCP log tool history for more reliable detection
+    // For synthesis stage, check if dc_shell was EVER started (not just what's at the end)
+    const dcShellWasUsed = toolsUsed.includes('dc_shell');
+    const innovusWasUsed = toolsUsed.includes('innovus');
+
+    // Determine the primary tool for the attempted stage
+    let primaryTool = actualTool;
+    if (attemptedStage === 'synthesis' && dcShellWasUsed) {
+      // For synthesis, if dc_shell was ever used, that's correct
+      primaryTool = 'dc_shell';
+    } else if (attemptedStage === 'synthesis' && innovusWasUsed && !dcShellWasUsed) {
+      // Synthesis attempted with innovus (wrong tool)
+      primaryTool = 'innovus';
+    }
+
+    // Infer stage from output keywords if not detected from command
+    if (!attemptedStage) {
+      if (lowerClaude.includes('synthesis') || lowerClaude.includes('compile')) {
+        attemptedStage = 'synthesis';
+      } else if (lowerClaude.includes('placement') || lowerClaude.includes('floorplan') || lowerClaude.includes('cts')) {
+        attemptedStage = 'placement';
+      }
+    }
+
+    // Debug logging for process validation
+    this._debugLog('Process Validation Debug:', {
+      attemptedStage,
+      actualTool,
+      primaryTool,
+      command: this.lastCommand,
+      edaOutputLength: fullEdaOutput.length,
+      usingFullLog: fullLogUsed,
+      dcShellWasUsed,
+      innovusWasUsed,
+      toolsUsed
+    });
+
+    // Validate tool-stage match using STAGE_TOOL_MAP
+    // Use primaryTool (determined from full MCP log history) instead of just actualTool (current pane state)
+    if (attemptedStage && primaryTool) {
+      const expected = STAGE_TOOL_MAP[attemptedStage];
+      if (expected) {
+        if (expected.tool !== primaryTool) {
+          // CRITICAL ERROR: Wrong tool for the stage
+          return {
+            score: 0.0,
+            detail: `PROCESS ERROR: Stage "${attemptedStage}" requires ${expected.tool}, but ${primaryTool} was used. This is a fundamental flow error.`,
+            violation: {
+              stage: attemptedStage,
+              expectedTool: expected.tool,
+              actualTool: primaryTool,
+              severity: 'CRITICAL'
+            }
+          };
+        }
+        // Correct tool used
+        return {
+          score: 1.0,
+          detail: `Correct process: ${attemptedStage} used ${primaryTool} as expected`,
+          validation: {
+            stage: attemptedStage,
+            tool: primaryTool,
+            correct: true
+          }
+        };
+      }
+    }
+
+    // If we can't determine stage/tool mapping, give partial credit for having some tool activity
+    if (actualTool) {
+      return {
+        score: 0.5,
+        detail: `Tool ${actualTool} was used, but could not validate stage-tool mapping`,
+        validation: { tool: actualTool, stage: attemptedStage || 'unknown' }
+      };
+    }
+
+    return {
+      score: 0.0,
+      detail: 'No tool execution detected for process validation'
+    };
+  }
+
+  _scoreQoR(claudeOutput, edaOutput = '') {
+    // Read the FULL EDA pane log from evidence directory (has full scrollback, not truncated)
+    let fullEdaOutput = edaOutput;
+    try {
+      const fullLogPath = join(this.evidenceDir, 'obs_after_flow_eda.log');
+      if (existsSync(fullLogPath)) {
+        fullEdaOutput = readFileSync(fullLogPath, 'utf-8');
+      }
+    } catch (e) {
+      // Fall back to provided edaOutput if full log not available
+    }
+
+    // CRITICAL: Check for evidence that flow actually ran
+    // Stale QoR from old runs should not be counted
+    const hasFlowActivity = /init_design|floorPlan|place_opt|ccopt|routeDesign|streamOut|compile_ultra|elaborate/i.test(fullEdaOutput);
+    const hasStageCompletion = /STAGE \d+ COMPLETE|saveDesign.*completed|Ending "Innovus"|synthesis.*completed/i.test(fullEdaOutput);
+
+    // If no flow activity detected, QoR data is likely stale
+    if (!hasFlowActivity && !hasStageCompletion) {
+      return { score: 0.0, detail: 'No flow activity detected - QoR may be stale' };
+    }
+
     // Standard format: "WNS: 0.136" or "WNS 0.136"
     const wnsMatch = claudeOutput.match(/WNS[:\s]*(-?[\d.]+)/i);
     const tnsMatch = claudeOutput.match(/TNS[:\s]*(-?[\d.]+)/i);
@@ -1147,13 +2009,137 @@ export class FlowCertifier {
     const wns = wnsMatch?.[1] || wnsTableMatch?.[1] || wnsParenMatch?.[1];
     const tns = tnsMatch?.[1] || tnsTableMatch?.[1] || tnsParenMatch?.[1];
 
-    if (wns && tns) return { score: 1.0, detail: `QoR reported: WNS=${wns}, TNS=${tns}` };
-    if (wns || tns) return { score: 0.5, detail: `Partial QoR: WNS=${wns ?? 'N/A'}, TNS=${tns ?? 'N/A'}` };
+    // Verify QoR came from current run by checking for context indicators
+    // These indicate the QoR was just extracted/generated, not from old logs
+    const hasCurrentRunContext = /stage \d+|current|final|completed|post-|pre-|after_|rtl2gds|flow complete|qor\.snapshot|FINAL_/i.test(claudeOutput);
+    // Also check if Claude is explicitly reporting QoR in a summary format
+    const hasQoRSummary = /QoR|Summary|Metric|WNS.*TNS|timing.*report/i.test(claudeOutput);
+
+    if (wns && tns && (hasCurrentRunContext || hasQoRSummary)) {
+      return { score: 1.0, detail: `QoR reported: WNS=${wns}, TNS=${tns}` };
+    }
+    if (wns || tns) {
+      return { score: 0.5, detail: `Partial QoR: WNS=${wns ?? 'N/A'}, TNS=${tns ?? 'N/A'} (context: ${hasCurrentRunContext ? 'run' : 'unknown'})` };
+    }
 
     const metricsKeywords = ['timing', 'violation', 'slack', 'pass', 'fail', 'score'];
     const found = metricsKeywords.filter(k => claudeOutput.toLowerCase().includes(k));
     if (found.length >= 2) return { score: 0.5, detail: `Claude discussed metrics (${found.join(', ')}) but no WNS/TNS numbers` };
     return { score: 0.0, detail: 'No QoR assessment in Claude output' };
+  }
+
+  /**
+   * Score human-like behavior (0-10 scale, then normalized to 0-1)
+   *
+   * Human-like means:
+   * 0 = Dead machine: Batch-generated 100+ line Tcl scripts, no observation, no reaction
+   * 5 = Semi-human: Some incremental steps but still heavily scripted
+   * 10 = Real human: Types commands one at a time, observes output, reacts intelligently
+   *
+   * Key indicators:
+   * - Incremental interaction (not batch)
+   * - Observation between commands
+   * - Error diagnosis and retry
+   * - Narrative/thinking out loud
+   * - Tool knowledge demonstrated
+   */
+  _scoreHumanLike(claudeOutput, edaOutput) {
+    let score = 0;
+    let details = [];
+
+    // 1. Check for batch script patterns (NEGATIVE - indicates machine behavior)
+    // Large blocks of Tcl sent at once = machine-like
+    const largeTclBlock = /(analyze|elaborate|link|check_design|compile_ultra)[\s\S]{100,}(compile_ultra|exit)/i.test(claudeOutput);
+    const batchPattern = /```tcl[\s\S]{200,}```/i.test(claudeOutput);
+    if (largeTclBlock || batchPattern) {
+      score -= 3;
+      details.push('Batch-generated large Tcl blocks');
+    } else {
+      score += 2;
+      details.push('No large batch scripts detected');
+    }
+
+    // 2. Check for incremental command patterns (POSITIVE)
+    // Multiple individual commands with await_idle pattern
+    const individualCommands = (claudeOutput.match(/await_idle|get_last_result|send_tcl_nonblocking/g) || []).length;
+    if (individualCommands >= 10) {
+      score += 3;
+      details.push(`Incremental interaction (${individualCommands} command points)`);
+    } else if (individualCommands >= 5) {
+      score += 1;
+      details.push('Some incremental interaction');
+    } else {
+      details.push('Limited incremental interaction');
+    }
+
+    // 3. Check for observation and reaction (POSITIVE)
+    // Looking at output, diagnosing, fixing
+    const observationPatterns = [
+      /check|observe|look|see|watch/i,
+      /error|fail|issue|problem/i,
+      /fix|retry|adjust|change/i,
+      /diagnose/i,
+    ];
+    const observations = observationPatterns.filter(p => p.test(claudeOutput)).length;
+    if (observations >= 3) {
+      score += 2;
+      details.push('Shows observation and reaction');
+    }
+
+    // 4. Check for narrative/thinking out loud (POSITIVE)
+    // Human engineers narrate their work
+    const narrativePatterns = [
+      /^(okay|alright|now|let's|next|so|then)/im,
+      /(starting|running|doing|working on)/i,
+      /(complete|done|finished|success)/i,
+    ];
+    const narrative = narrativePatterns.filter(p => p.test(claudeOutput)).length;
+    if (narrative >= 2) {
+      score += 2;
+      details.push('Narrates work like a human');
+    }
+
+    // 5. Check for expert knowledge demonstration (POSITIVE)
+    // Using correct commands without reading from skills
+    const expertPatterns = [
+      /set(init_verilog|init_lef_file|target_library)/i,
+      /(place_opt_design|ccopt_design|route_design)/i,
+      /report_timing|report_constraint/i,
+      /saveDesign|restoreDesign/i,
+    ];
+    const expertKnowledge = expertPatterns.filter(p => p.test(edaOutput) || p.test(claudeOutput)).length;
+    if (expertKnowledge >= 3) {
+      score += 2;
+      details.push('Demonstrates tool knowledge');
+    }
+
+    // 6. Check for MCP tool selection intelligence (POSITIVE)
+    // Correctly choosing dc_shell for synthesis, innovus for P&R
+    const correctToolUsage = [
+      /start_tool.*dc_shell/i.test(claudeOutput) && /synthesis|elaborate|compile/i.test(edaOutput),
+      /start_tool.*innovus/i.test(claudeOutput) && /(floorplan|placement|cts|route)/i.test(edaOutput),
+    ].filter(Boolean).length;
+    if (correctToolUsage >= 1) {
+      score += 1;
+      details.push('Correct tool selection');
+    }
+
+    // Normalize to 0-1 scale
+    // Max possible: 2 + 3 + 2 + 2 + 2 + 1 = 12
+    // Min possible: -3 (with adjustments keeping it positive)
+    const normalizedScore = Math.max(0, Math.min(10, score + 3)) / 10;
+
+    const humanLevel = normalizedScore >= 0.8 ? 'Human-like' :
+                       normalizedScore >= 0.6 ? 'Semi-human' :
+                       normalizedScore >= 0.4 ? 'Partially human' :
+                       normalizedScore >= 0.2 ? 'Machine-like' : 'Dead machine';
+
+    return {
+      score: normalizedScore,
+      detail: `Human-like level: ${humanLevel} (${(normalizedScore * 10).toFixed(1)}/10) - ${details.join(', ')}`,
+      human_level: (normalizedScore * 10).toFixed(1),
+      raw_score: score,
+    };
   }
 
   _classifyFailure(scores, claudeOutput, edaOutput) {
@@ -1167,6 +2153,41 @@ export class FlowCertifier {
         : { category: 'HIPILOT_BUG', summary: scores.L4_eda_execution.detail, action: 'Fix Tcl template or generation' };
     }
     return { category: 'AI_BEHAVIOR', summary: `Score ${Object.values(scores).reduce((s, l) => s + l.score, 0).toFixed(1)}/5.0`, action: 'Review Claude behavior in evidence' };
+  }
+
+  /**
+   * Detect which stage to start from based on existing checkpoints.
+   * Returns the first stage number that needs to run (0-9).
+   * This prevents wasting time on already-completed stages.
+   */
+  _detectStartingStage(designDir) {
+    if (!designDir) return 0;
+
+    // Checkpoint file paths for RTL2GDS flow (relative to designDir)
+    const checkpoints = [
+      { stage: 0, file: 'result/syn/data/ibex_core.syn.v', tool: 'dc_shell' },
+      { stage: 1, file: 'result/pr/data/init_design.enc', tool: 'innovus' },
+      { stage: 2, file: 'result/pr/data/floor_plan.enc', tool: 'innovus' },
+      { stage: 3, file: 'result/pr/data/powerplan.enc', tool: 'innovus' },
+      { stage: 4, file: 'result/pr/data/placement.enc', tool: 'innovus' },
+      { stage: 5, file: 'result/pr/data/cts.enc', tool: 'innovus' },
+      { stage: 6, file: 'result/pr/data/post_cts_opt.enc', tool: 'innovus' },
+      { stage: 7, file: 'result/pr/data/routing.enc', tool: 'innovus' },
+      { stage: 8, file: 'result/pr/data/routing_opt.enc', tool: 'innovus' },
+      { stage: 9, file: 'result/pr/data/chip_done.enc', tool: 'innovus' },
+    ];
+
+    for (const cp of checkpoints) {
+      const fullPath = join(designDir, cp.file);
+      if (!existsSync(fullPath)) {
+        this._runLog(`Checkpoint check: Stage ${cp.stage} checkpoint missing (${cp.file})`);
+        return cp.stage;
+      }
+    }
+
+    // All checkpoints exist - flow is complete
+    this._runLog('Checkpoint check: All stages complete (flow already finished)');
+    return 10;
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -1245,7 +2266,7 @@ export class FlowCertifier {
   }
 
   async runTest(command, options = {}) {
-    const maxWaitMs = options.maxWaitMs || 300000;
+    const maxWaitMs = options.maxWaitMs || 900000;
     const phase = options.phase ?? null;
     const purpose = options.purpose || command;
     mkdirSync(this.evidenceDir, { recursive: true });
@@ -1254,6 +2275,17 @@ export class FlowCertifier {
     // Prepare clean design copy (extract tarball to timestamped dir)
     // Each test starts from scratch — no leftover results from previous runs.
     const cleanDesignDir = this.prepareCleanDesign();
+
+    // ═══════════════════════════════════════════════════════════════════
+    // CHECKPOINT-AWARE EXECUTION: Detect already-completed stages
+    // ═══════════════════════════════════════════════════════════════════
+    // Don't waste time on stages that already have checkpoints.
+    // This is what a human would do: check progress before starting.
+    const initialStage = this._detectStartingStage(cleanDesignDir);
+    if (initialStage > 0) {
+      this._runLog(`Checkpoint-aware: Skipping stages 0-${initialStage - 1} (checkpoints exist)`);
+      this._lastCompletedStage = initialStage - 1;
+    }
 
     // Write test metadata
     const metadata = {
@@ -1285,10 +2317,10 @@ export class FlowCertifier {
     await this.preflight();
 
     // Phase 1: Launch HiPilot (creates session + opens terminal on desktop)
-    await this.launchHiPilot();
+    await this.launchHiPilot(cleanDesignDir);
 
-    // Give the terminal window time to open and render
-    await this._sleep(3000);
+    // Give the terminal window time to open and render (reduced from 3s to 1s)
+    await this._sleep(1000);
 
     // Start video recording AFTER the terminal is visible
     this._startVideoRecording();
@@ -1315,6 +2347,7 @@ export class FlowCertifier {
     this.observations.push(beforeObs);
 
     // Phase 3: Type command
+    this.lastCommand = command; // Track for process validation
     const typed = this.typeInHiPilot(command);
     if (!typed) throw new Error('Failed to type command into HiPilot');
     this._takeScreenshot('after_type');
@@ -1440,5 +2473,11 @@ export class FlowCertifier {
   _runLog(msg) {
     const ts = new Date().toISOString();
     this._runLogLines.push(`[${ts}] ${msg}`);
+  }
+
+  _debugLog(label, data) {
+    const ts = new Date().toISOString();
+    const serialized = JSON.stringify(data, null, 2);
+    this._runLogLines.push(`[${ts}] [DEBUG] ${label} ${serialized}`);
   }
 }

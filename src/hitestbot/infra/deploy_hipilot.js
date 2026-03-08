@@ -159,13 +159,16 @@ async function deploy() {
   
   // Patch ONLY command and args for HiPilot servers.
   // Existing env is spread LAST so it always wins (preserves API keys).
+  // NOTE: HIPILOT_DESIGN_DIR is excluded from preservation - it must be set dynamically at runtime.
   function patchServer(serverName, newCommand, newArgs, defaultEnv) {
     const existing = existingMcp[serverName] || {};
     const existingEnv = existing.env || {};
+    // Remove HIPILOT_DESIGN_DIR from existing env to allow dynamic setting at runtime
+    const { HIPILOT_DESIGN_DIR: _, ...existingEnvWithoutDesignDir } = existingEnv;
     return {
       command: newCommand,
       args: newArgs,
-      env: { ...defaultEnv, ...existingEnv },
+      env: { ...defaultEnv, ...existingEnvWithoutDesignDir },
     };
   }
   
