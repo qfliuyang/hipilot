@@ -20,12 +20,13 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import { execSync } from 'child_process';
 import { writeFileSync, readFileSync, existsSync, mkdirSync, readdirSync, unlinkSync } from 'fs';
-import { join, dirname } from 'path';
+import { join, dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import nunjucks from 'nunjucks';
 import { VERSION } from '../../src/lib/version.js';
 import { getHipilotPaths } from '../../src/lib/paths.js';
 import { createMcpLogger } from '../../src/lib/mcp-logger.js';
+import { shellEscape } from '../../src/lib/shell-escape.js';
 import {
   getMode,
   setMode,
@@ -64,10 +65,62 @@ import {
   formatActionButtons,
 } from '../../src/lib/report-cache.js';
 
+// PageIndex-based knowledge integration
+import {
+  getExpectedTool,
+  detectToolFromCommand,
+  validateCommandContext,
+  getKnowledgeForStage,
+  diagnoseError,
+  getFlowGuide,
+  getCheckpointLoadCommand,
+  isValidCheckpoint,
+} from './knowledge.js';
+
 const TMUX_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
 
 // Get user-specific temp paths
 const hipilotPaths = getHipilotPaths();
+
+/**
+ * Get the design directory from environment or fallback file.
+ * The fallback file is written by bin/hipilot when HIPILOT_DESIGN_DIR is set.
+ * This is needed because MCP servers spawned by Claude don't inherit tmux env vars.
+ */
+function getDesignDir() {
+  const VERSION = '0.7.0';
+
+  // First check environment variable
+  if (process.env.HIPILOT_DESIGN_DIR) {
+    console.error(`[HiPilot EDA v${VERSION}] DESIGN_DIR from env: ${process.env.HIPILOT_DESIGN_DIR}`);
+    return process.env.HIPILOT_DESIGN_DIR;
+  }
+
+  // Fallback: read from file written by bin/hipilot
+  try {
+    const user = process.env.USER || 'EDA';
+    const fallbackFile = `/tmp/hipilot-${user}/design_dir.txt`;
+    console.error(`[HiPilot EDA v${VERSION}] Checking fallback file: ${fallbackFile}`);
+
+    if (existsSync(fallbackFile)) {
+      const designDir = readFileSync(fallbackFile, 'utf-8').trim();
+      if (designDir) {
+        console.error(`[HiPilot EDA v${VERSION}] DESIGN_DIR from file: ${designDir}`);
+        return designDir;
+      }
+      console.error(`[HiPilot EDA v${VERSION}] Fallback file exists but is empty`);
+    } else {
+      console.error(`[HiPilot EDA v${VERSION}] Fallback file not found: ${fallbackFile}`);
+    }
+  } catch (err) {
+    console.error(`[HiPilot EDA v${VERSION}] Error reading fallback file: ${err.message}`);
+  }
+
+  console.error(`[HiPilot EDA v${VERSION}] Using DEFAULT design dir: /home/EDA/ibex_work_upload`);
+  return '/home/EDA/ibex_work_upload';
+}
+
+const DESIGN_DIR = getDesignDir();
 
 function updateTmuxModeStatus(mode, pending = false) {
   try {
@@ -99,6 +152,82 @@ const nunjucksEnv = nunjucks.configure(TEMPLATES_DIR, {
   lstripBlocks: true,
   noCache: true,
 });
+
+// Shared stage definitions used by validate_stage and check_prerequisites
+const STAGE_DEFINITIONS = {
+  'synthesis': {
+    tool: 'dc_shell',
+    category: 'Synthesis',
+    next: 'init_design',
+    required_checkpoints: [],
+    optional_checkpoints: [],
+    description: 'RTL synthesis using Design Compiler',
+  },
+  'compile': { tool: 'dc_shell', category: 'Synthesis', next: 'init_design' },
+  'elaborate': { tool: 'dc_shell', category: 'Synthesis', next: 'init_design' },
+  'init_design': {
+    tool: 'innovus',
+    category: 'Physical Design',
+    next: 'floorplan',
+    required_checkpoints: ['result/syn/data/*.v'],
+    optional_checkpoints: [],
+    description: 'Design initialization in Innovus',
+  },
+  'init': { tool: 'innovus', category: 'Physical Design', next: 'floorplan' },
+  'floorplan': {
+    tool: 'innovus',
+    category: 'Physical Design',
+    next: 'power_plan',
+    required_checkpoints: ['result/pr/data/init_design.enc'],
+    optional_checkpoints: [],
+    description: 'Floorplanning',
+  },
+  'floorplanning': { tool: 'innovus', category: 'Physical Design', next: 'power_plan' },
+  'power_plan': { tool: 'innovus', category: 'Physical Design', next: 'placement' },
+  'powerplan': { tool: 'innovus', category: 'Physical Design', next: 'placement' },
+  'placement': {
+    tool: 'innovus',
+    category: 'Physical Design',
+    next: 'cts',
+    required_checkpoints: ['result/pr/data/floor_plan.enc'],
+    optional_checkpoints: ['result/pr/data/powerplan.enc'],
+    description: 'Cell placement',
+  },
+  'place': { tool: 'innovus', category: 'Physical Design', next: 'cts' },
+  'cts': {
+    tool: 'innovus',
+    category: 'Physical Design',
+    next: 'routing',
+    required_checkpoints: ['result/pr/data/placement.enc'],
+    optional_checkpoints: [],
+    description: 'Clock tree synthesis',
+  },
+  'clock_tree': { tool: 'innovus', category: 'Physical Design', next: 'routing' },
+  'post_cts_opt': { tool: 'innovus', category: 'Physical Design', next: 'routing' },
+  'routing': {
+    tool: 'innovus',
+    category: 'Physical Design',
+    next: 'chip_finish',
+    required_checkpoints: ['result/pr/data/cts.enc'],
+    optional_checkpoints: ['result/pr/data/post_cts_opt.enc'],
+    description: 'Signal routing',
+  },
+  'route': { tool: 'innovus', category: 'Physical Design', next: 'chip_finish' },
+  'routing_opt': { tool: 'innovus', category: 'Physical Design', next: 'chip_finish' },
+  'chip_finish': { tool: 'innovus', category: 'Physical Design', next: 'sta' },
+  'chip_done': { tool: 'innovus', category: 'Physical Design', next: 'sta' },
+  'stream_out': { tool: 'innovus', category: 'Physical Design', next: 'sta' },
+  'sta': {
+    tool: 'pt_shell',
+    category: 'Signoff',
+    next: null,
+    required_checkpoints: ['result/pr/data/chip_done.enc'],
+    optional_checkpoints: [],
+    description: 'Static timing analysis with PrimeTime',
+  },
+  'primetime': { tool: 'pt_shell', category: 'Signoff', next: null },
+  'signoff': { tool: 'pt_shell', category: 'Signoff', next: null },
+};
 
 /**
  * Execute shell command and return output
@@ -201,23 +330,144 @@ function extractQoR(reportContent) {
 /**
  * Detect which EDA tool is currently running
  */
+/**
+ * Enhanced tool detection with multiple verification methods
+ * Returns tool info with confidence score (0.0-1.0)
+ */
 function detectTool() {
+  const TMUX_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
   const checks = [
-    { cmd: 'pgrep -f icc2_shell', tool: 'ICC2', vendor: 'synopsys', version: 'T-2022.03' },
-    { cmd: 'pgrep -f innovus', tool: 'Innovus', vendor: 'cadence', version: 'v20.10' },
-    { cmd: 'pgrep -f pt_shell', tool: 'PrimeTime', vendor: 'synopsys', version: 'T-2022.03' },
-    { cmd: 'pgrep -f tempus', tool: 'Tempus', vendor: 'cadence', version: 'v20.10' },
+    { cmd: 'pgrep -f "icc2_shell"', tool: 'ICC2', vendor: 'synopsys', version: 'T-2022.03', patterns: [/icc2_shell\s*>/i, /ICC2/i] },
+    { cmd: 'pgrep -f "innovus"', tool: 'Innovus', vendor: 'cadence', version: 'v20.10', patterns: [/innovus\s*\d+\s*>/i, /Innovus/i] },
+    { cmd: 'pgrep -f "pt_shell"', tool: 'PrimeTime', vendor: 'synopsys', version: 'T-2022.03', patterns: [/pt_shell\s*>/i, /PrimeTime/i] },
+    { cmd: 'pgrep -f "tempus"', tool: 'Tempus', vendor: 'cadence', version: 'v20.10', patterns: [/tempus\s*\d*\s*>/i, /Tempus/i] },
+    { cmd: 'pgrep -f "dc_shell"', tool: 'DesignCompiler', vendor: 'synopsys', version: 'T-2022.03', patterns: [/dc_shell\s*>/i, /Design Compiler/i] },
   ];
 
+  let bestMatch = null;
+  let highestConfidence = 0;
+
   for (const check of checks) {
+    let confidence = 0;
+
+    // Method 1: Process check (0.5 confidence)
     try {
       const result = execSync(check.cmd, { encoding: 'utf-8', stdio: 'pipe' });
-      if (result.trim()) return { tool: check.tool, vendor: check.vendor, version: check.version };
-    } catch {
+      if (result.trim()) confidence += 0.5;
+    } catch (e) {
+      if (process.env.HIPILOT_DEBUG) {
+        console.error(`[detectTool] Check failed: ${e.message}`);
+      }
       // Process not found
+      continue;
+    }
+
+    // Method 2: Pane content check (0.3 confidence)
+    try {
+      const paneOutput = execSync(
+        `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -50 2>/dev/null || echo ""`,
+        { encoding: 'utf-8', timeout: 2000 }
+      );
+      for (const pattern of check.patterns) {
+        if (pattern.test(paneOutput)) {
+          confidence += 0.3;
+          break;
+        }
+      }
+    } catch (e) {
+      if (process.env.HIPILOT_DEBUG) {
+        console.error(`[detectTool] Check failed: ${e.message}`);
+      }
+    }
+
+    // Method 3: Log file check (0.2 confidence)
+    try {
+      const logPatterns = {
+        'Innovus': `${process.env.HOME || '/home/EDA'}/innovus.log*`,
+        'ICC2': `${process.env.HOME || '/home/EDA'}/icc2_shell.log*`,
+        'PrimeTime': `${process.env.HOME || '/home/EDA'}/pt_shell.log*`,
+        'DesignCompiler': `${process.env.HOME || '/home/EDA'}/dc_shell.log*`,
+      };
+      if (logPatterns[check.tool]) {
+        execSync(`ls ${logPatterns[check.tool]} 2>/dev/null | head -1`, { encoding: 'utf-8' });
+        confidence += 0.2;
+      }
+    } catch (e) {
+      if (process.env.HIPILOT_DEBUG) {
+        console.error(`[detectTool] Check failed: ${e.message}`);
+      }
+    }
+
+    if (confidence > highestConfidence) {
+      highestConfidence = confidence;
+      bestMatch = {
+        tool: check.tool,
+        vendor: check.vendor,
+        version: check.version,
+        confidence: Math.min(confidence, 1.0)
+      };
     }
   }
-  return null;
+
+  return bestMatch;
+}
+
+/**
+ * Get normalized tool name for comparison
+ */
+function getToolAlias(tool) {
+  const aliases = {
+    'innovus': ['innovus', 'cadence', 'Innovus'],
+    'dc_shell': ['dc_shell', 'dc', 'design_compiler', 'DesignCompiler'],
+    'pt_shell': ['pt_shell', 'pt', 'primetime', 'PrimeTime'],
+    'icc2': ['icc2', 'icc2_shell', 'ICC2'],
+    'tempus': ['tempus', 'Tempus'],
+  };
+
+  const normalized = tool.toLowerCase().replace(/[-_]/g, '');
+  for (const [canonical, variants] of Object.entries(aliases)) {
+    for (const variant of variants) {
+      if (normalized === variant.toLowerCase().replace(/[-_]/g, '')) {
+        return canonical;
+      }
+    }
+  }
+  return tool;
+}
+
+/**
+ * Validate that expected tool matches detected tool
+ */
+function validateToolMatch(expectedTool, detectedTool) {
+  if (!expectedTool || !detectedTool) return { valid: false, reason: 'missing_tool' };
+
+  const expected = getToolAlias(expectedTool);
+  const detected = getToolAlias(detectedTool.tool || detectedTool);
+
+  const toolMap = {
+    'innovus': 'physical_design',
+    'icc2': 'physical_design',
+    'dc_shell': 'synthesis',
+    'pt_shell': 'signoff',
+    'tempus': 'signoff',
+  };
+
+  if (expected === detected) {
+    return { valid: true, reason: 'exact_match', confidence: detectedTool.confidence || 1.0 };
+  }
+
+  // Check if tools are in same category (e.g., innovus and icc2 are both physical design)
+  if (toolMap[expected] && toolMap[detected] && toolMap[expected] === toolMap[detected]) {
+    return { valid: true, reason: 'same_category', category: toolMap[expected], confidence: (detectedTool.confidence || 0.5) * 0.7 };
+  }
+
+  return {
+    valid: false,
+    reason: 'mismatch',
+    expected: expected,
+    detected: detected,
+    message: `Expected ${expected} but ${detected} is running. These tools serve different purposes.`
+  };
 }
 
 /**
@@ -727,8 +977,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             tool: {
               type: 'string',
-              description: 'EDA tool to start: innovus (default), icc2_shell, pt_shell',
-              enum: ['innovus', 'icc2_shell', 'pt_shell'],
+              description: 'EDA tool to start: innovus (default), icc2_shell, dc_shell, pt_shell',
+              enum: ['innovus', 'icc2_shell', 'dc_shell', 'pt_shell'],
               default: 'innovus',
             },
             design_dir: {
@@ -1043,6 +1293,31 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
+        name: 'eda.await_idle',
+        description: 'DEFINITIVE: Wait for EDA pane to become idle (like a human watching). Detects when output stops changing AND prompt appears. This is the primary tool for knowing when a command has completed. Polls internally every 500ms and returns immediately when idle is detected.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            timeout: {
+              type: 'number',
+              description: 'Maximum wait time in seconds (default: 300)',
+              default: 300,
+            },
+            stability_ms: {
+              type: 'number',
+              description: 'How long output must be unchanged to consider idle (default: 1500ms)',
+              default: 1500,
+            },
+            pane: {
+              type: 'string',
+              description: 'Pane to monitor (default: eda)',
+              enum: ['eda', 'chat', '0', '1'],
+              default: 'eda',
+            },
+          },
+        },
+      },
+      {
         name: 'eda.get_last_result',
         description: 'Parse last EDA command output to determine success/failure. Analyzes output for common error patterns and success indicators.',
         inputSchema: {
@@ -1116,6 +1391,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               description: 'Target pane (default: eda)',
               enum: ['eda', 'chat', '0', '1'],
               default: 'eda',
+            },
+            expected_tool: {
+              type: 'string',
+              description: 'Expected EDA tool for validation (dc_shell, innovus, pt_shell). If specified, execution will fail if wrong tool is running.',
+              enum: ['dc_shell', 'innovus', 'pt_shell', 'icc2'],
             },
           },
           required: ['tcl'],
@@ -1603,6 +1883,156 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
         },
       },
+      // === KNOWLEDGE BASE TOOLS (PageIndex Integration) ===
+      {
+        name: 'knowledge.get_stage_info',
+        description: 'Get knowledge about a specific RTL2GDS flow stage. Returns expected tool, key commands, common errors, and critical rules. Uses PageIndex tree structure for reasoning-based retrieval.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            stage: {
+              type: 'string',
+              description: 'Flow stage name (e.g., synthesis, placement, cts, routing)',
+            },
+          },
+          required: ['stage'],
+        },
+      },
+      {
+        name: 'knowledge.get_flow_guide',
+        description: 'Get complete RTL2GDS flow guide with all 10 stages, tools, inputs/outputs, and checkpoint names.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
+        name: 'knowledge.validate_command',
+        description: 'Validate that a Tcl command is appropriate for the expected tool. Detects tool mismatches (e.g., Innovus command sent to DC).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            command: {
+              type: 'string',
+              description: 'Tcl command to validate',
+            },
+            expected_tool: {
+              type: 'string',
+              description: 'Expected tool (dc_shell, innovus, pt_shell)',
+            },
+          },
+          required: ['command', 'expected_tool'],
+        },
+      },
+      {
+        name: 'knowledge.diagnose_error',
+        description: 'Diagnose an error using the knowledge base. Returns likely cause and suggested fix based on error patterns.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            error_output: {
+              type: 'string',
+              description: 'Error message or output to diagnose',
+            },
+            tool: {
+              type: 'string',
+              description: 'Tool that produced the error (dc_shell, innovus, pt_shell)',
+            },
+          },
+          required: ['error_output'],
+        },
+      },
+      {
+        name: 'knowledge.get_checkpoint_command',
+        description: 'Get the correct checkpoint load command for a tool. Returns appropriate command for .enc (Innovus) or .ddc (DC).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            checkpoint: {
+              type: 'string',
+              description: 'Checkpoint filename',
+            },
+            tool: {
+              type: 'string',
+              description: 'Tool name (dc_shell, innovus)',
+            },
+          },
+          required: ['checkpoint', 'tool'],
+        },
+      },
+      // === FLOW VALIDATION TOOLS ===
+      {
+        name: 'eda.validate_stage',
+        description: 'Validate that the current stage can proceed with the detected tool. Checks stage-tool compatibility and returns validation result with guidance.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            stage: {
+              type: 'string',
+              description: 'Flow stage name (synthesis, init_design, floorplan, placement, cts, routing, sta, etc.)',
+            },
+          },
+          required: ['stage'],
+        },
+      },
+      {
+        name: 'eda.get_flow_state',
+        description: 'Get complete flow state including current tool, detected stage, completed stages, and readiness to proceed. Essential for process-aware flow control.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            design_dir: {
+              type: 'string',
+              description: 'Optional design directory to check for checkpoints',
+            },
+          },
+        },
+      },
+      {
+        name: 'eda.switch_tool',
+        description: 'Safely switch between EDA tools with proper checkpointing. Exits current tool, saves state if needed, and starts new tool. Prevents data loss.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            from_tool: {
+              type: 'string',
+              description: 'Current tool to exit (innovus, dc_shell, pt_shell)',
+            },
+            to_tool: {
+              type: 'string',
+              description: 'Tool to start (innovus, dc_shell, pt_shell)',
+            },
+            design_dir: {
+              type: 'string',
+              description: 'Design working directory',
+            },
+            save_checkpoint: {
+              type: 'boolean',
+              description: 'Whether to save checkpoint before switching',
+              default: true,
+            },
+          },
+          required: ['to_tool'],
+        },
+      },
+      {
+        name: 'eda.check_prerequisites',
+        description: 'Check all prerequisites before running a stage: correct tool running, required checkpoints exist, previous stages completed, license available.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            stage: {
+              type: 'string',
+              description: 'Stage to check prerequisites for',
+            },
+            design_dir: {
+              type: 'string',
+              description: 'Design directory to check for checkpoints',
+            },
+          },
+          required: ['stage'],
+        },
+      },
     ],
   };
 });
@@ -1784,7 +2214,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
 
         // If tool already running, return success
         const detected = detectTool();
-        const toolMap = { innovus: 'Innovus', icc2_shell: 'ICC2', pt_shell: 'PrimeTime' };
+        const toolMap = { innovus: 'Innovus', icc2_shell: 'ICC2', pt_shell: 'PrimeTime', dc_shell: 'DesignCompiler' };
         if (detected && detected.tool === toolMap[tool]) {
           return {
             content: [{
@@ -1798,12 +2228,32 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
           ? 'innovus -no_gui'
           : tool === 'icc2_shell'
             ? 'icc2_shell'
-            : 'pt_shell';
+            : tool === 'dc_shell'
+              ? 'dc_shell -no_gui'
+              : 'pt_shell';
         const waitSeconds = timeout ?? (tool === 'innovus' ? 90 : 60);
+
+        // Check if target pane exists, recreate if needed
+        try {
+          execSync(`tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -1 2>/dev/null`, { encoding: 'utf-8' });
+        } catch {
+          // Pane doesn't exist - need to recreate it
+          try {
+            // Split window to create new pane
+            execSync(`tmux -L ${TMUX_SESSION} split-window -h -t ${TMUX_SESSION}:0.0 -c ${design_dir ? shellEscape(design_dir).slice(1, -1) : process.env.HOME || '/home/EDA'} 2>/dev/null || tmux -L ${TMUX_SESSION} split-window -h -t ${TMUX_SESSION}:0.0`, { encoding: 'utf-8' });
+            // Enable remain-on-exit for the new pane
+            execSync(`tmux -L ${TMUX_SESSION} set-option -t ${target} remain-on-exit on 2>/dev/null || true`, { encoding: 'utf-8' });
+          } catch (recreateError) {
+            return {
+              content: [{ type: 'text', text: `❌ Failed to recreate EDA pane: ${recreateError.message}` }],
+              isError: true,
+            };
+          }
+        }
 
         try {
           if (design_dir) {
-            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'cd ${design_dir}'`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'cd ${shellEscape(design_dir)}'`, { encoding: 'utf-8' });
             execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
             await new Promise(r => setTimeout(r, 800));
           }
@@ -2732,6 +3182,167 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         };
       }
 
+      case 'eda.await_idle': {
+        const { timeout = 300, stability_ms = 1500, pane = 'eda', expected_tool = null } = args;
+        const startTime = Date.now();
+        const timeoutMs = timeout * 1000;
+        const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
+        const target = `${TMUX_SESSION}:0.${paneIdx}`;
+
+        // Tool-specific prompt patterns
+        const toolPatterns = {
+          'innovus': /innovus\s*\d+>/i,
+          'icc2': /icc2_shell>/i,
+          'pt_shell': /pt_shell>/i,
+          'dc_shell': /dc_shell>/i,
+          'genus': /genus>/i,
+          'tempus': /tempus\s*\d*>/i,
+        };
+
+        // Bash prompt pattern - indicates tool CRASH, not idle
+        const bashPromptPattern = /^\[.*@.*\].*[$#]$/;
+
+        // All EDA tool prompts (for general detection)
+        const allEdaPatterns = Object.values(toolPatterns);
+
+        let lastOutput = '';
+        let lastChangeTime = startTime;
+        let stableSince = null;
+        let pollCount = 0;
+        let lastSnapshot = '';
+
+        while (Date.now() - startTime < timeoutMs) {
+          pollCount++;
+          try {
+            const output = execSync(
+              `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -100 2>/dev/null || echo ""`,
+              { encoding: 'utf-8', timeout: 5000 }
+            );
+
+            const outputLines = output.split('\n').filter(l => l.trim());
+            const lastLine = outputLines.slice(-1)[0] || '';
+            const currentSnapshot = outputLines.slice(-20).join('\n');
+
+            // Check if output changed
+            if (currentSnapshot !== lastSnapshot) {
+              lastSnapshot = currentSnapshot;
+              lastChangeTime = Date.now();
+              stableSince = null;
+            } else {
+              // Output stable - track how long
+              if (!stableSince) {
+                stableSince = Date.now();
+              }
+            }
+
+            // Check for bash prompt (tool crashed)
+            const isBashPrompt = bashPromptPattern.test(lastLine);
+            if (isBashPrompt) {
+              const elapsed = (Date.now() - startTime) / 1000;
+              return {
+                content: [{
+                  type: 'text',
+                  text: `❌ **EDA TOOL CRASHED** (${elapsed.toFixed(1)}s)\n\n` +
+                        `**State:** ERROR — Tool exited to bash shell\n` +
+                        `**Last line:** ${lastLine.trim()}\n\n` +
+                        `**Last 15 lines:**\n` +
+                        "```\n" +
+                        `${outputLines.slice(-15).join('\n')}\n` +
+                        "```",
+                }],
+                isError: true,
+                _metadata: {
+                  idle: false,
+                  state: 'error',
+                  error_type: 'tool_crashed_to_bash',
+                  elapsed_ms: Date.now() - startTime,
+                  polls: pollCount,
+                  last_line: lastLine.trim()
+                }
+              };
+            }
+
+            // Check for expected tool prompt
+            let hasExpectedPrompt = false;
+            let detectedTool = null;
+            if (expected_tool && toolPatterns[expected_tool]) {
+              hasExpectedPrompt = toolPatterns[expected_tool].test(lastLine);
+              if (hasExpectedPrompt) detectedTool = expected_tool;
+            }
+            // Also check for any EDA tool prompt
+            const hasAnyEdaPrompt = allEdaPatterns.some(p => p.test(lastLine));
+
+            // IDLE DETECTION: Consider idle when:
+            // 1. Output hasn't changed for stability_ms, AND
+            // 2. Expected tool prompt is visible (if specified) OR any EDA prompt
+            const stableDuration = stableSince ? Date.now() - stableSince : 0;
+            const isIdle = stableDuration >= stability_ms &&
+                          (hasExpectedPrompt || (hasAnyEdaPrompt && !expected_tool));
+
+            if (isIdle) {
+              const elapsed = (Date.now() - startTime) / 1000;
+
+              // Analyze final state
+              let state = 'idle';
+              let stateDetail = 'Output stable';
+              if (hasExpectedPrompt) {
+                state = 'ready';
+                stateDetail = `${detectedTool} prompt detected: ${lastLine.trim()}`;
+              } else if (hasAnyEdaPrompt) {
+                state = 'ready';
+                stateDetail = `EDA prompt detected: ${lastLine.trim()}`;
+              }
+
+              // Check for errors in final output
+              const errorPatterns = [/\*\*ERROR/i, /FATAL/i, /failed/i, /Error:/i, /command not found/i];
+              const hasError = errorPatterns.some(p => p.test(output));
+
+              return {
+                content: [{
+                  type: 'text',
+                  text: `✅ **EDA Pane Idle** (${elapsed.toFixed(1)}s)\n\n` +
+                        `**State:** ${state} — ${stateDetail}\n` +
+                        `**Polls:** ${pollCount} | **Stable for:** ${(stableDuration/1000).toFixed(1)}s\n` +
+                        `**Errors:** ${hasError ? '⚠️ detected' : 'none'}\n\n` +
+                        `**Last 15 lines:**\n` +
+                        "```\n" +
+                        `${outputLines.slice(-15).join('\n')}\n` +
+                        "```",
+                }],
+                _metadata: {
+                  idle: true,
+                  state,
+                  has_prompt: hasExpectedPrompt || hasAnyEdaPrompt,
+                  detected_tool: detectedTool,
+                  has_error: hasError,
+                  elapsed_ms: Date.now() - startTime,
+                  polls: pollCount,
+                  stable_duration_ms: stableDuration,
+                  last_line: lastLine.trim()
+                }
+              };
+            }
+          } catch (e) {
+            // Continue polling on error
+          }
+
+          await new Promise(r => setTimeout(r, 500));
+        }
+
+        // Timeout - return current state
+        return {
+          content: [{
+            type: 'text',
+            text: `⏱ **Timeout waiting for idle state** (${timeout}s)\n\n` +
+                  `The EDA pane output may still be changing. ` +
+                  `Last stable duration: ${stableSince ? ((Date.now() - stableSince)/1000).toFixed(1) : 0}s\n\n` +
+                  `**Recommendation:** Check \`eda.peek\` or continue waiting.`
+          }],
+          isError: true,
+          _metadata: { idle: false, timeout: true, polls: pollCount, elapsed_ms: timeoutMs }
+        };
+      }
+
       case 'eda.get_last_result': {
         const { lines = 50, pane = 'eda' } = args;
         const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
@@ -2834,10 +3445,45 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
       }
 
       case 'eda.execute_and_verify': {
-        const { tcl, timeout = 120, description = '', extract_qor: shouldExtractQor = true, pane = 'eda' } = args;
+        const { tcl, timeout = 300, description = '', extract_qor: shouldExtractQor = true, pane = 'eda', expected_tool } = args;
         const startTime = Date.now();
         const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
         const target = `${TMUX_SESSION}:0.${paneIdx}`;
+
+        // Step 0: Tool validation (if expected_tool specified)
+        if (expected_tool) {
+          const detected = detectTool();
+          const validation = validateToolMatch(expected_tool, detected);
+
+          if (!validation.valid) {
+            const errorMsg = `❌ PROCESS ERROR: Tool mismatch detected!
+
+**Expected:** ${expected_tool}
+**Detected:** ${detected ? detected.tool : 'none'}
+**Confidence:** ${detected ? (detected.confidence * 100).toFixed(0) : 0}%
+
+${validation.message || 'The wrong tool is running for this operation.'}
+
+**Action required:**
+1. Exit current tool: type 'exit' in the EDA pane
+2. Start correct tool: eda.start_tool({tool: "${expected_tool}"})
+3. Then retry this command
+
+This validation prevents fundamental flow errors like running synthesis in innovus.`;
+
+            return {
+              content: [{ type: 'text', text: errorMsg }],
+              isError: true,
+              _metadata: {
+                status: 'tool_mismatch',
+                expected_tool: expected_tool,
+                detected_tool: detected?.tool || null,
+                validation: validation,
+                elapsed_ms: 0,
+              },
+            };
+          }
+        }
 
         // Step 1: Risk analysis
         const riskAnalysis = analyzeRisk(tcl);
@@ -3145,16 +3791,35 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
       case 'session.restore_checkpoint': {
         const { checkpoint_id } = args;
         const checkpointsDir = join(hipilotPaths.hipilotDir, 'session', 'checkpoints');
-        
+
+        // Validate checkpoint_id format to prevent path traversal
+        const VALID_CHECKPOINT_ID = /^[a-zA-Z0-9_-]+$/;
+        if (!VALID_CHECKPOINT_ID.test(checkpoint_id)) {
+          return { content: [{ type: 'text', text: `❌ Invalid checkpoint_id format: ${checkpoint_id}. Only alphanumeric, underscore, and hyphen allowed.` }], isError: true };
+        }
+
         let checkpointPath = join(checkpointsDir, `${checkpoint_id}.json`);
+
+        // Verify resolved path is within checkpointsDir
+        const resolvedPath = resolve(checkpointPath);
+        const resolvedCheckpointsDir = resolve(checkpointsDir);
+        if (!resolvedPath.startsWith(resolvedCheckpointsDir)) {
+          return { content: [{ type: 'text', text: `❌ Path traversal detected: ${checkpoint_id}` }], isError: true };
+        }
+
         if (!existsSync(checkpointPath)) {
           const files = readdirSync(checkpointsDir).filter(f => f.includes(checkpoint_id));
           if (files.length === 0) {
             return { content: [{ type: 'text', text: `❌ Checkpoint not found: ${checkpoint_id}` }], isError: true };
           }
           checkpointPath = join(checkpointsDir, files[0]);
+          // Re-validate the matched file path
+          const resolvedMatchPath = resolve(checkpointPath);
+          if (!resolvedMatchPath.startsWith(resolvedCheckpointsDir)) {
+            return { content: [{ type: 'text', text: `❌ Path traversal detected in matched file: ${files[0]}` }], isError: true };
+          }
         }
-        
+
         const checkpoint = JSON.parse(readFileSync(checkpointPath, 'utf-8'));
         
         return {
@@ -3913,10 +4578,9 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
       case 'rtl2gds.run_full_flow': {
         const { design = 'ibex', params = {} } = args;
         // Re-map to workflow.run without stage filter for full-flow execution
-        args = {
-          name: 'rtl2gds',
-          params: { ...params, design },
-        };
+        // Pass workflow config directly to execution logic
+        args.name = 'rtl2gds';
+        args.params = { ...params, design };
         // fall through to workflow.run
       }
 
@@ -3959,7 +4623,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
             name: 'rtl2gds',
             description: 'Complete RTL-to-GDS flow: init → floorplan → placement → CTS → routing → chip finish',
             steps: [
-              { name: 'design_init', operation: 'read_design', timeout: 180, on_failure: 'stop', variables: { load_mode: 'def', def_file: '/home/EDA/ibex_work_upload/designs/sky130hd/ibex/floorplan_ibex.def', lef_files: '/home/EDA/ibex_work_upload/designs/sky130hd/pdk/lef/sky130_fd_sc_hd.tlef /home/EDA/ibex_work_upload/designs/sky130hd/pdk/lef/sky130_fd_sc_hd_merged.lef' } },
+              { name: 'design_init', operation: 'read_design', timeout: 180, on_failure: 'stop', variables: { load_mode: 'def', def_file: `${DESIGN_DIR}/designs/sky130hd/ibex/floorplan_ibex.def`, lef_files: `${DESIGN_DIR}/designs/sky130hd/pdk/lef/sky130_fd_sc_hd.tlef ${DESIGN_DIR}/designs/sky130hd/pdk/lef/sky130_fd_sc_hd_merged.lef` } },
               { name: 'floorplan', tcl: 'if { [llength [dbget top.fPlan.rows]] == 0 } { floorPlan -site unithd -su 1 0.4 1 1 1 1 } else { puts "INFO: Floorplan already exists, skipping floorPlan command" }', timeout: 120, on_failure: 'stop' },
               { name: 'placement', tcl: 'place_opt_design', timeout: 300, on_failure: 'stop' },
               { name: 'cts', operation: 'run_cts', timeout: 300, on_failure: 'stop' },
@@ -4440,6 +5104,548 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         text += `**Expected Gain:** ${expected_gain}\n`;
         
         return { content: [{ type: 'text', text }], _metadata: { optimization, reason, expected_gain } };
+      }
+
+      // === KNOWLEDGE BASE TOOL HANDLERS (PageIndex Integration) ===
+      case 'knowledge.get_stage_info': {
+        const { stage } = args;
+        const knowledge = getKnowledgeForStage(stage);
+
+        if (!knowledge.found) {
+          return {
+            content: [{ type: 'text', text: `❌ ${knowledge.message}` }],
+            isError: true,
+          };
+        }
+
+        const text = `## Stage: ${stage}\n\n` +
+          `**Tool:** ${knowledge.tool}\n` +
+          `**Knowledge Path:** ${knowledge.treePath}\n\n` +
+          `### Critical Rules\n${knowledge.criticalRules.map(r => `- ${r}`).join('\n')}\n\n` +
+          `### Common Errors\n${knowledge.commonErrors.map(e => `- **${e.cause}**: ${e.solution}`).join('\n')}`;
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: knowledge,
+        };
+      }
+
+      case 'knowledge.get_flow_guide': {
+        const guide = getFlowGuide();
+
+        let text = '# RTL2GDS Flow Guide\n\n';
+        text += '| Stage | Name | Tool | Input | Output | Checkpoint |\n';
+        text += '|-------|------|------|-------|--------|------------|\n';
+
+        for (const stage of guide.stages) {
+          text += `| ${stage.stage} | ${stage.name} | ${stage.tool} | ${stage.input} | ${stage.output} | ${stage.checkpoint} |\n`;
+        }
+
+        text += '\n## Flow Dependencies\n\n';
+        text += '```\n';
+        text += 'synthesis.v → init_design.enc → floor_plan.enc → powerplan.enc →\n';
+        text += 'placement.enc → cts.enc → post_cts_opt.enc → routing.enc →\n';
+        text += 'routing_opt.enc → chip_done.enc\n';
+        text += '```';
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: guide,
+        };
+      }
+
+      case 'knowledge.validate_command': {
+        const { command, expected_tool } = args;
+        const validation = validateCommandContext(command, expected_tool);
+
+        let text;
+        if (validation.valid) {
+          text = `✅ **Command Valid**\n\n`;
+          text += `**Command:** \`${command}\`\n`;
+          text += `**Expected Tool:** ${validation.expectedTool}\n`;
+          if (validation.detectedTool) {
+            text += `**Detected Tool:** ${validation.detectedTool}\n`;
+          }
+          if (validation.warning) {
+            text += `\n⚠️ **Warning:** ${validation.warning}`;
+          }
+        } else {
+          text = `❌ **Command Invalid**\n\n`;
+          text += `**Error:** ${validation.error}\n`;
+          text += `**Detected Tool:** ${validation.detectedTool}\n`;
+          text += `**Expected Tool:** ${validation.expectedTool}\n\n`;
+          text += `**Severity:** ${validation.severity}\n\n`;
+          text += `This command will fail if sent to ${expected_tool}.`;
+        }
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: validation,
+        };
+      }
+
+      case 'knowledge.diagnose_error': {
+        const { error_output, tool } = args;
+        const diagnosis = diagnoseError(error_output, tool);
+
+        let text;
+        if (diagnosis.diagnosed) {
+          text = `## Error Diagnosis\n\n`;
+          text += `**Cause:** ${diagnosis.cause}\n\n`;
+          text += `**Solution:** ${diagnosis.solution}\n\n`;
+          text += `**Severity:** ${diagnosis.severity}`;
+        } else {
+          text = `## Error Diagnosis\n\n`;
+          text += `❌ ${diagnosis.message}\n\n`;
+          text += `**Severity:** ${diagnosis.severity}\n\n`;
+          text += `Consider checking the logs for more details.`;
+        }
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: diagnosis,
+        };
+      }
+
+      case 'knowledge.get_checkpoint_command': {
+        const { checkpoint, tool } = args;
+        const command = getCheckpointLoadCommand(checkpoint, tool);
+        const isValid = isValidCheckpoint(checkpoint, tool);
+
+        let text = `## Checkpoint Load Command\n\n`;
+        text += `**Checkpoint:** ${checkpoint}\n`;
+        text += `**Tool:** ${tool}\n`;
+        text += `**Valid:** ${isValid ? '✅ Yes' : '❌ No'}\n\n`;
+        text += `**Command:**\n\`\`\`tcl\n${command}\n\`\`\``;
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: { checkpoint, tool, command, isValid },
+        };
+      }
+
+      // === FLOW VALIDATION TOOLS ===
+      case 'eda.validate_stage': {
+        const { stage } = args;
+
+        const detected = detectTool();
+        const stageInfo = STAGE_DEFINITIONS[stage.toLowerCase()];
+
+        if (!stageInfo) {
+          return {
+            content: [{
+              type: 'text',
+              text: `❓ Unknown stage: "${stage}"\n\nKnown stages: ${Object.keys(STAGE_DEFINITIONS).join(', ')}`,
+            }],
+            isError: true,
+          };
+        }
+
+        const validation = validateToolMatch(stageInfo.tool, detected);
+
+        let text = `## Stage Validation: ${stage}\n\n`;
+        text += `**Expected Tool:** ${stageInfo.tool}\n`;
+        text += `**Category:** ${stageInfo.category}\n`;
+        text += `**Detected Tool:** ${detected ? detected.tool : 'none'}\n`;
+        text += `**Confidence:** ${detected ? (detected.confidence * 100).toFixed(0) : 0}%\n\n`;
+
+        if (validation.valid) {
+          text += `✅ **VALID:** Correct tool is running for this stage.\n\n`;
+          if (stageInfo.next) {
+            text += `Next stage: ${stageInfo.next}\n`;
+          }
+        } else {
+          text += `❌ **INVALID:** Tool mismatch detected!\n\n`;
+          text += `**Issue:** ${validation.message || validation.reason}\n\n`;
+          text += `**Action Required:**\n`;
+          text += `1. Exit current tool: type 'exit' in EDA pane\n`;
+          text += `2. Start correct tool: eda.start_tool({tool: "${stageInfo.tool}"})\n`;
+          text += `3. Retry the stage\n`;
+        }
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: {
+            stage,
+            expected_tool: stageInfo.tool,
+            detected_tool: detected?.tool || null,
+            valid: validation.valid,
+            validation,
+          },
+        };
+      }
+
+      case 'eda.get_flow_state': {
+        const { design_dir } = args;
+        const TMUX_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
+
+        const detected = detectTool();
+
+        // Check for existing checkpoints
+        const checkpoints = [];
+        const checkpointPaths = [
+          { stage: 'synthesis', path: 'result/syn/data/*.v', tool: 'dc_shell' },
+          { stage: 'init_design', path: 'result/pr/data/init_design.enc', tool: 'innovus' },
+          { stage: 'floorplan', path: 'result/pr/data/floor_plan.enc', tool: 'innovus' },
+          { stage: 'power_plan', path: 'result/pr/data/powerplan.enc', tool: 'innovus' },
+          { stage: 'placement', path: 'result/pr/data/placement.enc', tool: 'innovus' },
+          { stage: 'cts', path: 'result/pr/data/cts.enc', tool: 'innovus' },
+          { stage: 'post_cts_opt', path: 'result/pr/data/post_cts_opt.enc', tool: 'innovus' },
+          { stage: 'routing', path: 'result/pr/data/routing.enc', tool: 'innovus' },
+          { stage: 'chip_finish', path: 'result/pr/data/chip_done.enc', tool: 'innovus' },
+        ];
+
+        if (design_dir && existsSync(design_dir)) {
+          for (const cp of checkpointPaths) {
+            const fullPath = join(design_dir, cp.path);
+            try {
+              const result = execSync(`ls ${fullPath} 2>/dev/null | head -1`, { encoding: 'utf-8', stdio: 'pipe' });
+              if (result.trim()) {
+                checkpoints.push({ stage: cp.stage, path: result.trim(), tool: cp.tool });
+              }
+            } catch {}
+          }
+        }
+
+        // Determine current stage from checkpoints
+        let currentStage = 'unknown';
+        let nextStage = null;
+        const stageOrder = ['synthesis', 'init_design', 'floorplan', 'power_plan', 'placement', 'cts', 'post_cts_opt', 'routing', 'chip_finish'];
+
+        if (checkpoints.length > 0) {
+          const completedStages = checkpoints.map(cp => cp.stage);
+          for (const stage of stageOrder) {
+            if (!completedStages.includes(stage)) {
+              currentStage = stage;
+              const idx = stageOrder.indexOf(stage);
+              nextStage = idx < stageOrder.length - 1 ? stageOrder[idx + 1] : null;
+              break;
+            }
+          }
+          if (currentStage === 'unknown') {
+            currentStage = 'complete';
+          }
+        } else {
+          currentStage = 'synthesis';
+          nextStage = 'init_design';
+        }
+
+        // Check EDA pane state
+        let paneState = 'unknown';
+        try {
+          const paneOutput = execSync(
+            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -10 2>/dev/null || echo ""`,
+            { encoding: 'utf-8', timeout: 2000 }
+          );
+          const lastLine = paneOutput.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
+
+          if (/innovus\s*\d+\s*>/i.test(lastLine)) paneState = 'innovus_ready';
+          else if (/dc_shell\s*>/i.test(lastLine)) paneState = 'dc_shell_ready';
+          else if (/pt_shell\s*>/i.test(lastLine)) paneState = 'pt_shell_ready';
+          else if (/icc2_shell\s*>/i.test(lastLine)) paneState = 'icc2_ready';
+          else if (/\$\s*$/.test(lastLine) || /bash/i.test(lastLine)) paneState = 'shell_idle';
+          else if (paneOutput.includes('Start your EDA tool')) paneState = 'welcome';
+          else paneState = 'busy_or_unknown';
+        } catch {}
+
+        // Check license availability
+        let licenseStatus = 'unknown';
+        try {
+          const lmstat = execSync('which lmstat 2>/dev/null', { encoding: 'utf-8', stdio: 'pipe' });
+          if (lmstat.trim()) licenseStatus = 'lmstat_available';
+        } catch {
+          licenseStatus = 'lmstat_not_found';
+        }
+
+        let text = `## Flow State\n\n`;
+        text += `### Current Tool\n`;
+        text += `- **Tool:** ${detected ? detected.tool : 'None detected'}\n`;
+        text += `- **Confidence:** ${detected ? (detected.confidence * 100).toFixed(0) : 0}%\n`;
+        text += `- **Pane State:** ${paneState}\n\n`;
+
+        text += `### Flow Progress\n`;
+        text += `- **Current Stage:** ${currentStage}\n`;
+        text += `- **Next Stage:** ${nextStage || 'N/A (flow complete)'}\n`;
+        text += `- **Checkpoints Found:** ${checkpoints.length}\n`;
+        if (checkpoints.length > 0) {
+          text += `- **Last Checkpoint:** ${checkpoints[checkpoints.length - 1].stage}\n`;
+        }
+        text += `\n`;
+
+        text += `### System Status\n`;
+        text += `- **License Check:** ${licenseStatus}\n\n`;
+
+        text += `### Recommendations\n`;
+        if (!detected) {
+          text += `- Start EDA tool: \`eda.start_tool({tool: "${currentStage === 'synthesis' ? 'dc_shell' : 'innovus'}"})\`\n`;
+        } else if (currentStage !== 'complete') {
+          const expectedTool = currentStage === 'synthesis' ? 'dc_shell' : (currentStage === 'sta' ? 'pt_shell' : 'innovus');
+          if (getToolAlias(detected.tool) !== getToolAlias(expectedTool)) {
+            text += `- ⚠️ Tool mismatch! Expected ${expectedTool} for ${currentStage}\n`;
+            text += `- Switch tool: \`eda.switch_tool({to_tool: "${expectedTool}"})\`\n`;
+          } else {
+            text += `- ✅ Ready to proceed with ${currentStage}\n`;
+          }
+        } else {
+          text += `- ✅ All stages complete!\n`;
+        }
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: {
+            current_tool: detected,
+            pane_state: paneState,
+            current_stage: currentStage,
+            next_stage: nextStage,
+            checkpoints: checkpoints,
+          },
+        };
+      }
+
+      case 'eda.switch_tool': {
+        const { from_tool, to_tool, design_dir, save_checkpoint = true } = args;
+        const TMUX_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
+        const target = `${TMUX_SESSION}:0.1`;
+
+        const detected = detectTool();
+        const actualFromTool = from_tool || (detected ? getToolAlias(detected.tool) : null);
+
+        if (!actualFromTool) {
+          return {
+            content: [{
+              type: 'text',
+              text: `❌ No tool currently running. Cannot determine what to exit.\n\nStart a tool first with: eda.start_tool({tool: "${to_tool}"})`,
+            }],
+            isError: true,
+          };
+        }
+
+        let text = `## Tool Switch: ${actualFromTool} → ${to_tool}\n\n`;
+
+        // Step 1: Save checkpoint if requested
+        if (save_checkpoint) {
+          text += `### Step 1: Saving checkpoint...\n`;
+          try {
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '').slice(0, 14);
+            const saveCmd = actualFromTool === 'dc_shell'
+              ? `write_file -format verilog -hierarchy -output pre_switch_${timestamp}.v`
+              : `saveDesign pre_switch_${timestamp}.enc`;
+
+            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l '${saveCmd}'`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+            await new Promise(r => setTimeout(r, 2000));
+
+            text += `✅ Checkpoint saved: pre_switch_${timestamp}.${actualFromTool === 'dc_shell' ? 'v' : 'enc'}\n\n`;
+          } catch (e) {
+            text += `⚠️ Checkpoint save may have failed: ${e.message}\n\n`;
+          }
+        }
+
+        // Step 2: Exit current tool
+        text += `### Step 2: Exiting ${actualFromTool}...\n`;
+        try {
+          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'exit'`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+          await new Promise(r => setTimeout(r, 2000));
+          text += `✅ Exit command sent\n\n`;
+        } catch (e) {
+          text += `⚠️ Exit command failed: ${e.message}\n\n`;
+        }
+
+        // Step 3: Start new tool
+        text += `### Step 3: Starting ${to_tool}...\n`;
+
+        // Validate to_tool against whitelist
+        const ALLOWED_TOOLS = {
+          'innovus': 'innovus -no_gui',
+          'dc_shell': 'dc_shell',
+          'pt_shell': 'pt_shell',
+          'icc2': 'icc2_shell'
+        };
+
+        if (!ALLOWED_TOOLS[to_tool]) {
+          return {
+            content: [{ type: 'text', text: `❌ Invalid tool: ${to_tool}. Allowed tools: ${Object.keys(ALLOWED_TOOLS).join(', ')}` }],
+            isError: true,
+          };
+        }
+
+        const launchCmd = ALLOWED_TOOLS[to_tool];
+
+        try {
+          if (design_dir) {
+            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'cd ${shellEscape(design_dir)}'`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+            await new Promise(r => setTimeout(r, 1000));
+          }
+
+          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l '${launchCmd}'`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+
+          // Wait for prompt
+          const startTime = Date.now();
+          const timeoutMs = 120000;
+          const promptPatterns = {
+            'innovus': /innovus\s*\d+\s*>/i,
+            'dc_shell': /dc_shell\s*>/i,
+            'pt_shell': /pt_shell\s*>/i,
+            'icc2': /icc2_shell\s*>/i,
+          };
+          const pattern = promptPatterns[to_tool] || /\$/;
+          let promptFound = false;
+
+          while (Date.now() - startTime < timeoutMs) {
+            try {
+              const output = execSync(
+                `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
+                { encoding: 'utf-8', timeout: 5000 }
+              );
+              const lastLine = output.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
+              if (pattern.test(lastLine)) {
+                text += `✅ ${to_tool} started and ready!\n`;
+                text += `Prompt: ${lastLine.trim()}\n\n`;
+                promptFound = true;
+                break;
+              }
+            } catch {}
+            await new Promise(r => setTimeout(r, 500));
+          }
+
+          if (!promptFound) {
+            text += `❌ Timeout: ${to_tool} did not start within ${timeoutMs / 1000}s\n\n`;
+          }
+        } catch (e) {
+          text += `❌ Failed to start ${to_tool}: ${e.message}\n\n`;
+        }
+
+        text += `### Summary\n`;
+        text += `- Switched from: ${actualFromTool}\n`;
+        text += `- Switched to: ${to_tool}\n`;
+        text += `- Checkpoint saved: ${save_checkpoint ? 'Yes' : 'No'}\n`;
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: { from_tool: actualFromTool, to_tool, save_checkpoint },
+        };
+      }
+
+      case 'eda.check_prerequisites': {
+        const { stage, design_dir } = args;
+
+        const prerequisites = [];
+
+        const req = STAGE_DEFINITIONS[stage.toLowerCase()];
+
+        if (!req) {
+          return {
+            content: [{
+              type: 'text',
+              text: `❓ Unknown stage: "${stage}"\n\nKnown stages: ${Object.keys(STAGE_DEFINITIONS).join(', ')}`,
+            }],
+            isError: true,
+          };
+        }
+
+        // Check 1: Tool running
+        const detected = detectTool();
+        const toolMatch = validateToolMatch(req.tool, detected);
+        prerequisites.push({
+          name: 'Required tool running',
+          status: toolMatch.valid ? 'PASS' : 'FAIL',
+          expected: req.tool,
+          actual: detected?.tool || 'none',
+          detail: toolMatch.valid ? `${req.tool} is running` : `Expected ${req.tool}, found ${detected?.tool || 'none'}`,
+        });
+
+        // Check 2: Required checkpoints
+        if (design_dir && req.required_checkpoints.length > 0) {
+          for (const cp of req.required_checkpoints) {
+            const cpPath = join(design_dir, cp);
+            try {
+              const result = execSync(`ls ${cpPath} 2>/dev/null | head -1`, { encoding: 'utf-8', stdio: 'pipe' });
+              if (result.trim()) {
+                prerequisites.push({
+                  name: `Checkpoint: ${cp}`,
+                  status: 'PASS',
+                  path: result.trim(),
+                  detail: 'Found',
+                });
+              } else {
+                prerequisites.push({
+                  name: `Checkpoint: ${cp}`,
+                  status: 'FAIL',
+                  path: cpPath,
+                  detail: 'Not found - previous stage may be incomplete',
+                });
+              }
+            } catch {
+              prerequisites.push({
+                name: `Checkpoint: ${cp}`,
+                status: 'FAIL',
+                path: cpPath,
+                detail: 'Not found - previous stage may be incomplete',
+              });
+            }
+          }
+        }
+
+        // Check 3: License (basic check)
+        let licenseOk = true;
+        try {
+          execSync('which lmstat 2>/dev/null', { encoding: 'utf-8', stdio: 'pipe' });
+          prerequisites.push({
+            name: 'License check',
+            status: 'INFO',
+            detail: 'lmstat available (run license check manually)',
+          });
+        } catch {
+          prerequisites.push({
+            name: 'License check',
+            status: 'WARN',
+            detail: 'lmstat not found - cannot verify license availability',
+          });
+        }
+
+        const passed = prerequisites.filter(p => p.status === 'PASS').length;
+        const failed = prerequisites.filter(p => p.status === 'FAIL').length;
+        const warnings = prerequisites.filter(p => p.status === 'WARN').length;
+        const canProceed = failed === 0;
+
+        let text = `## Prerequisites Check: ${stage}\n\n`;
+        text += `**Description:** ${req.description}\n`;
+        text += `**Required Tool:** ${req.tool}\n\n`;
+
+        text += `### Check Results\n\n`;
+        text += `| Check | Status | Detail |\n`;
+        text += `|-------|--------|--------|\n`;
+        for (const p of prerequisites) {
+          const icon = p.status === 'PASS' ? '✅' : p.status === 'FAIL' ? '❌' : p.status === 'WARN' ? '⚠️' : 'ℹ️';
+          text += `| ${p.name} | ${icon} ${p.status} | ${p.detail} |\n`;
+        }
+
+        text += `\n**Summary:** ${passed} passed, ${failed} failed, ${warnings} warnings\n\n`;
+
+        if (canProceed) {
+          text += `✅ **Ready to proceed!** All prerequisites met.\n`;
+        } else {
+          text += `❌ **Cannot proceed.** Fix failed prerequisites first.\n`;
+          if (!toolMatch.valid) {
+            text += `\n**Action:** Switch to correct tool:\n`;
+            text += `\`\`\`\neda.switch_tool({to_tool: "${req.tool}"})\n\`\`\`\n`;
+          }
+        }
+
+        return {
+          content: [{ type: 'text', text }],
+          _metadata: {
+            stage,
+            prerequisites,
+            can_proceed: canProceed,
+            passed,
+            failed,
+            warnings,
+          },
+        };
       }
 
       default:

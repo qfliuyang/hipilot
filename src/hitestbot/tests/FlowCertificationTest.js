@@ -19,7 +19,7 @@ import { ProgressTracker } from '../core/ProgressTracker.js';
 
 const EVIDENCE_DIR = process.env.HITESTBOT_EVIDENCE_DIR || '/tmp/hipilot-test-evidence';
 const COMMAND = process.argv[2] || '/rtl2gds';
-const MAX_WAIT = parseInt(process.env.HITESTBOT_MAX_WAIT || '300000', 10);
+const MAX_WAIT = parseInt(process.env.HITESTBOT_MAX_WAIT || '1200000', 10); // 20 min default - synthesis takes 10-15 min
 
 async function main() {
   console.log('╔══════════════════════════════════════════════════╗');
