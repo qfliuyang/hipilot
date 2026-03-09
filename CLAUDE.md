@@ -246,7 +246,46 @@ These rules exist because previous AI coding sessions caused real problems.
 
 ---
 
-## 10. Technology
+## 10. LittleBrain (Knowledge-Based Orchestration)
+
+**LittleBrain** is the "little brain" that acts like a dedicated LLM for EDA tasks. It's implemented in `servers/knowledge/littlebrain/`.
+
+### Components
+
+| Component | Purpose |
+|-----------|---------|
+| `index.js` | Main LittleBrain class — unified interface |
+| `tcl-generator.js` | Generate Tcl from natural language intent |
+| `output-parser.js` | Parse EDA tool output, extract errors/QoR |
+| `orchestrator.js` | Stage definitions, flow context, prerequisites |
+| `self-improvement.js` | Error pattern DB, success tracking |
+| `logger.js` | Activity logging for auditability |
+
+### Key Capabilities
+
+1. **Tcl Generation & Validation** — Generate Tcl from intent, sanitize scripts, validate syntax, auto-fix errors
+2. **EDA Output Understanding** — Parse tool output, extract QoR metrics (WNS, TNS, area, power), classify errors
+3. **Workflow Orchestration** — Stage definitions for RTL2GDS, prerequisite checking, flow context
+4. **Self-Improvement** — ErrorPatternDB learns from errors, SuccessTracker records best practices
+5. **Activity Logging** — All reasoning steps logged for auditability
+
+### Latest Test Results (2026-03-09)
+
+| Metric | Value |
+|--------|-------|
+| **Score** | 5.0/6.0 (83%) |
+| **GPA** | 3.37/4.0 (B) |
+| **Human-Like** | **100%** (was 30%) |
+| **Duration** | 1202s (20 min) |
+| **MCP Calls** | 6,839 |
+
+**Key Achievement:** Human-Like behavior improved from 30% (Machine-like) to 100% (Human-like) through incremental interaction patterns.
+
+**L4 Failure:** Real EDA error — LEF file loading failed in Innovus (PDK/environment issue).
+
+---
+
+## 11. Technology
 
 - **Runtime:** Node.js v20+ with ES Modules (`"type": "module"` in package.json)
 - **Language:** Plain JavaScript — no TypeScript, no build step
@@ -258,7 +297,7 @@ These rules exist because previous AI coding sessions caused real problems.
 
 ---
 
-## 11. EDA Server
+## 12. EDA Server
 
 - **Host:** `ssh EDA@192.168.112.163` (password: `eda2020`)
 - **OS:** CentOS 7.9 with GNOME desktop
