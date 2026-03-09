@@ -24,8 +24,8 @@
  */
 
 import { execSync, spawn } from 'child_process';
-import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync, copyFileSync, createWriteStream } from 'fs';
-import { join, basename } from 'path';
+import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync, copyFileSync, createWriteStream, unlinkSync, statSync } from 'fs';
+import { join, basename, dirname } from 'path';
 import { ObservationPoint } from './ObservationPoint.js';
 import { FlowReporter } from './FlowReporter.js';
 
@@ -459,6 +459,98 @@ export class FlowCertifier {
 
     // 4. HiPilot internal files (mode, pending, history)
     this._collectHipilotState(logsDir);
+
+    // 5. LittleBrain reasoning logs (NEW - captures AI decision-making)
+    this._collectLittleBrainLogs(logsDir);
+  }
+
+  _collectLittleBrainLogs(logsDir) {
+    // LittleBrain logs are written to ~/.hipilot/littlebrain/logs/
+    const homedir = process.env.HOME || '/home/EDA';
+    const lbLogDir = join(homedir, '.hipilot', 'littlebrain', 'logs');
+
+    if (!existsSync(lbLogDir)) {
+      this._runLog('No LittleBrain logs directory found');
+      return;
+    }
+
+    try {
+      const files = readdirSync(lbLogDir);
+      let collected = 0;
+
+      // Collect the most recent log files (last 5 minutes)
+      const now = Date.now();
+      const fiveMinutesAgo = now - 5 * 60 * 1000;
+
+      for (const f of files) {
+        if (!f.endsWith('.jsonl') && !f.endsWith('.json')) continue;
+
+        const src = join(lbLogDir, f);
+        const stat = statSync(src);
+
+        // Only collect recent files from this test run
+        if (stat.mtimeMs < fiveMinutesAgo) continue;
+
+        const dst = join(this.evidenceDir, 'littlebrain', f);
+        mkdirSync(dirname(dst), { recursive: true });
+        copyFileSync(src, dst);
+        collected++;
+      }
+
+      this._runLog(`LittleBrain logs collected: ${collected} files`);
+
+      // Also create a summary if we found logs
+      if (collected > 0) {
+        this._summarizeLittleBrainLogs(join(this.evidenceDir, 'littlebrain'));
+      }
+    } catch (e) {
+      this._runLog(`LittleBrain log collection failed: ${e.message}`);
+    }
+  }
+
+  _summarizeLittleBrainLogs(lbDir) {
+    try {
+      // Find the most recent session log
+      const files = readdirSync(lbDir).filter(f => f.endsWith('.jsonl') && !f.includes('_summary'));
+      if (files.length === 0) return;
+
+      // Sort by mtime, take most recent
+      const mostRecent = files
+        .map(f => ({ file: f, stat: statSync(join(lbDir, f)) }))
+        .sort((a, b) => b.stat.mtimeMs - a.stat.mtimeMs)[0];
+
+      const logPath = join(lbDir, mostRecent.file);
+      const content = readFileSync(logPath, 'utf-8');
+      const lines = content.split('\n').filter(l => l.trim());
+
+      // Count entry types
+      const counts = {};
+      const decisions = [];
+
+      for (const line of lines.slice(-100)) { // Last 100 entries
+        try {
+          const entry = JSON.parse(line);
+          counts[entry.type] = (counts[entry.type] || 0) + 1;
+          if (entry.type === 'decision' || entry.type === 'reasoning') {
+            decisions.push(entry);
+          }
+        } catch { /* skip invalid lines */ }
+      }
+
+      // Write summary
+      const summary = {
+        session_file: mostRecent.file,
+        total_entries: lines.length,
+        entry_types: counts,
+        key_decisions: decisions.slice(-10),
+        collected_at: new Date().toISOString()
+      };
+
+      writeFileSync(join(lbDir, 'littlebrain_summary.json'), JSON.stringify(summary, null, 2));
+      this._runLog(`LittleBrain summary: ${lines.length} entries, ${Object.keys(counts).length} types`);
+    } catch (e) {
+      this._runLog(`LittleBrain summary failed: ${e.message}`);
+    }
   }
 
   _savePaneDump(logsDir, paneId, filename) {
@@ -2428,24 +2520,50 @@ export class FlowCertifier {
   _capturePane(paneId) {
     // Claude Code uses alternate screen mode for its TUI. tmux capture-pane -p
     // may only return the "frame" (2 lines) instead of the full content.
-    // Use -e flag to get escape sequences, or -S -10000 for deep scrollback.
-    // Try multiple approaches and return the longest result.
+    // Use multiple strategies to get the best possible capture.
     const target = `${this.session}:0.${paneId}`;
     let best = '';
+
+    // Strategy 1: Standard capture approaches
     const cmds = [
       // Normal visible content
       `tmux -L ${this.socket} capture-pane -t ${target} -p 2>/dev/null`,
-      // Full scrollback (catches content that scrolled up)
-      `tmux -L ${this.socket} capture-pane -t ${target} -p -S -1000 2>/dev/null`,
-      // Start from beginning of visible area
+      // Full scrollback with larger buffer
+      `tmux -L ${this.socket} capture-pane -t ${target} -p -S -10000 2>/dev/null`,
+      // Start from beginning of history
       `tmux -L ${this.socket} capture-pane -t ${target} -p -S - 2>/dev/null`,
+      // Capture with escape sequences (for TUI apps)
+      `tmux -L ${this.socket} capture-pane -t ${target} -p -e 2>/dev/null`,
     ];
+
     for (const cmd of cmds) {
       try {
         const result = execSync(cmd, { encoding: 'utf-8', timeout: 5000 });
         if (result.length > best.length) best = result;
       } catch { /* try next */ }
     }
+
+    // Strategy 2: Save buffer to temp file and read (bypasses TUI issues)
+    try {
+      const tmpFile = `/tmp/hipilot_capture_${Date.now()}_${paneId}.txt`;
+      execSync(`tmux -L ${this.socket} capture-pane -t ${target} -S -10000 "${tmpFile}" 2>/dev/null`, { timeout: 5000, shell: true });
+      const fileResult = readFileSync(tmpFile, 'utf-8');
+      if (fileResult.length > best.length) best = fileResult;
+      try { unlinkSync(tmpFile); } catch { /* ignore cleanup errors */ }
+    } catch { /* try next strategy */ }
+
+    // Strategy 3: Use show-buffer after copying (tmux key sequence format)
+    try {
+      const bufferFile = `/tmp/hipilot_buffer_${paneId}.txt`;
+      // Enter copy mode, go to top, start selection, copy to file
+      execSync(`tmux -L ${this.socket} copy-mode -t ${target} 2>/dev/null`, { timeout: 1000 });
+      execSync(`tmux -L ${this.socket} send-keys -t ${target} -X history-top 2>/dev/null`, { timeout: 1000 });
+      execSync(`tmux -L ${this.socket} send-keys -t ${target} -X begin-selection 2>/dev/null`, { timeout: 1000 });
+      execSync(`tmux -L ${this.socket} send-keys -t ${target} -X copy-pipe-and-cancel "cat > ${bufferFile}" 2>/dev/null`, { timeout: 1000 });
+      const bufferResult = readFileSync(bufferFile, 'utf-8');
+      if (bufferResult.length > best.length) best = bufferResult;
+    } catch { /* ignore buffer errors */ }
+
     return best || '';
   }
 

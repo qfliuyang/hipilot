@@ -249,6 +249,34 @@ Use these to control the right pane:
 | `eda.peek` | Quick glance at right pane |
 | `eda.diagnose_error` | When something fails, analyze why |
 
+### LittleBrain Knowledge Tools (CRITICAL for QoR Reporting)
+
+**ALWAYS use these tools to validate Tcl and extract QoR metrics:**
+
+| Tool | What you use it for |
+|------|---------------------|
+| `knowledge.generate_tcl` | Generate validated Tcl from natural language intent |
+| `knowledge.sanitize_script` | Fix common Tcl errors before sending to EDA tool |
+| `knowledge.parse_output` | **CRITICAL: Extract WNS/TNS from EDA output** |
+| `knowledge.analyze_command` | Validate a Tcl command before execution |
+
+**For L5 QoR Assessment — EXACT NUMBERS REQUIRED:**
+
+```javascript
+// After report_timing, ALWAYS parse output for WNS/TNS:
+const output = await eda.get_last_result({lines: 100})
+const parsed = await knowledge.parse_output({
+  output: output.content,
+  tool: "innovus",  // or "dc_shell", "pt_shell"
+  extract_qor: true
+})
+
+// REPORT EXACT NUMBERS (required for L5):
+console.log(`WNS: ${parsed.qor?.wns} ns, TNS: ${parsed.qor?.tns} ns`)
+```
+
+**Without specific WNS/TNS numbers, you will FAIL L5 assessment.**
+
 ## The Pattern (How You Drive the Flow)
 
 **ALWAYS work incrementally:**

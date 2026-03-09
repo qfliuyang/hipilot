@@ -24,6 +24,17 @@ import { fileURLToPath } from 'url';
 import { homedir } from 'os';
 import { VERSION } from '../../src/lib/version.js';
 import { createMcpLogger } from '../../src/lib/mcp-logger.js';
+import {
+  quickGenerate,
+  quickParse,
+  quickPlan,
+  sanitizeAndValidate,
+  recordError,
+  getSuggestedFix,
+  recordSuccess,
+  getBestPractice,
+  processHiTestBotEvidence,
+} from './littlebrain/index.js';
 
 // Auto-detect project root from server location
 const __filename = fileURLToPath(import.meta.url);
@@ -483,6 +494,138 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ['topic'],
         },
       },
+      {
+        name: 'knowledge.generate_tcl',
+        description: 'Generate validated Tcl script from natural language intent using LittleBrain',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            intent: { type: 'string', description: 'Natural language description of what to do' },
+            tool: { type: 'string', description: 'Target EDA tool', enum: ['dc_shell', 'innovus', 'pt_shell'] },
+            stage: { type: 'string', description: 'Flow stage (synthesis, floorplan, placement, etc.)' },
+            context: { type: 'object', description: 'Additional context variables' },
+          },
+          required: ['intent', 'tool'],
+        },
+      },
+      {
+        name: 'knowledge.sanitize_script',
+        description: 'Sanitize and auto-fix Tcl script for common errors',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tcl: { type: 'string', description: 'Tcl script to sanitize' },
+            tool: { type: 'string', description: 'Target EDA tool', enum: ['dc_shell', 'innovus', 'pt_shell'] },
+            stage: { type: 'string', description: 'Flow stage for context' },
+          },
+          required: ['tcl', 'tool'],
+        },
+      },
+      {
+        name: 'knowledge.parse_output',
+        description: 'Parse EDA tool output and extract structured information (errors, QoR, state)',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            output: { type: 'string', description: 'Raw output from EDA tool' },
+            tool: { type: 'string', description: 'EDA tool that produced output', enum: ['dc_shell', 'innovus', 'pt_shell'] },
+            extract_qor: { type: 'boolean', description: 'Extract QoR metrics', default: true },
+            extract_errors: { type: 'boolean', description: 'Extract errors and warnings', default: true },
+          },
+          required: ['output', 'tool'],
+        },
+      },
+      {
+        name: 'knowledge.plan_stage',
+        description: 'Get detailed execution plan for a flow stage with prerequisites and steps',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            stage: { type: 'string', description: 'Stage name', enum: ['synthesis', 'design_init', 'floorplan', 'power_planning', 'placement', 'cts', 'routing', 'export'] },
+            context: { type: 'object', description: 'Additional context (design, tool version, etc.)' },
+          },
+          required: ['stage'],
+        },
+      },
+      {
+        name: 'knowledge.analyze_command',
+        description: 'Analyze a Tcl command for validity before execution',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            command: { type: 'string', description: 'Tcl command to analyze' },
+            tool: { type: 'string', description: 'Target EDA tool', enum: ['dc_shell', 'innovus', 'pt_shell'] },
+            stage: { type: 'string', description: 'Current flow stage' },
+          },
+          required: ['command', 'tool'],
+        },
+      },
+      {
+        name: 'knowledge.record_error',
+        description: 'Record an error pattern and its fix for learning',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            error_output: { type: 'string', description: 'Error message/output from EDA tool' },
+            tool: { type: 'string', description: 'EDA tool that produced the error' },
+            stage: { type: 'string', description: 'Flow stage where error occurred' },
+            fix: { type: 'object', description: 'The fix that was applied' },
+            success: { type: 'boolean', description: 'Whether the fix worked' },
+            source: { type: 'string', description: 'Source of learning (hitestbot, user, etc.)' },
+          },
+          required: ['error_output', 'success'],
+        },
+      },
+      {
+        name: 'knowledge.get_suggested_fix',
+        description: 'Get suggested fix for a known error pattern',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            error_output: { type: 'string', description: 'Error message/output from EDA tool' },
+            tool: { type: 'string', description: 'EDA tool' },
+            stage: { type: 'string', description: 'Flow stage' },
+          },
+          required: ['error_output'],
+        },
+      },
+      {
+        name: 'knowledge.record_success',
+        description: 'Record a successful command sequence',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            stage: { type: 'string', description: 'Flow stage' },
+            tool: { type: 'string', description: 'EDA tool used' },
+            commands: { type: 'array', description: 'Command sequence that succeeded' },
+            outcomes: { type: 'object', description: 'QoR outcomes' },
+          },
+          required: ['stage', 'commands'],
+        },
+      },
+      {
+        name: 'knowledge.get_best_practice',
+        description: 'Get best practice recommendations for a stage',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            stage: { type: 'string', description: 'Flow stage' },
+            limit: { type: 'number', description: 'Max recommendations', default: 3 },
+          },
+          required: ['stage'],
+        },
+      },
+      {
+        name: 'knowledge.process_evidence',
+        description: 'Process HiTestBot evidence package for learning',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            evidence_dir: { type: 'string', description: 'Path to HiTestBot evidence directory' },
+          },
+          required: ['evidence_dir'],
+        },
+      },
     ],
   };
 });
@@ -696,6 +839,210 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         return {
           content: [{ type: 'text', text }],
         };
+      }
+
+      case 'knowledge.generate_tcl': {
+        const { intent, tool, stage, context = {} } = args;
+        const result = quickGenerate(intent, tool, stage, context);
+        if (result.error) {
+          return {
+            content: [{ type: 'text', text: `Generation Error: ${result.error}\nSuggestions: ${result.suggestions?.join(', ') || 'none'}` }],
+            isError: true,
+          };
+        }
+        let text = `Generated Tcl for ${tool}${stage ? ` (${stage})` : ''}:\n\n`;
+        text += result.tcl;
+        if (result.fixes?.length > 0) {
+          text += `\n\nAuto-fixes applied (${result.fixes.length}):\n`;
+          result.fixes.forEach(f => { text += `  [FIX] ${f}\n`; });
+        }
+        if (result.warnings?.length > 0) {
+          text += `\nWarnings (${result.warnings.length}):\n`;
+          result.warnings.forEach(w => { text += `  [!] ${w.message}\n`; });
+        }
+        text += `\nCan execute: ${result.canExecute ? 'YES' : 'NO'}`;
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.sanitize_script': {
+        const { tcl, tool, stage } = args;
+        const result = sanitizeAndValidate(tcl, tool, stage);
+        let text = `Sanitization Result: ${result.valid ? 'VALID' : 'INVALID'}\n\n`;
+        if (result.fixes?.length > 0) {
+          text += `Fixes applied (${result.fixes.length}):\n`;
+          result.fixes.forEach(f => { text += `  [FIX] ${f}\n`; });
+          text += '\n';
+        }
+        if (result.errors?.length > 0) {
+          text += `Errors (${result.errors.length}):\n`;
+          result.errors.forEach(e => { text += `  [ERROR] ${e.message || e}\n`; });
+          text += '\n';
+        }
+        if (result.warnings?.length > 0) {
+          text += `Warnings (${result.warnings.length}):\n`;
+          result.warnings.forEach(w => { text += `  [WARN] ${w.message || w}\n`; });
+          text += '\n';
+        }
+        text += '--- Corrected Tcl ---\n';
+        text += result.corrected || result.tcl;
+        return { content: [{ type: 'text', text }], isError: !result.valid };
+      }
+
+      case 'knowledge.parse_output': {
+        const { output, tool, extract_qor = true, extract_errors = true } = args;
+        const parsed = quickParse(output, tool);
+        let text = `Parsed Output for ${tool}\n\n`;
+        if (extract_errors && (parsed.errors?.length > 0 || parsed.warnings?.length > 0)) {
+          text += `ERRORS (${parsed.errors?.length || 0}):\n`;
+          parsed.errors?.forEach(e => {
+            text += `  [${e.severity?.toUpperCase() || 'ERROR'}] ${e.message}\n`;
+            if (e.line) text += `    Line: ${e.line}\n`;
+          });
+          text += `\nWARNINGS (${parsed.warnings?.length || 0}):\n`;
+          parsed.warnings?.forEach(w => { text += `  [!] ${w.message}\n`; });
+          text += '\n';
+        }
+        if (extract_qor && parsed.qor) {
+          text += 'QoR Metrics:\n';
+          if (parsed.qor.wns !== undefined) text += `  WNS: ${parsed.qor.wns} ns\n`;
+          if (parsed.qor.tns !== undefined) text += `  TNS: ${parsed.qor.tns} ns\n`;
+          if (parsed.qor.area !== undefined) text += `  Area: ${parsed.qor.area}\n`;
+          if (parsed.qor.power !== undefined) text += `  Power: ${parsed.qor.power}\n`;
+          if (parsed.qor.setup_wns !== undefined) text += `  Setup WNS: ${parsed.qor.setup_wns} ns\n`;
+          if (parsed.qor.hold_wns !== undefined) text += `  Hold WNS: ${parsed.qor.hold_wns} ns\n`;
+          text += '\n';
+        }
+        if (parsed.tool_state) {
+          text += `Tool State: ${parsed.tool_state.state}\n`;
+          if (parsed.tool_state.detail) text += `  Detail: ${parsed.tool_state.detail}\n`;
+        }
+        if (parsed.recovery) {
+          text += `\nRecovery: ${parsed.recovery.action}\n`;
+          if (parsed.recovery.suggestion) text += `  Suggestion: ${parsed.recovery.suggestion}\n`;
+        }
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.plan_stage': {
+        const { stage, context = {} } = args;
+        const plan = quickPlan(stage, context);
+        if (plan.error) {
+          return { content: [{ type: 'text', text: `Error: ${plan.error}` }], isError: true };
+        }
+        let text = `Execution Plan: ${plan.stage}\n`;
+        text += `Purpose: ${plan.purpose}\n`;
+        text += `Tool: ${plan.tool}\n\n`;
+        if (plan.prerequisites?.length > 0) text += `Prerequisites: ${plan.prerequisites.join(', ')}\n`;
+        text += `Inputs: ${plan.inputs?.join(', ') || 'none'}\n`;
+        text += `Outputs: ${plan.outputs?.join(', ') || 'none'}\n\n`;
+        if (plan.exit_criteria?.length > 0) {
+          text += `Exit Criteria:\n`;
+          plan.exit_criteria.forEach(c => { text += `  • ${c}\n`; });
+          text += '\n';
+        }
+        if (plan.steps?.length > 0) {
+          text += `Execution Steps:\n`;
+          plan.steps.forEach(s => { text += `  ${s.order}. [${s.action}] ${s.description}\n`; });
+        }
+        text += `\nCan Start: ${plan.canStart ? 'YES' : 'NO'}`;
+        if (!plan.canStart && plan.missingPrerequisites?.length > 0) {
+          text += `\nMissing: ${plan.missingPrerequisites.join(', ')}`;
+        }
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.analyze_command': {
+        const { command, tool, stage } = args;
+        const LittleBrain = (await import('./littlebrain/index.js')).LittleBrain;
+        const brain = new LittleBrain();
+        const analysis = brain.analyzeCommand(command, tool, stage);
+        let text = `Command Analysis\n\n`;
+        text += `Command: ${analysis.command}\n`;
+        text += `Tool: ${analysis.tool}\n`;
+        if (analysis.stage) text += `Stage: ${analysis.stage}\n`;
+        text += `Valid: ${analysis.valid ? 'YES' : 'NO'}\n`;
+        if (analysis.errors?.length > 0) {
+          text += `\nErrors (${analysis.errors.length}):\n`;
+          analysis.errors.forEach(e => { text += `  [X] ${e.message || e}\n`; });
+        }
+        if (analysis.warnings?.length > 0) {
+          text += `\nWarnings (${analysis.warnings.length}):\n`;
+          analysis.warnings.forEach(w => { text += `  [!] ${w.message || w}\n`; });
+        }
+        if (analysis.syntax) {
+          text += `\nSyntax: ${analysis.syntax.syntax || 'N/A'}\n`;
+          if (analysis.syntax.example) text += `Example: ${analysis.syntax.example}\n`;
+        }
+        text += `\nCan Execute: ${analysis.canExecute ? 'YES' : 'NO'}`;
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.record_error': {
+        const { error_output, tool, stage, fix, success, source } = args;
+        const pattern = recordError(error_output, { tool, stage, source }, fix, success);
+        let text = `Error Pattern Recorded\n\n`;
+        text += `Pattern ID: ${pattern.id}\n`;
+        text += `Status: ${pattern.meta.validated ? 'VALIDATED' : 'LEARNING'}\n`;
+        text += `Occurrences: ${pattern.meta.occurrence_count}\n`;
+        text += `Success Rate: ${(pattern.meta.fix_success_rate * 100).toFixed(1)}%\n`;
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.get_suggested_fix': {
+        const { error_output, tool, stage } = args;
+        const suggestion = getSuggestedFix(error_output, { tool, stage });
+        if (!suggestion) {
+          return { content: [{ type: 'text', text: 'No known fix for this error pattern.' }] };
+        }
+        let text = `Suggested Fix (confidence: ${(suggestion.confidence * 100).toFixed(0)}%)\n\n`;
+        text += `Root Cause: ${suggestion.root_cause.description}\n`;
+        text += `Category: ${suggestion.root_cause.category}\n\n`;
+        if (suggestion.fix) {
+          text += `Action: ${suggestion.fix.action}\n`;
+          if (suggestion.fix.tcl_template) {
+            text += `\nTcl Template:\n${suggestion.fix.tcl_template}\n`;
+          }
+        }
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.record_success': {
+        const { stage, tool, commands, outcomes } = args;
+        recordSuccess({ stage, tool }, commands, outcomes);
+        return { content: [{ type: 'text', text: `Success recorded for ${stage} (${tool})` }] };
+      }
+
+      case 'knowledge.get_best_practice': {
+        const { stage, limit = 3 } = args;
+        const practices = getBestPractice(stage, limit);
+        if (practices.length === 0) {
+          return { content: [{ type: 'text', text: `No best practices recorded for ${stage} yet.` }] };
+        }
+        let text = `Best Practices for ${stage}\n\n`;
+        practices.forEach((p, i) => {
+          text += `${i + 1}. Success Rate: ${(p.outcomes.success_rate * 100).toFixed(0)}% (${p.meta.observation_count} runs)\n`;
+          text += `   Commands: ${p.pattern.command_sequence.map(c => c.cmd).join(' → ')}\n\n`;
+        });
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.process_evidence': {
+        const { evidence_dir } = args;
+        const results = await processHiTestBotEvidence(evidence_dir);
+        let text = `HiTestBot Evidence Processed\n\n`;
+        text += `Patterns Learned: ${results.patterns_learned.length}\n`;
+        if (results.patterns_learned.length > 0) {
+          text += `  IDs: ${results.patterns_learned.join(', ')}\n`;
+        }
+        if (results.metrics) {
+          text += `\nMetrics Recorded:\n`;
+          text += `  Score: ${results.metrics.score}\n`;
+          text += `  Stages: ${results.metrics.stages?.length || 0}\n`;
+        }
+        if (results.errors?.length > 0) {
+          text += `\nErrors: ${results.errors.join(', ')}\n`;
+        }
+        return { content: [{ type: 'text', text }] };
       }
 
       default:
