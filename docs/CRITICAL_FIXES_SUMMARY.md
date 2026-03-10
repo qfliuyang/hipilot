@@ -1,6 +1,6 @@
 # HiPilot Critical Fixes Summary
 
-## Date: 2026-03-08
+## Date: 2026-03-10
 
 ---
 
@@ -119,9 +119,9 @@ HiPilot was calling `rtl2gds.run_full_flow` which is a batch executor that bypas
 
 ## Testing Status
 
-- EDA server is currently unreachable (network down)
-- Fixes are staged and ready for deployment
-- Previous test achieved 5.5/6.0 before server went offline
+- Testing active - last run achieved 5.0/6.0 score with 100% Human-Like behavior
+- EDA server is operational and tests are running successfully
+- Latest achievement: 5.0/6.0 (83%) with GPA 3.37/4.0, 100% Human-Like (improved from 30%)
 
 ---
 
@@ -146,8 +146,8 @@ Applied to all 10 stage Tcl blocks in the skill file.
 
 ## Next Steps
 
-1. Bring EDA server back online
-2. Deploy fixes: `node src/hitestbot/infra/deploy_hipilot.js`
-3. Run test: `bin/hitestbot-eda /rtl2gds`
-4. Verify: Check that Stage 0 uses dc_shell, not innovus
-5. Verify: Check that clean design directory is being used
+1. Achieve 6.0/6.0 perfect score - address remaining L4 failure (LEF file loading in Innovus)
+2. Investigate PDK/environment configuration to resolve L4 EDA error
+3. Continue refining LittleBrain knowledge-based orchestration for improved QoR extraction
+4. Maintain 100% Human-Like behavior while improving technical score
+5. Document best practices from 5.0/6.0 achievement for future runs

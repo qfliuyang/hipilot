@@ -266,7 +266,8 @@ cat > ~/.claude/settings.json << 'EOF'
     },
     "knowledge": {
       "command": "node",
-      "args": ["/home/user/hipilot/servers/knowledge/index.js"]
+      "args": ["/home/user/hipilot/servers/knowledge/index.js"],
+      "env": { "HIPILOT_SESSION": "hipilot" }
     }
   }
 }
@@ -318,6 +319,7 @@ tmux attach -t hipilot
       "command": "node",
       "args": ["/path/to/hipilot/servers/knowledge/index.js"],
       "env": {
+        "HIPILOT_SESSION": "hipilot",
         "SKILLS_PATH": "/path/to/hipilot/skills"
       }
     }

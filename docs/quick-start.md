@@ -52,7 +52,8 @@ Add to `~/.claude/settings.json`:
     },
     "hipilot-knowledge": {
       "command": "node",
-      "args": ["/path/to/hipilot/servers/knowledge/index.js"]
+      "args": ["/path/to/hipilot/servers/knowledge/index.js"],
+      "env": { "HIPILOT_SESSION": "hipilot" }
     }
   }
 }
@@ -104,7 +105,7 @@ Expected response should list tools from:
 "List all available skills"
 ```
 
-Expected: 36 skills covering RTL-to-GDS flow.
+Expected: 34 skills covering RTL-to-GDS flow.
 
 ---
 

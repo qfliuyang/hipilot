@@ -6,7 +6,7 @@
 
 ## System Overview
 
-HiPilot extends Claude Code with specialized capabilities for VLSI physical design automation through three MCP servers and 35 built-in skills.
+HiPilot extends Claude Code with specialized capabilities for VLSI physical design automation through three MCP servers and 34 built-in skills.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -29,7 +29,7 @@ HiPilot extends Claude Code with specialized capabilities for VLSI physical desi
 │   │  │   EDA MCP   │  │  Tmux MCP   │  │Knowledge MCP│            │   │
 │   │  │   Server    │  │   Server    │  │   Server    │            │   │
 │   │  │             │  │             │  │             │            │   │
-│   │  │ 57 Tools:   │  │ 8 Tools:    │  │ 7 Tools:    │            │   │
+│   │  │ 54 Tools:   │  │ 8 Tools:    │  │ 7 Tools:    │            │   │
 │   │  │ - generate  │  │ - send_keys │  │ - search    │            │   │
 │   │  │ - send_tcl  │  │ - capture   │  │ - list      │            │   │
 │   │  │ - extract   │  │ - status    │  │ - get       │            │   │
@@ -94,7 +94,7 @@ The `--strict-mcp-config` flag forces Claude Code to use only the specified MCP 
 
 ### 2. MCP Server Layer
 
-#### EDA MCP Server (`servers/eda/index.js`) — 59 tools
+#### EDA MCP Server (`servers/eda/index.js`) — 54 tools
 
 **Purpose:** EDA tool integration, Tcl generation, QoR tracking, workflow automation
 
@@ -275,11 +275,11 @@ hipilot/
 │   └── setup.sh             # Installation wizard
 │
 ├── servers/                 # MCP servers (JSON-RPC over stdio)
-│   ├── eda/index.js         # EDA MCP (59 tools)
+│   ├── eda/index.js         # EDA MCP (54 tools)
 │   ├── tmux/index.js        # Tmux MCP (8 tools)
 │   └── knowledge/index.js   # Knowledge MCP (7 tools)
 │
-├── skills/                  # 35 skill definitions (.md)
+├── skills/                  # 34 skill definitions (.md)
 │
 ├── src/
 │   ├── cli.js               # TUI dashboard (React/Ink)
@@ -395,4 +395,4 @@ Before executing Tcl, HiPilot analyzes:
 
 ---
 
-**Last Updated:** 2026-02-25
+**Last Updated:** 2026-03-10

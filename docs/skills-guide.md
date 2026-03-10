@@ -1,12 +1,12 @@
 # HiPilot Skills Guide
 
-**Complete Reference for All 36 Skills**
+**Complete Reference for All 34 Skills**
 
 ---
 
 ## Overview
 
-HiPilot includes 35 built-in skills covering the complete RTL-to-GDS physical design flow. Each skill is a Markdown file with YAML frontmatter that defines triggers, tools, and QoR metrics.
+HiPilot includes 34 built-in skills covering the complete RTL-to-GDS physical design flow. Each skill is a Markdown file with YAML frontmatter that defines triggers, tools, and QoR metrics.
 
 ---
 
@@ -544,5 +544,5 @@ bash ... send_to_terminal '{"tcl": "..."}'
 
 ---
 
-**Total Skills:** 35
-**Last Updated:** 2026-02-24
+**Total Skills:** 34
+**Last Updated:** 2026-03-10
