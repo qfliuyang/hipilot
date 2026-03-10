@@ -362,6 +362,12 @@ const VALIDATION_RULES = {
       prerequisites: ['init_verilog', 'init_lef_file', 'init_top_cell'],
       error: "MUST set init_verilog, init_lef_file, init_top_cell BEFORE init_design"
     },
+    'set_init_lef_file': {
+      lef_order_check: true,
+      error: "Tech LEF (.tlef) must be loaded BEFORE cell LEFs (.lef) in init_lef_file",
+      fix: 'Put tech LEF (.tlef) first in the list, then cell LEFs (.lef)',
+      description: 'Tech LEF defines layers that cell LEFs reference. Wrong order causes IMPLF-53 errors.'
+    },
     'reset_path_groups': {
       pattern: /^reset_path_groups$/,
       error: "Innovus uses 'reset_path_groups', DC uses 'remove_path_group -all'",
@@ -415,6 +421,20 @@ const ERROR_PATTERNS = {
     error: "LEF files not loaded",
     fix: 'Set init_lef_file BEFORE init_design',
     description: 'Must set init_lef_file before calling init_design'
+  },
+
+  'LEF file order - tech LEF must be first': {
+    tools: ['innovus'],
+    error: "IMPLF-53.*layer.*referenced in pin.*macro",
+    fix: 'Load tech LEF (.tlef) BEFORE cell LEFs (.lef)',
+    description: 'Tech LEF must be loaded first to define layers before cell LEFs reference them'
+  },
+
+  'LEF loading failed - wrong order': {
+    tools: ['innovus'],
+    error: "Loading LEF file\\(s\\) failed",
+    fix: 'Ensure tech LEF (.tlef) is loaded before cell LEFs (.lef) in init_lef_file',
+    description: 'LEF files must be loaded in correct order: tech LEF first, then cell LEFs'
   },
 
   'compile_ultra without scan': {
@@ -628,6 +648,42 @@ function sanitizeScript(tcl, tool) {
           !hasInitTop && 'init_top_cell'
         ].filter(Boolean)
       });
+    }
+  }
+
+  // Fix 5b: Validate and fix LEF file loading order (tech LEF must be first)
+  if (tool === 'innovus') {
+    const lefMatch = sanitized.match(/set\s+init_lef_file\s+\{([^}]+)\}/);
+    if (lefMatch) {
+      const lefFiles = lefMatch[1].trim().split(/\s+/);
+      const techLefIndex = lefFiles.findIndex(f => f.includes('.tlef') || f.includes('tech'));
+      const cellLefIndices = lefFiles.map((f, i) => (f.includes('.lef') && !f.includes('.tlef')) ? i : -1).filter(i => i >= 0);
+
+      // Check if tech LEF exists and is before all cell LEFs
+      if (techLefIndex >= 0 && cellLefIndices.some(i => i < techLefIndex)) {
+        // Tech LEF is after some cell LEFs - need to reorder
+        const techLef = lefFiles[techLefIndex];
+        const otherLefs = lefFiles.filter((_, i) => i !== techLefIndex);
+        const reordered = [techLef, ...otherLefs];
+
+        sanitized = sanitized.replace(
+          /set\s+init_lef_file\s+\{[^}]+\}/,
+          `set init_lef_file "${reordered.join(' ')}"`
+        );
+
+        fixes.push({
+          type: 'lef_order_fix',
+          original: lefFiles.join(' '),
+          reordered: reordered.join(' '),
+          reason: 'Tech LEF (.tlef) must be loaded BEFORE cell LEFs (.lef) to define layers'
+        });
+
+        warnings.push({
+          type: 'lef_order_corrected',
+          message: 'Reordered LEF files: tech LEF (.tlef) must be first to define layers before cell LEFs reference them',
+          severity: 'warning'
+        });
+      }
     }
   }
 

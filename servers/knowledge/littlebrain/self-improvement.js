@@ -9,6 +9,76 @@ import { writeFileSync, readFileSync, existsSync, mkdirSync, appendFileSync } fr
 import { join, dirname } from 'path';
 
 /**
+ * Built-in error patterns for common EDA issues
+ */
+const BUILTIN_ERROR_PATTERNS = [
+  {
+    id: 'builtin_implf53_lef_order',
+    pattern: {
+      regex: 'IMPLF-53.*layer.*referenced in pin.*macro',
+      tool: 'innovus',
+      stage: 'design_init',
+      context_before: 5,
+      context_after: 3
+    },
+    root_cause: {
+      category: 'LEF_LOADING_ORDER',
+      description: 'Tech LEF (.tlef) must be loaded BEFORE cell LEFs (.lef) to define layers',
+      confidence: 1.0
+    },
+    fix: {
+      type: 'REORDER_LEF',
+      action: 'Reorder init_lef_file to put tech LEF (.tlef) before cell LEFs (.lef)',
+      tcl_template: 'set init_lef_file "<TECH_LEF> <CELL_LEFS>"',
+      verify: 'Check that .tlef file appears before .lef files in init_lef_file',
+      success_pattern: 'Design initialized successfully',
+      added_at: '2026-03-10T00:00:00Z'
+    },
+    meta: {
+      first_seen: '2026-03-09T08:57:25Z',
+      last_seen: '2026-03-09T08:57:25Z',
+      occurrence_count: 1,
+      fix_success_count: 0,
+      fix_success_rate: 0,
+      source: 'manual',
+      validated: true
+    }
+  },
+  {
+    id: 'builtin_lef_loading_failed',
+    pattern: {
+      regex: 'Loading LEF file\\(s\\) failed',
+      tool: 'innovus',
+      stage: 'design_init',
+      context_before: 3,
+      context_after: 5
+    },
+    root_cause: {
+      category: 'LEF_LOADING_FAILED',
+      description: 'LEF files failed to load, often due to wrong order or missing tech LEF',
+      confidence: 0.9
+    },
+    fix: {
+      type: 'CHECK_LEF_ORDER',
+      action: 'Ensure tech LEF (.tlef) is first, then cell LEFs (.lef)',
+      tcl_template: 'set init_lef_file "<TECH_LEF> <CELL_LEFS>"',
+      verify: 'Verify LEF file paths and order',
+      success_pattern: 'LEF files loaded successfully',
+      added_at: '2026-03-10T00:00:00Z'
+    },
+    meta: {
+      first_seen: '2026-03-09T08:57:25Z',
+      last_seen: '2026-03-09T08:57:25Z',
+      occurrence_count: 1,
+      fix_success_count: 0,
+      fix_success_rate: 0,
+      source: 'manual',
+      validated: true
+    }
+  }
+];
+
+/**
  * Error Pattern Database - Stores known errors and their fixes
  */
 export class ErrorPatternDB {
@@ -19,10 +89,18 @@ export class ErrorPatternDB {
   }
 
   _load() {
+    // Load builtin patterns first
+    for (const pattern of BUILTIN_ERROR_PATTERNS) {
+      this.patterns.set(pattern.id, pattern);
+    }
+
     if (existsSync(this.dbPath)) {
       const data = JSON.parse(readFileSync(this.dbPath, 'utf-8'));
       for (const pattern of data.patterns || []) {
-        this.patterns.set(pattern.id, pattern);
+        // Don't override builtin patterns
+        if (!pattern.id?.startsWith('builtin_')) {
+          this.patterns.set(pattern.id, pattern);
+        }
       }
     }
   }
