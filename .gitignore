@@ -32,5 +32,8 @@ test-evidence/
 *.mp4
 ibex_work_upload/
 
+# But allow test evidence video in docs
+!docs/test-evidence-latest/recordings/*.mp4
+
 # OMC runtime state
 .omc/
