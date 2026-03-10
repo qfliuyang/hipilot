@@ -850,7 +850,7 @@ hipilot/
 ├── bin/hipilot                    # 入口 bash 脚本
 │
 ├── servers/                       # 第2层：MCP 协议
-│   ├── eda/index.js              # EDA 工具 MCP 服务器（57 个工具）
+│   ├── eda/index.js              # EDA 工具 MCP 服务器（54 个工具）
 │   ├── tmux/index.js             # Tmux 窗格 MCP 服务器（8 个工具）
 │   └── knowledge/index.js        # 技能/知识 MCP 服务器（7 个工具）
 │
@@ -858,7 +858,7 @@ hipilot/
 │   ├── ibex-rtl2gds-flow.md      # 主 RTL2GDS 技能
 │   ├── fix-setup-timing.md       # 时序收敛技能
 │   ├── cts-clock-tree.md         # CTS 技能
-│   └── ... (共 36 个技能)
+│   └── ... (共 34 个技能)
 │
 ├── templates/                     # Tcl 生成
 │   ├── cadence/                  # Innovus 模板（11 个）
