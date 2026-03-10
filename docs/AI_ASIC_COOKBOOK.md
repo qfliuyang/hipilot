@@ -15,6 +15,8 @@
 5. [Skills: Encoding RTL2GDS Expertise](#chapter-5-skills)
 6. [The HiPilot Codebase: A Complete Walkthrough](#chapter-6-codebase)
 7. [Building Your First Extension](#chapter-7-extension)
+8. [LittleBrain: Knowledge-Based Orchestration](#chapter-8-littlebrain)
+9. [Certification & Test Results](#chapter-9-certification)
 
 ---
 
@@ -850,7 +852,7 @@ hipilot/
 ├── bin/hipilot                    # Entry point bash script
 │
 ├── servers/                       # LAYER 2: MCP Protocol
-│   ├── eda/index.js              # EDA tool MCP server (57 tools)
+│   ├── eda/index.js              # EDA tool MCP server (54 tools)
 │   ├── tmux/index.js             # Tmux pane MCP server (8 tools)
 │   └── knowledge/index.js        # Skills/knowledge MCP server (7 tools)
 │
@@ -858,7 +860,7 @@ hipilot/
 │   ├── ibex-rtl2gds-flow.md      # Main RTL2GDS skill
 │   ├── fix-setup-timing.md       # Timing closure skill
 │   ├── cts-clock-tree.md         # CTS skill
-│   └── ... (36 skills total)
+│   └── ... (34 skills total)
 │
 ├── templates/                     # Tcl generation
 │   ├── cadence/                  # Innovus templates (11)
@@ -1415,6 +1417,224 @@ async function main() {
 
 ---
 
+## Chapter 8: LittleBrain—Knowledge-Based Orchestration
+
+LittleBrain is HiPilot's "little brain"—a knowledge-based orchestration layer that acts like a dedicated LLM for EDA tasks. It provides structured reasoning, Tcl generation, and self-improvement capabilities.
+
+### Why LittleBrain?
+
+Traditional AI agents rely entirely on the LLM's context window for reasoning. LittleBrain adds:
+
+1. **Structured Knowledge** — PageIndex tree-based navigation instead of vector similarity
+2. **Activity Logging** — Complete audit trail of all reasoning steps
+3. **Self-Improvement** — Learns from errors and successful patterns
+4. **Tcl Generation** — Purpose-built generator with validation
+
+### Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    LittleBrain Layer                        │
+├─────────────────────────────────────────────────────────────┤
+│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────┐   │
+│  │ TclGenerator │  │ OutputParser │  │  Orchestrator   │   │
+│  └──────────────┘  └──────────────┘  └─────────────────┘   │
+├─────────────────────────────────────────────────────────────┤
+│  ┌──────────────────┐  ┌────────────────────────────────┐  │
+│  │ SelfImprovement  │  │         Logger                 │  │
+│  │  - ErrorPatternDB│  │  - Reasoning steps             │  │
+│  │  - SuccessTracker│  │  - Decisions                   │  │
+│  └──────────────────┘  │  - Tcl generation              │  │
+│                        └────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Components
+
+| Component | Purpose | Location |
+|-----------|---------|----------|
+| `index.js` | Main LittleBrain class with unified interface | `servers/knowledge/littlebrain/` |
+| `tcl-generator.js` | Generate Tcl from natural language intent | `servers/knowledge/littlebrain/` |
+| `output-parser.js` | Parse EDA output, extract errors/QoR | `servers/knowledge/littlebrain/` |
+| `orchestrator.js` | Stage definitions, flow context, prerequisites | `servers/knowledge/` |
+| `self-improvement.js` | Error pattern DB, success tracking | `servers/knowledge/littlebrain/` |
+| `logger.js` | Activity logging for auditability | `servers/knowledge/littlebrain/` |
+
+### PageIndex: Tree-Based Knowledge
+
+Unlike vector RAG which uses embeddings, PageIndex uses document structure:
+
+```
+INNOVUS/
+├── Design_Init/
+│   ├── init_design
+│   └── MMMC setup
+├── Floorplanning/
+│   ├── floorPlan
+│   └── loadIoFile
+├── Power_Planning/
+│   ├── globalNetConnect
+│   └── addStripe
+└── ...
+```
+
+**Why this matters for EDA:**
+- Commands like `report_timing` and `report_power` are semantically similar but used at different stages
+- Vector similarity fails—you need reasoning about tool context and flow stage
+- Tree navigation provides deterministic retrieval
+
+### Activity Logging
+
+Every reasoning step is logged for auditability:
+
+```javascript
+// Example: Tcl generation logging
+logger.logTclGeneration({
+  intent: 'Fix setup timing violations',
+  tool: 'innovus',
+  stage: 'post_route',
+  generatedTcl: '...',
+  confidence: 0.92,
+  timestamp: '2026-03-09T08:57:25Z'
+});
+```
+
+Log categories:
+- `reasoning` — Decision-making process
+- `decision` — Final choices made
+- `tcl_generation` — Tcl scripts created
+- `output_parsing` — Tool output analysis
+- `stage_planning` — Flow orchestration
+- `error_pattern_matching` — Error classification
+
+### Self-Improvement
+
+LittleBrain tracks patterns to improve over time:
+
+```javascript
+// ErrorPatternDB learns from failures
+errorPatternDB.addPattern({
+  errorSignature: 'layer.*referenced in pin.*macro',
+  category: 'LEF_LOADING',
+  severity: 'CRITICAL',
+  fixStrategy: 'Load tech LEF before cell LEFs',
+  confidence: 1.0
+});
+
+// SuccessTracker records what worked
+successTracker.record({
+  stage: 'placement',
+  commandSequence: ['setPlaceMode', 'place_opt_design'],
+  qor: { wns: 0.0, tns: 0.0 },
+  context: { design: 'ibex', util: 0.7 }
+});
+```
+
+### Using LittleBrain
+
+LittleBrain integrates automatically through the knowledge MCP server:
+
+```javascript
+// Get skill with LittleBrain-enhanced context
+const skill = await knowledge.get_skill({
+  name: 'fix-setup-timing',
+  use_littlebrain: true  // Enable enhanced reasoning
+});
+
+// Generated Tcl includes auto-fixes based on error patterns
+const tcl = await littlebrain.generateTcl({
+  intent: 'Fix setup violations in post-route',
+  tool: 'innovus',
+  stage: 'post_route',
+  context: { currentWns: -0.05 }
+});
+```
+
+---
+
+## Chapter 9: Certification & Test Results
+
+HiPilot uses HiTestBot—a virtual human tester—to validate behavior. The 6-layer scoring system measures:
+
+| Layer | Metric | Description |
+|-------|--------|-------------|
+| L1 | Prompt Delivery | Did Claude respond? |
+| L2 | Intent Recognition | Did it understand the task? |
+| L3 | MCP Tool Usage | Did it use tools correctly? |
+| L3b | Process Validation | Did it use correct EDA tool? |
+| L4 | EDA Execution | Did the EDA tool run successfully? |
+| L5 | QoR Assessment | Did it report quality metrics? |
+
+### Latest Test Results (March 9, 2025)
+
+**Test Run:** 2026-03-09 08:57:25
+**Command:** `/rtl2gds`
+**Duration:** 1202.8s (20 minutes)
+**Branch:** `dev/environment-setup-7005`
+
+| Layer | Score | Status | Notes |
+|-------|-------|--------|-------|
+| **L1 Prompt Delivery** | 1.0/1.0 | ✅ | Claude responded |
+| **L2 Intent Recognition** | 1.0/1.0 | ✅ | Understood RTL-to-GDS flow |
+| **L3 MCP Tool Usage** | 1.0/1.0 | ✅ | 6,839 MCP calls |
+| **L3b Process Validation** | 1.0/1.0 | ✅ | Correctly used dc_shell |
+| **L4 EDA Execution** | 0.0/1.0 | ❌ | LEF file loading error |
+| **L5 QoR Assessment** | 1.0/1.0 | ✅ | WNS=0.00, TNS=0.00 |
+
+**Total: 5.0/6.0 (83%)**
+**GPA: 3.37/4.0 (B)**
+**Human-Like: 100%** (improved from 30%)
+
+### Key Achievement: Human-Like Score 100%
+
+The Human-Like behavior score improved from **30% (Machine-like)** to **100% (Human-like)** through:
+
+- **Incremental interaction patterns** — Sending commands one at a time
+- **Human-like waiting** — Using `eda.await_idle` instead of polling
+- **Observing before proceeding** — Reading tool output before next action
+- **Natural typing patterns** — Avoiding batch Tcl submission
+
+### L4 Failure Analysis
+
+The EDA execution failed due to a **PDK/environment issue**, not AI behavior:
+
+```
+**ERROR: (IMPLF-53): The layer 'li1' referenced in pin 'VGND' in macro 'sky130_ef_sc_hd__decap_12'
+**ERROR: Loading LEF file(s) failed
+```
+
+**Root Cause:** LEF files loaded in wrong order on EDA server. The tech LEF (`sky130_fd_sc_hd.tlef`) must be loaded BEFORE cell LEFs.
+
+**Category:** ENVIRONMENT (not AI behavior issue)
+
+### Evidence Package
+
+Each test generates comprehensive evidence:
+
+| File | Description | Size |
+|------|-------------|------|
+| `FLOW_REPORT.md` | Full certification report | 23KB |
+| `stage_scorecards.json` | Per-stage scores and details | 3KB |
+| `flow_progress.json` | Flow progress map | 3KB |
+| `timeline.jsonl` | Chronological event log with timestamps | 1.5MB |
+| `run_log.txt` | Test execution log | 13KB |
+| `recordings/test_recording.mp4` | Full video recording | 56MB |
+| Screenshots | 20+ observation point images | ~5MB |
+
+The timeline includes video timestamps—every event can be verified by seeking to the exact moment in the recording.
+
+### Path to 6.0/6.0
+
+To achieve full certification:
+
+1. **Fix PDK issue on EDA server** — Correct LEF loading order
+2. **Re-run certification test**
+3. **Verify L4 passes** — EDA tool runs without LEF errors
+
+The AI behavior (L1-L3, L3b, L5) is already at 100%. Only the environment needs fixing.
+
+---
+
 ## Conclusion: You Are Ready
 
 You now understand:
@@ -1424,6 +1644,8 @@ You now understand:
 - ✅ **Skills** (encoding RTL2GDS expertise)
 - ✅ **The codebase** (how HiPilot actually works)
 - ✅ **Extension patterns** (how to add capabilities)
+- ✅ **LittleBrain** (knowledge-based orchestration)
+- ✅ **Certification** (HiTestBot scoring methodology)
 
 **Your ASIC knowledge is the differentiator.** The AI provides reasoning. You provide the methodology.
 
