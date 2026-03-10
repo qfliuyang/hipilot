@@ -177,7 +177,7 @@ eda.get_last_result({lines: 50})
 // Check: result/syn/data/ibex_core.syn.v should exist
 ```
 
-### Stage 1: Design Init (innovus) - ~1-2 minutes
+### Stage 1: Design Init (innovus) - ~3-5 minutes
 **Skip if:** `result/pr/data/init_design.enc` exists
 
 ```javascript
@@ -186,7 +186,8 @@ eda.get_last_result({lines: 50})
 
 eda.start_tool({tool: "innovus", design_dir: "$design_dir"})
 eda.send_tcl_nonblocking({tcl: stage1_tcl, description: "Stage 1: Design Init"})
-eda.await_idle({timeout: 300, expected_tool: "innovus"})
+// Use longer timeout for design init (large design with 10K+ cells)
+eda.await_idle({timeout: 600, expected_tool: "innovus"})
 eda.get_last_result({lines: 50})
 // Verify: result/pr/data/init_design.enc exists
 ```
@@ -305,7 +306,16 @@ eda.get_last_result({lines: 50})
 
 ### Flow Complete - MANDATORY QoR REPORTING (L5 Requirement)
 
-⚠️ **WITHOUT EXACT WNS/TNS NUMBERS, YOU WILL GET L5 SCORE OF 0.5 INSTEAD OF 1.0**
+⚠️ **WITHOUT EXACT WNS/TNS NUMBERS, YOU WILL GET L5 SCORE OF 0.0 OR 0.5 INSTEAD OF 1.0**
+
+**CRITICAL RULE: After EVERY stage (0-9), you MUST run report_timing and output the exact WNS/TNS values in this exact format:**
+```
+Stage X [StageName]: WNS: 0.XXX ns, TNS: 0.YYY ns
+```
+
+This is NOT optional. The L5 scorer looks for patterns matching:
+- `WNS[:\s]*(-?[\d.]+)` - Example: "WNS: 0.23" or "WNS 0.23"
+- `TNS[:\s]*(-?[\d.]+)` - Example: "TNS: 0.00" or "TNS 0.00"
 
 You MUST complete ALL of the following steps:
 

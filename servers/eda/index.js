@@ -2212,16 +2212,30 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
         const target = `${TMUX_SESSION}:0.${paneIdx}`;
 
-        // If tool already running, return success
+        // Check current tool state
         const detected = detectTool();
         const toolMap = { innovus: 'Innovus', icc2_shell: 'ICC2', pt_shell: 'PrimeTime', dc_shell: 'DesignCompiler' };
-        if (detected && detected.tool === toolMap[tool]) {
+        const requestedToolName = toolMap[tool];
+
+        // If requested tool already running, return success
+        if (detected && detected.tool === requestedToolName) {
           return {
             content: [{
               type: 'text',
               text: `✓ ${detected.tool} is already running. Ready for commands.`,
             }],
           };
+        }
+
+        // If WRONG tool is running, exit it first
+        if (detected && detected.tool !== requestedToolName) {
+          try {
+            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'exit'`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+            await new Promise(r => setTimeout(r, 2000)); // Wait for exit
+          } catch (e) {
+            // Continue anyway, might already be at bash prompt
+          }
         }
 
         const launchCmd = tool === 'innovus'

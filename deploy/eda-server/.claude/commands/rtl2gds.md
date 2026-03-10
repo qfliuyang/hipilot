@@ -128,6 +128,10 @@ All stages completed: X passed, Y failed
 
 **CRITICAL: After EVERY stage, you MUST report WNS/TNS values explicitly**
 
+⚠️ **L5 QoR SCORING REQUIREMENT:** The test looks for patterns `WNS: X.XX` and `TNS: Y.YY` in your output. Without these EXACT patterns, L5 scores 0.0.
+
+**Even if the flow doesn't complete all stages, reporting intermediate QoR after each completed stage earns partial L5 credit.**
+
 The test requires seeing explicit timing numbers in your output. Use this exact format:
 
 After Stage 0 (Synthesis):

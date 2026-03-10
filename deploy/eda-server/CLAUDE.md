@@ -160,7 +160,9 @@ report_timing -max_paths 10 > timing.rpt
 
 **Best Practice:** When running `report_timing`, `report_area`, or any command that produces multi-line output, **always redirect to a file** (`> file.rpt`) to avoid pager issues.
 
-### QoR Assessment: ALWAYS Report WNS/TNS Numbers
+### QoR Assessment: ALWAYS Report WNS/TNS Numbers (L5 Requirement)
+
+**⚠️ CRITICAL FOR L5 SCORE:** The test searches your output for patterns `WNS: X.XX` and `TNS: Y.YY`. Without these EXACT numeric patterns, L5 scores 0.0.
 
 After each major stage (synthesis, placement, CTS, routing), you MUST extract and report timing metrics:
 
