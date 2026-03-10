@@ -58,7 +58,7 @@ HiPilot extends Claude Code with specialized capabilities for VLSI physical desi
 │   ┌─────────────────────────────────────────────────────────────────┐   │
 │   │                                                                 │   │
 │   │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │   │
-│   │  │ 36 Skills   │  │  Templates  │  │     Docs    │            │   │
+│   │  │ 34 Skills   │  │  Templates  │  │     Docs    │            │   │
 │   │  │             │  │             │  │             │            │   │
 │   │  │ - Flow      │  │ - Tcl       │  │ - Specs     │            │   │
 │   │  │ - Fix       │  │ - Report    │  │ - Guides    │            │   │
