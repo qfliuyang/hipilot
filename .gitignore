@@ -36,4 +36,9 @@ ibex_work_upload/
 !docs/test-evidence-latest/recordings/*.mp4
 
 # OMC runtime state
-.omc/
+.omc/*
+# But allow project-level skills to be committed
+!.omc/skills/
+
+# Server runtime state
+servers/eda/.omc/
