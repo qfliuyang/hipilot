@@ -254,26 +254,32 @@ calibre -lvs -hier rules/lvs.rules
 
 ---
 
-## Master Flow Skill
+## Master Flow Skills (Modular Stages)
 
-### ibex-rtl2gds-flow
+### Modular Stage Skills
 
-**File:** `skills/ibex-rtl2gds-flow.md`
+**Deprecated:** The monolithic `ibex-rtl2gds-flow` has been replaced with modular stage skills.
 
-**Triggers:** "run rtl2gds", "ibex flow", "complete flow"
+Use individual slash commands for each stage:
 
-**Description:** Complete RTL2GDS flow for Ibex design using MCP commands and the builtin `rtl2gds` workflow. Preferred entrypoint for running the Innovus implementation flow via `/rtl2gds`.
+| Stage | Command | Skill File | Purpose |
+|-------|---------|------------|---------|
+| 0 | `/synthesis` | `skills/ibex-synthesis-stage.md` | RTL → netlist |
+| 1 | `/design-init` | `skills/ibex-design-init-stage.md` | Load netlist, MMMC |
+| 2 | `/floorplan` | `skills/floorplan.md` | Die area, IO placement |
+| 3 | `/powerplan` | `skills/power-planning.md` | VDD/VSS rings |
+| 4 | `/placement` | `skills/placement.md` | Cell placement |
+| 5 | `/cts` | `skills/cts.md` | Clock tree synthesis |
+| 6 | `/postcts-opt` | `skills/post-cts-opt.md` | Post-CTS optimization |
+| 7 | `/routing` | `skills/route-design.md` | Global + detail route |
+| 8 | `/routeopt` | `skills/routing-opt.md` | Route optimization |
+| 9 | `/chipfinish` | `skills/chip-finish.md` | Filler, GDS export |
 
-**Flow Stages:**
-1. Design Initialization
-2. Floorplan
-3. Power Planning
-4. Placement
-5. CTS
-6. Post-CTS Optimization
-7. Routing
-8. Routing Optimization
-9. Chip Finish
+**Why Modular?**
+- Checkpoint-based recovery at each stage
+- Tool switching (dc_shell for synthesis, innovus for P&R)
+- Better error handling and retry per stage
+- Three-Brain architecture integration
 
 ---
 
@@ -421,11 +427,11 @@ calibre -lvs -hier rules/lvs.rules
 
 **Description:** Complete CTS flow execution.
 
-### rtl2gds-flow
+### ~~rtl2gds-flow~~ (Deprecated)
 
-**Triggers:** "rtl2gds", "rtl to gds"
+**Status:** Deprecated - Use modular stage skills instead.
 
-**Description:** Generic RTL-to-GDS flow.
+**Replacement:** Use individual stage commands: `/synthesis`, `/floorplan`, `/placement`, `/cts`, `/routing`, `/chipfinish`
 
 ---
 

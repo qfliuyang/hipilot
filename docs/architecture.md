@@ -303,7 +303,7 @@ hipilot/
 │
 └── docs/                    # Documentation
     ├── architecture.md, quick-start.md, skills-guide.md
-    ├── mcp-servers.md, rtl2gds-flow.md, deploy-guide.md
+    ├── mcp-servers.md, deploy-guide.md
     ├── specs/               # MCP server specifications
     └── testing/             # Testing rules and guides
 ```

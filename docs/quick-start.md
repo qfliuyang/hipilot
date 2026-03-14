@@ -133,21 +133,26 @@ Expected: 34 skills covering RTL-to-GDS flow.
 
 ## Step 5: Run Complete Flow
 
-To run the complete RTL-to-GDS flow:
+Execute the RTL-to-GDS flow stage by stage:
 
 ```
-"Execute the Ibex RTL2GDS flow from init through chip finish"
+"Run synthesis on the Ibex design"
 ```
 
-HiPilot will:
-1. Load design into Innovus
-2. Create floorplan
-3. Build power grid
-4. Place cells
-5. Run CTS
-6. Optimize timing
-7. Route design
-8. Export outputs
+Then continue with each stage:
+```
+"/design-init"     → Load synthesized netlist
+"/floorplan"      → Create die area and place IOs
+"/powerplan"      → Build power grid (VDD/VSS)
+"/placement"      → Place standard cells
+"/cts"            → Build clock tree
+"/postcts-opt"    → Fix timing with real clocks
+"/routing"        → Route all nets
+"/routeopt"       → Optimize and fix DRCs
+"/chipfinish"     → Add fillers and export GDS
+```
+
+**Why stages?** Each stage saves a checkpoint. If something fails, resume from the last good checkpoint.
 
 ---
 
@@ -157,11 +162,13 @@ HiPilot will:
 |------|---------|
 | List skills | `"List all available skills"` |
 | Check status | `"What is the design status?"` |
-| Run timing report | `"Generate timing report with 10 paths"` |
-| Fix setup violations | `"/fix-setup-timing"` |
+| Run synthesis | `"/synthesis"` |
+| Run floorplan | `"/floorplan"` |
+| Run placement | `"/placement"` |
 | Run CTS | `"/cts"` |
+| Run routing | `"/routing"` |
+| Fix setup violations | `"/fix-setup-timing"` |
 | Save checkpoint | `"/save-design"` |
-| Run full flow | `"/rtl2gds"` |
 | **Team Mode** | `"Run team mode on this design"` |
 
 ---
