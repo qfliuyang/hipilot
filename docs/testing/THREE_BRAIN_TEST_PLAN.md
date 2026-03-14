@@ -382,47 +382,70 @@ const status = team.getStatus();
 
 **Objective:** Complete RTL2GDS flow with team mode.
 
-### Test 5.1: Full RTL2GDS with Team Mode
+### Test 5.1: Modular Stage-by-Stage Flow Certification
+
+**Approach:** Test each stage independently using modular slash commands, not monolithic `/rtl2gds`.
 
 #### Prerequisites
 - EDA server accessible
 - Ibex design available
 - 90 minutes available
 
+#### Stage Test Sequence
+
+| Order | Stage | Command | Test Focus | Timeout |
+|-------|-------|---------|------------|---------|
+| 1 | Synthesis | `/synthesis` | dc_shell, netlist generation | 15 min |
+| 2 | Design Init | `/design-init` | Load netlist, MMMC setup | 5 min |
+| 3 | Floorplan | `/floorplan` | Die area, IO placement | 10 min |
+| 4 | Power Plan | `/powerplan` | VDD/VSS rings, stripes | 10 min |
+| 5 | Placement | `/placement` | Cell placement, WNS | 15 min |
+| 6 | CTS | `/cts` | Clock tree, skew | 15 min |
+| 7 | Post-CTS Opt | `/postcts-opt` | Setup/hold fixing | 10 min |
+| 8 | Routing | `/routing` | Global + detail route | 15 min |
+| 9 | Route Opt | `/routeopt` | DRC cleanup, timing | 10 min |
+| 10 | Chip Finish | `/chipfinish` | Filler, GDS export | 10 min |
+
 #### Execution Steps
 
 ```bash
-# 1. Launch team mode
-bin/hipilot-team --no-terminal
+# 1. Launch HiPilot (standard or team mode)
+bin/hipilot --no-terminal
 
-# 2. Start test script in supervisor pane
-tmux -L hipilot-team send-keys -t 0 "node test/e2e/team_rtl2gds.js" C-m
-
-# 3. Monitor progress (poll every 30s)
-for i in {1..180}; do
-  tmux -L hipilot-team capture-pane -t 0 -p | tail -20
-  sleep 30
-done
+# 2. Run stages sequentially with verification
+# Type in left pane: /synthesis
+# Wait: Check synthesis completes, checkpoint saved
+# Type: /design-init
+# Wait: Check Innovus loads design successfully
+# Continue through all stages...
 ```
 
-#### Success Criteria
+#### Per-Stage Success Criteria
 
-| Checkpoint | Criteria | Timeout |
-|------------|----------|---------|
-| Team initialized | All 6 agents report "ready" | 2 min |
-| Synthesis complete | Stage 0 done, checkpoint saved | 15 min |
-| Floorplan complete | Stage 2 done, die area set | 10 min |
-| Placement complete | Stage 4 done, WNS reported | 20 min |
-| CTS complete | Stage 5 done, skew < 100ps | 15 min |
-| Routing complete | Stage 7 done, DRC clean | 20 min |
-| GDS exported | File exists, > 10MB | 5 min |
-| QoR summary | WNS/TNS reported by all agents | 3 min |
+Each stage must:
+1. **Start correctly** - Tool launches (innovus/dc_shell), no init errors
+2. **Complete Tcl execution** - All commands execute without errors
+3. **Save checkpoint** - `.enc` file created for next stage
+4. **Report QoR** - WNS/TNS reported explicitly (L5 requirement)
+5. **Exit cleanly** - Tool exits, returns to bash prompt
+
+#### Stage Checkpoint Verification
+
+```bash
+# After each stage, verify checkpoint exists
+ls -lh result/*/data/*.enc
+
+# Verify QoR recorded
+cat result/*/report/*_timing.rpt | grep -E "(WNS|TNS)"
+```
 
 #### Pass Criteria
-- All 9 stages complete
-- GDS file generated
-- No agent failures (or failures recovered via retry)
-- Final QoR meets design targets (WNS > -0.5ns)
+- All 10 stages complete independently
+- Checkpoints chain correctly (each stage loads previous)
+- GDS file generated at end (> 10MB)
+- No stage failures (or recovered via retry)
+- Final QoR meets targets (WNS > -0.5ns)
+- Team agents (if using team mode) coordinated successfully
 
 **Layer 5 Progress:** ⬜ (0/1)
 
