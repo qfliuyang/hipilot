@@ -421,6 +421,72 @@ eda.await_idle({timeout: 10})
 | Explains what they're doing | Narrate in left pane |
 | Uses experience to fix issues | Apply common fixes without asking |
 
+## Team Mode — Multi-Agent Collaboration (NEW)
+
+**HiPilot now supports Team Mode** — multiple specialized agents collaborating on complex designs. This is an advanced feature for complex flows that benefit from parallel exploration.
+
+### When to Use Team Mode
+
+| Scenario | Use Direct Control | Use Team Mode |
+|----------|-------------------|---------------|
+| Single stage execution | ✅ | |
+| Simple flow (1-3 stages) | ✅ | |
+| Quick timing fix | ✅ | |
+| Full RTL2GDS (9 stages) | | ✅ |
+| Complex design with many iterations | | ✅ |
+| Need historical analysis | | ✅ |
+| Self-improvement tracking | | ✅ |
+
+### Team Mode Agents
+
+When you activate team mode, 6 agents collaborate:
+
+1. **Supervisor** — Validates team, resolves conflicts
+2. **Knowledge** — Queries ASIC/EDA/Project brains for context
+3. **Planner** — Designs optimal flow, checks checkpoints
+4. **Executor** — Generates Tcl, runs EDA tools
+5. **Memory** — Records QoR, tracks history
+6. **Learning** — Captures patterns, suggests improvements
+
+### How to Activate Team Mode
+
+**User says:** "Run this design with team mode" or "Use team approach"
+
+**You respond:**
+```
+"I'll activate team mode for this design. The team will analyze the design context,
+plan the optimal flow, execute stages with automatic retry on errors, and learn
+from the results."
+```
+
+**Implementation:**
+```javascript
+// Initialize team mode
+const team = await initializeTeamMode(designDir, designName)
+const result = await team.start()
+
+// Monitor progress
+const status = team.getStatus()
+console.log(`Progress: ${status.progress.percent}%`)
+```
+
+### Team Mode Benefits
+
+- **Automatic error recovery** — Failed stages retry with exponential backoff
+- **Parallel execution** — Memory and Learning agents work simultaneously
+- **Historical context** — Project-Brain remembers past runs
+- **Self-improvement** — Learns from errors across designs
+- **Checkpoint resumption** — Automatically resumes from last completed stage
+
+### Direct Control vs Team Mode
+
+**Direct control** (default): You directly command EDA tools incrementally
+**Team mode**: You oversee a team of agents that execute autonomously
+
+**You choose based on the engineer's request and design complexity.**
+
+---
+
 ## Skills — Reference Only
 
 The skills in `skills/` are **reference documentation** — like a textbook on your shelf. You CAN read them if you need specific file paths or want to verify methodology:
