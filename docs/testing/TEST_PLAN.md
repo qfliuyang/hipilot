@@ -1,12 +1,12 @@
-# HiPilot Unified Test Plan v3.1
+# HiPilot Unified Test Plan v3.2
 
 > **One test plan to rule them all.** Self-improving, evidence-based, progressive certification.
 
-**Version:** 3.1
+**Version:** 3.2
 **Status:** Active
 **Replaces:** TEST_PLAN_v2.md, TEST_PLAN_v3_*.md, RTL2GDS_TEST_PLAN_OPERATIONAL.md
 
-**Latest Update:** 2026-03-04 - Phase 7 Gold Certification achieved with timing closure (+0.136ns WNS)
+**Latest Update:** 2026-03-15 - Added Phase 3.5 Manual Mode Workflow test
 
 ---
 
@@ -139,6 +139,90 @@ bin/hitestbot-eda "start innovus for the ibex design"
 - License unavailable → Check lmstat, restart flexlm
 - Design path wrong → Verify /home/EDA/ibex_work_upload exists
 - Tool crashes → Check tool setup scripts
+
+---
+
+### Phase 3.5: Manual Mode Workflow (20 min)
+**Goal:** HiPilot manual approval workflow works for safety-critical operations
+
+**Background:** HiPilot has two modes:
+- **Auto mode** (default): Tcl executes immediately
+- **Manual mode**: Tcl is previewed and requires `prefix+y` (Ctrl+B then y) to approve
+
+This phase tests that a human can safely review and approve Tcl before execution.
+
+```bash
+# Step 1: Enable manual mode and generate Tcl
+bin/hitestbot-eda "enable manual mode, then generate a timing report Tcl"
+
+# Step 2: Approve the pending Tcl
+# HiTestBot presses: prefix+y (Ctrl+B, then y)
+
+# Step 3: Verify execution
+# HiTestBot waits for EDA completion and QoR output
+```
+
+**HiTestBot Actions (Virtual Human):**
+
+| Step | Action | Verification |
+|------|--------|--------------|
+| 1 | Type command to enable manual mode | Status bar shows `MODE: MANUAL` |
+| 2 | Request Tcl generation | Left pane shows `[⏳ Pending Approval]` badge |
+| 3 | **Press `prefix+y`** (Ctrl+B, y) | HiTestBot sends keystrokes via tmux |
+| 4 | Wait for execution | Right pane shows EDA activity |
+| 5 | Verify QoR reported | WNS/TNS numbers in Claude response |
+
+**Scoring (L1-L5):**
+
+| Layer | Criteria | Evidence |
+|-------|----------|----------|
+| L1 | Command typed and acknowledged | Screenshot shows prompt response |
+| L2 | Manual mode understood | Keywords: "manual", "pending", "approval" |
+| L3 | No premature MCP execution | MCP log shows `awaiting_approval` state before `send_to_terminal` |
+| L4 | EDA executes AFTER approval | Timestamp: EDA activity after `prefix+y` sent |
+| L5 | QoR reported | WNS/TNS in Claude output |
+
+**Status Bar Verification:**
+
+| State | Expected Status Bar | Screenshot Check |
+|-------|---------------------|------------------|
+| Initial | `MODE: AUTO` | `obs_stage_start.png` |
+| After manual cmd | `MODE: MANUAL` | `obs_ai_responded.png` |
+| Tcl pending | `MODE: MANUAL | PENDING` | Screenshot before approval |
+| Executing | `MODE: MANUAL | RUNNING` | Screenshot during execution |
+| Complete | `MODE: MANUAL` | `obs_stage_complete.png` |
+
+**Failure Modes:**
+
+| Failure | Symptom | Root Cause | Fix |
+|---------|---------|------------|-----|
+| Mode toggle fails | Status bar still shows AUTO | `hipilot-tmux` server not updating status | Check `mode.js` file-based state |
+| `prefix+y` ignored | No EDA activity after approval | Wrong tmux socket or key sequence | Verify `-L hipilot` and key timing |
+| Tcl executes without approval | No pending state visible | Manual mode not actually enabled | Check `eda.generate_tcl` respects mode flag |
+| Approval too slow | Timeout waiting for prompt | Human-like delay needed between Ctrl+B and y | HiTestBot should wait 100ms between keys |
+
+**Pass Criteria:**
+- L3 ≥ 0.5 (approval gate actually worked — Tcl didn't execute before `prefix+y`)
+- L4 ≥ 0.5 (EDA executed after approval)
+- Status bar transitions verified in screenshots
+- MCP log shows correct state sequence: `generating → pending → approved → executing → complete`
+
+**HiTestBot Implementation Note:**
+
+```javascript
+// In FlowCertifier.js - manual mode approval sequence
+async approvePendingTcl() {
+  // Send prefix key (Ctrl+B)
+  execSync(`tmux -L ${this.socket} send-keys -t 0.0 C-b`);
+  await sleep(100); // Human-like pause
+
+  // Send 'y' to approve
+  execSync(`tmux -L ${this.socket} send-keys -t 0.0 y`);
+
+  // Log the approval action
+  this._runLog('Sent prefix+y to approve pending Tcl');
+}
+```
 
 ---
 
@@ -620,6 +704,7 @@ cat test-evidence/<test_id>/knowledge_base_updates.yaml
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 3.2 | 2026-03-15 | Added Phase 3.5 Manual Mode Workflow test, HiTestBot approval sequence, status bar verification criteria |
 | 3.1 | 2026-03-04 | Added evidence timeline verification (Section 5.3), scoring adjustments for long-running flows (Section 5.5), Phase 7 Gold certification achieved |
 | 3.0 | 2026-03-01 | Unified all test plans, added self-improvement system |
 | 2.0 | 2026-02-25 | Progressive phase testing, MCP feature gate workarounds |
