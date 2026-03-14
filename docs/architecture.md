@@ -354,62 +354,6 @@ Before executing Tcl, HiPilot analyzes:
 
 ---
 
-## Team Mode
-
-**Location:** `src/team/index.js`
-
-**Purpose:** Multi-agent collaboration for complex physical design tasks
-
-### Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Team Mode                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│   Supervisor ──▶ Knowledge ──▶ Planner ──▶ Executor              │
-│      (seq)        (seq)         (seq)       (seq)               │
-│                                              │                   │
-│                                              ▼                   │
-│                                    ┌─────────────────┐           │
-│                                    │  MemoryAgent    │           │
-│                                    │  LearningAgent  │ (parallel)│
-│                                    └─────────────────┘           │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-              ┌───────────────┼───────────────┐
-              ▼               ▼               ▼
-        ┌──────────┐   ┌──────────┐   ┌──────────┐
-        │ASIC-Brain│   │EDA-Brain │   │Project-  │
-        │          │   │          │   │Brain     │
-        └──────────┘   └──────────┘   └──────────┘
-```
-
-### Six Essential Agents
-
-| Agent | Purpose | Execution |
-|-------|---------|-----------|
-| **Supervisor** | Team coordination, conflict resolution | Sequential |
-| **Knowledge** | Query all three knowledge bases | Sequential |
-| **Planner** | Flow design, stage sequencing | Sequential |
-| **Executor** | Tcl generation, tool execution | Sequential |
-| **Memory** | QoR tracking, history recording | Parallel |
-| **Learning** | Pattern recognition, self-improvement | Parallel |
-
-### Key Features
-
-- **Phased Execution:** Agents run in dependency order
-- **Parallel Execution:** Memory and Learning agents run simultaneously
-- **Error Recovery:** 3 retries with exponential backoff
-- **Human Escalation:** Optional escalation for unrecoverable errors
-- **Three-Brain Integration:** All agents leverage ASIC/EDA/Project brains
-
-See [TEAM_MODE_ARCHITECTURE.md](TEAM_MODE_ARCHITECTURE.md) for complete documentation.
-
----
-
 ## Extension Points
 
 ### Adding New Skills
@@ -430,14 +374,6 @@ See [TEAM_MODE_ARCHITECTURE.md](TEAM_MODE_ARCHITECTURE.md) for complete document
 1. Add tool definition in `servers/*/index.js`
 2. Implement tool handler
 3. Update documentation
-
-### Adding New Team Agents
-
-1. Add agent definition to `AGENT_REGISTRY` in `src/team/index.js`
-2. Implement `runAgentNameAgent()` function
-3. Add case to `runAgentLogic()` switch statement
-4. Update `createDefaultTeamConfig()` if needed
-5. Document in [TEAM_MODE_ARCHITECTURE.md](TEAM_MODE_ARCHITECTURE.md)
 
 ---
 

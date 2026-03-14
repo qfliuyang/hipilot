@@ -13,7 +13,7 @@ hipilot:
   input_checkpoint: "result/syn/data/ibex_core.syn.v"
   output_checkpoint: "result/pr/data/init_design.enc"
   timeout: 600
-  prior_stages: [0]
+  prior_stages: ["synthesis"]
   triggers:
     - "ibex stage 1"
     - "ibex design init"

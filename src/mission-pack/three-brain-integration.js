@@ -30,8 +30,7 @@ export class MissionPackContext {
     if (hasMissionPack(this.designDir)) {
       this.missionPack = loadMissionPack(this.designDir);
     } else if (canAutoDetect(this.designDir).canDetect) {
-      const autoData = autoDetectMissionPack(this.designDir);
-      // MissionPack will be set from autoData via loadMissionPack
+      // Auto-detect will create a mission pack via loadMissionPack
       this.missionPack = loadMissionPack(this.designDir);
     } else {
       // Create default mission pack

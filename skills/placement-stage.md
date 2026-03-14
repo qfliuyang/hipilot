@@ -13,7 +13,7 @@ hipilot:
   input_checkpoint: "result/pp/design.enc"
   output_checkpoint: "result/placement/design.enc"
   timeout: 900
-  prior_stages: ["power_plan"]
+  prior_stages: ["powerplan"]
   triggers:
     - "stage 4"
     - "run placement"
