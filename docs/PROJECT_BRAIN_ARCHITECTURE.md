@@ -332,7 +332,6 @@ if (context.placement_memory?.iterations?.length > 2) {
 ## Related Documentation
 
 - [TEAM_MODE_ARCHITECTURE.md](TEAM_MODE_ARCHITECTURE.md) - Multi-agent team mode using three-brain architecture
-- [LITTLEBRAIN_PROOF.md](LITTLEBRAIN_PROOF.md) - Historical evidence and test results
 - `servers/knowledge/asic-brain/` - ASIC methodology brain
 - `servers/knowledge/eda-brain/` - EDA tool knowledge brain
 - `servers/knowledge/project-brain/` - Design-specific memory brain

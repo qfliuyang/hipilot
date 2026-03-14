@@ -403,7 +403,7 @@ calibre -lvs -hier rules/lvs.rules
 
 **Description:** Automatic timing violation fixing.
 
-### fix-setup-timing-v2
+### fix-setup-timing
 
 **Triggers:** "fix setup", "setup timing"
 
