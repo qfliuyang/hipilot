@@ -1,10 +1,10 @@
 # Proof That LittleBrain Works
 
-> **Historical Note:** LittleBrain has been restructured into the **Three-Brain Architecture** (ASIC-Brain, EDA-Brain, Project-Brain), also referred to as **CoT-Brain** (Chain-of-Thought Brain). This document provides historical evidence of the system's functionality. See [PROJECT_BRAIN_ARCHITECTURE.md](PROJECT_BRAIN_ARCHITECTURE.md) for current architecture.
+> **Historical Note:** LittleBrain has been restructured into the **Three-Brain Architecture** (ASIC-Brain, EDA-Brain, Project-Brain). This document provides historical evidence of the system's functionality. See [PROJECT_BRAIN_ARCHITECTURE.md](PROJECT_BRAIN_ARCHITECTURE.md) for current architecture.
 
 ## Executive Summary
 
-LittleBrain (now CoT-Brain / Three-Brain Architecture) is the knowledge-based orchestration layer that acts like a dedicated LLM for EDA tasks. This document provides concrete evidence that the system is functioning correctly in HiPilot.
+LittleBrain (now Three-Brain Architecture) is the knowledge-based orchestration layer that acts like a dedicated LLM for EDA tasks. This document provides concrete evidence that the system is functioning correctly in HiPilot.
 
 ## 1. LittleBrain Architecture Overview
 

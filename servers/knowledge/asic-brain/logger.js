@@ -394,4 +394,4 @@ export function readLogs(sessionId) {
     .map(l => JSON.parse(l));
 }
 
-export { ASICBrainLogger as LittleBrainLogger, ASICBrainLogger as CoTBrainLogger };
+export { ASICBrainLogger as LittleBrainLogger };

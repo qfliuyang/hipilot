@@ -337,9 +337,8 @@ import {
 
 export {
   ASICBrain,
-  // Backward compatibility aliases
+  // Backward compatibility alias
   ASICBrain as LittleBrain,
-  ASICBrain as CoTBrain,
   // From tcl-generator
   generateTcl,
   sanitizeScript,
@@ -373,7 +372,6 @@ export {
   // From logger
   ASICBrainLogger,
   ASICBrainLogger as LittleBrainLogger,
-  ASICBrainLogger as CoTBrainLogger,
   getLogger,
   resetLogger,
   readLogs

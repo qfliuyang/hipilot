@@ -2,19 +2,20 @@
 
 ## Overview
 
-**Project-Brain** is a per-design, progressively disclosing knowledgebase that learns and remembers design-specific information throughout the RTL-to-GDS flow. It complements CoT-Brain (general EDA reasoning) with project-specific context.
+**Project-Brain** is a per-design, progressively disclosing knowledgebase that learns and remembers design-specific information throughout the RTL-to-GDS flow. It complements ASIC-Brain and EDA-Brain (general EDA reasoning) with project-specific context.
 
 ## Brain Hierarchy
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        CoT-Brain                                │
-│              (Formerly LittleBrain - General)                   │
-│  - EDA tool syntax knowledge                                    │
-│  - Generic Tcl generation patterns                              │
-│  - Common error diagnosis                                       │
-│  - Vendor-specific command references                           │
-└────────────────────────────┬────────────────────────────────────┘
+│                    Three-Brain Architecture                      │
+├──────────────────────────────┬──────────────────────────────────┤
+│         ASIC-Brain           │         EDA-Brain                │
+│    (Formerly LittleBrain)    │    (Tool Knowledge)              │
+│  - Tcl generation patterns   │  - Tool commands                 │
+│  - Methodology best practices│  - Error patterns                │
+│  - Flow stage definitions    │  - Syntax validation             │
+└──────────────────────────────┴──────────────────────────────────┘
                              │  General knowledge
                              ▼
 ┌─────────────────────────────────────────────────────────────────┐
@@ -37,14 +38,14 @@
 └─────────────┘      └─────────────┘      └─────────────┘
 ```
 
-## CoT-Brain vs Project-Brain
+## General vs Project-Specific Brains
 
-| Aspect | CoT-Brain (General) | Project-Brain (Specific) |
-|--------|--------------------|--------------------------|
+| Aspect | ASIC-Brain / EDA-Brain (General) | Project-Brain (Specific) |
+|--------|----------------------------------|--------------------------|
 | **Scope** | All EDA designs | One specific design |
 | **Lifetime** | Permanent | Project duration |
 | **Content** | Tool syntax, patterns | Design hierarchy, iterations |
-| **Location** | `servers/knowledge/cot-brain/` | `${HIPILOT_DESIGN_DIR}/.project-brain/` |
+| **Location** | `servers/knowledge/asic-brain/`, `servers/knowledge/eda-brain/` | `${HIPILOT_DESIGN_DIR}/.project-brain/` |
 | **Updates** | Rare (tool updates) | Continuous (during flow) |
 | **Examples** | "How to run CTS in Innovus" | "Ibex has 15K cells, CTS took 5min" |
 
