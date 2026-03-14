@@ -27,16 +27,16 @@ This skill describes how HiPilot (Claude Code) starts an EDA tool in the right t
 
 1. **Detect** — `eda.detect_tool` to check if an EDA tool is already running.
 2. **Start** — If none detected, call `eda.start_tool`:
-   - Innovus (RTL2GDS): `eda.start_tool({"tool":"innovus","design_dir":"/home/EDA/hipilot_test/ibex_work_upload"})`
+   - Innovus (Physical Design): `eda.start_tool({"tool":"innovus","design_dir":"/home/EDA/hipilot_test/ibex_work_upload"})`
    - ICC2: `eda.start_tool({"tool":"icc2_shell","design_dir":"/home/EDA/hipilot_test/ibex_work_upload"})`
    - PrimeTime: `eda.start_tool({"tool":"pt_shell","design_dir":"/home/EDA/hipilot_test/ibex_work_upload"})`
 3. **Wait** — `eda.start_tool` internally waits for the tool prompt (up to 90s for Innovus).
-4. **Proceed** — Once ready, run workflows (e.g. `eda.rtl2gds.run_full_flow`).
+4. **Proceed** — Once ready, run stage commands (e.g. `/floorplan`, `/placement`).
 
 ## Slash Commands
 
 - `/start-eda` — Explicitly start the EDA tool before running flows.
-- `/rtl2gds` — Will call `eda.start_tool` internally if Innovus is not running.
+- `/synthesis`, `/floorplan`, `/placement`, etc. — Stage commands will call `eda.start_tool` internally if needed.
 
 ## Notes
 

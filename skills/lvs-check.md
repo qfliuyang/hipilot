@@ -561,7 +561,7 @@ After LVS passes:
 
 - `/drc-check` - Design rule check (run before LVS)
 - `/save-design` - Export GDS for LVS
-- `/rtl2gds-flow` - Complete flow including signoff
+- `/synthesis` through `/chipfinish` - Complete flow including signoff
 
 ---
 
