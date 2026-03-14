@@ -12,7 +12,7 @@
 2. [The Coding Language of AI: JavaScript for Hardware Engineers](#chapter-2-javascript)
 3. [The Three-Layer Architecture Unveiled](#chapter-3-architecture)
 4. [MCP: The Protocol That Binds It All](#chapter-4-mcp)
-5. [Skills: Encoding RTL2GDS Expertise](#chapter-5-skills)
+5. [Skills: Encoding Physical Design Expertise](#chapter-5-skills)
 6. [The HiPilot Codebase: A Complete Walkthrough](#chapter-6-codebase)
 7. [Building Your First Extension](#chapter-7-extension)
 8. [LittleBrain: Knowledge-Based Orchestration](#chapter-8-littlebrain)
@@ -621,7 +621,7 @@ It decides: *"Placement succeeded. WNS is -0.123ns with 15 violations. This is a
 
 ---
 
-## Chapter 5: Skills—Encoding RTL2GDS Expertise
+## Chapter 5: Skills—Encoding Physical Design Expertise
 
 ### What Is a Skill?
 

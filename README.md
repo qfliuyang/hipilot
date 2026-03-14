@@ -14,7 +14,7 @@ npm run install:all
 bin/hipilot
 ```
 
-This opens a terminal with two panes. Claude Code starts in the left pane. Type `/rtl2gds` to run the full RTL-to-GDS flow, or `/timing` to check timing.
+This opens a terminal with two panes. Claude Code starts in the left pane. Type `/synthesis` to start the flow, then `/floorplan`, `/placement`, `/cts`, `/routing`, `/chipfinish` for each stage. Or use `/timing` to check timing.
 
 ## How It Works
 
@@ -23,7 +23,7 @@ This opens a terminal with two panes. Claude Code starts in the left pane. Type 
 │  Claude Code                  │  Innovus / ICC2 / PrimeTime  │
 │  (the engineer types here)    │  (Claude controls this pane)  │
 │                               │                               │
-│  1. Engineer types /rtl2gds   │                               │
+│  1. Engineer types /floorplan │                               │
 │  2. Claude loads skill        │                               │
 │  3. Claude generates Tcl   ──────▶ 4. EDA tool executes Tcl  │
 │  6. Claude reads result    ◀────── 5. EDA tool produces output│

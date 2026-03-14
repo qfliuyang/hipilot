@@ -121,7 +121,7 @@ Team Mode enables multiple specialized AI agents to collaborate on physical desi
 
 ### 3. PlannerAgent
 
-**Purpose:** Designs the RTL2GDS flow
+**Purpose:** Designs the RTL-to-GDS flow (stage by stage)
 
 **Primary Brain:** asic
 
