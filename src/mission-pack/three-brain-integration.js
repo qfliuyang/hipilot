@@ -31,8 +31,8 @@ export class MissionPackContext {
       this.missionPack = loadMissionPack(this.designDir);
     } else if (canAutoDetect(this.designDir).canDetect) {
       const autoData = autoDetectMissionPack(this.designDir);
-      const { MissionPack } = require('./index.js');
-      this.missionPack = new MissionPack(autoData, null, this.designDir);
+      // MissionPack will be set from autoData via loadMissionPack
+      this.missionPack = loadMissionPack(this.designDir);
     } else {
       // Create default mission pack
       this.missionPack = loadMissionPack(this.designDir);
@@ -410,42 +410,8 @@ export function resetMissionPackContext() {
   globalContext = null;
 }
 
-/**
- * Quick access functions for common operations
- */
-
-// Get flow stages
-export function getFlowStages(designDir = null) {
-  return getMissionPackContext(designDir).getFlowDefinition().stages;
-}
-
-// Get libraries for a corner
-export function getLibraries(corner = 'typical', designDir = null) {
-  return getMissionPackContext(designDir).getLibrariesForCorner(corner);
-}
-
-// Get RTL files
-export function getRtlFiles(designDir = null) {
-  return getMissionPackContext(designDir).getRtlFiles();
-}
-
-// Record QoR
-export function recordQoR(stage, metrics, context = {}, designDir = null) {
-  return getMissionPackContext(designDir).recordQoR(stage, metrics, context);
-}
-
-// Get design context
-export function getDesignContext(needs = [], designDir = null) {
-  return getMissionPackContext(designDir).getDesignContext(needs);
-}
-
 export default {
   MissionPackContext,
   getMissionPackContext,
   resetMissionPackContext,
-  getFlowStages,
-  getLibraries,
-  getRtlFiles,
-  recordQoR,
-  getDesignContext,
 };
