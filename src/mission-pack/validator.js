@@ -482,6 +482,14 @@ function validateCustom(custom, errors, warnings) {
   }
 }
 
+export {
+  VALID_STAGES,
+  VALID_TOOLS,
+  VALID_EFFORT_LEVELS,
+  VALID_SYNTHESIS_STRATEGIES,
+  VALID_PLACEMENT_OPTIMIZATIONS,
+};
+
 export default {
   validateMissionPack,
   VALID_STAGES,
