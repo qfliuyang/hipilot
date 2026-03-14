@@ -198,7 +198,17 @@ Then continue with each stage:
 ## Next Steps
 
 - Read [skills-guide.md](skills-guide.md) for detailed skill documentation
-- Read [rtl2gds-flow.md](rtl2gds-flow.md) for complete flow guide
+- Explore the modular stage skills for each step of the RTL-to-GDS flow:
+  - [Synthesis Stage](../skills/synthesis-stage.md) - Logic synthesis with Design Compiler
+  - [Design Initialization Stage](../skills/design-init-stage.md) - Load design into Innovus
+  - [Floorplan Stage](../skills/floorplan.md) - Create die area and place IOs
+  - [Power Planning Stage](../skills/power-planning.md) - Build power grid (VDD/VSS)
+  - [Placement Stage](../skills/placement.md) - Place standard cells
+  - [CTS Stage](../skills/cts.md) - Build clock tree
+  - [Post-CTS Optimization Stage](../skills/post-cts-opt.md) - Fix timing with real clocks
+  - [Routing Stage](../skills/route-design.md) - Route all nets
+  - [Routing Optimization Stage](../skills/routing-opt.md) - Optimize and fix DRCs
+  - [Chip Finish Stage](../skills/chip-finish.md) - Add fillers and export GDS
 
 ---
 

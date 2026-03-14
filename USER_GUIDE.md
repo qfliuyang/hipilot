@@ -179,7 +179,7 @@ HiPilot provides slash commands for common workflows:
 
 | Command | Description |
 |---------|-------------|
-| `/rtl2gds` | Full RTL to GDS flow |
+| `/rtl2gds` | **Deprecated** - Use modular commands below (`/synthesis`, `/floorplan`, `/place`, `/cts`, `/route`, `/signoff`) |
 | `/synthesis` | Run synthesis only |
 | `/place` | Placement stage |
 | `/cts` | Clock Tree Synthesis |
@@ -216,7 +216,7 @@ You don't need to memorize commands. Just ask:
 ### Complete RTL to GDS Flow
 
 ```
-> /rtl2gds
+> /synthesis
 
 HiPilot: I'll guide you through the complete RTL-to-GDS flow.
 This involves 10 stages:

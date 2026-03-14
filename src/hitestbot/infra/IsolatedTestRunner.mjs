@@ -42,7 +42,7 @@ export class IsolatedTestRunner {
     this.evidenceDir = join(this.testDir, 'evidence');
     this.logDir = join(this.testDir, 'logs');
     this.sourceDir = options.sourceDir || join(__dirname, '..', '..', '..', '..');
-    this.command = options.command || '/rtl2gds';
+    this.command = options.command || '/synthesis';
     this.maxWaitMs = options.maxWaitMs || parseInt(process.env.HITESTBOT_MAX_WAIT || '900000', 10);
 
     this.nodePath = '/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin';
@@ -310,7 +310,7 @@ export class IsolatedTestRunner {
 
 // CLI entry point
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const command = process.argv[2] || '/rtl2gds';
+  const command = process.argv[2] || '/synthesis';
   const maxWaitMs = parseInt(process.argv[3] || '900000', 10);
 
   const runner = new IsolatedTestRunner({

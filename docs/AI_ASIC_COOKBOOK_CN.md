@@ -12,10 +12,10 @@
 2. [AI 的编程语言：硬件工程师的 JavaScript 指南](#第2章-javascript)
 3. [三层架构揭秘](#第3章-架构)
 4. [MCP：连接一切的协议](#第4章-mcp)
-5. [技能：编码 RTL2GDS 专业知识](#第5章-技能)
+5. [技能：编码模块化流程专业知识](#第5章-技能)
 6. [HiPilot 代码库：完整 walkthrough](#第6章-代码库)
 7. [构建你的第一个扩展](#第7章-扩展)
-8. [LittleBrain：基于知识的编排](#第8章-littlebrain)
+8. [Three-Brain 架构：基于知识的编排](#第8章-three-brain)
 9. [认证与测试结果](#第9章-认证)
 
 ---
@@ -293,7 +293,7 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 │  "大脑" - 决定做什么                                                 │
 ├─────────────────────────────────────────────────────────────────────┤
 │  • 大型语言模型（Claude）                                            │
-│  • 解释用户意图（"运行 rtl2gds"）                                    │
+│  • 解释用户意图（"运行 /synthesis"、"/floorplan" 等）              │
 │  • 规划多步骤工作流                                                  │
 │  • 读取技能（你的专业知识）                                          │
 │  • 决定调用哪些工具                                                  │
@@ -327,39 +327,54 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### 第3层：编排（RTL2GDS 智能）
+### 第3层：编排（模块化 RTL2GDS 智能）
 
-当你在 HiPilot 中输入 `/rtl2gds` 时，第3层发生的事情：
+HiPilot 使用模块化阶段命令（`/synthesis`、`/floorplan`、`/placement` 等），每个命令专注于一个特定的实现阶段。Three-Brain 架构（ASIC-Brain、EDA-Brain、Project-Brain）提供智能编排。
 
 ```
-用户："/rtl2gds"
+用户："/synthesis"
     │
     ▼
 Claude 读取命令
     │
     ▼
-Claude 加载技能：skills/ibex-rtl2gds-flow.md
+Claude 加载技能：skills/synthesis.md
     │
     ▼
-Claude 创建计划：
-    第1阶段：设计初始化 → 第2阶段：布局规划 → 第3阶段：电源规划
-    → 第4阶段：布局 → 第5阶段：CTS → 第6阶段：CTS 后优化
-    → 第7阶段：布线 → 第8阶段：布线后优化 → 第9阶段：芯片完成
+Claude 查询 Project-Brain 获取设计上下文
     │
     ▼
-对每个阶段：
-    1. 从技能加载阶段特定 Tcl
-    2. 调用 MCP 执行
-    3. 等待完成
-    4. 检查结果（QoR、错误）
-    5. 如果错误 → 诊断并重试
-    6. 如果成功 → 保存检查点，继续下一阶段
+Claude 创建执行计划：
+    1. 检查环境（ASIC-Brain 提供方法论）
+    2. 生成 Tcl（EDA-Brain 提供工具语法）
+    3. 执行并验证
+    4. 保存结果到 Project-Brain
     │
     ▼
-报告带 WNS/TNS 的最终结果
+报告 QoR，建议下一阶段
 ```
 
-**关键洞察：** Claude 不只是运行命令——它维护状态、做决定、适应。像你一样。
+**完整 RTL2GDS 流程示例：**
+
+```
+用户按顺序运行：
+/synthesis     → 生成门级网表
+/floorplan     → 创建芯片布局
+/placement     → 放置标准单元
+/cts           → 时钟树综合
+/routing       → 完成布线
+/chipfinish    → 导出 GDS
+```
+
+每个阶段：
+1. 从 Project-Brain 加载上下文
+2. 从技能加载阶段特定 Tcl
+3. 调用 MCP 执行
+4. 检查结果（QoR、错误）
+5. 保存结果到 Project-Brain
+6. 报告带 WNS/TNS 的结果
+
+**关键洞察：** Claude 不只是运行命令——它维护状态、做决定、适应。Three-Brain 架构提供分层知识：ASIC-Brain 提供方法论，EDA-Brain 提供工具语法，Project-Brain 记住设计特定的学习。
 
 ### 第2层：协议（MCP 现实）
 
@@ -385,9 +400,9 @@ MCP（模型上下文协议）是 AI 系统与外部工具交互的标准化方�
 
 ## 第4章 MCP 深度解析
 
-### MCP 在 RTL2GDS 上下文中的工作原理
+### MCP 在模块化流程中的工作原理
 
-让我们追踪一个 MCP 调用通过 RTL2GDS 流程：执行第4阶段（布局）。
+让我们追踪一个 MCP 调用通过模块化 RTL2GDS 流程：执行布局阶段（使用 `/placement` 命令）。
 
 #### 步骤1：工具发现
 
@@ -474,7 +489,7 @@ MCP（模型上下文协议）是 AI 系统与外部工具交互的标准化方�
 
 #### 步骤2：工具调用（运行布局）
 
-Claude 决定运行布局。它构造 Tcl 并调用 MCP 工具。
+Claude 决定运行布局。它从 Project-Brain 加载设计上下文，构造 Tcl，并调用 MCP 工具。
 
 **请求：**
 ```json
@@ -485,8 +500,8 @@ Claude 决定运行布局。它构造 Tcl 并调用 MCP 工具。
   "params": {
     "name": "eda.execute_and_verify",
     "arguments": {
-      "tcl": "# Stage 4: Placement\nsource /home/EDA/ibex_work_upload/result/pr/data/floor_plan.enc\nplace_opt_design\nsetPlaceMode -place_detail_opt true\nplaceDesign\nsaveDesign result/pr/data/placement.enc\nputs \"PLACEMENT_COMPLETE\"",
-      "description": "第4阶段布局：place_opt_design",
+      "tcl": "# Stage: Placement\nsource ${CHECKPOINT_DIR}/floorplan.enc\nplace_opt_design\nsetPlaceMode -place_detail_opt true\nplaceDesign\nsaveDesign ${CHECKPOINT_DIR}/placement.enc\nputs \"PLACEMENT_COMPLETE\"",
+      "description": "布局阶段：place_opt_design",
       "timeout": 300
     }
   }
@@ -621,7 +636,7 @@ Claude 看到：
 
 ---
 
-## 第5章 技能——编码 RTL2GDS 专业知识
+## 第5章 技能——编码模块化流程专业知识
 
 ### 什么是技能？
 
@@ -634,163 +649,268 @@ Claude 看到：
 
 ### 生产级技能的解剖
 
-这是 HiPilot 使用的实际 `rtl2gds.md` 技能：
+这是 HiPilot 使用的实际 `placement.md` 技能（模块化阶段技能的示例）：
 
 ```markdown
 ---
-name: /rtl2gds
+name: placement
 description: >
-  为 Ibex 设计运行完整的 Innovus RTL-to-GDS 流程。
-  你自己使用 MCP 工具驱动每个阶段。
+  标准单元布局，用于数字设计。涵盖时序驱动布局、
+  拥塞优化和 CTS 前时序分析。专为 Innovus 设计。
+
+hipilot:
+  vendors: [cadence, synopsys]
+  tools:
+    cadence: [innovus]
+    synopsys: [icc2_shell]
+  flow_stages: [placement]
+  triggers:
+    - "place cells"
+    - "run placement"
+    - "place design"
+  qor_metrics: [WNS, TNS, Congestion, Utilization]
+  risk_level: moderate
+  typical_duration: "5-20 minutes depending on design size"
 ---
 
-# RTL-to-GDS 流程
+# 标准单元布局
 
-## 概述
-
-这个技能编排一个完整的 9 阶段 RTL-to-GDS 实现：
-1. 设计初始化 + MMMC
-2. 布局规划
-3. 电源规划
-4. 布局
-5. 时钟树综合
-6. CTS 后优化
-7. 布线
-8. 布线后优化
-9. 芯片完成 + GDS 导出
-
-每个阶段独立执行以实现干净的数据库管理。
-
-## 关键规则
-
-**不要调用 `workflow.run` 或 `eda.rtl2gds.run_full_flow`。**
-你自己编排每个阶段。如果阶段失败，你诊断并修复它。
-批处理执行器绕过你的智能——不要使用它们。
-
-## 阶段执行模式
-
-对每个阶段，遵循这个确切序列：
-
-1. **获取 Tcl：** 加载技能以获取阶段特定 Tcl
-2. **执行：** 用完整 Tcl 块调用 `eda.execute_and_verify`
-3. **检查结果：** 读取响应（状态、错误、警告、qor）
-4. **处理错误：** 如果有错误，调用 `eda.diagnose_error` 并重试
-5. **如果成功：** 用描述性名称调用 `qor.snapshot`
-6. **报告：** 告诉工程师："第 X 阶段：完成。WNS=Y，违规=Z"
-7. **继续：** 仅当当前阶段成功时才继续
-
-## 10 个阶段
-
-| # | 阶段 | 工具 | 超时 | 关键检查 |
-|---|------|------|------|----------|
-| 0 | 综合 + DFT | dc_shell | 300s | 检查网表存在 |
-| 1 | 设计初始化 + MMMC | innovus | 180s | MMMC 视图激活 |
-| 2 | 布局规划 | innovus | 120s | 芯片面积、IO 放置 |
-| 3 | 电源规划 | innovus | 120s | VDD/VSS 条纹 |
-| 4 | 布局 | innovus | 300s | 布局后 WNS |
-| 5 | CTS | innovus | 300s | 偏斜目标达成 |
-| 6 | CTS 后优化 | innovus | 300s | 建立/保持清洁 |
-| 7 | 布线 | innovus | 600s | DRC 清洁 |
-| 8 | 布线优化 | innovus | 300s | 布线后时序 |
-| 9 | 芯片完成 + GDS | innovus | 300s | GDS 导出 |
-
-## 错误恢复协议
-
-当阶段失败时，遵循这个优先级：
-
-1. **第一次失败：** 用 `eda.diagnose_error` 诊断，修复，立即重试
-2. **第二次失败：** 尝试替代方法（不同 Tcl 选项）
-3. **第三次失败：** 记录详细笔记，尝试创造性解决方案
-4. **只有那时：** 用完整历史报告给工程师
-
-### 示例：布局失败恢复
+## 快速参考
 
 ```
-阶段：布局
-结果：失败 - 80% 利用率时高拥塞
-
-操作：
-1. session.add_note({category:"error",
-     content:"布局失败，80% 利用率时高拥塞"})
-2. 修复：用 setPlaceMode 将利用率调整到 70%
-3. 重试：布局成功
-4. 继续 CTS
+用户："run placement"
 ```
 
-## 最终 QoR 摘要（必需）
+HiPilot 将：
+1. 配置布局模式（时序驱动）
+2. 运行布局优化
+3. 报告时序和拥塞
+4. 保存检查点
 
-第 9 阶段后，你必须提取并显示最终时序指标。
+---
 
-**步骤 1：** 运行时序提取
+## 何时使用此技能
+
+| 场景 | 操作 |
+|------|------|
+| 电源规划后 | 运行初始布局 |
+| 时序问题 | 以更高 effort 重新运行 |
+| 拥塞 | 调整密度目标 |
+| ECO 更改 | 增量布局 |
+
+**先决条件：**
+- 布局规划已创建
+- 电源网格已连接
+- 时序库已加载
+- SDC 约束已应用
+
+---
+
+## 布局工作流
+
+### 步骤 1：配置布局模式
+
+**Innovus：**
+```tcl
+# 重置布局模式
+setPlaceMode -reset
+
+# 时序驱动布局
+setPlaceMode -place_global_ignore_scan true
+setPlaceMode -place_global_reorder_scan false
+setPlaceMode -place_detail_legalization_inst_gap 2
+
+# 对于拥塞设计
+setPlaceMode -cong_effort medium
+setPlaceMode -place_global_cong_effort high
 ```
-mcp__hipilot-eda__eda.execute_and_verify({
-  tcl: "timeDesign -postRoute -prefix final_summary...",
-  description: "提取最终时序指标",
-  timeout: 120
-})
+
+### 步骤 2：设置时序降额
+
+**Innovus：**
+```tcl
+# OCV 降额用于布局
+set_timing_derate -early 0.97 -late 1.03 -clock
+set_timing_derate -late 1.05 -data
+setAnalysisMode -cppr both
 ```
 
-**步骤 2：** 保存快照
-```
-mcp__hipilot-eda__qor.snapshot({
-  name: "rtl2gds_final",
-  description: "完整 RTL-to-GDS 流程后的最终 QoR"
-})
-```
+### 步骤 3：运行布局
 
-**步骤 3：** 用明确数字报告给工程师
+**Innovus：**
+```tcl
+# 基本布局
+place_opt_design
 
-格式：
-```
-✅ RTL-to-GDS 流程完成！
+# 以更高 effort
+place_opt_design -effort high
 
-最终 QoR 摘要：
-┌──────────────────┬──────────────────────────────┐
-│ 指标              │ 值                           │
-├──────────────────┼──────────────────────────────┤
-│ WNS（建立）       │ X.XXX ns    ← 必需            │
-│ TNS（建立）       │ X.XXX ns    ← 必需            │
-│ 建立违规          │ N 路径      ← 必需            │
-│ 保持违规          │ N 路径                        │
-│ GDS               │ result/pr/data/ibex_core.gds │
-└──────────────────┴──────────────────────────────┘
+# 增量布局
+place_opt_design -incremental
 ```
 
-**关键：** 你必须包含实际的 WNS 和 TNS 数字。
-不要只说"流程完成"而不显示时序指标。
+### 步骤 4：分析结果
+
+**Innovus：**
+```tcl
+# 报告时序
+report_timing -max_paths 10
+
+# 报告拥塞
+report_congestion
+
+# 报告利用率
+report_utilization
+```
+
+---
+
+## 常见问题
+
+### 问题 1：高拥塞
+
+**症状：** 热点拥塞 > 1.0
+
+**修复：**
+```tcl
+# 降低局部密度
+setPlaceMode -place_global_max_density 0.70
+place_opt_design -incremental
+
+# 在拥塞区域添加布局障碍
+createPlaceBlockage -type partial -density 0.3 -box {x1 y1 x2 y2}
+```
+
+### 问题 2：大的负偏斜
+
+**症状：** WNS < -20% 时钟周期
+
+**修复：**
+```tcl
+# 更高时序 effort
+setPlaceMode -timing_effort ultra
+place_opt_design
+
+# 检查关键路径的路径组
+report_timing -max_paths 50 -slack_lesser_than 0
+```
+
+---
+
+## 完整脚本模板
+
+**Innovus：**
+```tcl
+#!/usr/bin/tclsh
+# placement.tcl - 标准单元布局
+
+#===========================================
+# 配置
+#===========================================
+set TARGET_DENSITY 0.70
+set TIMING_EFFORT "high"
+
+#===========================================
+# 布局模式设置
+#===========================================
+echo "配置布局模式..."
+setPlaceMode -reset
+setPlaceMode -place_global_ignore_scan true
+setPlaceMode -place_global_reorder_scan false
+setPlaceMode -place_detail_legalization_inst_gap 2
+
+#===========================================
+# 时序设置
+#===========================================
+echo "设置时序降额..."
+set_timing_derate -early 0.97 -late 1.03 -clock
+set_timing_derate -late 1.05 -data
+setAnalysisMode -cppr both
+
+#===========================================
+# 运行布局
+#===========================================
+echo "运行布局..."
+place_opt_design
+
+#===========================================
+# 报告
+#===========================================
+echo "生成报告..."
+report_timing -max_paths 20 > reports/pre_cts_timing.rpt
+report_congestion > reports/congestion.rpt
+report_utilization > reports/placement_util.rpt
+
+#===========================================
+# 保存检查点
+#===========================================
+saveDesign result/pr/data/placement.enc
+
+echo "布局完成！"
+```
+
+---
+
+## 相关技能
+
+- `/power-planning` - 布局前
+- `/cts` - 布局后
+- `/report-timing` - 时序分析
+- `/post-cts-opt` - CTS 后优化
+
+---
+
+## 检查清单
+
+布局前：
+- [ ] 布局规划已创建
+- [ ] 电源网格已连接
+- [ ] 时序库已加载
+- [ ] SDC 约束已应用
+
+布局后：
+- [ ] 无重叠违规
+- [ ] 拥塞可接受
+- [ ] 时序已分析
+- [ ] 检查点已保存
 ```
 
 ### 深层概念：技能作为状态机
 
-一个技能隐式定义了一个状态机。对于 RTL2GDS：
+一个技能隐式定义了一个状态机。对于模块化 RTL2GDS 流程：
 
 ```
 [初始]
     │
-    ▼ (加载技能，检测工具)
+    ▼ (加载技能，查询 Project-Brain)
 [工具就绪]
     │
-    ▼ (执行第1阶段)
-[第1阶段运行中]
+    ▼ (执行 /synthesis)
+[综合运行中]
     │
-    ├── 错误 ──► [诊断错误] ──► [第1阶段运行中] (重试)
+    ├── 错误 ──► [诊断错误] ──► [综合运行中] (重试)
     │
-    └── 成功 ──► [第1阶段完成]
+    └── 成功 ──► [综合完成]
                     │
-                    ▼ (保存检查点)
-              [第2阶段运行中]
+                    ▼ (保存到 Project-Brain)
+              [等待下一阶段]
                     │
-                    ... (对所有阶段重复)
+                    ▼ (用户调用 /floorplan)
+              [布局规划运行中]
                     │
-                    ▼
-              [所有阶段完成]
+                    ... (按顺序运行各阶段)
                     │
-                    ▼ (提取 QoR)
+                    ▼ (用户调用 /chipfinish)
+              [芯片完成]
+                    │
+                    ▼ (提取最终 QoR)
               [报告中]
                     │
                     ▼
               [完成]
 ```
+
+**关键区别：** 模块化流程中，用户在每个阶段后审查结果并决定何时继续，而不是一次性运行所有阶段。
 
 每个状态转换都是一个决策点。技能告诉 AI：
 - 在每个状态检查什么
@@ -857,10 +977,13 @@ hipilot/
 │   └── knowledge/index.js        # 技能/知识 MCP 服务器（7 个工具）
 │
 ├── skills/                        # 第3层：智能体指令
-│   ├── ibex-rtl2gds-flow.md      # 主 RTL2GDS 技能
+│   ├── synthesis.md              # 综合技能
+│   ├── floorplan.md              # 布局规划技能
+│   ├── placement.md              # 布局技能
+│   ├── cts.md                    # CTS 技能
+│   ├── routing.md                # 布线技能
 │   ├── fix-setup-timing.md       # 时序收敛技能
-│   ├── cts-clock-tree.md         # CTS 技能
-│   └── ... (共 34 个技能)
+│   └── ... (共 30+ 个技能)
 │
 ├── templates/                     # Tcl 生成
 │   ├── cadence/                  # Innovus 模板（11 个）
@@ -882,8 +1005,14 @@ hipilot/
 │
 └── deploy/eda-server/            # 部署到 EDA 服务器
     ├── CLAUDE.md                 # AI 身份（HiPilot 的"宪法"）
-    └── .claude/commands/         # 斜杠命令
-        └── rtl2gds.md            # /rtl2gds 命令
+    └── .claude/commands/         # 模块化斜杠命令
+        ├── synthesis.md          # /synthesis 命令
+        ├── floorplan.md          # /floorplan 命令
+        ├── placement.md          # /placement 命令
+        ├── cts.md                # /cts 命令
+        ├── routing.md            # /routing 命令
+        ├── chipfinish.md         # /chipfinish 命令
+        └── rtl2gds.md            # /rtl2gds 命令（完整流程）
 ```
 
 ### EDA MCP 服务器（servers/eda/index.js）
@@ -1417,48 +1546,89 @@ async function main() {
 
 ---
 
-## 第8章 LittleBrain——基于知识的编排
+## 第8章 Three-Brain 架构——基于知识的编排
 
-LittleBrain 是 HiPilot 的"小脑"——一个基于知识的编排层，像一个专门用于 EDA 任务的专用 LLM。它提供结构化推理、Tcl 生成和自我改进能力。
+HiPilot 使用 **Three-Brain 架构**（前身为 LittleBrain）——一个分层知识系统，提供结构化推理、Tcl 生成和自我改进能力。
 
-### 为什么需要 LittleBrain？
+### 三个大脑
 
-传统的 AI 智能体完全依赖 LLM 的上下文窗口进行推理。LittleBrain 增加了：
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Three-Brain Architecture                  │
+├──────────────────────────────┬──────────────────────────────────┤
+│         ASIC-Brain           │         EDA-Brain                │
+│    (Formerly LittleBrain)    │    (Tool Knowledge)              │
+│  - Tcl generation patterns   │  - Tool commands                 │
+│  - Methodology best practices│  - Error patterns                │
+│  - Flow stage definitions    │  - Syntax validation             │
+└──────────────────────────────┴──────────────────────────────────┘
+                             │  General knowledge
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                       Project-Brain                             │
+│              (Design-Specific, Per-Project)                     │
+│  - RTL design hierarchy                                         │
+│  - Physical design iterations                                   │
+│  - Timing closure learnings                                     │
+│  - Error patterns for THIS design                               │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-1. **结构化知识** — 使用 PageIndex 树导航而非向量相似性
+| 大脑 | 范围 | 内容 | 位置 |
+|------|------|------|------|
+| **ASIC-Brain** | 所有设计 | 方法论、流程阶段定义 | `servers/knowledge/asic-brain/` |
+| **EDA-Brain** | 所有设计 | 工具命令、错误模式 | `servers/knowledge/eda-brain/` |
+| **Project-Brain** | 特定设计 | 设计层次结构、迭代 | `${HIPILOT_DESIGN_DIR}/.project-brain/` |
+
+### 为什么需要 Three-Brain 架构？
+
+传统的 AI 智能体完全依赖 LLM 的上下文窗口进行推理。Three-Brain 架构增加了：
+
+1. **分层知识** — ASIC-Brain 提供方法论，EDA-Brain 提供工具语法，Project-Brain 记住设计特定的学习
 2. **活动日志** — 所有推理步骤的完整审计跟踪
 3. **自我改进** — 从错误和成功模式中学习
 4. **Tcl 生成** — 带有验证功能的专用生成器
+5. **设计连续性** — Project-Brain 在会话之间持久化
 
 ### 架构
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    LittleBrain 层                           │
-├─────────────────────────────────────────────────────────────┤
-│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────┐   │
-│  │ Tcl 生成器   │  │  输出解析器  │  │    编排器       │   │
-│  └──────────────┘  └──────────────┘  └─────────────────┘   │
-├─────────────────────────────────────────────────────────────┤
-│  ┌──────────────────┐  ┌────────────────────────────────┐  │
-│  │   自我改进       │  │           日志                 │  │
-│  │  - 错误模式 DB   │  │  - 推理步骤                    │  │
-│  │  - 成功跟踪器    │  │  - 决策                        │  │
-│  └──────────────────┘  │  - Tcl 生成                    │  │
-│                        └────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
+│                    Three-Brain 架构                          │
+├──────────────────────────────┬──────────────────────────────────┤
+│         ASIC-Brain           │         EDA-Brain                │
+├──────────────────────────────┼──────────────────────────────────┤
+│  ┌──────────────────┐        │  ┌──────────────────┐             │
+│  │ Tcl 生成器       │        │  │ 工具命令         │             │
+│  │ 方法论模式       │        │  │ 错误模式         │             │
+│  │ 流程编排器       │        │  │ 语法验证         │             │
+│  └──────────────────┘        │  └──────────────────┘             │
+└──────────────────────────────┴──────────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                       Project-Brain                             │
+│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────────┐   │
+│  │ RTL Memory   │  │ Floorplan    │  │ Timing Memory       │   │
+│  │ (Stage 0)    │  │ Memory       │  │ (All Stages)        │   │
+│  │              │  │ (Stage 2)    │  │                     │   │
+│  │ - Hierarchy  │  │              │  │ - WNS/TNS           │   │
+│  │ - Modules    │  │ - Die area   │  │ - Violations        │   │
+│  │ - Issues     │  │ - IO issues  │  │ - Fixes             │   │
+│  └──────────────┘  └──────────────┘  └─────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ### 组件
 
-| 组件 | 用途 | 位置 |
-|------|------|------|
-| `index.js` | LittleBrain 主类，统一接口 | `servers/knowledge/littlebrain/` |
-| `tcl-generator.js` | 从自然语言意图生成 Tcl | `servers/knowledge/littlebrain/` |
-| `output-parser.js` | 解析 EDA 输出，提取错误/QoR | `servers/knowledge/littlebrain/` |
-| `orchestrator.js` | 阶段定义、流程上下文、先决条件 | `servers/knowledge/` |
-| `self-improvement.js` | 错误模式 DB、成功跟踪 | `servers/knowledge/littlebrain/` |
-| `logger.js` | 活动日志，用于审计 | `servers/knowledge/littlebrain/` |
+| 组件 | 大脑 | 用途 | 位置 |
+|------|------|------|------|
+| `asic-brain/index.js` | ASIC-Brain | Tcl 生成、方法论模式 | `servers/knowledge/asic-brain/` |
+| `eda-brain/index.js` | EDA-Brain | 工具命令、错误模式 | `servers/knowledge/eda-brain/` |
+| `project-brain/index.js` | Project-Brain | 设计特定记忆 | `servers/knowledge/project-brain/` |
+| `orchestrator.js` | ASIC-Brain | 阶段定义、流程上下文 | `servers/knowledge/` |
+| `tcl-generator.js` | ASIC-Brain | 从自然语言意图生成 Tcl | `servers/knowledge/asic-brain/` |
+| `output-parser.js` | EDA-Brain | 解析 EDA 输出，提取错误/QoR | `servers/knowledge/eda-brain/` |
 
 ### PageIndex：基于树的知识
 
@@ -1530,23 +1700,39 @@ successTracker.record({
 });
 ```
 
-### 使用 LittleBrain
+### 使用 Three-Brain 架构
 
-LittleBrain 通过知识 MCP 服务器自动集成：
+Three-Brain 架构通过知识 MCP 服务器自动集成：
 
 ```javascript
-// 获取带有 LittleBrain 增强上下文的技能
-const skill = await knowledge.get_skill({
-  name: 'fix-setup-timing',
-  use_littlebrain: true  // 启用增强推理
+// 1. 从 Project-Brain 加载设计上下文
+const context = await project_brain.get_context({
+  stage: 4,  // 布局阶段
+  need: ["wns_trend", "critical_paths", "previous_fixes"]
 });
 
-// 生成的 Tcl 包含基于错误模式的自动修复
-const tcl = await littlebrain.generateTcl({
-  intent: '修复 post-route 中的建立违规',
+// 2. 从 ASIC-Brain 获取带有增强上下文的技能
+const skill = await knowledge.get_skill({
+  name: 'placement',
+  use_asic_brain: true  // 启用方法论推理
+});
+
+// 3. 从 EDA-Brain 获取工具特定语法
+const tcl = await eda_brain.generateTcl({
+  intent: '运行时序驱动布局',
   tool: 'innovus',
-  stage: 'post_route',
-  context: { currentWns: -0.05 }
+  stage: 'placement',
+  context: {
+    currentWns: context.timing_memory?.lastWns,
+    designSize: context.rtl_memory?.hierarchy?.total_cells
+  }
+});
+
+// 4. 保存结果到 Project-Brain
+await project_brain.remember({
+  category: "placement_memory",
+  key: `placement_${Date.now()}`,
+  value: { wns: result.wns, tns: result.tns }
 });
 ```
 
@@ -1568,7 +1754,7 @@ HiPilot 使用 HiTestBot——一个虚拟人类测试器——来验证行为�
 ### 最新测试结果（2025年3月9日）
 
 **测试运行：** 2026-03-09 08:57:25
-**命令：** `/rtl2gds`
+**命令：** `/synthesis`（模块化阶段测试）
 **持续时间：** 1202.8秒（20分钟）
 **分支：** `dev/environment-setup-7005`
 
@@ -1641,10 +1827,10 @@ AI 行为（L1-L3, L3b, L5）已经达到 100%。只需要修复环境。
 - ✅ **智能体架构**（三层、状态机）
 - ✅ **JavaScript**（AI 开发的语言）
 - ✅ **MCP**（将所有东西绑定在一起的协议）
-- ✅ **技能**（编码 RTL2GDS 专业知识）
+- ✅ **技能**（编码模块化流程专业知识）
 - ✅ **代码库**（HiPilot 实际工作原理）
 - ✅ **扩展模式**（如何添加能力）
-- ✅ **LittleBrain**（基于知识的编排）
+- ✅ **Three-Brain 架构**（ASIC-Brain、EDA-Brain、Project-Brain）
 - ✅ **认证**（HiTestBot 评分方法）
 
 **你的 ASIC 知识是差异化因素。** AI 提供推理。你提供方法论。

@@ -78,11 +78,11 @@ The engineer runs `bin/hipilot` (a bash script). This script:
 When Claude Code starts, it automatically:
 1. Reads `CLAUDE.md` from the current directory — this is `deploy/eda-server/CLAUDE.md` (deployed to the project root on EDA server), which says "You are HiPilot"
 2. Reads `~/.claude/settings.json` and spawns 3 MCP server processes (one for each server: eda, tmux, knowledge). Each server receives `HIPILOT_SESSION=hipilot` as an environment variable — this tells the servers which tmux socket to use.
-3. Loads slash commands from `.claude/commands/` (e.g., `/rtl2gds`, `/timing`)
+3. Loads slash commands from `.claude/commands/` (e.g., `/synthesis`, `/floorplan`, `/placement`, `/timing`)
 
 ### Step 3: The engineer types a command
 
-Example: the engineer types `/rtl2gds`. Claude Code reads the slash command file (`deploy/eda-server/.claude/commands/rtl2gds.md`), which instructs Claude to orchestrate the RTL-to-GDS flow stage by stage.
+Example: the engineer types `/synthesis` or `/floorplan`. Claude Code reads the corresponding slash command file (e.g., `deploy/eda-server/.claude/commands/synthesis.md`), which instructs Claude to execute that specific flow stage.
 
 ### Step 4: Claude orchestrates the flow
 
@@ -109,7 +109,7 @@ HiTestBot runs on the EDA server (where HiPilot runs). It is a virtual human.
 3. **Opens gnome-terminal on display :0** — attaches to the tmux session, so the workspace is visible on the EDA server's desktop (a human would see the same thing on their screen)
 4. **Starts ffmpeg** — records the desktop (display :0) to a video file
 5. **Polls the left pane** every 3 seconds until Claude Code's input prompt appears (a human would watch for the same thing)
-6. **Types a command** (e.g., `/rtl2gds`) into the left pane using `tmux send-keys` (exactly like a human pressing keys)
+6. **Types a command** (e.g., `/synthesis`) into the left pane using `tmux send-keys` (exactly like a human pressing keys)
 7. **Watches both panes** every 5 seconds, detecting what state Claude is in:
    - `working` — left pane text is changing (Claude is producing output)
    - `waiting_for_eda` — left pane idle but right pane changing (EDA tool is running, Claude is waiting)
@@ -197,7 +197,7 @@ If any component omits `-L` or uses a different socket name, that component cann
 3. **settings.json env on EDA server**: The `env` section of each MCP server config in `~/.claude/settings.json` stores API keys. The deployment script (`deploy_hipilot.js`) deep-merges env — it adds `HIPILOT_SESSION` without removing existing keys. Never replace the env object wholesale.
 4. **deploy/eda-server/CLAUDE.md**: This file is HiPilot's identity. Never put SSH credentials, test infrastructure, HiTestBot references, or developer context in it. Claude Code on the EDA server should believe it is HiPilot — nothing else.
 5. **HiTestBot is a human**: It launches `bin/hipilot`, types in the left pane, reads both panes, presses keyboard shortcuts. It never calls MCP tools, never sends commands to the right pane, never reads MCP logs during the test (only after).
-6. **Claude orchestrates stage by stage**: The `/rtl2gds` slash command tells Claude to drive each flow stage individually using `execute_and_verify`. Claude must never call `workflow.run` or `eda.rtl2gds.run_full_flow` — those are dumb sequential executors that bypass Claude's intelligence.
+6. **Claude orchestrates stage by stage**: The modular stage slash commands (`/synthesis`, `/floorplan`, etc.) tell Claude to drive each flow stage individually using `execute_and_verify`. Claude must never call `workflow.run` or `eda.rtl2gds.run_full_flow` — those are dumb sequential executors that bypass Claude's intelligence.
 7. **Paths resolve from `__dirname`**: Each MCP server finds `PROJECT_ROOT` by going up two directories from its own file location (`join(__dirname, '..', '..')`). This works on both dev machine and EDA server. Never use `process.cwd()` — it depends on where Claude Code was launched, which is unpredictable.
 8. **Self-contained deployment**: The tarball sent to the EDA server includes `node_modules`. No `npm install` runs on the EDA server. HiPilot and HiTestBot are deployed as ready-to-run tools.
 
@@ -224,7 +224,7 @@ echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node servers/knowledge/i
 Deploy to EDA server and run tests:
 ```bash
 node src/hitestbot/infra/deploy_hipilot.js     # Build tarball, upload, swap, configure MCP
-bin/hitestbot-eda /rtl2gds                     # Run HiTestBot on EDA server via SSH
+bin/hitestbot-eda /synthesis                   # Run HiTestBot on EDA server via SSH
 bin/hitestbot-pull                             # Download evidence to dev machine
 ```
 

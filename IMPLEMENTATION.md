@@ -675,7 +675,7 @@ export class FlowReporter {
 
 ```bash
 # Deploy and run on EDA server
-bin/hitestbot-eda /rtl2gds
+bin/hitestbot-eda /synthesis
 
 # Pull evidence to dev machine
 bin/hitestbot-pull
@@ -1013,7 +1013,7 @@ export class PaneManager {
 ### Sample 5: HiTestBot Test Case
 
 ```javascript
-// tests/rtl2gds-flow.test.js
+// tests/synthesis-stage.test.js
 
 import { FlowCertifier } from '../src/hitestbot/core/FlowCertifier.js';
 import { strict as assert } from 'assert';
@@ -1026,7 +1026,7 @@ describe('RTL2GDS Flow', () => {
       socket: 'test-hipilot',
       designDir: '/tmp/test-design',
       maxWait: 600000, // 10 minutes
-      evidenceDir: './test-evidence/rtl2gds'
+      evidenceDir: './test-evidence/synthesis'
     });
   });
 
@@ -1035,7 +1035,7 @@ describe('RTL2GDS Flow', () => {
   });
 
   test('should complete stage 1: design initialization', async () => {
-    const result = await certifier.run('/rtl2gds');
+    const result = await certifier.run('/synthesis');
 
     // L1: Claude responded
     assert(result.l1l5.l1_prompt_delivery >= 1.0, 'L1: Claude should respond');
@@ -1055,7 +1055,7 @@ describe('RTL2GDS Flow', () => {
   });
 
   test('should report QoR metrics', async () => {
-    const result = await certifier.run('/rtl2gds');
+    const result = await certifier.run('/synthesis');
 
     // L5: Reported QoR
     assert(result.l1l5.l5_qor_assessment >= 0.5, 'L5: Should report WNS/TNS');
@@ -1087,7 +1087,7 @@ node servers/knowledge/index.js --test
 node src/hitestbot/infra/deploy_hipilot.js
 
 # Run E2E test
-bin/hitestbot-eda /rtl2gds
+bin/hitestbot-eda /synthesis
 
 # Pull evidence
 bin/hitestbot-pull

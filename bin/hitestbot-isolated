@@ -10,8 +10,8 @@
 # 6. Collects evidence in test directory
 #
 # Usage:
-#   bin/hitestbot-isolated                    # Run default test (/rtl2gds)
-#   bin/hitestbot-isolated /rtl2gds           # Run specific command
+#   bin/hitestbot-isolated                    # Run default test (/synthesis)
+#   bin/hitestbot-isolated /synthesis         # Run specific stage command
 #   bin/hitestbot-isolated "fix setup timing" # Run any command
 
 set -e
@@ -23,7 +23,7 @@ SSH_HOST="${HIPILOT_SSH_HOST:-EDA@192.168.112.163}"
 export SSHPASS="${SSHPASS:-${HIPILOT_SSH_PASS:-eda2020}}"
 NODE_PATH="${HIPILOT_NODE_PATH:-/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin}"
 
-COMMAND="${1:-/rtl2gds}"
+COMMAND="${1:-/synthesis}"
 MAX_WAIT_MS="${HITESTBOT_MAX_WAIT:-300000}"
 
 echo "════════════════════════════════════════════════════════════════"

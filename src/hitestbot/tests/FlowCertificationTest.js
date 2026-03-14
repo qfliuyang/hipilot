@@ -10,7 +10,7 @@
  *   node src/hitestbot/tests/FlowCertificationTest.js [command]
  *
  * Examples:
- *   node src/hitestbot/tests/FlowCertificationTest.js /rtl2gds
+ *   node src/hitestbot/tests/FlowCertificationTest.js /synthesis
  *   node src/hitestbot/tests/FlowCertificationTest.js "fix setup timing"
  */
 
@@ -18,8 +18,8 @@ import { FlowCertifier } from '../core/FlowCertifier.js';
 import { ProgressTracker } from '../core/ProgressTracker.js';
 
 const EVIDENCE_DIR = process.env.HITESTBOT_EVIDENCE_DIR || '/tmp/hipilot-test-evidence';
-const COMMAND = process.argv[2] || '/rtl2gds';
-const MAX_WAIT = parseInt(process.env.HITESTBOT_MAX_WAIT || '10800000', 10); // 3 hours default - full RTL2GDS flow takes 2-3 hours on this design
+const COMMAND = process.argv[2] || '/synthesis';
+const MAX_WAIT = parseInt(process.env.HITESTBOT_MAX_WAIT || '10800000', 10); // 3 hours default - full flow takes 2-3 hours on this design
 
 async function main() {
   console.log('╔══════════════════════════════════════════════════╗');

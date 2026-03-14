@@ -11,7 +11,7 @@ import { FlowCertifier } from './core/FlowCertifier.js';
 // Simplified phase structure focused on ultimate goal: working RTL2GDS flow
 const PHASES = [
   { id: 0, name: 'Infrastructure', duration: 10 * 60 * 1000, goal: 'MCP, tmux, display work, EDA tool starts', commands: ['/start-eda'] },
-  { id: 1, name: 'Full RTL2GDS', duration: 180 * 60 * 1000, goal: 'Complete RTL-to-GDS flow with real tools', commands: ['/rtl2gds'] },
+  { id: 1, name: 'Full RTL2GDS', duration: 180 * 60 * 1000, goal: 'Complete RTL-to-GDS flow with real tools', commands: ['/synthesis', '/floorplan', '/placement', '/cts', '/routing', '/chipfinish'] },
 ];
 
 const SCORING = {

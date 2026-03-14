@@ -187,13 +187,16 @@ bin/hitestbot-eda "run stage 1: design init with MMMC setup"
 **Goal:** 4+ stages in sequence
 
 ```bash
-bin/hitestbot-eda "/rtl2gds run through placement"
+bin/hitestbot-eda "/synthesis"
+bin/hitestbot-eda "/floorplan"
+bin/hitestbot-eda "/powerplan"
+bin/hitestbot-eda "/placement"
 ```
 
 | Stage | Checkpoint | Duration | Verify |
 |-------|------------|----------|--------|
-| 1. Design Init | init_design.enc | 2 min | File exists |
-| 2. Floorplan | floor_plan.enc | 1 min | File exists |
+| 1. Synthesis | synthesis.enc | 5 min | File exists |
+| 2. Floorplan | floorplan.enc | 1 min | File exists |
 | 3. Power Plan | powerplan.enc | 1 min | File exists |
 | 4. Placement | placement.enc | 5 min | WNS reported |
 
@@ -208,7 +211,15 @@ bin/hitestbot-eda "/rtl2gds run through placement"
 **Goal:** Complete flow, GDS output
 
 ```bash
-bin/hitestbot-eda "/rtl2gds full flow"
+bin/hitestbot-eda "/synthesis"
+bin/hitestbot-eda "/floorplan"
+bin/hitestbot-eda "/powerplan"
+bin/hitestbot-eda "/placement"
+bin/hitestbot-eda "/cts"
+bin/hitestbot-eda "/postcts-opt"
+bin/hitestbot-eda "/routing"
+bin/hitestbot-eda "/routeopt"
+bin/hitestbot-eda "/chipfinish"
 ```
 
 | Stage | Checkpoint | Verify |
@@ -403,7 +414,15 @@ For long-running flows (>1 hour), HiTestBot pane capture may lose EDA output due
 Timeline Event                     UTC Time        Local (UTC+8)
 ─────────────────────────────────────────────────────────────────
 HiTestBot test start               03:53:35        11:53:35
-/rtl2gds command typed             03:57:35        11:57:35
+/synthesis command typed           03:54:00        11:54:00
+/floorplan command typed           03:59:00        11:59:00
+/powerplan command typed           04:00:00        12:00:00
+/placement command typed           04:01:00        12:01:00
+/cts command typed                 04:06:00        12:06:00
+/postcts-opt command typed         04:11:00        12:11:00
+/routing command typed             04:16:00        12:16:00
+/routeopt command typed            04:26:00        12:26:00
+/chipfinish command typed          04:36:00        12:36:00
 Stage 9 complete (GDS exported)    ~04:44:00       ~12:44:00  ← GDS created
 HiTestBot observation end          05:57:38        13:57:38
 Evidence downloaded                05:59:00        13:59:00
@@ -548,15 +567,26 @@ bin/hitestbot-eda "start innovus"
 bin/hitestbot-eda "generate timing report"
 
 # Silver certification (Phases 0-6)
-bin/hitestbot-eda "/rtl2gds through placement"
+bin/hitestbot-eda "/synthesis"
+bin/hitestbot-eda "/floorplan"
+bin/hitestbot-eda "/powerplan"
+bin/hitestbot-eda "/placement"
 
-# Gold certification (Full flow)
-bin/hitestbot-eda "/rtl2gds"
+# Gold certification (Full modular stage flow)
+bin/hitestbot-eda "/synthesis"
+bin/hitestbot-eda "/floorplan"
+bin/hitestbot-eda "/powerplan"
+bin/hitestbot-eda "/placement"
+bin/hitestbot-eda "/cts"
+bin/hitestbot-eda "/postcts-opt"
+bin/hitestbot-eda "/routing"
+bin/hitestbot-eda "/routeopt"
+bin/hitestbot-eda "/chipfinish"
 
 # With environment variables
 export HIPILOT_TEST_LOG=/tmp/hipilot_test_mcp.jsonl
 export RALPH_TARGET_PHASE=7
-bin/hitestbot-eda "/rtl2gds"
+bin/hitestbot-eda "/synthesis"
 ```
 
 ### 7.3 Collect and Review Evidence
@@ -600,8 +630,16 @@ cat test-evidence/<test_id>/knowledge_base_updates.yaml
 ## Appendix A: Quick Reference
 
 ```bash
-# Full certification run
-bin/hitestbot-eda "/rtl2gds"
+# Full modular stage flow certification run
+bin/hitestbot-eda "/synthesis"
+bin/hitestbot-eda "/floorplan"
+bin/hitestbot-eda "/powerplan"
+bin/hitestbot-eda "/placement"
+bin/hitestbot-eda "/cts"
+bin/hitestbot-eda "/postcts-opt"
+bin/hitestbot-eda "/routing"
+bin/hitestbot-eda "/routeopt"
+bin/hitestbot-eda "/chipfinish"
 
 # Check latest test
 cat test-evidence/$(ls -t test-evidence/ | head -1)/FLOW_REPORT.md
@@ -620,5 +658,15 @@ node src/hitestbot/infra/deploy_hipilot.js
 | `docs/testing/TEST_PLAN.md` | This document (single source of truth) |
 | `docs/testing/TESTING_RULES.md` | Scoring methodology and principles |
 | `src/hitestbot/core/FlowCertifier.js` | Test orchestrator |
-| `skills/ibex-rtl2gds-flow.md` | Complete flow skill |
-| `deploy/eda-server/.claude/commands/rtl2gds.md` | Slash command |
+| `skills/synthesis-stage.md` | Synthesis stage skill |
+| `skills/floorplan-stage.md` | Floorplan stage skill |
+| `skills/powerplan-stage.md` | Power planning stage skill |
+| `skills/placement-stage.md` | Placement stage skill |
+| `skills/cts-stage.md` | CTS stage skill |
+| `skills/postcts-opt-stage.md` | Post-CTS optimization skill |
+| `skills/routing-stage.md` | Routing stage skill |
+| `skills/routeopt-stage.md` | Route optimization skill |
+| `skills/chipfinish-stage.md` | Chip finish stage skill |
+| `deploy/eda-server/.claude/commands/synthesis.md` | Synthesis slash command |
+| `deploy/eda-server/.claude/commands/floorplan.md` | Floorplan slash command |
+| `deploy/eda-server/.claude/commands/placement.md` | Placement slash command |

@@ -5,7 +5,7 @@
  *   1. Launches HiPilot (bin/hipilot)
  *   2. Starts video recording on display :0
  *   3. Waits for Claude Code to be ready
- *   4. Types a command (e.g., /rtl2gds)
+ *   4. Types a command (e.g., /synthesis)
  *   5. Watches Claude work, approves when asked
  *   6. Takes screenshots at key moments
  *   7. Continuously logs both panes with timestamps

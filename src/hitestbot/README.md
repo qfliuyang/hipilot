@@ -12,7 +12,7 @@ HiTestBot is a Node.js program that tests HiPilot the same way a human engineer 
  3. Open gnome-terminal on display :0 ← workspace appears on the EDA server's desktop
  4. Start ffmpeg recording          ← records the desktop video (what a human would see)
  5. Wait for Claude Code to be ready ← polls left pane for the input prompt
- 6. Type "/rtl2gds"                 ← sends keystrokes to Claude Code's input
+ 6. Type "/synthesis"               ← sends keystrokes to Claude Code's input
  7. Watch both panes every 5 seconds:
     - If Claude is working (left pane changing) → keep watching
     - If EDA tool is busy (right pane changing, left idle) → keep watching (patient)
@@ -99,12 +99,12 @@ Every test produces a self-contained evidence directory:
 On the EDA server directly:
 ```bash
 cd /home/EDA/hipilot/current
-node src/hitestbot/tests/FlowCertificationTest.js /rtl2gds
+node src/hitestbot/tests/FlowCertificationTest.js /synthesis
 ```
 
 From your dev machine via SSH:
 ```bash
-bin/hitestbot-eda /rtl2gds      # runs test on EDA server
+bin/hitestbot-eda /synthesis      # runs test on EDA server
 bin/hitestbot-pull               # downloads evidence to your machine
 ```
 

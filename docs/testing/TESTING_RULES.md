@@ -534,7 +534,7 @@ When pane logs show minimal content but flow completion is suspected:
    | Event | UTC Time | Local (UTC+8) |
    |-------|----------|---------------|
    | Test Start | 03:53:35 | 11:53:35 |
-   | /rtl2gds Typed | 03:57:35 | 11:57:35 |
+   | /synthesis Typed | 03:57:35 | 11:57:35 |
    | GDS Created | ~04:44:26 | ~12:44:26 ← Must be after test start |
    | Test End | 05:57:38 | 13:57:38 |
 

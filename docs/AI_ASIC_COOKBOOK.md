@@ -104,7 +104,7 @@ let utilization = 0.75;
 let cellCount = 15000;
 
 // Strings (like in Tcl)
-let designName = "ibex_core";
+let designName = "my_design";
 let report = `Setup WNS: ${wns}ns`;  // Template string with interpolation
 
 // Booleans
@@ -293,7 +293,7 @@ Every AI agent system—from HiPilot to ChatGPT plugins—follows a three-layer 
 │  "The Brain" - Decides what to do                                   │
 ├─────────────────────────────────────────────────────────────────────┤
 │  • Large Language Model (Claude)                                    │
-│  • Interprets user intent ("run rtl2gds")                           │
+│  • Interprets user intent ("run placement")                         │
 │  • Plans multi-step workflows                                       │
 │  • Reads skills (your expertise)                                    │
 │  • Decides which tools to call                                      │
@@ -329,35 +329,41 @@ Every AI agent system—from HiPilot to ChatGPT plugins—follows a three-layer 
 
 ### Layer 3: Orchestration (The RTL2GDS Intelligence)
 
-When you type `/rtl2gds` in HiPilot, here's what happens at Layer 3:
+When you type `/placement` in HiPilot, here's what happens at Layer 3:
 
 ```
-User: "/rtl2gds"
+User: "/placement"
     │
     ▼
 Claude reads the command
     │
     ▼
-Claude loads the skill: skills/ibex-rtl2gds-flow.md
+Claude loads the skill: skills/placement.md
     │
     ▼
 Claude creates a plan:
-    Stage 1: Design Init → Stage 2: Floorplan → Stage 3: Power Planning
-    → Stage 4: Placement → Stage 5: CTS → Stage 6: Post-CTS Opt
-    → Stage 7: Routing → Stage 8: Route Opt → Stage 9: Chip Finish
-    │
-    ▼
-For each stage:
-    1. Load stage-specific Tcl from skill
-    2. Call MCP to execute
-    3. Wait for completion
-    4. Check results (QoR, errors)
-    5. If error → diagnose and retry
-    6. If success → save checkpoint, proceed to next stage
+    1. Check prerequisites (design initialized, floorplan complete)
+    2. Load stage-specific Tcl from skill
+    3. Call MCP to execute
+    4. Wait for completion
+    5. Check results (QoR, errors)
+    6. If error → diagnose and retry
+    7. If success → save checkpoint, report results
     │
     ▼
 Report final results with WNS/TNS
 ```
+
+**Modular Stage Commands:**
+HiPilot provides individual commands for each RTL2GDS stage:
+- `/synthesis` — Logic synthesis with Design Compiler
+- `/floorplan` — Die area, IO placement, macro placement
+- `/placement` — Standard cell placement with optimization
+- `/cts` — Clock tree synthesis
+- `/routing` — Signal routing and DRC fixing
+- `/chipfinish` — Final GDS export and signoff
+
+Each command loads its own skill and executes independently, allowing you to run stages one at a time with full control.
 
 **The key insight:** Claude doesn't just run commands—it maintains state, makes decisions, and adapts. Like you would.
 
@@ -385,9 +391,9 @@ This is your domain. Innovus, ICC2, PrimeTime—these are the tools that do the 
 
 ## Chapter 4: MCP Deep Dive
 
-### MCP in the RTL2GDS Context
+### MCP in the Physical Design Context
 
-Let's trace a single MCP call through the RTL2GDS flow: executing Stage 4 (Placement).
+Let's trace a single MCP call through the placement stage: executing standard cell placement.
 
 #### Step 1: Tool Discovery
 
@@ -485,8 +491,8 @@ Claude decides to run placement. It constructs the Tcl and calls the MCP tool.
   "params": {
     "name": "eda.execute_and_verify",
     "arguments": {
-      "tcl": "# Stage 4: Placement\nsource /home/EDA/ibex_work_upload/result/pr/data/floor_plan.enc\nplace_opt_design\nsetPlaceMode -place_detail_opt true\nplaceDesign\nsaveDesign result/pr/data/placement.enc\nputs \"PLACEMENT_COMPLETE\"",
-      "description": "Stage 4 Placement: place_opt_design",
+      "tcl": "# Placement Stage\nsource <CHECKPOINT_DIR>/floorplan.enc\nplace_opt_design\nsetPlaceMode -place_detail_opt true\nplaceDesign\nsaveDesign <CHECKPOINT_DIR>/placement.enc\nputs \"PLACEMENT_COMPLETE\"",
+      "description": "Placement: place_opt_design",
       "timeout": 300
     }
   }
@@ -634,98 +640,100 @@ A **skill** is your expertise written in a format that an AI can follow. It's no
 
 ### Anatomy of a Production Skill
 
-Here's the actual `rtl2gds.md` skill used by HiPilot:
+Here's the actual `placement.md` skill used by HiPilot:
 
 ```markdown
 ---
-name: /rtl2gds
-description: >
-  Run the complete Innovus RTL-to-GDS flow for the Ibex design.
-  You drive each stage yourself using MCP tools.
+name: /placement
+description: |
+  Run the Placement stage for any design.
+  Places standard cells with optimization for timing and congestion.
+  Part of the modular RTL2GDS flow using the Three-Brain architecture.
 ---
 
-# RTL-to-GDS Flow
+# Placement Stage
 
 ## Overview
 
-This skill orchestrates a complete 9-stage RTL-to-GDS implementation:
-1. Design Init + MMMC
-2. Floorplan
-3. Power Planning
-4. Placement
-5. Clock Tree Synthesis
-6. Post-CTS Optimization
-7. Routing
-8. Post-Route Optimization
-9. Chip Finish + GDS Export
+This skill executes the Placement stage of the RTL-to-GDS flow. It works with
+any design through the Three-Brain architecture:
 
-Each stage is executed independently for clean database management.
+- **ASIC-Brain**: Provides methodology and Tcl generation patterns
+- **EDA-Brain**: Handles tool-specific commands and error patterns
+- **Project-Brain**: Supplies design-specific context (paths, constraints)
 
-## Critical Rule
+## Prerequisites
 
-**Do NOT call `workflow.run` or `eda.rtl2gds.run_full_flow`.**
-You orchestrate every stage yourself. If a stage fails, you diagnose and fix it.
-Batch executors bypass your intelligence—don't use them.
+Before running placement, ensure:
+- [ ] Design initialization complete (MMMC configured)
+- [ ] Floorplan complete (die area, IO placement, macro placement)
+- [ ] Power planning complete (power grid in place)
 
 ## Stage Execution Pattern
 
-For each stage, follow this exact sequence:
+For this stage, follow this exact sequence:
 
 1. **Get the Tcl:** Load the skill to get stage-specific Tcl
 2. **Execute:** Call `eda.execute_and_verify` with the complete Tcl block
 3. **Check Result:** Read the response (status, errors, warnings, qor)
 4. **Handle Errors:** If errors, call `eda.diagnose_error` and retry
 5. **If Success:** Call `qor.snapshot` with a descriptive name
-6. **Report:** Tell the engineer: "Stage X: done. WNS=Y, violations=Z"
-7. **Proceed:** Only continue when current stage succeeds
+6. **Report:** Tell the engineer: "Placement: done. WNS=Y, violations=Z"
 
-## The 10 Stages
+## Tcl Structure
 
-| # | Stage | Tool | Timeout | Key Checks |
-|---|-------|------|---------|------------|
-| 0 | Synthesis + DFT | dc_shell | 300s | Check netlist exists |
-| 1 | Design Init + MMMC | innovus | 180s | MMMC views active |
-| 2 | Floorplan | innovus | 120s | Die area, IO placement |
-| 3 | Power Planning | innovus | 120s | VDD/VSS stripes |
-| 4 | Placement | innovus | 300s | WNS after placement |
-| 5 | CTS | innovus | 300s | Skew target met |
-| 6 | Post-CTS Opt | innovus | 300s | Setup/hold clean |
-| 7 | Routing | innovus | 600s | DRC clean |
-| 8 | Route Opt | innovus | 300s | Post-route timing |
-| 9 | Chip Finish + GDS | innovus | 300s | GDS exported |
+```tcl
+# Load previous checkpoint
+source <CHECKPOINT_DIR>/floorplan.enc
 
-## Error Recovery Protocol
+# Configure placement mode
+setPlaceMode -place_detail_opt true
+setPlaceMode -place_detail_utilization <UTILIZATION>
 
-When a stage fails, follow this priority:
+# Run placement with optimization
+place_opt_design
 
-1. **First failure:** Diagnose with `eda.diagnose_error`, fix, retry immediately
-2. **Second failure:** Try alternative approach (different Tcl options)
-3. **Third failure:** Take detailed notes, try creative solution
-4. **Only then:** Report to engineer with full history
+# Additional optimization passes
+placeDesign
 
-### Example: Placement Failure Recovery
-
-```
-Stage: Placement
-Result: FAILED - High congestion at 80% utilization
-
-Action:
-1. session.add_note({category:"error",
-     content:"Placement failed, high congestion at 80% utilization"})
-2. Fix: Adjust utilization to 70% with setPlaceMode
-3. Retry: PLACEMENT SUCCEEDED
-4. Continue to CTS
+# Save checkpoint for next stage
+saveDesign <CHECKPOINT_DIR>/placement.enc
+puts "PLACEMENT_COMPLETE"
 ```
 
-## Final QoR Summary (REQUIRED)
+## Key Checks
 
-After Stage 9, you MUST extract and display final timing metrics.
+After placement completes, verify:
+- [ ] Placement completed without errors
+- [ ] Utilization < 85%
+- [ ] Congestion map acceptable
+- [ ] WNS recorded (even if negative)
+- [ ] Checkpoint saved
+
+## Error Recovery
+
+### Error: "High congestion during placement"
+**Cause:** Target utilization too high
+**Fix:**
+1. Reduce target utilization: `setPlaceMode -place_detail_utilization 0.70`
+2. Retry placement
+3. If still failing, consider macro placement adjustment
+
+### Error: "Placement density too high"
+**Cause:** Floorplan area insufficient
+**Fix:**
+1. Review floorplan utilization target
+2. Consider increasing die area
+
+## QoR Summary (REQUIRED)
+
+After placement, extract and report timing metrics.
 
 **Step 1:** Run timing extraction
 ```
 mcp__hipilot-eda__eda.execute_and_verify({
-  tcl: "timeDesign -postRoute -prefix final_summary...",
-  description: "Extract final timing metrics",
+  tcl: "timeDesign -preCTS -prefix placement_summary...",
+  description: "Extract post-placement timing metrics",
   timeout: 120
 })
 ```
@@ -733,8 +741,8 @@ mcp__hipilot-eda__eda.execute_and_verify({
 **Step 2:** Save snapshot
 ```
 mcp__hipilot-eda__qor.snapshot({
-  name: "rtl2gds_final",
-  description: "Final QoR after complete RTL-to-GDS flow"
+  name: "placement_complete",
+  description: "Post-placement timing before CTS"
 })
 ```
 
@@ -742,27 +750,29 @@ mcp__hipilot-eda__qor.snapshot({
 
 Format:
 ```
-✅ RTL-to-GDS Flow Complete!
+✅ Placement Complete!
 
-Final QoR Summary:
+QoR Summary:
 ┌──────────────────┬──────────────────────────────┐
 │ Metric           │ Value                        │
 ├──────────────────┼──────────────────────────────┤
 │ WNS (Setup)      │ X.XXX ns    ← REQUIRED       │
 │ TNS (Setup)      │ X.XXX ns    ← REQUIRED       │
 │ Setup Violations │ N paths     ← REQUIRED       │
-│ Hold Violations  │ N paths                      │
-│ GDS              │ result/pr/data/ibex_core.gds │
+│ Utilization      │ XX.X%                        │
+│ Congestion       │ Acceptable/High              │
 └──────────────────┴──────────────────────────────┘
+
+Next Stage: Run `/cts` for Clock Tree Synthesis
 ```
 
 **CRITICAL:** You MUST include actual WNS and TNS numbers.
-Do not say "flow complete" without showing timing metrics.
+Do not say "placement complete" without showing timing metrics.
 ```
 
 ### Deep Concept: Skills as State Machines
 
-A skill implicitly defines a state machine. For RTL2GDS:
+A skill implicitly defines a state machine. For placement:
 
 ```
 [INITIAL]
@@ -770,22 +780,20 @@ A skill implicitly defines a state machine. For RTL2GDS:
     ▼ (Load skill, detect tool)
 [TOOL_READY]
     │
-    ▼ (Execute Stage 1)
-[STAGE_1_RUNNING]
+    ▼ (Check prerequisites)
+[PREREQ_CHECK]
     │
-    ├── Error ──► [DIAGNOSE_ERROR] ──► [STAGE_1_RUNNING] (retry)
+    ▼ (Execute placement)
+[PLACEMENT_RUNNING]
     │
-    └── Success ──► [STAGE_1_COMPLETE]
+    ├── Error ──► [DIAGNOSE_ERROR] ──► [PLACEMENT_RUNNING] (retry)
+    │
+    └── Success ──► [PLACEMENT_COMPLETE]
                     │
                     ▼ (Save checkpoint)
-              [STAGE_2_RUNNING]
-                    │
-                    ... (repeat for all stages)
+              [QOR_EXTRACTION]
                     │
                     ▼
-              [ALL_STAGES_COMPLETE]
-                    │
-                    ▼ (Extract QoR)
               [REPORTING]
                     │
                     ▼
@@ -857,7 +865,12 @@ hipilot/
 │   └── knowledge/index.js        # Skills/knowledge MCP server (17 tools)
 │
 ├── skills/                        # LAYER 3: Agent Instructions
-│   ├── ibex-rtl2gds-flow.md      # Main RTL2GDS skill
+│   ├── placement.md              # Placement stage skill
+│   ├── synthesis.md              # Synthesis stage skill
+│   ├── floorplan.md              # Floorplan stage skill
+│   ├── cts.md                    # Clock tree synthesis skill
+│   ├── route-design.md           # Routing stage skill
+│   ├── chip-finish.md            # Final GDS export skill
 │   ├── fix-setup-timing.md       # Timing closure skill
 │   ├── cts-clock-tree.md         # CTS skill
 │   └── ... (34 skills total)
@@ -883,7 +896,12 @@ hipilot/
 └── deploy/eda-server/            # Deployment to EDA server
     ├── CLAUDE.md                 # AI identity (HiPilot's "constitution")
     └── .claude/commands/         # Slash commands
-        └── rtl2gds.md            # The /rtl2gds command
+        ├── synthesis.md        # The /synthesis command
+        ├── floorplan.md        # The /floorplan command
+        ├── placement.md        # The /placement command
+        ├── cts.md              # The /cts command
+        ├── routing.md          # The /routing command
+        └── chipfinish.md       # The /chipfinish command
 ```
 
 ### The EDA MCP Server (servers/eda/index.js)
@@ -1526,7 +1544,7 @@ successTracker.record({
   stage: 'placement',
   commandSequence: ['setPlaceMode', 'place_opt_design'],
   qor: { wns: 0.0, tns: 0.0 },
-  context: { design: 'ibex', util: 0.7 }
+  context: { design: 'example', util: 0.7 }
 });
 ```
 
@@ -1568,14 +1586,14 @@ HiPilot uses HiTestBot—a virtual human tester—to validate behavior. The 6-la
 ### Latest Test Results (March 9, 2025)
 
 **Test Run:** 2026-03-09 08:57:25
-**Command:** `/rtl2gds`
+**Command:** `/placement` (example modular stage command)
 **Duration:** 1202.8s (20 minutes)
 **Branch:** `dev/environment-setup-7005`
 
 | Layer | Score | Status | Notes |
 |-------|-------|--------|-------|
 | **L1 Prompt Delivery** | 1.0/1.0 | ✅ | Claude responded |
-| **L2 Intent Recognition** | 1.0/1.0 | ✅ | Understood RTL-to-GDS flow |
+| **L2 Intent Recognition** | 1.0/1.0 | ✅ | Understood placement stage requirements |
 | **L3 MCP Tool Usage** | 1.0/1.0 | ✅ | 6,839 MCP calls |
 | **L3b Process Validation** | 1.0/1.0 | ✅ | Correctly used dc_shell |
 | **L4 EDA Execution** | 0.0/1.0 | ❌ | LEF file loading error |
@@ -1641,7 +1659,8 @@ You now understand:
 - ✅ **Agent architecture** (three layers, state machines)
 - ✅ **JavaScript** (the language of AI development)
 - ✅ **MCP** (the protocol binding it all together)
-- ✅ **Skills** (encoding RTL2GDS expertise)
+- ✅ **Skills** (encoding physical design expertise)
+- ✅ **Modular Commands** (stage-by-stage execution with /synthesis, /floorplan, etc.)
 - ✅ **The codebase** (how HiPilot actually works)
 - ✅ **Extension patterns** (how to add capabilities)
 - ✅ **LittleBrain** (knowledge-based orchestration)

@@ -2,13 +2,13 @@
 # HiTestBot — Run on EDA server ("test like real human")
 #
 # Usage:
-#   bin/hitestbot-eda                       # Run default test (/rtl2gds)
-#   bin/hitestbot-eda /rtl2gds              # Run specific command
+#   bin/hitestbot-eda                       # Run default test (/synthesis)
+#   bin/hitestbot-eda /synthesis            # Run specific stage command
 #   bin/hitestbot-eda "start innovus"       # Run any command
 #
 # On EDA server directly:
 #   cd /home/EDA/hipilot/current
-#   node hitestbot/tests/FlowCertificationTest.js /rtl2gds
+#   node hitestbot/tests/FlowCertificationTest.js /synthesis
 
 set -e
 
@@ -26,8 +26,8 @@ export SSHPASS="${SSHPASS:-${HIPILOT_SSH_PASS:-eda2020}}"
 if [ -n "$HIPILOT_EDA_SERVER" ]; then
   export PATH="${NODE_PATH}:$PATH"
   export HIPILOT_SESSION="${HIPILOT_SESSION:-hipilot}"
-  export HITESTBOT_MAX_WAIT="${HITESTBOT_MAX_WAIT:-10800000}"  # 180 min (3 hours) - full RTL2GDS flow takes 2-3 hours on this design
-  COMMAND="${1:-/rtl2gds}"
+  export HITESTBOT_MAX_WAIT="${HITESTBOT_MAX_WAIT:-10800000}"  # 180 min (3 hours) - full flow takes 2-3 hours on this design
+  COMMAND="${1:-/synthesis}"
   echo "HiTestBot — Running on EDA server"
   echo "Command: $COMMAND"
   echo ""
@@ -36,7 +36,7 @@ if [ -n "$HIPILOT_EDA_SERVER" ]; then
 fi
 
 # From dev machine: SSH and run on EDA server
-COMMAND="${1:-/rtl2gds}"
+COMMAND="${1:-/synthesis}"
 echo "HiTestBot — Running on EDA server (SSH)"
 echo "Host: $SSH_HOST | Command: $COMMAND"
 echo "Use: bin/hitestbot-pull    # Download results to dev machine"

@@ -44,7 +44,11 @@ This document provides a complete guide for E2E testing of HiPilot on the EDA se
 
 **From dev machine:**
 ```bash
-bin/hitestbot-eda rtl2gds    # SSH + run HiTestBot on EDA server
+bin/hitestbot-eda synthesis  # SSH + run HiTestBot on EDA server (individual stage)
+bin/hitestbot-eda floorplan  # Test floorplan stage
+bin/hitestbot-eda placement  # Test placement stage
+bin/hitestbot-eda cts        # Test CTS stage
+bin/hitestbot-eda routing    # Test routing stage
 bin/hitestbot-pull           # Download evidence to e2e_evidence/
 bin/hitestbot-push skills/   # Upload test plan or config (not full source)
 ```
@@ -52,7 +56,11 @@ bin/hitestbot-push skills/   # Upload test plan or config (not full source)
 **On EDA server directly:**
 ```bash
 cd /home/EDA/hipilot/current
-node src/hitestbot/tests/FlowCertificationTest.js rtl2gds
+node src/hitestbot/tests/FlowCertificationTest.js synthesis  # Test individual stage
+node src/hitestbot/tests/FlowCertificationTest.js floorplan  # Test floorplan stage
+node src/hitestbot/tests/FlowCertificationTest.js placement  # Test placement stage
+node src/hitestbot/tests/FlowCertificationTest.js cts        # Test CTS stage
+node src/hitestbot/tests/FlowCertificationTest.js routing    # Test routing stage
 ```
 
 See [docs/testing/TESTING_RULES.md](TESTING_RULES.md) for testing philosophy; [src/hitestbot/README.md](../../src/hitestbot/README.md) for HiTestBot architecture.

@@ -75,7 +75,7 @@ eda.await_idle({timeout: 30});
 console.log(`Stage 9 Chip Finish: WNS: X.XXX ns, TNS: Y.YYY ns`);
 console.log(`GDS: ${designDir}/result/pr/data/${designName}.gds`);
 
-qor.snapshot({name: "rtl2gds_final", description: "Final QoR after RTL2GDS"});
+qor.snapshot({name: "chipfinish_final", description: "Final QoR after chip finish"});
 ```
 
 ### 5. Save final checkpoint

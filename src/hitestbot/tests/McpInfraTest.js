@@ -118,7 +118,7 @@ async function main() {
     const r = callMcp('eda', 'workflow.list', {});
     if (r.error) throw new Error(r.error);
     const text = r.result?.content?.[0]?.text || '';
-    if (!text.includes('rtl2gds')) throw new Error('Missing rtl2gds workflow');
+    if (!text.includes('synthesis') || !text.includes('floorplan')) throw new Error('Missing stage workflows');
     return 'workflows listed';
   })) passed++; else failed++;
 
