@@ -1,11 +1,14 @@
 /**
- * LittleBrain - Knowledge-Based Orchestration Layer
+ * ASIC-Brain - Customer Owned Technology Knowledge-Based Orchestration Layer
  *
- * The "little brain" that acts like a dedicated LLM for EDA tasks:
+ * The "ASIC brain" that acts like a dedicated LLM for EDA tasks:
  * - Tcl generation and validation
  * - EDA output parsing and understanding
  * - Workflow orchestration
  * - Self-improvement through pattern learning
+ *
+ * Formerly known as LittleBrain - renamed to reflect its role in the
+ * dual-brain architecture alongside Project-Brain.
  */
 
 import { generateTcl, sanitizeScript, validateSyntax, autoFix } from './tcl-generator.js';
@@ -21,21 +24,25 @@ import {
   checkPrerequisites,
   getCommandSyntax
 } from '../orchestrator.js';
-import { LittleBrainLogger, getLogger } from './logger.js';
+import { ASICBrainLogger, getLogger, readLogs, resetLogger } from './logger.js';
 
 /**
- * Main LittleBrain class - unified interface
+ * Main ASIC-Brain class - unified interface for general EDA knowledge
+ *
+ * ASIC-Brain (Customer Owned Technology Brain) provides general EDA reasoning capabilities
+ * that are design-agnostic. It works alongside Project-Brain which stores
+ * design-specific memories.
  */
-class LittleBrain {
+class ASICBrain {
   constructor(flowId = null) {
     this.flowContext = new FlowContext(flowId);
     this.sessionId = flowId || `session_${Date.now()}`;
     this.logger = getLogger(this.sessionId);
     this.logger.logReasoning({
-      component: 'LittleBrain',
+      component: 'ASICBrain',
       step: 'constructor',
       input: { flowId },
-      reasoning: 'Initializing LittleBrain session for EDA orchestration',
+      reasoning: 'Initializing ASIC-Brain session for EDA orchestration',
       output: { sessionId: this.sessionId },
       confidence: 1.0
     });
@@ -46,7 +53,7 @@ class LittleBrain {
    */
   generateTcl(intent, tool, stage, context = {}) {
     this.logger.logReasoning({
-      component: 'LittleBrain',
+      component: 'ASICBrain',
       step: 'generateTcl_start',
       input: { intent, tool, stage, context },
       reasoning: `Starting Tcl generation for ${intent} using ${tool}`,
@@ -140,7 +147,7 @@ class LittleBrain {
    */
   planStage(stageName, context = {}) {
     this.logger.logReasoning({
-      component: 'LittleBrain',
+      component: 'ASICBrain',
       step: 'planStage',
       input: { stageName, context, completedStages: this.flowContext.state.completedStages },
       reasoning: `Planning execution for stage: ${stageName}`,
@@ -260,12 +267,12 @@ class LittleBrain {
  * Quick functions for direct use
  */
 
-export function createLittleBrain(flowId) {
-  return new LittleBrain(flowId);
+export function createASICBrain(flowId) {
+  return new ASICBrain(flowId);
 }
 
 export function quickGenerate(intent, tool, stage) {
-  const brain = new LittleBrain();
+  const brain = new ASICBrain();
   return brain.generateTcl(intent, tool, stage);
 }
 
@@ -274,7 +281,7 @@ export function quickParse(output, tool) {
 }
 
 export function quickPlan(stage) {
-  const brain = new LittleBrain();
+  const brain = new ASICBrain();
   return brain.planStage(stage);
 }
 
@@ -283,7 +290,7 @@ export function quickPlan(stage) {
  * Sanitizes and validates Tcl before sending to EDA tool
  */
 export function sanitizeAndValidate(tcl, tool, stage) {
-  const brain = new LittleBrain();
+  const brain = new ASICBrain();
 
   // Sanitize
   const sanitizeResult = sanitizeScript(tcl, tool);
@@ -329,7 +336,10 @@ import {
 } from './self-improvement.js';
 
 export {
-  LittleBrain,
+  ASICBrain,
+  // Backward compatibility aliases
+  ASICBrain as LittleBrain,
+  ASICBrain as CoTBrain,
   // From tcl-generator
   generateTcl,
   sanitizeScript,
@@ -361,7 +371,9 @@ export {
   SuccessTracker,
   HiTestBotAdapter,
   // From logger
-  LittleBrainLogger,
+  ASICBrainLogger,
+  ASICBrainLogger as LittleBrainLogger,
+  ASICBrainLogger as CoTBrainLogger,
   getLogger,
   resetLogger,
   readLogs

@@ -1,8 +1,11 @@
 /**
- * LittleBrain Self-Improvement System
+ * ASIC-Brain Self-Improvement System
  *
  * Captures patterns from HiTestBot runs, user corrections, and EDA tool
  * interactions to improve HiPilot's performance over time.
+ *
+ * Part of the ASIC-Brain (Customer Owned Technology Brain) general knowledge system.
+ * Formerly part of LittleBrain - renamed to reflect the dual-brain architecture.
  */
 
 import { writeFileSync, readFileSync, existsSync, mkdirSync, appendFileSync } from 'fs';
@@ -82,7 +85,7 @@ const BUILTIN_ERROR_PATTERNS = [
  * Error Pattern Database - Stores known errors and their fixes
  */
 export class ErrorPatternDB {
-  constructor(dbPath = '.hipilot/littlebrain/patterns/errors/index.json') {
+  constructor(dbPath = '.hipilot/asic-brain/patterns/errors/index.json') {
     this.dbPath = dbPath;
     this.patterns = new Map();
     this._load();
@@ -263,7 +266,7 @@ export class ErrorPatternDB {
  * Success Pattern Tracker - Records successful command sequences
  */
 export class SuccessTracker {
-  constructor(dbPath = '.hipilot/littlebrain/patterns/successes/index.json') {
+  constructor(dbPath = '.hipilot/asic-brain/patterns/successes/index.json') {
     this.dbPath = dbPath;
     this.patterns = new Map();
     this._load();

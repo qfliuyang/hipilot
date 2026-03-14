@@ -29,7 +29,7 @@ HiPilot extends Claude Code with specialized capabilities for VLSI physical desi
 │   │  │   EDA MCP   │  │  Tmux MCP   │  │Knowledge MCP│            │   │
 │   │  │   Server    │  │   Server    │  │   Server    │            │   │
 │   │  │             │  │             │  │             │            │   │
-│   │  │ 54 Tools:   │  │ 8 Tools:    │  │ 7 Tools:    │            │   │
+│   │  │ 74 Tools:   │  │ 8 Tools:    │  │ 17 Tools:   │            │   │
 │   │  │ - generate  │  │ - send_keys │  │ - search    │            │   │
 │   │  │ - send_tcl  │  │ - capture   │  │ - list      │            │   │
 │   │  │ - extract   │  │ - status    │  │ - get       │            │   │
@@ -94,7 +94,7 @@ The `--strict-mcp-config` flag forces Claude Code to use only the specified MCP 
 
 ### 2. MCP Server Layer
 
-#### EDA MCP Server (`servers/eda/index.js`) — 54 tools
+#### EDA MCP Server (`servers/eda/index.js`) — 74 tools
 
 **Purpose:** EDA tool integration, Tcl generation, QoR tracking, workflow automation
 
@@ -109,7 +109,7 @@ The `--strict-mcp-config` flag forces Claude Code to use only the specified MCP 
 | **Workflow** | `workflow.define`, `workflow.list`, `workflow.run`, `workflow.get_status`, `workflow.cancel` |
 | **Suggestions** | `suggest.analyze`, `suggest.for_violation`, `suggest.next_optimization` |
 
-See [mcp-servers.md](mcp-servers.md) for full parameter schemas.
+See [mcp-servers.md](mcp-servers.md) for full parameter schemas. Note: Tool counts differ between documents—Knowledge MCP has 17 tools including the three-brain interface (ASIC-Brain, EDA-Brain, Project-Brain), not 7.
 
 #### Tmux MCP Server (`servers/tmux/index.js`) — 8 tools
 
@@ -126,7 +126,7 @@ See [mcp-servers.md](mcp-servers.md) for full parameter schemas.
 | `list_panes` | List all panes |
 | `resize_pane` | Resize pane |
 
-#### Knowledge MCP Server (`servers/knowledge/index.js`) — 7 tools
+#### Knowledge MCP Server (`servers/knowledge/index.js`) — 17 tools
 
 **Purpose:** Skill and documentation management
 
@@ -275,9 +275,9 @@ hipilot/
 │   └── setup.sh             # Installation wizard
 │
 ├── servers/                 # MCP servers (JSON-RPC over stdio)
-│   ├── eda/index.js         # EDA MCP (54 tools)
+│   ├── eda/index.js         # EDA MCP (74 tools)
 │   ├── tmux/index.js        # Tmux MCP (8 tools)
-│   └── knowledge/index.js   # Knowledge MCP (7 tools)
+│   └── knowledge/index.js   # Knowledge MCP (17 tools)
 │
 ├── skills/                  # 34 skill definitions (.md)
 │
@@ -286,7 +286,8 @@ hipilot/
 │   ├── index.js             # Main CLI entry point
 │   ├── lib/                 # Utilities (17 modules)
 │   ├── tui/                 # React/Ink TUI components
-│   └── hitestbot/           # E2E test framework (14 tests, v2 core)
+│   ├── hitestbot/           # E2E test framework (14 tests, v2 core)
+│   └── team/                # Multi-agent team mode (6 agents, 1,331 lines)
 │
 ├── data/
 │   └── command-reference.json  # EDA command reference
@@ -353,6 +354,62 @@ Before executing Tcl, HiPilot analyzes:
 
 ---
 
+## Team Mode
+
+**Location:** `src/team/index.js`
+
+**Purpose:** Multi-agent collaboration for complex physical design tasks
+
+### Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Team Mode                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   Supervisor ──▶ Knowledge ──▶ Planner ──▶ Executor              │
+│      (seq)        (seq)         (seq)       (seq)               │
+│                                              │                   │
+│                                              ▼                   │
+│                                    ┌─────────────────┐           │
+│                                    │  MemoryAgent    │           │
+│                                    │  LearningAgent  │ (parallel)│
+│                                    └─────────────────┘           │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+              ┌───────────────┼───────────────┐
+              ▼               ▼               ▼
+        ┌──────────┐   ┌──────────┐   ┌──────────┐
+        │ASIC-Brain│   │EDA-Brain │   │Project-  │
+        │          │   │          │   │Brain     │
+        └──────────┘   └──────────┘   └──────────┘
+```
+
+### Six Essential Agents
+
+| Agent | Purpose | Execution |
+|-------|---------|-----------|
+| **Supervisor** | Team coordination, conflict resolution | Sequential |
+| **Knowledge** | Query all three knowledge bases | Sequential |
+| **Planner** | Flow design, stage sequencing | Sequential |
+| **Executor** | Tcl generation, tool execution | Sequential |
+| **Memory** | QoR tracking, history recording | Parallel |
+| **Learning** | Pattern recognition, self-improvement | Parallel |
+
+### Key Features
+
+- **Phased Execution:** Agents run in dependency order
+- **Parallel Execution:** Memory and Learning agents run simultaneously
+- **Error Recovery:** 3 retries with exponential backoff
+- **Human Escalation:** Optional escalation for unrecoverable errors
+- **Three-Brain Integration:** All agents leverage ASIC/EDA/Project brains
+
+See [TEAM_MODE_ARCHITECTURE.md](TEAM_MODE_ARCHITECTURE.md) for complete documentation.
+
+---
+
 ## Extension Points
 
 ### Adding New Skills
@@ -373,6 +430,14 @@ Before executing Tcl, HiPilot analyzes:
 1. Add tool definition in `servers/*/index.js`
 2. Implement tool handler
 3. Update documentation
+
+### Adding New Team Agents
+
+1. Add agent definition to `AGENT_REGISTRY` in `src/team/index.js`
+2. Implement `runAgentNameAgent()` function
+3. Add case to `runAgentLogic()` switch statement
+4. Update `createDefaultTeamConfig()` if needed
+5. Document in [TEAM_MODE_ARCHITECTURE.md](TEAM_MODE_ARCHITECTURE.md)
 
 ---
 
@@ -395,4 +460,4 @@ Before executing Tcl, HiPilot analyzes:
 
 ---
 
-**Last Updated:** 2026-03-10
+**Last Updated:** 2026-03-14

@@ -162,6 +162,7 @@ HiPilot will:
 | Run CTS | `"/cts"` |
 | Save checkpoint | `"/save-design"` |
 | Run full flow | `"/rtl2gds"` |
+| **Team Mode** | `"Run team mode on this design"` |
 
 ---
 

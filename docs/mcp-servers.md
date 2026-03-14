@@ -14,7 +14,7 @@ HiPilot uses three MCP (Model Context Protocol) servers to extend Claude Code's 
 │                                                                  │
 │   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │
 │   │   EDA MCP   │  │  Tmux MCP   │  │Knowledge MCP│            │
-│   │  (54 tools) │  │  (8 tools)  │  │  (7 tools)  │            │
+│   │  (74 tools) │  │  (8 tools)  │  │  (17 tools) │            │
 │   └─────────────┘  └─────────────┘  └─────────────┘            │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
@@ -103,7 +103,7 @@ The `--strict-mcp-config` flag ensures only the specified MCP configuration is u
 
 **Purpose:** EDA tool integration, Tcl generation, QoR extraction
 
-### Tools (54 total)
+### Tools (74 total)
 
 Tools are organized by category. Required parameters are marked with `*`.
 
@@ -410,7 +410,7 @@ tmux -V  # Should be 1.8+ or 3.4+
 | `list_panes` | List all panes |
 | `resize_pane` | Resize pane |
 
-### Knowledge MCP (7 Tools)
+### Knowledge MCP (17 Tools)
 
 | Tool | Purpose |
 |------|---------|
@@ -424,7 +424,7 @@ tmux -V  # Should be 1.8+ or 3.4+
 
 ---
 
-**Last Updated:** 2026-03-01
+**Last Updated:** 2026-03-14
 
 ## MCP Configuration Verification
 

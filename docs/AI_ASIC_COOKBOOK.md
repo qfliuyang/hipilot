@@ -852,9 +852,9 @@ hipilot/
 ├── bin/hipilot                    # Entry point bash script
 │
 ├── servers/                       # LAYER 2: MCP Protocol
-│   ├── eda/index.js              # EDA tool MCP server (54 tools)
+│   ├── eda/index.js              # EDA tool MCP server (74 tools)
 │   ├── tmux/index.js             # Tmux pane MCP server (8 tools)
-│   └── knowledge/index.js        # Skills/knowledge MCP server (7 tools)
+│   └── knowledge/index.js        # Skills/knowledge MCP server (17 tools)
 │
 ├── skills/                        # LAYER 3: Agent Instructions
 │   ├── ibex-rtl2gds-flow.md      # Main RTL2GDS skill

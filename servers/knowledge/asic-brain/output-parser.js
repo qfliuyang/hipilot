@@ -1,8 +1,11 @@
 /**
- * LittleBrain EDA Output Parser
+ * ASIC-Brain EDA Output Parser
  *
  * Parses EDA tool outputs and returns structured data that HiPilot can understand.
- * Part of the LittleBrain subsystem for intelligent output analysis.
+ * Part of the ASIC-Brain (Customer Owned Technology Brain) subsystem for intelligent output analysis.
+ *
+ * Formerly part of LittleBrain - renamed to reflect the dual-brain architecture
+ * alongside Project-Brain.
  */
 
 /**

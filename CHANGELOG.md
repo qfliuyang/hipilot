@@ -11,22 +11,21 @@ All notable changes to HiPilot will be documented in this file.
 - **Real `workflow.run`** (Phase 4) — Sequential step execution with error handling (`stop`/`skip`), QoR tracking per step, structured progress reports. Built-in workflows: `fix_setup_timing`, `fix_hold_timing`, `run_cts_flow`, `rtl2gds`
 
 ### Added — HiTestBot v2
-- `core/McpLogCollector.js` — Parse JSONL logs, query by tool/time/server
+- `core/FlowCertifier.js` — Flow certification orchestrator with 5-layer scoring (L1-L5)
 - `core/ObservationPoint.js` — Synchronized multi-view evidence capture
-- `core/StageVerifier.js` — 5-layer scoring (L1-L5) with failure classification
-- `core/FlowCertifier.js` — Flow certification orchestrator
 - `core/FlowReporter.js` — FLOW_REPORT.md and flow_progress.json generation
 - `core/ProgressTracker.js` — Cross-run improvement tracking and graduation criteria
 - `tests/FlowCertificationTest.js` — Main flow certification test
 - `tests/McpInfraTest.js` — 12 MCP infrastructure checks
+- `RalphLoopCertifier.js` — Iterative test certification with persistence
 
 ### Changed
 - HiTestBot restructured: `infra/` (v1 preserved), `core/` (v2 new), `tests/`
 - 80+ junk files deleted (old scripts, evidence, temp files)
 
 ### Stats
-- 49 EDA MCP tools, 8 Tmux MCP tools, 7 Knowledge MCP tools
-- 35 skills, 20 Tcl templates
+- 74 EDA MCP tools, 8 Tmux MCP tools, 17 Knowledge MCP tools
+- 34 skills, 22 Tcl templates
 - 118 unit tests + 12 MCP infra tests passing
 
 ## [0.5.0] - 2026-02-25

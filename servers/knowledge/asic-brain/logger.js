@@ -1,8 +1,11 @@
 /**
- * LittleBrain Activity Logger
+ * ASIC-Brain Activity Logger
  *
  * Tracks all reasoning steps, decisions, and actions for auditability.
- * Logs are written to .hipilot/littlebrain/logs/ and included in evidence.
+ * Logs are written to .hipilot/asic-brain/logs/ and included in evidence.
+ *
+ * Formerly LittleBrainLogger - renamed to reflect the ASIC-Brain / Project-Brain
+ * dual-brain architecture.
  */
 
 import { writeFileSync, appendFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
@@ -10,12 +13,12 @@ import { join, dirname } from 'path';
 import { homedir } from 'os';
 
 /**
- * LittleBrain Logger - captures reasoning and decision-making
+ * ASIC-Brain Logger - captures reasoning and decision-making
  */
-export class LittleBrainLogger {
+export class ASICBrainLogger {
   constructor(sessionId = null) {
-    this.sessionId = sessionId || `lb_${Date.now()}`;
-    this.logDir = join(homedir(), '.hipilot', 'littlebrain', 'logs');
+    this.sessionId = sessionId || `asicb_${Date.now()}`;
+    this.logDir = join(homedir(), '.hipilot', 'asic-brain', 'logs');
     this.logFile = join(this.logDir, `${this.sessionId}.jsonl`);
     this.decisions = [];
     this.startTime = Date.now();
@@ -265,23 +268,23 @@ export class LittleBrainLogger {
    */
   exportToEvidence(evidenceDir) {
     try {
-      const targetDir = join(evidenceDir, 'littlebrain');
+      const targetDir = join(evidenceDir, 'asic-brain');
       if (!existsSync(targetDir)) {
         mkdirSync(targetDir, { recursive: true });
       }
 
       // Copy main log file
-      const targetLog = join(targetDir, 'littlebrain_reasoning.jsonl');
+      const targetLog = join(targetDir, 'asicbrain_reasoning.jsonl');
       if (existsSync(this.logFile)) {
         writeFileSync(targetLog, readFileSync(this.logFile, 'utf-8'));
       }
 
       // Write structured summary
-      const structuredPath = join(targetDir, 'littlebrain_decisions.json');
+      const structuredPath = join(targetDir, 'asicbrain_decisions.json');
       writeFileSync(structuredPath, JSON.stringify(this.getStructuredLogs(), null, 2));
 
       // Write human-readable summary
-      const readablePath = join(targetDir, 'littlebrain_summary.md');
+      const readablePath = join(targetDir, 'asicbrain_summary.md');
       writeFileSync(readablePath, this._generateReadableSummary());
 
       return {
@@ -333,7 +336,7 @@ export class LittleBrainLogger {
 
   _generateReadableSummary() {
     const byType = this._countByType();
-    let md = `# LittleBrain Activity Summary\n\n`;
+    let md = `# ASIC-Brain Activity Summary\n\n`;
     md += `**Session ID:** ${this.sessionId}\n`;
     md += `**Duration:** ${((Date.now() - this.startTime) / 1000).toFixed(1)}s\n`;
     md += `**Total Decision Points:** ${this.decisions.length}\n\n`;
@@ -365,19 +368,19 @@ let globalLogger = null;
 
 export function getLogger(sessionId) {
   if (!globalLogger) {
-    globalLogger = new LittleBrainLogger(sessionId);
+    globalLogger = new ASICBrainLogger(sessionId);
   }
   return globalLogger;
 }
 
 export function resetLogger(sessionId) {
-  globalLogger = new LittleBrainLogger(sessionId);
+  globalLogger = new ASICBrainLogger(sessionId);
   return globalLogger;
 }
 
 // For reading logs back
 export function readLogs(sessionId) {
-  const logDir = join(homedir(), '.hipilot', 'littlebrain', 'logs');
+  const logDir = join(homedir(), '.hipilot', 'asic-brain', 'logs');
   const logFile = join(logDir, `${sessionId}.jsonl`);
 
   if (!existsSync(logFile)) {
@@ -391,4 +394,4 @@ export function readLogs(sessionId) {
     .map(l => JSON.parse(l));
 }
 
-export { LittleBrainLogger };
+export { ASICBrainLogger as LittleBrainLogger, ASICBrainLogger as CoTBrainLogger };

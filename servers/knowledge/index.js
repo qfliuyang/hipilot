@@ -34,7 +34,31 @@ import {
   recordSuccess,
   getBestPractice,
   processHiTestBotEvidence,
-} from './littlebrain/index.js';
+} from './asic-brain/index.js';
+import {
+  getToolInfo,
+  listTools,
+  getCommand,
+  searchCommands as searchEDACommands,
+  matchErrorPattern,
+  getBestPractices as getEDABestPractices,
+  validateCommandSyntax,
+} from './eda-brain/index.js';
+import {
+  remember,
+  recall,
+  searchProjectBrain,
+  getProjectContext,
+  setProjectStage,
+  recordProjectQoR,
+  getQoRProgression,
+  recordProjectErrorPattern,
+  getProjectSummary,
+  exportProjectMemories,
+  isProjectBrainAvailable,
+  MEMORY_TYPES,
+  STAGE_NAMES,
+} from './project-brain/index.js';
 
 // Auto-detect project root from server location
 const __filename = fileURLToPath(import.meta.url);
@@ -496,7 +520,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: 'knowledge.generate_tcl',
-        description: 'Generate validated Tcl script from natural language intent using LittleBrain',
+        description: 'Generate validated Tcl script from natural language intent using ASIC-Brain',
         inputSchema: {
           type: 'object',
           properties: {
@@ -624,6 +648,190 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             evidence_dir: { type: 'string', description: 'Path to HiTestBot evidence directory' },
           },
           required: ['evidence_dir'],
+        },
+      },
+      // EDA-Brain Tools
+      {
+        name: 'knowledge.eda.get_tool_info',
+        description: 'Get EDA tool information from EDA-Brain',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tool: { type: 'string', description: 'Tool name (innovus, dc_shell, pt_shell, etc.)' },
+          },
+          required: ['tool'],
+        },
+      },
+      {
+        name: 'knowledge.eda.list_tools',
+        description: 'List supported EDA tools',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            category: { type: 'string', description: 'Filter by category (synthesis, pnr, signoff)', enum: ['synthesis', 'pnr', 'signoff', 'extraction'] },
+          },
+        },
+      },
+      {
+        name: 'knowledge.eda.get_command',
+        description: 'Get EDA command reference with syntax and examples',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tool: { type: 'string', description: 'Tool name' },
+            command: { type: 'string', description: 'Command name' },
+          },
+          required: ['tool', 'command'],
+        },
+      },
+      {
+        name: 'knowledge.eda.search_commands',
+        description: 'Search EDA commands by name or description',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tool: { type: 'string', description: 'Tool name' },
+            query: { type: 'string', description: 'Search query' },
+          },
+          required: ['tool', 'query'],
+        },
+      },
+      {
+        name: 'knowledge.eda.match_error',
+        description: 'Match EDA error output to known patterns',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tool: { type: 'string', description: 'Tool name' },
+            output: { type: 'string', description: 'Error output text' },
+          },
+          required: ['tool', 'output'],
+        },
+      },
+      {
+        name: 'knowledge.eda.get_tool_practices',
+        description: 'Get best practices for EDA tool and stage',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            tool: { type: 'string', description: 'Tool name' },
+            stage: { type: 'string', description: 'Flow stage (floorplan, placement, cts, etc.)' },
+          },
+          required: ['tool'],
+        },
+      },
+      // Project-Brain Tools
+      {
+        name: 'knowledge.project.remember',
+        description: 'Store information in Project-Brain memory for current design',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            category: { type: 'string', description: 'Memory category (rtl_memory, floorplan_memory, placement_memory, cts_memory, routing_memory, timing_memory, error_patterns, drc_memory)' },
+            key: { type: 'string', description: 'Unique key for this memory' },
+            value: { type: 'object', description: 'Value to store (any JSON object)' },
+            context: { type: 'object', description: 'Additional context' },
+          },
+          required: ['category', 'key', 'value'],
+        },
+      },
+      {
+        name: 'knowledge.project.recall',
+        description: 'Retrieve information from Project-Brain memory',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            category: { type: 'string', description: 'Memory category' },
+            key: { type: 'string', description: 'Specific key to retrieve (null for all entries)' },
+          },
+          required: ['category'],
+        },
+      },
+      {
+        name: 'knowledge.project.search',
+        description: 'Search across all Project-Brain memories',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            query: { type: 'string', description: 'Search query' },
+            categories: { type: 'array', description: 'Categories to search (default: all)' },
+            limit: { type: 'number', description: 'Max results (default: 20)' },
+          },
+          required: ['query'],
+        },
+      },
+      {
+        name: 'knowledge.project.get_context',
+        description: 'Get current design context for decision making',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            needs: { type: 'array', description: 'Memory categories to include in context' },
+          },
+        },
+      },
+      {
+        name: 'knowledge.project.set_stage',
+        description: 'Set current flow stage in Project-Brain',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            stage: { type: 'number', description: 'Stage number (0-9)' },
+          },
+          required: ['stage'],
+        },
+      },
+      {
+        name: 'knowledge.project.record_qor',
+        description: 'Record QoR snapshot for current stage',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            stage: { type: 'number', description: 'Stage number' },
+            metrics: { type: 'object', description: 'QoR metrics (wns, tns, area, power, etc.)' },
+            context: { type: 'object', description: 'Additional context' },
+          },
+          required: ['stage', 'metrics'],
+        },
+      },
+      {
+        name: 'knowledge.project.get_qor_progression',
+        description: 'Get QoR progression across stages',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            metric: { type: 'string', description: 'Metric to track (wns, tns, etc.)', default: 'wns' },
+          },
+        },
+      },
+      {
+        name: 'knowledge.project.record_error',
+        description: 'Record design-specific error pattern',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            pattern: { type: 'string', description: 'Error pattern identifier' },
+            error_output: { type: 'string', description: 'Error message/output' },
+            resolution: { type: 'string', description: 'How the error was resolved' },
+            auto_fixable: { type: 'boolean', description: 'Whether this error can be auto-fixed' },
+          },
+          required: ['pattern', 'error_output', 'resolution'],
+        },
+      },
+      {
+        name: 'knowledge.project.get_summary',
+        description: 'Get summary of all project knowledge',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
+        name: 'knowledge.project.is_available',
+        description: 'Check if Project-Brain is available for current design',
+        inputSchema: {
+          type: 'object',
+          properties: {},
         },
       },
     ],
@@ -953,8 +1161,8 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
 
       case 'knowledge.analyze_command': {
         const { command, tool, stage } = args;
-        const LittleBrain = (await import('./littlebrain/index.js')).LittleBrain;
-        const brain = new LittleBrain();
+        const ASICBrain = (await import('./asic-brain/index.js')).ASICBrain;
+        const brain = new ASICBrain();
         const analysis = brain.analyzeCommand(command, tool, stage);
         let text = `Command Analysis\n\n`;
         text += `Command: ${analysis.command}\n`;
@@ -1043,6 +1251,243 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
           text += `\nErrors: ${results.errors.join(', ')}\n`;
         }
         return { content: [{ type: 'text', text }] };
+      }
+
+      // EDA-Brain Handlers
+      case 'knowledge.eda.get_tool_info': {
+        const { tool } = args;
+        const info = getToolInfo(tool);
+        if (!info) {
+          return { content: [{ type: 'text', text: `Unknown tool: ${tool}` }] };
+        }
+        let text = `${info.name}\n`;
+        text += `Vendor: ${info.vendor}\n`;
+        text += `Category: ${info.category}\n`;
+        text += `Description: ${info.description}\n`;
+        text += `Capabilities: ${info.capabilities?.join(', ')}\n`;
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.eda.list_tools': {
+        const { category } = args;
+        const tools = listTools(category);
+        let text = category ? `Tools (${category}):\n\n` : 'All EDA Tools:\n\n';
+        tools.forEach(t => {
+          text += `- ${t.id}: ${t.name} (${t.vendor})\n`;
+          text += `  Capabilities: ${t.capabilities?.slice(0, 3).join(', ')}...\n`;
+        });
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.eda.get_command': {
+        const { tool, command } = args;
+        const cmd = getCommand(tool, command);
+        if (!cmd) {
+          return { content: [{ type: 'text', text: `Command not found: ${tool}.${command}` }] };
+        }
+        let text = `${cmd.command}\n`;
+        text += `Description: ${cmd.description}\n`;
+        text += `Syntax: ${cmd.syntax}\n`;
+        if (cmd.example) {
+          text += `\nExample:\n${cmd.example}\n`;
+        }
+        if (cmd.prerequisites?.length > 0) {
+          text += `\nPrerequisites: ${cmd.prerequisites.join(', ')}\n`;
+        }
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.eda.search_commands': {
+        const { tool, query } = args;
+        const cmds = searchEDACommands(tool, query);
+        if (cmds.length === 0) {
+          return { content: [{ type: 'text', text: `No commands found for "${query}" in ${tool}` }] };
+        }
+        let text = `Commands matching "${query}" in ${tool}:\n\n`;
+        cmds.forEach((c, i) => {
+          text += `${i + 1}. ${c.command} - ${c.description}\n`;
+        });
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.eda.match_error': {
+        const { tool, output } = args;
+        const match = matchErrorPattern(tool, output);
+        if (!match) {
+          return { content: [{ type: 'text', text: 'No known error pattern matched.' }] };
+        }
+        let text = `Error Pattern Matched: ${match.id}\n`;
+        text += `Code: ${match.code}\n`;
+        text += `Severity: ${match.severity}\n`;
+        text += `Description: ${match.description}\n`;
+        text += `Fix: ${match.fix}\n`;
+        text += `Auto-fixable: ${match.autoFixable ? 'Yes' : 'No'}\n`;
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.eda.get_tool_practices': {
+        const { tool, stage } = args;
+        const practices = getEDABestPractices(tool, stage);
+        if (practices.length === 0) {
+          return { content: [{ type: 'text', text: `No practices found for ${tool}${stage ? `/${stage}` : ''}` }] };
+        }
+        let text = `Best Practices for ${tool}${stage ? ` (${stage})` : ''}:\n\n`;
+        practices.forEach((p, i) => {
+          text += `${i + 1}. ${p.title}\n`;
+          text += `   ${p.description}\n`;
+          if (p.rationale) text += `   Why: ${p.rationale}\n`;
+          if (p.commands) text += `   Commands: ${p.commands.join(', ')}\n`;
+          text += '\n';
+        });
+        return { content: [{ type: 'text', text }] };
+      }
+
+      // Project-Brain Handlers
+      case 'knowledge.project.remember': {
+        const { category, key, value, context = {} } = args;
+        const result = remember(category, key, value, context);
+        if (!result.success) {
+          return { content: [{ type: 'text', text: `Error: ${result.error}` }], isError: true };
+        }
+        let text = `Memory stored: ${result.category}.${result.key}\n`;
+        text += `Update: ${result.is_update ? 'Yes' : 'No'}\n`;
+        text += `Total entries: ${result.entry_count}`;
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.project.recall': {
+        const { category, key = null } = args;
+        const result = recall(category, key);
+        if (!result.success) {
+          return { content: [{ type: 'text', text: `Error: ${result.error}` }] };
+        }
+        if (key === null) {
+          let text = `${result.category} entries (${result.count}):\n\n`;
+          result.entries.forEach((e, i) => {
+            text += `[${i + 1}] ${e.key}\n`;
+            text += `    Value: ${JSON.stringify(e.value).substring(0, 100)}\n`;
+            text += `    Stage: ${e.stage_name} (${e.stage})\n`;
+            text += `    Time: ${e.timestamp}\n\n`;
+          });
+          return { content: [{ type: 'text', text }] };
+        }
+        let text = `${result.category}.${result.key}:\n`;
+        text += `Value: ${JSON.stringify(result.entry.value, null, 2)}\n`;
+        text += `Stage: ${result.entry.stage_name} (${result.entry.stage})\n`;
+        text += `Time: ${result.entry.timestamp}\n`;
+        if (result.entry.update_count) {
+          text += `Updates: ${result.entry.update_count}\n`;
+        }
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.project.search': {
+        const { query, categories, limit = 20 } = args;
+        const result = searchProjectBrain(query, { categories, limit });
+        if (!result.success) {
+          return { content: [{ type: 'text', text: `Error: ${result.error}` }] };
+        }
+        if (result.results.length === 0) {
+          return { content: [{ type: 'text', text: `No memories found for: "${query}"` }] };
+        }
+        let text = `Search results for "${query}" (${result.results.length} of ${result.total}):\n\n`;
+        result.results.forEach((r, i) => {
+          text += `[${i + 1}] ${r.category}.${r.key} (score: ${r.score})\n`;
+          text += `    Stage: ${r.stage_name} (${r.stage})\n`;
+          text += `    Value: ${JSON.stringify(r.value).substring(0, 80)}\n`;
+          text += `    Time: ${r.timestamp}\n\n`;
+        });
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.project.get_context': {
+        const { needs = [] } = args;
+        const result = getProjectContext(needs);
+        if (!result.success) {
+          return { content: [{ type: 'text', text: `Error: ${result.error}` }] };
+        }
+        const ctx = result.context;
+        let text = `Design Context: ${ctx.design_name}\n`;
+        text += `Current Stage: ${ctx.current_stage_name} (${ctx.current_stage})\n`;
+        text += `Completed: ${ctx.completed_stages.map(s => STAGE_NAMES[s]).join(', ') || 'none'}\n`;
+        text += `Design Dir: ${ctx.design_dir}\n`;
+        if (needs.length > 0) {
+          text += `\nRequested Memories:\n`;
+          for (const category of needs) {
+            if (ctx[category]) {
+              text += `  ${category}: ${ctx[category].entries?.length || 0} entries\n`;
+            }
+          }
+        }
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.project.set_stage': {
+        const { stage } = args;
+        const result = setProjectStage(stage);
+        if (!result.success) {
+          return { content: [{ type: 'text', text: `Error: ${result.error}` }] };
+        }
+        let text = `Stage updated: ${result.stage_name} (${result.stage})\n`;
+        text += `Completed stages: ${result.completed_stages.map(s => STAGE_NAMES[s]).join(', ') || 'none'}`;
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.project.record_qor': {
+        const { stage, metrics, context = {} } = args;
+        const result = recordProjectQoR(stage, metrics, context);
+        if (!result.success) {
+          return { content: [{ type: 'text', text: `Error: ${result.error}` }] };
+        }
+        return { content: [{ type: 'text', text: `QoR recorded for stage ${stage}: ${JSON.stringify(metrics)}` }] };
+      }
+
+      case 'knowledge.project.get_qor_progression': {
+        const { metric = 'wns' } = args;
+        const result = getQoRProgression(metric);
+        if (!result.success) {
+          return { content: [{ type: 'text', text: `Error: ${result.error}` }] };
+        }
+        if (result.progression.length === 0) {
+          return { content: [{ type: 'text', text: `No QoR data for metric: ${metric}` }] };
+        }
+        let text = `${metric.toUpperCase()} Progression (${result.count} snapshots):\n\n`;
+        result.progression.forEach((p) => {
+          text += `${p.stage_name}: ${p.value} ${metric === 'wns' || metric === 'tns' ? 'ns' : ''}\n`;
+          text += `    Time: ${new Date(p.timestamp).toLocaleString()}\n`;
+        });
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.project.record_error': {
+        const { pattern, error_output, resolution, auto_fixable = false } = args;
+        const result = recordProjectErrorPattern(pattern, error_output, resolution, auto_fixable);
+        if (!result.success) {
+          return { content: [{ type: 'text', text: `Error: ${result.error}` }] };
+        }
+        return { content: [{ type: 'text', text: `Error pattern recorded: ${pattern}\nEntry count: ${result.entry_count}` }] };
+      }
+
+      case 'knowledge.project.get_summary': {
+        const result = getProjectSummary();
+        if (!result.success) {
+          return { content: [{ type: 'text', text: `Error: ${result.error}` }] };
+        }
+        const s = result.summary;
+        let text = `Project-Brain Summary: ${s.design_name}\n`;
+        text += `Current: ${s.current_stage_name} (${s.current_stage})\n`;
+        text += `Completed: ${s.completed_stages.join(', ') || 'none'}\n`;
+        text += `Total entries: ${s.total_entries}\n\n`;
+        text += 'Memories:\n';
+        for (const [cat, info] of Object.entries(s.memories)) {
+          text += `  ${cat}: ${info.entry_count} entries\n`;
+        }
+        return { content: [{ type: 'text', text }] };
+      }
+
+      case 'knowledge.project.is_available': {
+        const available = isProjectBrainAvailable();
+        return { content: [{ type: 'text', text: `Project-Brain ${available ? 'IS' : 'IS NOT'} available${available ? '' : ' (set HIPILOT_DESIGN_DIR)'}` }] };
       }
 
       default:
