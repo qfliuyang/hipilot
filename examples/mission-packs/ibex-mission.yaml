@@ -1,0 +1,217 @@
+# HiPilot Mission Pack - Ibex RISC-V Core Example
+# This is a complete example mission pack for the Ibex design
+
+project:
+  name: "ibex_core"
+  description: "Ibex RISC-V Core - Skywater 130nm PDK"
+  version: "1.0.0"
+  author: "HiPilot User"
+  created: "2026-03-14"
+
+design:
+  # RTL Source Files
+  rtl:
+    top_module: "ibex_core"
+    language: "systemverilog"
+    files:
+      - "rtl/ibex_alu.sv"
+      - "rtl/ibex_branch_predict.sv"
+      - "rtl/ibex_compressed_decoder.sv"
+      - "rtl/ibex_controller.sv"
+      - "rtl/ibex_core.sv"
+      - "rtl/ibex_counter.sv"
+      - "rtl/ibex_csr.sv"
+      - "rtl/ibex_cs_registers.sv"
+      - "rtl/ibex_decoder.sv"
+      - "rtl/ibex_ex_block.sv"
+      - "rtl/ibex_fetch_fifo.sv"
+      - "rtl/ibex_icache.sv"
+      - "rtl/ibex_id_stage.sv"
+      - "rtl/ibex_if_stage.sv"
+      - "rtl/ibex_load_store_unit.sv"
+      - "rtl/ibex_multdiv_fast.sv"
+      - "rtl/ibex_multdiv_slow.sv"
+      - "rtl/ibex_pmp.sv"
+      - "rtl/ibex_prefetch_buffer.sv"
+      - "rtl/ibex_register_file_ff.sv"
+      - "rtl/ibex_register_file_fpga.sv"
+      - "rtl/ibex_register_file_latch.sv"
+      - "rtl/ibex_wb_stage.sv"
+      - "rtl/ibex_dummy_instr.sv"
+      - "rtl/ibex_tracer.sv"
+      - "rtl/ibex_tracer_pkg.sv"
+      - "rtl/ibex_pkg.sv"
+    include_dirs:
+      - "rtl"
+    defines:
+      - "SYNTHESIS"
+
+  # Timing Constraints
+  constraints:
+    sdc:
+      - "constraints/ibex_core.sdc"
+    upf: []
+
+  # Physical Design Setup
+  floorplan:
+    die_area: [450, 450]          # [width, height] in microns
+    core_utilization: 0.68
+    aspect_ratio: 1.0
+    core_margin: [10, 10, 10, 10]  # [left, bottom, right, top] in microns
+
+  # Libraries (Tech LEF must be FIRST!)
+  libraries:
+    target:
+      - "lib/sky130_fd_sc_hd__ff_n40C_1v95.lib"
+      - "lib/sky130_fd_sc_hd__ss_100C_1v60.lib"
+      - "lib/sky130_fd_sc_hd__tt_025C_1v80.lib"
+    link:
+      - "lib/sky130_fd_sc_hd__ff_n40C_1v95.lib"
+      - "lib/sky130_fd_sc_hd__ss_100C_1v60.lib"
+      - "lib/sky130_fd_sc_hd__tt_025C_1v80.lib"
+    lef:
+      - "lef/sky130_fd_sc_hd.tlef"     # Tech LEF MUST be first!
+      - "lef/sky130_fd_sc_hd.lef"
+    gds:
+      - "gds/sky130_fd_sc_hd.gds"
+    pdk_root: "/home/EDA/skywater130"
+
+flow:
+  # RTL-to-GDS Flow Stages
+  stages:
+    - synthesis
+    - design_init
+    - floorplan
+    - powerplan
+    - placement
+    - cts
+    - post_cts_opt
+    - routing
+    - route_opt
+    - chip_finish
+
+  # Target QoR Metrics
+  targets:
+    timing:
+      wns: 0.0                      # Worst Negative Slack (ns)
+      tns: 0.0                      # Total Negative Slack (ns)
+      freq: 100.0                   # Target frequency (MHz)
+    area:
+      max_utilization: 0.75
+      max_area: 200000.0            # um^2
+    power:
+      max_leakage: 5.0              # mW
+      max_dynamic: 50.0             # mW
+
+  # Stage-specific Recipes
+  recipes:
+    synthesis:
+      effort: "high"
+      strategy: "timing"
+      enable_dft: true
+      compile_options: "-gate_clock -retime"
+
+    placement:
+      effort: "high"
+      optimization: "timing"
+      max_density: 0.72
+
+    cts:
+      target_skew: 100.0            # ps
+      target_latency: 500.0         # ps
+      use_ccopt: true
+
+    routing:
+      effort: "high"
+      enable_antenna_fix: true
+
+technology:
+  node: "130nm"
+  foundry: "skywater"
+  process: "sky130"
+
+  # Metal Stack Configuration
+  metal_layers:
+    count: 6
+    preferred_directions:
+      li1: "vertical"
+      met1: "horizontal"
+      met2: "vertical"
+      met3: "horizontal"
+      met4: "vertical"
+      met5: "horizontal"
+
+  # Power Domains
+  power:
+    vdd:
+      net: "VDD"
+      voltage: 1.8
+    vss:
+      net: "VSS"
+      voltage: 0.0
+
+  # MMMC Corner Definitions
+  corners:
+    typical:
+      temperature: 25
+      voltage: 1.8
+      lib: "lib/sky130_fd_sc_hd__tt_025C_1v80.lib"
+    fast:
+      temperature: -40
+      voltage: 1.95
+      lib: "lib/sky130_fd_sc_hd__ff_n40C_1v95.lib"
+    slow:
+      temperature: 100
+      voltage: 1.60
+      lib: "lib/sky130_fd_sc_hd__ss_100C_1v60.lib"
+
+tools:
+  innovus:
+    version: "20.10"
+    common_tcl: |
+      setDesignMode -process 130
+      setMultiCpuUsage -localCpu 8
+      setRouteMode -earlyGlobalMaxRouteLayer 4
+    stage_tcl:
+      floorplan: |
+        # Additional floorplan settings for Ibex
+        setFPlanRowSpacingAndType 1.8 2
+      cts: |
+        # CTS settings for Ibex
+        set_ccopt_property target_max_trans 0.15
+        set_ccopt_property target_skew 0.1
+
+  design_compiler:
+    version: "T-2022.03"
+    common_tcl: |
+      set_app_var target_library $TARGET_LIB
+      set_app_var link_library "* $TARGET_LIB"
+    compile_options: "-gate_clock -retime -scan"
+
+custom:
+  # Pre-stage hooks
+  pre_hooks:
+    synthesis: |
+      puts "Starting synthesis for Ibex Core"
+      puts "Target frequency: 100MHz"
+
+  # Post-stage hooks
+  post_hooks:
+    synthesis: |
+      report_timing
+      report_area
+      puts "Synthesis complete for Ibex"
+    chip_finish: |
+      puts "RTL-to-GDS flow complete!"
+      report_timing
+      report_power
+      report_area
+
+  # Additional Tcl libraries
+  tcl_libraries:
+    - "scripts/utilities.tcl"
+
+  # Custom environment variables
+  environment:
+    DESIGN_NAME: "ibex_core"
+    TARGET_FREQ_MHZ: "100"
