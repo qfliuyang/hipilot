@@ -517,6 +517,56 @@ When an agent fails after all retries and `escalate_on_failure` is true:
 
 ---
 
+## Team Mode UI Layout
+
+Team Mode uses a specialized tmux layout with 7 panes:
+
+```
+┌─────────────────┬─────────────────┬─────────────────┐
+│  🎯 Supervisor  │  📚 Knowledge   │  📋 Planner     │
+│    (Pane 0)     │    (Pane 1)     │    (Pane 2)     │
+├─────────────────┼─────────────────┼─────────────────┤
+│  ⚡ Executor    │  💾 Memory      │  🧠 Learning    │
+│    (Pane 3)     │    (Pane 4)     │    (Pane 5)     │
+├─────────────────┴─────────────────┴─────────────────┤
+│              🔧 EDA Tool (Pane 6)                    │
+│         (innovus / dc_shell / pt_shell)             │
+└─────────────────────────────────────────────────────┘
+```
+
+### Launching Team Mode
+
+```bash
+bin/hipilot-team          # Interactive mode
+bin/hipilot-team --no-terminal  # Headless mode
+```
+
+### Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Alt+1` | Focus Supervisor pane |
+| `Alt+2` | Focus Knowledge pane |
+| `Alt+3` | Focus Planner pane |
+| `Alt+4` | Focus Executor pane |
+| `Alt+5` | Focus Memory pane |
+| `Alt+6` | Focus Learning pane |
+| `Alt+0` | Focus EDA Tool pane |
+| `prefix+b` | Toggle broadcast mode (send to all panes) |
+
+### Pane Colors
+
+Each agent pane has a distinct border color for easy identification:
+- **Supervisor** (Red) - Decision authority
+- **Knowledge** (Cyan) - Information hub
+- **Planner** (Light Cyan) - Flow orchestration
+- **Executor** (Light Red) - Action performer
+- **Memory** (Light Magenta) - History keeper
+- **Learning** (Pink) - Pattern analyzer
+- **EDA** (Yellow) - Tool interface
+
+---
+
 ## Future Enhancements
 
 1. **Dynamic Agent Discovery:** Auto-detect optimal agent configuration
@@ -529,4 +579,6 @@ When an agent fails after all retries and `escalate_on_failure` is true:
 
 **Last Updated:** 2026-03-14
 **Version:** 1.0
-**File:** `src/team/index.js` (1,331 lines)
+**Files:**
+- `src/team/index.js` - Team implementation
+- `bin/hipilot-team` - Team mode launcher
