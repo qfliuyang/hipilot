@@ -1,10 +1,15 @@
 # HiPilot Testing Rules
 
-**Version:** 1.1
-**Date:** 2026-03-04
+**Version:** 1.2
+**Date:** 2026-03-15
 **Status:** Active
 
-**Latest Update:** Added scoring adjustments for long-running flows (>2 hours), evidence timeline verification, and Phase 7 Gold certification criteria.
+**Latest Update:**
+- Added Phase 3.5 Manual Mode Workflow testing
+- Added Mission Pack validation section
+- Added L3b Process Validation (correct tool per stage)
+- Updated for modular stage commands (/synthesis, /floorplan, etc.)
+- Removed deprecated /rtl2gds references
 
 ---
 
@@ -127,6 +132,22 @@ Each stage is evaluated across 5 evidence layers, each scored 0.0 to 1.0:
 | L3 | MCP Tool Usage | Did the AI use the correct MCP tools with correct arguments? | No MCP tools used (or used direct tmux) | Right tool, wrong arguments | Correct tool + correct arguments |
 | L4 | EDA Execution | Did the generated Tcl execute successfully in the EDA tool? | Tcl not sent or fatal error | Tcl sent but non-fatal errors/warnings | Clean execution, no errors |
 | L5 | QoR Assessment | Did the AI capture and report quality metrics after execution? | No QoR reported | Partial metrics (e.g., WNS but not TNS) | Full QoR captured (WNS, TNS, violations, etc.) |
+
+**L3b: Process Validation (New in v1.2)**
+
+In addition to the five evidence layers, HiTestBot validates that the **correct tool is used for each stage**:
+
+| Stage | Required Tool | Wrong Tool Examples |
+|-------|---------------|---------------------|
+| Synthesis (Stage 0) | dc_shell | innovus, pt_shell |
+| Physical Design (Stages 1-9) | innovus | dc_shell, pt_shell |
+| Signoff (Stage 10) | pt_shell | innovus, dc_shell |
+
+**Scoring:**
+- **1.0** - Correct tool used for the stage
+- **0.0** - Wrong tool used (critical error)
+
+**Why this matters:** A human engineer would never try to run synthesis in Innovus or physical design in DC Shell. Using the wrong tool indicates a fundamental process error that would fail in real usage, even if the AI managed to make the tool execute without errors.
 
 ### Level 3: Diagnostic Evidence Bundle
 
@@ -569,6 +590,90 @@ When pane logs show minimal content but flow completion is suspected:
 - Flow completed successfully with timing closure
 - Score artificially low due to pane capture limitations
 - **Final Status: GOLD CERTIFIED** ✓
+
+---
+
+## 6.9 Mission Pack Testing (New in v1.2)
+
+The Project Mission Pack defines design-specific configuration. Tests MUST validate mission pack loading and gap detection.
+
+### Mission Pack Validation Tests
+
+| Test | Command | Expected Result |
+|------|---------|-----------------|
+| Load YAML mission pack | `bin/hitestbot-eda "load mission pack from /path/to/mission.yaml"` | Mission pack parsed, paths resolved |
+| Auto-detect legacy design | `bin/hitestbot-eda "load design from /path/to/legacy"` | Auto-detection creates mission pack |
+| Validate mission pack | Internal check | Schema validation passes |
+| Gap detection | After stage completion | Actual vs target metrics compared |
+
+### Gap Detection Scoring
+
+When MissionPackCertifier validates QoR against targets:
+
+| Severity | Deviation | Example |
+|----------|-----------|---------|
+| 🔴 CRITICAL | >20% from target | WNS target 0ns, actual -0.5ns (50% deviation) |
+| 🟡 WARNING | 10-20% from target | Utilization target 75%, actual 85% (13% over) |
+| 🟢 MINOR | <10% from target | Utilization target 75%, actual 78% (4% over) |
+| ✅ PASSED | Meeting or exceeding target | WNS +0.1ns (better than 0ns target) |
+
+### Mission Pack Evidence
+
+Evidence bundle MUST include:
+- `mission_pack.yaml` (loaded or auto-detected)
+- `mission_pack_validation.json` (validation results)
+- `gap_analysis.json` (per-stage gap detection results)
+
+---
+
+## 6.10 Phase 3.5: Manual Mode Workflow Testing (New in v1.2)
+
+HiPilot supports two execution modes:
+- **Auto mode** (default): Tcl executes immediately
+- **Manual mode**: Tcl is previewed and requires `prefix+y` (Ctrl+B then y) to approve
+
+### Manual Mode Test Procedure
+
+```bash
+# Step 1: Enable manual mode and generate Tcl
+bin/hitestbot-eda "enable manual mode, then generate a timing report Tcl"
+
+# Step 2: Approve the pending Tcl
+# HiTestBot presses: prefix+y (Ctrl+B, then y)
+
+# Step 3: Verify execution
+# HiTestBot waits for EDA completion and QoR output
+```
+
+### Manual Mode Scoring
+
+| Step | Verification | Evidence |
+|------|--------------|----------|
+| 1 | Command typed and acknowledged | Status bar shows `MODE: MANUAL` |
+| 2 | Tcl pending state | Left pane shows `[⏳ Pending Approval]` badge |
+| 3 | Approval sent | HiTestBot sends `Ctrl+B` then `y` via tmux |
+| 4 | EDA executes AFTER approval | Timestamp: EDA activity after `prefix+y` sent |
+| 5 | QoR reported | WNS/TNS numbers in Claude output |
+
+### Critical Checks
+
+**L3: Approval Gate Verification**
+- MCP log MUST show `awaiting_approval` state before `send_to_terminal`
+- Tcl MUST NOT execute before `prefix+y` is pressed
+
+**L4: Execution Timing**
+- EDA activity MUST start after approval timestamp
+- No premature execution in EDA pane
+
+### Status Bar Verification
+
+| State | Expected Status Bar |
+|-------|---------------------|
+| Initial | `MODE: AUTO` |
+| After manual cmd | `MODE: MANUAL` |
+| Tcl pending | `MODE: MANUAL \| PENDING` |
+| Executing | `MODE: MANUAL \| RUNNING` |
+| Complete | `MODE: MANUAL` |
 
 ---
 
