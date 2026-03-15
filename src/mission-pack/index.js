@@ -13,12 +13,17 @@
 import { readFileSync, existsSync } from 'fs';
 import { join, resolve } from 'path';
 import { validateMissionPack } from './validator.js';
+import { parseMarkdownMissionPack } from './parser.js';
 
 // Default mission pack paths (in order of priority)
+// Markdown (.md) is the preferred format - natural language
+// YAML (.yaml/.yml) is legacy format - structured data
 const MISSION_PACK_FILES = [
+  'hipilot-mission.md',         // Markdown - preferred natural language format
   'hipilot-mission.yaml',
   'hipilot-mission.yml',
   'hipilot-mission.json',
+  '.hipilot/mission.md',
   '.hipilot/mission.yaml',
   '.hipilot/mission.yml',
   '.hipilot/mission.json',
@@ -372,13 +377,18 @@ function findMissionPackFile(designDir) {
 }
 
 /**
- * Parse mission pack content (YAML or JSON)
+ * Parse mission pack content (Markdown, YAML, or JSON)
  */
-function parseMissionPack(content, filePath) {
+function parseMissionPack(content, filePath, designDir) {
   const ext = filePath.split('.').pop().toLowerCase();
 
   if (ext === 'json') {
     return JSON.parse(content);
+  }
+
+  if (ext === 'md') {
+    // Parse natural language Markdown
+    return parseMarkdownMissionPack(content, designDir);
   }
 
   // Simple YAML parser for basic structure
@@ -524,7 +534,7 @@ export function loadMissionPack(designDir = null) {
 
   try {
     const content = readFileSync(missionPackPath, 'utf-8');
-    const data = parseMissionPack(content, missionPackPath);
+    const data = parseMissionPack(content, missionPackPath, targetDir);
 
     return new MissionPack(data, missionPackPath, targetDir);
   } catch (error) {
@@ -594,7 +604,8 @@ export function getMissionPackInfo(designDir = null) {
   return {
     exists: true,
     path,
-    format: path.endsWith('.json') ? 'json' : 'yaml',
+    format: path.endsWith('.json') ? 'json' :
+            path.endsWith('.md') ? 'markdown' : 'yaml',
   };
 }
 

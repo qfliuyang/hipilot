@@ -23,11 +23,18 @@
  * These are post-test evidence collection, not test-time cheating.
  */
 
-import { execSync, spawn } from 'child_process';
-import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync, copyFileSync, createWriteStream, unlinkSync, statSync } from 'fs';
+import { execSync, spawn, spawnSync } from 'child_process';
+import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync, copyFileSync, createWriteStream, unlinkSync, statSync, watch } from 'fs';
 import { join, basename, dirname } from 'path';
+import { tmpdir } from 'os';
 import { ObservationPoint } from './ObservationPoint.js';
 import { FlowReporter } from './FlowReporter.js';
+import { CheatDetector } from './CheatDetector.js';
+
+// Heartbeat configuration for event-driven monitoring
+const HEARTBEAT_ENABLED = process.env.HIPILOT_HEARTBEAT !== 'false'; // Enabled by default
+const HEARTBEAT_FALLBACK_INTERVAL_MS = 5000; // Poll every 5s if heartbeat unavailable
+const HEARTBEAT_MAX_AGE_MS = 10000; // Heartbeat older than 10s is stale
 
 // Adaptive polling intervals based on detected state - optimized for faster response
 // Key insight: Poll fast when activity is happening, skip work when idle
@@ -47,6 +54,42 @@ const OBSERVATION_INTERVAL_POLLS = 15;    // Every ~30s during EDA (was every 6 
 const FAST_SCREENSHOT_INTERVAL = 6;       // Every ~6s when working (fast mode)
 const FAST_OBSERVATION_INTERVAL = 3;      // Every ~3s when working (fast mode)
 const CLAUDE_READY_TIMEOUT_MS = 120000;
+
+// ═══════════════════════════════════════════════════════════════════
+//  HUMAN-LIKE BEHAVIOR MODELING
+//
+//  HiTestBot should behave like a real engineer, not a robot:
+//    - Irregular attention patterns (humans don't poll mechanically)
+//    - Contextual reading speed (fast for familiar, slow for new)
+//    - Attention fatigue (occasional "distraction" periods)
+//    - Smart screenshot timing (at interesting moments, not periodic)
+//    - Review pauses (humans pause after typing to see results)
+// ═══════════════════════════════════════════════════════════════════
+
+// Human polling is irregular - add jitter to avoid mechanical patterns
+const HUMAN_JITTER_PERCENT = 0.3;  // ±30% variation in timing
+
+// Human attention model: focus level affects response time
+const ATTENTION_MODEL = {
+  high: { responseMs: 500, jitter: 0.2 },    // Alert: fast response
+  normal: { responseMs: 1500, jitter: 0.4 }, // Standard: moderate
+  low: { responseMs: 3000, jitter: 0.5 },    // Fatigued: slower
+};
+
+// Screenshots: humans take them at meaningful moments
+const SCREENSHOT_TRIGGERS = {
+  stateChange: true,      // Always capture on state transitions
+  errorDetected: true,    // Capture when errors appear
+  completion: true,       // Capture on completion
+  periodicMaxInterval: 120000, // Max 2min between shots (humans glance)
+};
+
+// Review pauses: humans naturally pause after certain actions
+const REVIEW_PAUSE_MS = {
+  afterCommand: 2000,     // Pause to read response
+  afterError: 3000,       // Pause longer to understand error
+  afterCompletion: 1000,  // Quick check before continuing
+};
 
 // ═══════════════════════════════════════════════════════════════════
 //  ANTI-CHEAT RULES
@@ -170,6 +213,114 @@ export class FlowCertifier {
     this._videoFile = null;
     this._lastCompletedStage = 0; // Track RTL2GDS stage progress
     this.lastCommand = null;
+
+    // Heartbeat monitoring state
+    this._heartbeatWatcher = null;
+    this._lastHeartbeat = null;
+    this._heartbeatAvailable = false;
+  }
+
+  /**
+   * Get the heartbeat file path for this session.
+   * Heartbeat file is written by the EDA MCP server for event-driven monitoring.
+   */
+  _getHeartbeatPath() {
+    const username = process.env.USER || process.env.USERNAME || 'unknown';
+    return join(tmpdir(), `hipilot-${this.socket}-heartbeat.json`);
+  }
+
+  /**
+   * Read the latest heartbeat from the filesystem.
+   * Returns null if heartbeat file doesn't exist or can't be read.
+   */
+  _readHeartbeat() {
+    try {
+      const path = this._getHeartbeatPath();
+      if (!existsSync(path)) return null;
+      const content = readFileSync(path, 'utf-8');
+      return JSON.parse(content);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /**
+   * Check if heartbeat is available and fresh.
+   */
+  _isHeartbeatFresh(maxAgeMs = HEARTBEAT_MAX_AGE_MS) {
+    const hb = this._readHeartbeat();
+    if (!hb) return false;
+    const age = Date.now() - hb.timestamp;
+    return age <= maxAgeMs;
+  }
+
+  /**
+   * Start watching heartbeat file for changes.
+   * Uses fs.watch() for event-driven monitoring.
+   */
+  _startHeartbeatWatch() {
+    if (!HEARTBEAT_ENABLED || this._heartbeatWatcher) return false;
+
+    const heartbeatPath = this._getHeartbeatPath();
+
+    // Check if heartbeat file exists (indicates server supports heartbeats)
+    if (!existsSync(heartbeatPath)) {
+      this._heartbeatAvailable = false;
+      return false;
+    }
+
+    this._heartbeatAvailable = true;
+
+    try {
+      let lastContent = null;
+      this._heartbeatWatcher = watch(heartbeatPath, (eventType) => {
+        if (eventType === 'change' || eventType === 'rename') {
+          try {
+            const hb = this._readHeartbeat();
+            if (hb) {
+              const content = JSON.stringify(hb);
+              if (content !== lastContent) {
+                lastContent = content;
+                this._lastHeartbeat = hb;
+              }
+            }
+          } catch (e) {
+            // Ignore read errors during watch
+          }
+        }
+      });
+
+      // Read initial state
+      this._lastHeartbeat = this._readHeartbeat();
+      return true;
+    } catch (e) {
+      this._heartbeatWatcher = null;
+      this._heartbeatAvailable = false;
+      return false;
+    }
+  }
+
+  /**
+   * Stop watching heartbeat file.
+   */
+  _stopHeartbeatWatch() {
+    if (this._heartbeatWatcher) {
+      this._heartbeatWatcher.close();
+      this._heartbeatWatcher = null;
+    }
+  }
+
+  /**
+   * Get the appropriate poll interval based on current state and heartbeat availability.
+   * Uses longer intervals when heartbeat is available (event-driven).
+   */
+  _getPollInterval(state) {
+    // If heartbeat is available and fresh, use much longer polling interval
+    if (this._heartbeatAvailable && this._isHeartbeatFresh()) {
+      return HEARTBEAT_FALLBACK_INTERVAL_MS;
+    }
+    // Otherwise use state-based adaptive polling
+    return POLL_INTERVALS[state] || DEFAULT_POLL_INTERVAL_MS;
   }
 
   /**
@@ -848,6 +999,24 @@ export class FlowCertifier {
     // HiTestBot still interacts via tmux send-keys (works regardless of the terminal).
     this._openTerminalOnDesktop();
 
+    // Step 4: Early cheat detection — verify real Claude processes are running
+    // This catches the "echo" cheat where fake status messages are printed
+    this._runLog('Verifying authentic Claude processes...');
+    await this._sleep(3000); // Wait for processes to start
+
+    const earlyCheatCheck = new CheatDetector({
+      socket: this.socket,
+      session: this.session,
+    });
+
+    const processCheck = earlyCheatCheck.verifyClaudeProcesses();
+    if (!processCheck.valid) {
+      this._runLog(`⚠️ CHEAT DETECTED EARLY: ${processCheck.message}`);
+      throw new Error(`Cheat detected: ${processCheck.message}`);
+    }
+
+    this._runLog(`✓ Verified ${processCheck.count} Claude processes running`);
+
     return true;
   }
 
@@ -914,8 +1083,14 @@ export class FlowCertifier {
    * not from the shell environment.
    */
   async _updateMcpSettings(designDir) {
-    const SSH_HOST = process.env.HIPILOT_SSH_HOST || 'EDA@192.168.112.163';
-    const SSH_PASS = process.env.HIPILOT_SSH_PASS || 'eda2020';
+    // SECURITY: Credentials MUST be provided via environment variables
+    const SSH_HOST = process.env.HIPILOT_SSH_HOST;
+    const SSH_PASS = process.env.HIPILOT_SSH_PASS;
+
+    if (!SSH_HOST || !SSH_PASS) {
+      throw new Error('HIPILOT_SSH_HOST and HIPILOT_SSH_PASS environment variables must be set');
+    }
+
     const REMOTE_SETTINGS = '/home/EDA/.claude/settings.json';
 
     // HiPilot code directory - always use the deployed version
@@ -1021,15 +1196,39 @@ export class FlowCertifier {
   }
 
   typeInHiPilot(text) {
+    // SECURITY: Validate input against allowlist
+    const allowedPattern = /^[a-zA-Z0-9_\-\/\s\.:;,"'`!?@#$%\^\&*()\[\]{}=+\<\>\|\~`]+$/;
+    if (!allowedPattern.test(text)) {
+      this._runLog(`Rejected invalid command characters: "${text}"`);
+      return false;
+    }
+
+    // Block dangerous command patterns
+    const dangerousPatterns = [
+      /;\s*rm\s+/i, /;\s*sudo\s+/i, /;\s*dd\s+/i,
+      />\s*\/dev\/null/i, /2>&1.*\/dev\/null/i,
+      /\$\(/, /`/, /\|\s*sh\s*$/i, /\|\s*bash\s*$/i,
+    ];
+    for (const pattern of dangerousPatterns) {
+      if (pattern.test(text)) {
+        this._runLog(`Rejected dangerous command pattern: "${text}"`);
+        return false;
+      }
+    }
+
     const target = `${this.session}:0.0`;
-    const escaped = text.replace(/'/g, "'\\''");
+    // Use spawnSync with array args instead of shell string for better security
     try {
-      execSync(`tmux -L ${this.socket} send-keys -t ${target} -l '${escaped}'`, {
+      const result1 = spawnSync('tmux', ['-L', this.socket, 'send-keys', '-t', target, '-l', text], {
         encoding: 'utf-8', timeout: 5000,
       });
-      execSync(`tmux -L ${this.socket} send-keys -t ${target} C-m`, {
+      if (result1.error) throw result1.error;
+
+      const result2 = spawnSync('tmux', ['-L', this.socket, 'send-keys', '-t', target, 'C-m'], {
         encoding: 'utf-8', timeout: 5000,
       });
+      if (result2.error) throw result2.error;
+
       this._runLog(`Typed: "${text}"`);
       return true;
     } catch (e) {
@@ -1206,6 +1405,14 @@ export class FlowCertifier {
     const maxWaitMs = options.maxWaitMs || MAX_WATCH_MS;
     this._runLog(`Phase 4: Watching flow (max ${maxWaitMs / 1000}s, terminates on prompt detection)...`);
 
+    // Initialize heartbeat monitoring (if available)
+    const heartbeatStarted = this._startHeartbeatWatch();
+    if (heartbeatStarted) {
+      this._runLog('Heartbeat monitoring active — using event-driven polling');
+    } else if (HEARTBEAT_ENABLED) {
+      this._runLog('Heartbeat not available — using standard polling');
+    }
+
     const start = Date.now();
     let lastClaudeOutput = '';
     let lastEdaOutput = '';
@@ -1215,6 +1422,7 @@ export class FlowCertifier {
     let questionCount = 0;
     let pollCount = 0;
     let lastState = 'working';
+    let heartbeatWakeups = 0; // Track how many times heartbeat woke us up
 
     // Adaptive timeout: extend when stages complete (rewards progress)
     let currentMaxWaitMs = maxWaitMs;
@@ -1227,10 +1435,25 @@ export class FlowCertifier {
     const MONITORING_WINDOW = 5; // Keep last 5 outputs to detect pattern
 
     while (Date.now() - start < currentMaxWaitMs) {
-      // Use adaptive polling interval based on current state
-      const pollInterval = POLL_INTERVALS[lastState] || DEFAULT_POLL_INTERVAL_MS;
+      // Use human-like polling interval (with jitter to avoid mechanical patterns)
+      const pollInterval = this._getHumanPollInterval(lastState);
       await this._sleep(pollInterval);
       pollCount++;
+
+      // Check if heartbeat woke us up (new state available)
+      if (this._heartbeatAvailable && this._lastHeartbeat) {
+        const hb = this._lastHeartbeat;
+        const hbAge = Date.now() - hb.timestamp;
+
+        // If heartbeat indicates idle/complete and it's fresh, we can react faster
+        if (hbAge < HEARTBEAT_MAX_AGE_MS && (hb.state === 'idle' || hb.state === 'complete')) {
+          heartbeatWakeups++;
+          // When heartbeat says EDA is idle, check more aggressively
+          if (lastState === 'waiting_for_eda' && hb.state === 'idle') {
+            this._runLog(`Heartbeat: EDA idle detected (${hbAge}ms ago)`);
+          }
+        }
+      }
 
       // Log both panes continuously — this is what a human sees (parallel capture)
       const panes = await this._logPanesParallel(`poll_${pollCount}`);
@@ -1284,9 +1507,15 @@ export class FlowCertifier {
       const screenshotInterval = isEdaRunning ? SCREENSHOT_INTERVAL_POLLS : FAST_SCREENSHOT_INTERVAL;
       const observationInterval = isEdaRunning ? OBSERVATION_INTERVAL_POLLS : FAST_OBSERVATION_INTERVAL;
 
-      // Only take screenshot if enough polls have passed AND something changed (or forced interval)
-      if (pollCount % screenshotInterval === 0 && (isActive || isEdaRunning)) {
+      // Human-like screenshot: take at meaningful moments, not just periodically
+      const screenshotContext = {
+        stateChange: state !== lastState,
+        errorDetected: state === 'error',
+        completion: earlyCompletion || state === 'done',
+      };
+      if (this._shouldTakeScreenshot(screenshotContext)) {
         this._takeScreenshot(`progress_${pollCount}`);
+        this._recordScreenshot();
       }
 
       // Only capture observation point at intervals and when there's activity (or EDA running)
@@ -1356,6 +1585,13 @@ export class FlowCertifier {
         // EDA tool is running. A human waits — but check if EDA actually completed
         // If EDA pane shows prompt and hasn't changed for a while, EDA is done
         const edaQuietTime = Date.now() - lastEdaChangeTime;
+        // Check if EDA prompt is ready (innovus N>, icc2_shell>, pt_shell>, or $)
+        const edaLines = lastEdaOutput.split('\n').filter(l => l.trim());
+        const edaLastLine = edaLines[edaLines.length - 1] || '';
+        const edaPromptReady = /innovus\s*\d+>/i.test(edaLastLine) ||
+          /icc2_shell>/i.test(edaLastLine) ||
+          /pt_shell>/i.test(edaLastLine) ||
+          /\$\s*$/.test(edaLastLine);
         if (edaQuietTime > 5000 && edaPromptReady && !claudeChanged) {
           // EDA has been quiet with prompt visible for 5s — likely done, Claude should respond
           this._runLog('EDA appears complete (prompt visible, no changes for 5s)');
@@ -1387,8 +1623,17 @@ export class FlowCertifier {
     }
 
     const totalTime = Date.now() - start;
+
+    // Stop heartbeat monitoring
+    this._stopHeartbeatWatch();
+
+    // Log heartbeat stats if used
+    if (this._heartbeatAvailable) {
+      this._runLog(`Heartbeat stats: ${heartbeatWakeups} wakeups, reduced polling from ${POLL_INTERVALS['waiting_for_eda']}ms to ${HEARTBEAT_FALLBACK_INTERVAL_MS}ms during EDA wait`);
+    }
+
     this._runLog(`Watch complete: ${(totalTime / 1000).toFixed(1)}s, ${approvalCount} approvals, ${questionCount} questions answered`);
-    return { elapsed_ms: totalTime, approvals: approvalCount, questions: questionCount, polls: pollCount };
+    return { elapsed_ms: totalTime, approvals: approvalCount, questions: questionCount, polls: pollCount, heartbeat_wakeups: heartbeatWakeups, heartbeat_enabled: this._heartbeatAvailable };
   }
 
   evaluate(beforeObs, afterObs) {
@@ -1470,8 +1715,18 @@ export class FlowCertifier {
       weight: 2.5, // HIGHEST weight - this is HiPilot's core differentiator
     };
 
+    // Subject 7: Authenticity (NEW - Cheat detection verification)
+    // This ensures all evidence is real, not fabricated or replayed
+    const authenticity = this._scoreAuthenticity();
+    const authenticitySubject = {
+      name: 'Authenticity',
+      components: { authenticity },
+      raw_score: authenticity.score * 100,
+      weight: 10.0, // CRITICAL weight - cheating is an automatic fail regardless of other scores
+    };
+
     // All subjects for GPA calculation
-    const subjects = [communication, methodology, process, execution, results, humanLikeSubject];
+    const subjects = [communication, methodology, process, execution, results, humanLikeSubject, authenticitySubject];
 
     // Calculate letter grades and grade points for each subject
     for (const subject of subjects) {
@@ -1489,9 +1744,31 @@ export class FlowCertifier {
     const totalRawScore = subjects.reduce((sum, s) => sum + s.raw_score, 0);
     const overallPercentage = totalRawScore / subjects.length;
 
-    // Final assessment
-    let finalGrade = this._scoreToLetter(overallPercentage);
-    let assessment = this._assessPerformance(subjects, gpa, finalGrade);
+    // ═══════════════════════════════════════════════════════════════════
+    // VETO POWER: CheatDetector has absolute authority to fail the test
+    // regardless of any other scores. If critical cheats detected = AUTO FAIL.
+    // ═══════════════════════════════════════════════════════════════════
+    const hasVeto = authenticitySubject.raw_score === 0;
+    if (hasVeto) {
+      // Override all assessments - cheating is an automatic fail
+      finalGrade = 'F';
+      assessment = {
+        status: 'FAIL',
+        summary: 'CHEAT DETECTOR VETO: Critical authenticity violations detected. Test automatically FAILED regardless of other scores.',
+        recommendations: [
+          'Review cheat_detection_report.json for details',
+          'Ensure test was run with authentic HiPilot processes',
+          'Check for echo commands or fabricated output',
+          'Verify video recording shows actual EDA tool execution',
+        ],
+      };
+    }
+
+    // Final assessment (only if not vetoed)
+    finalGrade = hasVeto ? 'F' : this._scoreToLetter(overallPercentage);
+    assessment = hasVeto
+      ? assessment
+      : this._assessPerformance(subjects, gpa, finalGrade);
 
     // Legacy L1-L5 scores for backward compatibility
     const scores = {
@@ -2263,6 +2540,80 @@ export class FlowCertifier {
     };
   }
 
+  /**
+   * Score authenticity based on cheat detection results
+   * Reads the cheat_detection_report.json generated during test
+   */
+  _scoreAuthenticity() {
+    // Default: assume authentic if no report
+    let score = 1.0;
+    let details = ['No cheat detection report — assuming authentic'];
+    let criticalIssues = 0;
+    let warnings = 0;
+
+    try {
+      const reportPath = join(this.evidenceDir, 'cheat_detection_report.json');
+      if (!existsSync(reportPath)) {
+        return {
+          score: 1.0,
+          detail: 'No cheat detection report available — skipping authenticity check',
+          critical_issues: 0,
+          warnings: 0,
+        };
+      }
+
+      const report = JSON.parse(readFileSync(reportPath, 'utf8'));
+
+      // Count issues by severity
+      criticalIssues = report.criticalCheats || 0;
+      warnings = report.warnings || 0;
+
+      // CRITICAL: Any critical cheat detection = automatic 0 score
+      if (criticalIssues > 0) {
+        score = 0.0;
+        details = [`CRITICAL: ${criticalIssues} critical cheat(s) detected`];
+
+        // List specific critical issues
+        const criticalTypes = [];
+        if (report.checks?.processes?.valid === false) criticalTypes.push('fake processes');
+        if (report.checks?.echo?.valid === false) criticalTypes.push('echo commands');
+        if (report.checks?.pane?.valid === false) criticalTypes.push('fake pane content');
+        if (report.checks?.mcp?.valid === false) criticalTypes.push('fake MCP logs');
+        if (report.checks?.video?.valid === false) criticalTypes.push('fake video');
+        if (report.checks?.freshness?.valid === false) criticalTypes.push('stale evidence');
+        if (report.checks?.interactive?.valid === false) criticalTypes.push('no interactivity');
+
+        if (criticalTypes.length > 0) {
+          details.push(`Issues: ${criticalTypes.join(', ')}`);
+        }
+      } else if (warnings > 0) {
+        // Warnings reduce score but don't fail completely
+        score = Math.max(0, 1.0 - (warnings * 0.1));
+        details = [`${warnings} warning(s) — evidence mostly authentic`];
+      } else {
+        score = 1.0;
+        details = ['All authenticity checks passed'];
+      }
+
+      return {
+        score,
+        detail: details.join(' — '),
+        critical_issues: criticalIssues,
+        warnings: warnings,
+        cheat_detected: report.cheatDetected || false,
+      };
+    } catch (e) {
+      // If we can't read the report, assume failure
+      return {
+        score: 0.0,
+        detail: `Failed to read cheat detection report: ${e.message}`,
+        critical_issues: 1,
+        warnings: 0,
+        error: e.message,
+      };
+    }
+  }
+
   _classifyFailure(scores, claudeOutput, edaOutput) {
     if (scores.L1_prompt_delivery.score === 0.0) return { category: 'ENVIRONMENT', summary: 'Claude Code did not respond', action: 'Check Claude Code is running and MCP servers are connected' };
     if (scores.L3_mcp_tool_usage.score === 0.0 && scores.L3_mcp_tool_usage.detail.includes('direct bash')) return { category: 'AI_BEHAVIOR', summary: 'Claude bypassed MCP tools', action: 'Improve CLAUDE.md to enforce MCP-only usage' };
@@ -2504,7 +2855,59 @@ export class FlowCertifier {
     // Build correlated timeline
     this._buildTimeline();
 
-    // Phase 6: Evaluate
+    // ═══════════════════════════════════════════════════════════════════
+    // CHEAT DETECTION: Verify all evidence is authentic
+    // ═══════════════════════════════════════════════════════════════════
+    this._runLog('Running cheat detection verification...');
+    const cheatDetector = new CheatDetector({
+      socket: this.socket,
+      session: this.session,
+      designDir: cleanDesignDir,
+    });
+
+    // Get pane text for verification
+    const pane0Text = this._readPane(0.0);
+    const pane1Text = this._readPane(0.1);
+    const combinedPaneText = `${pane0Text}\n${pane1Text}`;
+
+    // Get evidence files
+    const evidenceFiles = [
+      join(this.evidenceDir, 'video.mp4'),
+      join(this.evidenceDir, 'test_metadata.json'),
+      join(this.evidenceDir, 'pane0_continuous.log'),
+      join(this.evidenceDir, 'pane1_continuous.log'),
+    ].filter(f => existsSync(f));
+
+    // Add MCP log if collected
+    const mcpLogPath = join(this.evidenceDir, 'mcp_calls.jsonl');
+
+    // Run full verification
+    const cheatResults = await cheatDetector.runFullVerification({
+      paneText: combinedPaneText,
+      mcpLogPath: existsSync(mcpLogPath) ? mcpLogPath : null,
+      videoPath: join(this.evidenceDir, 'video.mp4'),
+      evidenceFiles,
+    });
+
+    // Save cheat detection report
+    writeFileSync(
+      join(this.evidenceDir, 'cheat_detection_report.json'),
+      JSON.stringify(cheatResults, null, 2)
+    );
+
+    // Log results
+    if (cheatResults.cheatDetected) {
+      this._runLog(`⚠️ CHEAT DETECTION: ${cheatResults.criticalCheats} critical, ${cheatResults.warnings} warnings`);
+
+      // Log specific issues
+      for (const issue of cheatDetector.cheatLog) {
+        this._runLog(`  [${issue.severity.toUpperCase()}] ${issue.type}: ${issue.message}`);
+      }
+    } else {
+      this._runLog('✓ Cheat detection passed — all evidence authentic');
+    }
+
+    // Phase 6: Evaluate (include cheat detection in scoring)
     const scorecard = this.evaluate(beforeObs, afterObs);
     this.stageResults = [scorecard];
 
@@ -2596,6 +2999,20 @@ export class FlowCertifier {
     return best || '';
   }
 
+  /**
+   * Capture text from a specific pane (async wrapper for mission pack testing)
+   */
+  async _capturePaneText(paneId) {
+    return this._capturePane(paneId);
+  }
+
+  /**
+   * Type a command in HiPilot (wrapper for mission pack testing)
+   */
+  async _typeCommand(command) {
+    return this.typeInHiPilot(command);
+  }
+
   _needsApproval(claudeOutput) {
     const approvalPatterns = [/pending.?approval/i, /approve.*pending/i, /prefix\+y/i, /manual.*mode.*queued/i, /⏳.*pending/i, /approval required/i];
     return approvalPatterns.some(p => p.test(claudeOutput));
@@ -2617,6 +3034,68 @@ export class FlowCertifier {
 
   _sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+  // ═══════════════════════════════════════════════════════════════════
+  //  HUMAN-LIKE BEHAVIOR METHODS
+  // ═══════════════════════════════════════════════════════════════════
+
+  /**
+   * Human-like sleep with jitter - avoids mechanical timing patterns
+   * Real humans have irregular attention and response times
+   */
+  async _humanSleep(baseMs, jitterPercent = HUMAN_JITTER_PERCENT) {
+    const jitter = baseMs * jitterPercent * (Math.random() * 2 - 1); // ±jitter
+    const actualMs = Math.max(100, Math.round(baseMs + jitter)); // Min 100ms
+    await this._sleep(actualMs);
+    return actualMs;
+  }
+
+  /**
+   * Get poll interval with human-like variation
+   * Humans don't poll at exact intervals - they glance irregularly
+   */
+  _getHumanPollInterval(state) {
+    const baseInterval = this._getPollInterval(state);
+    const jitter = baseInterval * HUMAN_JITTER_PERCENT * (Math.random() * 2 - 1);
+    return Math.max(200, Math.round(baseInterval + jitter));
+  }
+
+  /**
+   * Human review pause - pause naturally after actions to "read" output
+   * Real engineers pause to see results before continuing
+   */
+  async _reviewPause(context = 'afterCommand') {
+    const pauseMs = REVIEW_PAUSE_MS[context] || REVIEW_PAUSE_MS.afterCommand;
+    const actualPause = await this._humanSleep(pauseMs);
+    this._runLog(`Review pause (${context}): ${actualPause}ms`);
+    return actualPause;
+  }
+
+  /**
+   * Should take screenshot? Humans take them at meaningful moments
+   * Not just periodically, but when things change or complete
+   */
+  _shouldTakeScreenshot(context = {}) {
+    const now = Date.now();
+    const timeSinceLastShot = now - (this._lastScreenshotTime || 0);
+
+    // Always capture on important events
+    if (context.stateChange && SCREENSHOT_TRIGGERS.stateChange) return true;
+    if (context.errorDetected && SCREENSHOT_TRIGGERS.errorDetected) return true;
+    if (context.completion && SCREENSHOT_TRIGGERS.completion) return true;
+
+    // Max interval - humans glance periodically even if nothing changes
+    if (timeSinceLastShot > SCREENSHOT_TRIGGERS.periodicMaxInterval) return true;
+
+    return false;
+  }
+
+  /**
+   * Record that a screenshot was taken
+   */
+  _recordScreenshot() {
+    this._lastScreenshotTime = Date.now();
+  }
+
   _runLog(msg) {
     const ts = new Date().toISOString();
     this._runLogLines.push(`[${ts}] ${msg}`);
@@ -2626,5 +3105,241 @@ export class FlowCertifier {
     const ts = new Date().toISOString();
     const serialized = JSON.stringify(data, null, 2);
     this._runLogLines.push(`[${ts}] [DEBUG] ${label} ${serialized}`);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  //  MISSION PACK TESTING METHODS (Phase 4.5 & Phase 8)
+  // ═══════════════════════════════════════════════════════════════════
+
+  /**
+   * Verify mission pack exists in design directory
+   */
+  async verifyMissionPackExists() {
+    const designDir = process.env.HIPILOT_DESIGN_DIR || '/home/EDA/ibex_work_upload';
+    const missionPaths = [
+      join(designDir, 'hipilot-mission.md'),
+      join(designDir, 'hipilot-mission.yaml'),
+      join(designDir, '.hipilot', 'mission.md'),
+    ];
+
+    for (const path of missionPaths) {
+      if (existsSync(path)) {
+        this._runLog(`Mission pack found: ${path}`);
+        return { exists: true, path };
+      }
+    }
+
+    this._runLog('Mission pack not found in design directory');
+    return { exists: false };
+  }
+
+  /**
+   * Verify agent coordination via pane status
+   */
+  async verifyAgentCoordination() {
+    const paneText = await this._capturePaneText(0.0);
+
+    const agents = ['Supervisor', 'Knowledge', 'Planner', 'Executor', 'Archivist'];
+    const activeAgents = agents.filter(agent =>
+      paneText.includes(`${agent}:`) ||
+      paneText.includes(`${agent} Agent`) ||
+      paneText.includes(`${agent.toLowerCase()}:`)
+    );
+
+    this._runLog(`Active agents detected: ${activeAgents.join(', ')}`);
+    return {
+      allActive: activeAgents.length >= 5,
+      activeAgents,
+      missingAgents: agents.filter(a => !activeAgents.includes(a)),
+    };
+  }
+
+  /**
+   * Verify mission pack content was parsed correctly
+   */
+  async verifyMissionPackContent() {
+    const paneText = await this._capturePaneText(0.0);
+
+    const checks = [
+      { pattern: /ibex_core|ibex/i, name: 'Project name' },
+      { pattern: /100\s*MHz/i, name: 'Target frequency' },
+      { pattern: /sky130|skywater/i, name: 'Technology' },
+      { pattern: /synthesis.*floorplan|placement.*cts/i, name: 'Stage sequence' },
+      { pattern: /20\+?\s*(?:RTL|files)|SystemVerilog/i, name: 'RTL files' },
+    ];
+
+    return checks.map(check => ({
+      name: check.name,
+      found: check.pattern.test(paneText),
+    }));
+  }
+
+  /**
+   * Verify QoR was recorded by Archivist
+   */
+  async verifyQoRRecorded(stage) {
+    const paneText = await this._capturePaneText(0.0);
+    const patterns = [
+      new RegExp(`Archivist.*${stage}.*QoR`, 'i'),
+      new RegExp(`QoR.*snapshot.*${stage}`, 'i'),
+      /WNS:\s*[\d.-]+\s*ns/i,
+      /TNS:\s*[\d.-]+\s*ns/i,
+      /Archivist.*recorded/i,
+    ];
+
+    const found = patterns.some(p => p.test(paneText));
+    this._runLog(`QoR recorded for ${stage}: ${found}`);
+    return found;
+  }
+
+  /**
+   * Compare actual QoR against mission pack targets
+   */
+  async compareQoRAgainstTargets() {
+    const paneText = await this._capturePaneText(0.0);
+
+    // Extract actual QoR from pane
+    const wnsMatch = paneText.match(/WNS:\s*([\d.-]+)\s*ns/i);
+    const tnsMatch = paneText.match(/TNS:\s*([\d.-]+)\s*ns/i);
+
+    const actualWNS = wnsMatch ? parseFloat(wnsMatch[1]) : null;
+    const actualTNS = tnsMatch ? parseFloat(tnsMatch[1]) : null;
+
+    // Mission pack targets (from ibex-mission.md)
+    const targets = {
+      wns: 0.0,
+      tns: 0.0,
+      freq: 100.0,
+    };
+
+    return {
+      timing: {
+        target: targets,
+        actual: { wns: actualWNS, tns: actualTNS },
+        wnsMet: actualWNS !== null && actualWNS >= targets.wns,
+        tnsMet: actualTNS !== null && actualTNS >= targets.tns,
+      },
+    };
+  }
+
+  /**
+   * Run mission pack driven full flow test (Phase 8)
+   */
+  async runMissionPackFlowTest(options = {}) {
+    const startTime = Date.now();
+    this._runLog('Starting Mission Pack Flow Test (Phase 8)');
+
+    // Step 1: Verify mission pack exists
+    const missionCheck = await this.verifyMissionPackExists();
+    if (!missionCheck.exists) {
+      return { status: 'failed', reason: 'Mission pack not found' };
+    }
+
+    // Step 2: Type command to execute flow
+    const command = options.command || 'execute the complete RTL2GDS flow from the mission pack';
+    await this._typeCommand(command);
+
+    // Step 3: Monitor agent coordination
+    const agentCheck = await this.verifyAgentCoordination();
+    if (!agentCheck.allActive) {
+      this._runLog(`Warning: Missing agents - ${agentCheck.missingAgents.join(', ')}`);
+    }
+
+    // Step 4: Wait for completion with stage tracking
+    const stages = options.stages || [
+      'synthesis', 'design_init', 'floorplan', 'powerplan',
+      'placement', 'cts', 'post_cts_opt', 'routing', 'route_opt', 'chip_finish'
+    ];
+
+    const stageResults = [];
+    for (const stage of stages) {
+      this._runLog(`Waiting for stage: ${stage}`);
+      const result = await this._waitForStageCompletion(stage, { timeout: 900000 });
+      stageResults.push({ stage, ...result });
+
+      // Verify QoR recorded
+      const qorRecorded = await this.verifyQoRRecorded(stage);
+      if (!qorRecorded) {
+        this._runLog(`Warning: QoR may not have been recorded for ${stage}`);
+      }
+    }
+
+    // Step 5: Verify final outputs
+    const designDir = process.env.HIPILOT_DESIGN_DIR || '/home/EDA/ibex_work_upload';
+    const gdsPath = join(designDir, 'ibex_core.gds');
+    const gdsExists = existsSync(gdsPath);
+    const gdsSize = gdsExists ? statSync(gdsPath).size : 0;
+
+    // Step 6: Compare QoR against targets
+    const qorComparison = await this.compareQoRAgainstTargets();
+
+    const duration = Date.now() - startTime;
+    const allStagesComplete = stageResults.every(r => r.complete);
+    const timingClosed = qorComparison.timing.wnsMet;
+
+    // Determine certification tier
+    let tier = 'FAIL';
+    if (allStagesComplete && gdsExists && timingClosed) {
+      tier = 'PLATINUM';
+    } else if (allStagesComplete && gdsExists) {
+      tier = 'GOLD';
+    } else if (stageResults.filter(r => r.complete).length >= 8) {
+      tier = 'SILVER';
+    } else if (stageResults.filter(r => r.complete).length >= 5) {
+      tier = 'BRONZE';
+    }
+
+    return {
+      status: tier === 'FAIL' ? 'failed' : 'passed',
+      tier,
+      stageResults,
+      gdsExists,
+      gdsSize,
+      timingClosed,
+      qorComparison,
+      agentCoordination: agentCheck,
+      duration,
+    };
+  }
+
+  /**
+   * Helper: Wait for a specific stage to complete
+   */
+  async _waitForStageCompletion(stageName, options = {}) {
+    const timeout = options.timeout || 900000; // 15 min default
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < timeout) {
+      const paneText = await this._capturePaneText(0.0);
+
+      // Check for stage completion indicators
+      const completePatterns = [
+        new RegExp(`${stageName}.*complete`, 'i'),
+        new RegExp(`${stageName}.*done`, 'i'),
+        new RegExp(`${stageName}.*finished`, 'i'),
+        new RegExp(`${stageName}.*checkpoint`, 'i'),
+        new RegExp(`${stageName}.*enc`, 'i'),
+      ];
+
+      if (completePatterns.some(p => p.test(paneText))) {
+        return { complete: true, duration: Date.now() - startTime };
+      }
+
+      // Check for errors
+      const errorPatterns = [
+        new RegExp(`${stageName}.*error`, 'i'),
+        new RegExp(`${stageName}.*failed`, 'i'),
+        /ERROR.*Innovus/i,
+        /ERROR.*dc_shell/i,
+      ];
+
+      if (errorPatterns.some(p => p.test(paneText))) {
+        return { complete: false, error: true, duration: Date.now() - startTime };
+      }
+
+      await this._sleep(5000); // Check every 5 seconds
+    }
+
+    return { complete: false, timeout: true, duration: Date.now() - startTime };
   }
 }

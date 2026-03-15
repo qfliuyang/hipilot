@@ -1,59 +1,70 @@
 #!/bin/bash
-# HiPilot Workspace Launcher
-# Creates a tmux 50/50 split layout for Claude Code + EDA tool
-# with status bar and keyboard shortcuts per UX specification
+# HiPilot Workspace Launcher - True 5-Agent Team Mode
+# Creates a tmux layout with 5 Claude Code agent instances + 1 EDA pane
 #
-# Usage:
-#   bin/hipilot                  # Launch workspace
-#   bin/hipilot --no-terminal    # Create session without opening new window
+# Architecture:
+# - Pane 0 (Supervisor): Main user interface, coordinates all agents
+# - Pane 1 (Knowledge): Brain hub, handles 3-brain queries
+# - Pane 2 (Planner): Strategy agent
+# - Pane 3 (Executor): Tcl execution agent
+# - Pane 4 (Archivist): Recording agent
+# - Pane 5 (EDA): EDA tool terminal
+#
+# Each agent runs a real Claude Code instance with specialized identity.
 
 set -e
 
-# Auto-detect project root
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
-# User-specific temp directory (must match src/lib/paths.js)
 HIPILOT_TMPDIR="/tmp/hipilot-$(whoami)"
 mkdir -p "$HIPILOT_TMPDIR"
 mkdir -p "$HIPILOT_TMPDIR/exec"
-mkdir -p "$HIPILOT_TMPDIR/generated"
+mkdir -p "$HIPILOT_TMPDIR/agents"
+mkdir -p "$HIPILOT_TMPDIR/agent-logs"
 
-# Session name
 HIPILOT_SESSION="${HIPILOT_SESSION:-hipilot}"
 
-# Colors
 GREEN="\033[0;32m"
 CYAN="\033[0;36m"
 RED="\033[0;31m"
 YELLOW="\033[1;33m"
 NC="\033[0m"
 
-# Parse args
 NO_TERMINAL=false
+SIMPLE_MODE=false
 for arg in "$@"; do
   case $arg in
     --no-terminal) NO_TERMINAL=true ;;
+    --simple) SIMPLE_MODE=true ;;
   esac
 done
 
-# Check tmux
 if ! command -v tmux &> /dev/null; then
     echo -e "${RED}Error: tmux not found.${NC}"
-    echo "Install: apt install tmux  OR  brew install tmux"
     exit 1
 fi
 
+# If simple mode requested, launch legacy 2-pane layout
+if [ "$SIMPLE_MODE" = true ]; then
+    exec "$SCRIPT_DIR/hipilot-simple" "$@"
+fi
+
 echo -e "${CYAN}"
-echo "╔══════════════════════════════════════════════════════╗"
-echo "║   HiPilot v0.7.0 - VLSI Physical Design Copilot    ║"
-echo "╚══════════════════════════════════════════════════════╝"
+echo "╔══════════════════════════════════════════════════════════════╗"
+echo "║   HiPilot v0.8.0 - VLSI Physical Design Copilot              ║"
+echo "║   TRUE 5-Agent Team Mode (5 Claude instances)                ║"
+echo "╚══════════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 
-# Check if session already exists
+# Check if claude CLI is available
+if ! command -v claude &> /dev/null; then
+    echo -e "${RED}Error: Claude CLI not found. Install with: npm install -g @anthropic-ai/claude-code${NC}"
+    exit 1
+fi
+
 if tmux -L "$HIPILOT_SESSION" has-session 2>/dev/null; then
     echo -e "${GREEN}✓ HiPilot session already running${NC}"
-
     if [ "$NO_TERMINAL" = true ]; then
         echo "Attach with: tmux -L $HIPILOT_SESSION attach-session"
     else
@@ -62,295 +73,244 @@ if tmux -L "$HIPILOT_SESSION" has-session 2>/dev/null; then
     exit 0
 fi
 
-echo -e "${GREEN}Creating HiPilot workspace...${NC}"
+echo -e "${GREEN}Creating TRUE 5-Agent Team workspace...${NC}"
+echo "  This will launch 5 Claude Code instances (one per agent)"
 echo ""
 
-# Create new session with 50/50 split (detached)
+# Create agent identity CLAUDE.md files
+create_agent_identity() {
+    local agent_name=$1
+    local agent_role=$2
+    local agent_desc=$3
+    local agent_duties=$4
+
+    cat > "$HIPILOT_TMPDIR/agents/${agent_name}-CLAUDE.md" << EOF
+# You Are HiPilot - ${agent_name} Agent
+
+**Identity:** You are the **${agent_name}** agent in HiPilot's 5-Agent Team.
+
+**Your Role:** ${agent_role}
+
+**Your Duties:**
+${agent_duties}
+
+## Team Communication
+
+You communicate with other agents via the Knowledge Agent (hub-and-spoke pattern):
+- **NEVER** talk directly to other agents
+- **ALWAYS** query Knowledge Agent for information
+- Knowledge Agent owns all 3 brains (ASIC-Brain, EDA-Brain, Project-Brain)
+
+## Your Pane
+
+You are running in tmux pane: ${agent_name}
+Your socket: $HIPILOT_SESSION
+
+## Available Tools
+
+You have access to:
+- MCP servers (eda, tmux, knowledge)
+- 3-Brain system via Knowledge Agent
+- Skills directory
+
+## When Activated
+
+Wait for Supervisor to assign tasks. Do not act until instructed.
+EOF
+}
+
+# Create identities for all 5 agents
+create_agent_identity "Supervisor" \
+    "Team Coordinator" \
+    "- Validate prerequisites for each flow phase
+- Coordinate agent activities
+- Communicate with the human engineer
+- Make go/no-go decisions
+- Handle errors and recovery" \
+    "You are in Pane 0. The human engineer interacts with you."
+
+create_agent_identity "Knowledge" \
+    "Brain Hub (3-Brain Owner)" \
+    "- Own ASIC-Brain (Tcl patterns, flow orchestration)
+- Own EDA-Brain (tool commands, error patterns)
+- Own Project-Brain (design memory, QoR history)
+- Answer queries from other agents
+- Provide context-aware knowledge" \
+    "You are in Pane 1. All agents query you for information."
+
+create_agent_identity "Planner" \
+    "Strategy Agent" \
+    "- Query Knowledge for flow definitions
+- Create execution plans
+- Determine stage sequences
+- Estimate effort and timing
+- Identify risks and contingencies" \
+    "You are in Pane 2. Supervisor assigns planning tasks to you."
+
+create_agent_identity "Executor" \
+    "Operations Agent" \
+    "- Get Tcl from Knowledge Agent
+- Execute via EDA MCP
+- Monitor tool output
+- Handle execution errors
+- Report completion status" \
+    "You are in Pane 3. Supervisor/Planner assign execution tasks to you."
+
+create_agent_identity "Archivist" \
+    "Recorder Agent" \
+    "- Record QoR metrics to Project-Brain
+- Store error patterns and learnings
+- Analyze QoR trends
+- Generate reports
+- Maintain design history" \
+    "You are in Pane 4. All agents send you data to record."
+
+# Create new session (detached) - start with supervisor pane
 tmux -L "$HIPILOT_SESSION" new-session -d -s "$HIPILOT_SESSION" -n "HiPilot" -c "$PROJECT_DIR"
 
-# Pass HIPILOT_DESIGN_DIR to tmux session if set (for clean design directory isolation)
+# Pass environment variables
 if [ -n "$HIPILOT_DESIGN_DIR" ]; then
     tmux -L "$HIPILOT_SESSION" set-environment HIPILOT_DESIGN_DIR "$HIPILOT_DESIGN_DIR"
-    # Also write to file so MCP servers can read it (MCP doesn't inherit tmux env)
     echo "$HIPILOT_DESIGN_DIR" > "$HIPILOT_TMPDIR/design_dir.txt"
-    echo "[HiPilot v0.7.0] Design dir set: $HIPILOT_DESIGN_DIR" >&2
 fi
+tmux -L "$HIPILOT_SESSION" set-environment HIPILOT_SESSION "$HIPILOT_SESSION"
 
-# Split window 50/50
+# Build the 5-agent + 1 EDA layout (6 panes total)
+# Target layout:
+# ┌─────┬─────┬─────┬─────┐
+# │  0  │  1  │  2  │  3  │  <- Top row: Supervisor, Knowledge, Planner, Executor
+# ├─────┴─────┴─────┴─────┤
+# │           4           │  <- Middle: Archivist
+# ├───────────────────────┤
+# │           5           │  <- Bottom: EDA
+# └───────────────────────┘
+
+# Step 1: Split into top (65%) and bottom (35%) - pane 0 and pane 1
+tmux -L "$HIPILOT_SESSION" split-window -v -l 35% -c "$PROJECT_DIR"
+
+# Step 2: Split bottom pane (pane 1) into Archivist (top) and EDA (bottom)
+# After this: pane 0=top, pane 1=middle, pane 2=bottom
+tmux -L "$HIPILOT_SESSION" select-pane -t 1
+tmux -L "$HIPILOT_SESSION" split-window -v -l 50% -c "$PROJECT_DIR"
+
+# Step 3: Split top pane (pane 0) into 4 columns
+# First split creates pane 0 and pane 1, pushing others down
+tmux -L "$HIPILOT_SESSION" select-pane -t 0
+tmux -L "$HIPILOT_SESSION" split-window -h -l 25% -c "$PROJECT_DIR"
+
+# Second split on pane 0
+tmux -L "$HIPILOT_SESSION" select-pane -t 0
+tmux -L "$HIPILOT_SESSION" split-window -h -l 33% -c "$PROJECT_DIR"
+
+# Third split on pane 0 - now we have 4 panes in top row
+tmux -L "$HIPILOT_SESSION" select-pane -t 0
 tmux -L "$HIPILOT_SESSION" split-window -h -l 50% -c "$PROJECT_DIR"
 
-# Keep EDA pane (pane 1) open even when process exits - critical for HiPilot workflow
-tmux -L "$HIPILOT_SESSION" set-option -t "$HIPILOT_SESSION:0.1" remain-on-exit on 2>/dev/null || true
-tmux -L "$HIPILOT_SESSION" set-option -t "$HIPILOT_SESSION:0.1" remain-on-exit-format " [EDA pane ready] " 2>/dev/null || true
+# Final layout: 0=Supervisor, 1=Knowledge, 2=Planner, 3=Executor, 4=Archivist, 5=EDA
 
-# -------------------------------------------------------------------
-# Status Bar Configuration (UX Spec Section 5)
-# Layout: | tool_section | skill_section | job_section | context_section |
-# -------------------------------------------------------------------
-
-# Status bar colors per UX spec (session-specific, not global)
+# Status bar
 tmux -L "$HIPILOT_SESSION" set-option status on
-tmux -L "$HIPILOT_SESSION" set-option status-interval 5
+tmux -L "$HIPILOT_SESSION" set-option status-interval 2
 tmux -L "$HIPILOT_SESSION" set-option status-style "bg=#1a1a2e,fg=#e0e0e0"
-
-# Left status: Tool + Skill sections
-tmux -L "$HIPILOT_SESSION" set-option status-left-length 60
-tmux -L "$HIPILOT_SESSION" set-option status-left "\
-#[fg=#00d4ff,bg=#1a1a2e,bold] ⚙ HiPilot #[fg=#666666]│\
-#[fg=#ffd700,nobold] 📋 ready #[fg=#666666]│"
-
-# Right status: Job + Context sections
+tmux -L "$HIPILOT_SESSION" set-option status-left-length 80
+tmux -L "$HIPILOT_SESSION" set-option status-left "#[fg=#00d4ff,bg=#1a1a2e,bold] ⚙ HiPilot #[fg=#666666]|#[fg=#ffd700,nobold] 🎯 5 Agents #[fg=#666666]|"
 tmux -L "$HIPILOT_SESSION" set-option status-right-length 60
-tmux -L "$HIPILOT_SESSION" set-option status-right "\
-#[fg=#666666]│#[fg=#00ff88] ▶ idle \
-#[fg=#666666]│#[fg=#e0e0e0] design: —  "
-
-# Window status (center)
+tmux -L "$HIPILOT_SESSION" set-option status-right "#[fg=#666666]|#[fg=#00ff88] ▶ idle #[fg=#666666]|#[fg=#e0e0e0] design: —"
 tmux -L "$HIPILOT_SESSION" set-option status-justify centre
-tmux -L "$HIPILOT_SESSION" set-option window-status-format " #W "
-tmux -L "$HIPILOT_SESSION" set-option window-status-current-format "#[fg=#00d4ff,bold] #W "
 
-# Pane borders
+# Pane border labels
 tmux -L "$HIPILOT_SESSION" set-option pane-border-style "fg=#666666"
 tmux -L "$HIPILOT_SESSION" set-option pane-active-border-style "fg=#00d4ff"
-
-# Pane border labels (if tmux supports it - 3.2+)
 tmux -L "$HIPILOT_SESSION" set-option pane-border-status top 2>/dev/null || true
-tmux -L "$HIPILOT_SESSION" set-option pane-border-format \
-  "#{?#{==:#{pane_index},0}, Chat (Claude Code) , EDA Terminal }" 2>/dev/null || true
+tmux -L "$HIPILOT_SESSION" set-option pane-border-format "#{?#{==:#{pane_index},0},#[fg=#ff6b6b] 🎯 Supervisor ,#{?#{==:#{pane_index},1},#[fg=#4ecdc4] 📚 Knowledge ,#{?#{==:#{pane_index},2},#[fg=#95e1d3] 📋 Planner ,#{?#{==:#{pane_index},3},#[fg=#f38181] ⚡ Executor ,#{?#{==:#{pane_index},4},#[fg=#aa96da] 💾 Archivist ,#[fg=#ffd93d] 🔧 EDA Tool }}}}" 2>/dev/null || true
 
-# -------------------------------------------------------------------
-# Keyboard Shortcuts (UX Spec Section 8) + Mode Management
-# -------------------------------------------------------------------
+# Launch Claude Code in each agent pane
+launch_claude_agent() {
+    local pane=$1
+    local name=$2
+    local identity_file="$HIPILOT_TMPDIR/agents/${name}-CLAUDE.md"
+    local log_file="$HIPILOT_TMPDIR/agent-logs/${name}.log"
 
-# Mode is always auto — commands execute immediately
-echo "auto" > $HIPILOT_TMPDIR/mode 2>/dev/null || true
+    echo -e "${YELLOW}  Launching ${name} Agent (pane ${pane})...${NC}"
 
-# Ctrl+E: Switch focus to EDA pane (right)
-tmux -L "$HIPILOT_SESSION" bind-key -n C-e select-pane -t "$HIPILOT_SESSION:0.1"
+    # Clear pane and set up environment
+    tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.$pane" "clear" C-m
+    tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.$pane" "export HIPILOT_AGENT_NAME='${name}'" C-m
+    tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.$pane" "export HIPILOT_AGENT_PANE='${pane}'" C-m
 
-# Ctrl+H: Switch focus to Chat pane (left)
-tmux -L "$HIPILOT_SESSION" bind-key h select-pane -t "$HIPILOT_SESSION:0.0"
+    # Copy identity to current dir for this agent session
+    tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.$pane" "cp '${identity_file}' ./CLAUDE.md" C-m
 
-# Ctrl+S: Save last generated Tcl
-tmux -L "$HIPILOT_SESSION" bind-key -n C-s run-shell "mkdir -p $PROJECT_DIR/scripts && cp \$(ls -t $HIPILOT_TMPDIR/generated/*.tcl 2>/dev/null | head -1) $PROJECT_DIR/scripts/ 2>/dev/null && tmux -L $HIPILOT_SESSION display-message 'Saved to scripts/' || tmux -L $HIPILOT_SESSION display-message 'No generated Tcl to save'" 2>/dev/null || true
+    # Launch Claude Code with identity
+    # Use nohup to keep running even if pane loses focus
+    tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.$pane" \
+        "claude --dangerously-skip-permissions" C-m
+}
 
-# Prefix+m: Toggle mode (manual <-> auto / "Claude has the conn")
-# NOTE: Using prefix+m instead of Ctrl+M because Ctrl+M sends same byte as Enter!
-tmux -L "$HIPILOT_SESSION" bind-key m run-shell "\
-  MODE=\$(cat $HIPILOT_TMPDIR/mode 2>/dev/null || echo 'manual'); \
-  if [ \"\$MODE\" = 'manual' ]; then \
-    echo 'auto' > $HIPILOT_TMPDIR/mode; \
-    tmux -L $HIPILOT_SESSION set-option -t $HIPILOT_SESSION status-left '#[fg=#000000,bg=#00ff88,bold] ⚡ Claude has conn #[default]'; \
-    tmux -L $HIPILOT_SESSION display-message '⚡ Claude has the conn (auto mode)'; \
-  else \
-    echo 'manual' > $HIPILOT_TMPDIR/mode; \
-    tmux -L $HIPILOT_SESSION set-option -t $HIPILOT_SESSION status-left '#[fg=#00d4ff,bg=#1a1a2e,bold] ⚙ HiPilot #[fg=#666666]│#[fg=#ffd700] 🔒 Manual '; \
-    tmux -L $HIPILOT_SESSION display-message '🔒 Manual mode (approval required)'; \
-  fi" 2>/dev/null || true
+# Launch all 5 agent Clauses
+echo ""
+echo -e "${CYAN}Launching 5 Claude Code instances...${NC}"
+launch_claude_agent 0 "Supervisor"
+sleep 2
+launch_claude_agent 1 "Knowledge"
+sleep 2
+launch_claude_agent 2 "Planner"
+sleep 2
+launch_claude_agent 3 "Executor"
+sleep 2
+launch_claude_agent 4 "Archivist"
 
-# Prefix+y (yes): Approve pending Tcl and execute
-tmux -L "$HIPILOT_SESSION" bind-key y run-shell "\
-  if [ -f $HIPILOT_TMPDIR/pending.tcl ]; then \
-    TMPFILE=$HIPILOT_TMPDIR/exec/exec_\$(date +%s).tcl; \
-    cp $HIPILOT_TMPDIR/pending.tcl \$TMPFILE; \
-    rm -f $HIPILOT_TMPDIR/pending.tcl $HIPILOT_TMPDIR/pending_meta.json; \
-    tmux -L $HIPILOT_SESSION send-keys -t $HIPILOT_SESSION:0.1 -l \"source \$TMPFILE\"; \
-    tmux -L $HIPILOT_SESSION send-keys -t $HIPILOT_SESSION:0.1 C-m; \
-    tmux -L $HIPILOT_SESSION display-message '✓ Approved and executed pending Tcl'; \
-  else \
-    tmux -L $HIPILOT_SESSION display-message 'No pending Tcl to approve'; \
-  fi" 2>/dev/null || true
-
-# Prefix+n (no): Reject pending Tcl
-tmux -L "$HIPILOT_SESSION" bind-key n run-shell "\
-  if [ -f $HIPILOT_TMPDIR/pending.tcl ]; then \
-    rm -f $HIPILOT_TMPDIR/pending.tcl $HIPILOT_TMPDIR/pending_meta.json; \
-    tmux -L $HIPILOT_SESSION display-message '✗ Pending Tcl rejected'; \
-  else \
-    tmux -L $HIPILOT_SESSION display-message 'No pending Tcl to reject'; \
-  fi" 2>/dev/null || true
-
-# Prefix+r: Refresh status bar
-tmux -L "$HIPILOT_SESSION" bind-key r run-shell "tmux -L $HIPILOT_SESSION display-message 'Status refreshed'" 2>/dev/null || true
-
-# Prefix+M (shift+m): Show mode status
-tmux -L "$HIPILOT_SESSION" bind-key M run-shell "\
-  MODE=\$(cat $HIPILOT_TMPDIR/mode 2>/dev/null || echo 'manual'); \
-  if [ \"\$MODE\" = 'auto' ]; then \
-    tmux -L $HIPILOT_SESSION display-message '⚡ AUTO: Claude has the conn - commands execute immediately'; \
-  else \
-    PENDING=''; \
-    if [ -f $HIPILOT_TMPDIR/pending.tcl ]; then \
-      LINES=\$(wc -l < $HIPILOT_TMPDIR/pending.tcl); \
-      PENDING=\" - \$LINES lines pending\"; \
-    fi; \
-    tmux -L $HIPILOT_SESSION display-message \"🔒 MANUAL: Approval required\$PENDING\"; \
-  fi" 2>/dev/null || true
-
-# -------------------------------------------------------------------
-# Pane setup
-# -------------------------------------------------------------------
-
-# Setup left pane (Chat)
-# Note: Do NOT clear the pane here - it would erase the trust prompt
-
-if command -v claude >/dev/null 2>&1; then
-  # Auto-start Claude Code with MCP permissions in the chat pane
-  # Use --mcp-config to force-load MCP servers (bypasses feature gate)
-  # Pass HIPILOT_DESIGN_DIR to Claude Code environment so MCP servers inherit it
-  if [ -n "$HIPILOT_DESIGN_DIR" ]; then
-    tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "export HIPILOT_DESIGN_DIR=$HIPILOT_DESIGN_DIR"
-    tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
-    sleep 0.2
-  fi
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "claude --mcp-config /tmp/force_mcp.json --strict-mcp-config --dangerously-skip-permissions"
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
-  # Wait for Claude to start and acknowledge the trust prompt
-  # Poll for up to 60 seconds until the trust prompt appears, then send "1"
-  echo "Waiting for Claude Code to initialize..."
-  TRUST_HANDLED=false
-  BYPASS_HANDLED=false
-  BYPASS_ATTEMPTED=false
-  for i in $(seq 1 120); do
-    sleep 0.5
-    CAPTURE=$(tmux -L "$HIPILOT_SESSION" capture-pane -t "$HIPILOT_SESSION:0.0" -p 2>/dev/null || true)
-
-    # Check for trust prompt (appears first in Claude 2.1.71+)
-    if [ "$TRUST_HANDLED" = false ] && echo "$CAPTURE" | grep -q "Quick safety check"; then
-      echo "Trust prompt detected (attempt $i), acknowledging..."
-      sleep 0.5
-      tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
-      tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "1"
-      sleep 0.2
-      tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
-      tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
-      echo "Trust prompt acknowledged."
-      TRUST_HANDLED=true
-      # Continue polling to handle bypass permissions prompt
-      continue
-    fi
-
-    # Check for bypass permissions prompt (appears AFTER trust prompt when --dangerously-skip-permissions is used)
-    # This is a numbered list: 1. No, exit  2. Yes, I accept
-    # Only attempt once and only if we see the specific prompt
-    if [ "$BYPASS_ATTEMPTED" = false ] && [ "$BYPASS_HANDLED" = false ] && echo "$CAPTURE" | grep -qE "Bypass Permissions mode"; then
-      # Check if we see the numbered list with "Yes, I accept" option
-      if echo "$CAPTURE" | grep -qE "Yes, I accept"; then
-        echo "Bypass permissions prompt detected (attempt $i), selecting 'Yes, I accept'..."
-        sleep 0.5
-        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
-        # Send "2" to select option 2 (Yes, I accept)
-        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "2"
-        sleep 0.3
-        tmux -L "$HIPILOT_SESSION" select-pane -t "$HIPILOT_SESSION:0.0"
-        tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
-        echo "Bypass permissions selection sent."
-        BYPASS_ATTEMPTED=true
-        # Don't mark as handled yet - wait for confirmation in next iterations
-        continue
-      fi
-    fi
-
-    # If we attempted bypass, check if it succeeded (prompt no longer visible and we see ready state)
-    if [ "$BYPASS_ATTEMPTED" = true ] && [ "$BYPASS_HANDLED" = false ]; then
-      if ! echo "$CAPTURE" | grep -qE "Bypass Permissions mode" && echo "$CAPTURE" | grep -qE "(❯|Welcome back)"; then
-        echo "Bypass permissions enabled successfully."
-        BYPASS_HANDLED=true
-      fi
-    fi
-
-    # Check if Claude is fully initialized (input prompt visible)
-    if echo "$CAPTURE" | grep -qE "(❯|⏵ )"; then
-      echo "Claude Code initialized and ready."
-      TRUST_HANDLED=true
-      BYPASS_HANDLED=true
-      break
-    fi
-
-    # Also accept "Welcome back" as initialization complete
-    if echo "$CAPTURE" | grep -q "Welcome back"; then
-      echo "Claude Code initialized."
-      TRUST_HANDLED=true
-      BYPASS_HANDLED=true
-      break
-    fi
-  done
-
-  # Report initialization status
-  if [ "$TRUST_HANDLED" = false ]; then
-    echo "Warning: Trust prompt handling timed out."
-  fi
-  if [ "$BYPASS_HANDLED" = false ]; then
-    echo "Warning: Bypass permissions prompt handling timed out."
-  fi
-
-  # CRITICAL: Wait for Claude Code to fully initialize MCP servers
-  # This prevents "MCP tools not available" errors when commands are typed too quickly
-  # Note: HiTestBot also polls for readiness, so we just need a minimum viable wait
-  echo "Waiting for Claude Code MCP servers to initialize..."
-  MCP_READY=false
-  # Poll for up to 20 seconds (40 * 0.5s) - balances readiness with timeout limits
-  for i in $(seq 1 40); do
-    sleep 0.5
-    # Check for the input prompt (❯ or >) which indicates Claude is ready
-    if tmux -L "$HIPILOT_SESSION" capture-pane -t "$HIPILOT_SESSION:0.0" -p 2>/dev/null | grep -Eq "(❯|> )$"; then
-      MCP_READY=true
-      echo "Claude Code ready."
-      break
-    fi
-    # Also accept if we see the idle state indicator
-    if tmux -L "$HIPILOT_SESSION" capture-pane -t "$HIPILOT_SESSION:0.0" -p 2>/dev/null | grep -q "Now chatting"; then
-      MCP_READY=true
-      echo "Claude Code ready."
-      break
-    fi
-  done
-
-  if [ "$MCP_READY" = false ]; then
-    echo "Warning: Claude Code may not be fully initialized (MCP servers still loading)."
-    echo "HiTestBot will handle additional waiting as needed."
-  fi
-else
-  # Fallback instructions if claude CLI is not available
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "echo '  HiPilot Chat Pane'"
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "echo '  ─────────────────'"
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "echo ''"
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "echo '  Claude CLI not found in PATH.'"
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" -l "echo '  Install Claude, then run: claude --dangerously-skip-permissions'"
-  tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" C-m
+# Wait for layout to settle and verify panes exist
+sleep 1
+PANE_COUNT=$(tmux -L "$HIPILOT_SESSION" list-panes | wc -l)
+if [ "$PANE_COUNT" -lt 6 ]; then
+    echo -e "${RED}Error: Expected 6 panes, found $PANE_COUNT${NC}"
+    tmux -L "$HIPILOT_SESSION" kill-session
+    exit 1
 fi
 
-# Setup right pane (EDA) - clean empty pane
-# No welcome message - tools will show their own prompts when started
-# Select left pane (chat) as default focus
+# Setup EDA pane (pane 5) - just bash, no Claude
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.5" "clear" C-m 2>/dev/null || true
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.5" "echo -e '\033[1;33m🔧 EDA Tool Pane\033[0m'" C-m 2>/dev/null || true
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.5" "echo 'Ready for: innovus | dc_shell | pt_shell'" C-m 2>/dev/null || true
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.5" "echo ''" C-m 2>/dev/null || true
+
+# Keyboard shortcuts
+tmux -L "$HIPILOT_SESSION" bind-key -n M-1 select-pane -t 0
+tmux -L "$HIPILOT_SESSION" bind-key -n M-2 select-pane -t 1
+tmux -L "$HIPILOT_SESSION" bind-key -n M-3 select-pane -t 2
+tmux -L "$HIPILOT_SESSION" bind-key -n M-4 select-pane -t 3
+tmux -L "$HIPILOT_SESSION" bind-key -n M-5 select-pane -t 4
+tmux -L "$HIPILOT_SESSION" bind-key -n M-0 select-pane -t 5
+
+# Select supervisor pane
 tmux -L "$HIPILOT_SESSION" select-pane -t 0
 
-echo -e "${GREEN}✓ Workspace created${NC}"
+echo ""
+echo -e "${GREEN}✓ TRUE 5-Agent Team workspace created${NC}"
 echo ""
 echo "  Layout:"
-echo "  ┌──────────────────────┬──────────────────────┐"
-echo "  │ Pane 0: Chat (50%)   │ Pane 1: EDA (50%)    │"
-echo "  │ Claude Code          │ icc2_shell / innovus │"
-echo "  ├──────────────────────┴──────────────────────┤"
-echo "  │ Status Bar: HiPilot │ Tool │ Job │ Design   │"
-echo "  └─────────────────────────────────────────────┘"
+echo "  ┌──────────────┬──────────────┬──────────────┬──────────────┐"
+echo "  │ 🎯 Supervisor│ 📚 Knowledge │ 📋 Planner   │ ⚡ Executor  │"
+echo "  │   (Claude)   │   (Claude)   │   (Claude)   │   (Claude)   │"
+echo "  ├──────────────┴──────────────┴──────────────┴──────────────┤"
+echo "  │ 💾 Archivist Agent (Claude)                              │"
+echo "  ├──────────────────────────────────────────────────────────┤"
+echo "  │ 🔧 EDA Tool (innovus/dc_shell/pt_shell)                  │"
+echo "  └──────────────────────────────────────────────────────────┘"
 echo ""
-  echo "  Commands execute immediately (no approval needed)."
-  echo ""
-  echo "  Shortcuts:"
-  echo "    Ctrl+E    Switch to EDA pane"
-  echo "    Ctrl+S    Save last generated Tcl"
-  echo "    prefix+h  Switch to Chat pane"
+echo "  Shortcuts:"
+echo "    Alt+1-5   Switch to agent pane"
+echo "    Alt+0     Switch to EDA pane"
+echo ""
+echo "  IMPORTANT: Wait 10-15 seconds for all Claude instances to initialize"
 echo ""
 
 if [ "$NO_TERMINAL" = true ]; then
     echo "Attach with: tmux -L $HIPILOT_SESSION attach-session"
     exit 0
 else
+    echo -e "${GREEN}Attaching to Supervisor pane...${NC}"
+    sleep 3
     tmux -L "$HIPILOT_SESSION" attach-session
 fi

@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 /**
- * Project-Brain - Per-Design Progressive Knowledge Base
+ * Project-Brain - Per-Design Progressive Knowledge Base (Hybrid Architecture)
  *
- * Stores design-specific memory that learns throughout the RTL-to-GDS flow.
+ * Hybrid Architecture:
+ * - SQLite: QoR metrics, error logs, checkpoint registry (structured queries)
+ * - PageIndex: Learnings, patterns, insights (tree-based navigation)
+ *
  * Works alongside ASIC-Brain (methodology) and EDA-Brain (tool usage).
  *
  * Key Features:
@@ -12,11 +15,13 @@
  * - Error pattern tracking with resolutions
  * - QoR progression tracking (WNS/TNS trends)
  * - Checkpoint recovery context
+ * - Hybrid SQL + PageIndex queries
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { homedir } from 'os';
+import { ProjectBrainDB } from './db-interface.js';
 
 // ============================================================================
 // Memory Types and Structure
@@ -113,6 +118,10 @@ class ProjectBrain {
     this.cache = new Map();
     this.index = null;
 
+    // Hybrid: SQLite database for metrics
+    this.db = null;
+    this.dbInitialized = false;
+
     // Ensure directory exists
     if (this.brainDir && !existsSync(this.brainDir)) {
       try {
@@ -125,6 +134,25 @@ class ProjectBrain {
 
     // Load existing index
     this._loadIndex();
+
+    // Initialize hybrid database
+    this._initializeDatabase();
+  }
+
+  /**
+   * Initialize SQLite database for metrics (hybrid architecture)
+   */
+  _initializeDatabase() {
+    if (!this.brainDir) return;
+
+    try {
+      this.db = new ProjectBrainDB(this.designName, join(this.brainDir, 'metrics.db'));
+      const result = this.db.initialize();
+      this.dbInitialized = result.success;
+    } catch (e) {
+      console.warn(`Project-Brain database initialization failed: ${e.message}`);
+      this.dbInitialized = false;
+    }
   }
 
   /**
@@ -466,15 +494,187 @@ class ProjectBrain {
   }
 
   /**
-   * Record QoR snapshot
+   * Record QoR snapshot (hybrid: SQLite + legacy JSON)
    */
-  recordQoR(stage, metrics, context = {}) {
+  recordQoR(stage, metrics, context = {}, checkpointName = null) {
+    // Store in SQLite for efficient querying
+    if (this.dbInitialized && this.db) {
+      this.db.recordQoR(stage, metrics, checkpointName);
+    }
+
+    // Also store in legacy JSON for backward compatibility
     return this.remember('timing_memory', `stage_${stage}_qor_${Date.now()}`, {
       stage,
       stage_name: STAGE_NAMES[stage],
       metrics,
       timestamp: new Date().toISOString()
     }, context);
+  }
+
+  /**
+   * Get QoR trend from database (hybrid method)
+   */
+  getQoRTrend(stage, limit = 10) {
+    if (this.dbInitialized && this.db) {
+      return this.db.getQoRTrend(stage, limit);
+    }
+    // Fallback to legacy method
+    return this.getQoRProgression('wns');
+  }
+
+  /**
+   * Log error with resolution (hybrid: SQLite + PageIndex)
+   */
+  logError(stage, errorMessage, errorType = null, resolution = null) {
+    // Store in SQLite
+    if (this.dbInitialized && this.db) {
+      this.db.logError(stage, errorMessage, errorType, resolution);
+    }
+
+    // Also store in PageIndex learnings if it's a new pattern
+    if (resolution) {
+      this._updateLearnings('error-patterns', errorType || 'general', {
+        error: errorMessage.substring(0, 200),
+        resolution,
+        stage,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    return { success: true, stage, error_type: errorType };
+  }
+
+  /**
+   * Find similar past errors (hybrid query)
+   */
+  getSimilarErrors(errorMessage, limit = 5) {
+    if (this.dbInitialized && this.db) {
+      return this.db.getSimilarErrors(errorMessage, limit);
+    }
+    return { success: false, error: 'Database not available', errors: [] };
+  }
+
+  /**
+   * Register checkpoint (hybrid)
+   */
+  registerCheckpoint(stage, checkpointPath, parentCheckpoint = null, metadata = {}) {
+    if (this.dbInitialized && this.db) {
+      return this.db.registerCheckpoint(stage, checkpointPath, parentCheckpoint, metadata);
+    }
+    return { success: false, error: 'Database not available' };
+  }
+
+  /**
+   * Get checkpoint history
+   */
+  getCheckpointHistory(stage = null) {
+    if (this.dbInitialized && this.db) {
+      return this.db.getCheckpointHistory(stage);
+    }
+    return { success: false, error: 'Database not available', checkpoints: [] };
+  }
+
+  /**
+   * Query PageIndex learnings
+   */
+  queryLearnings(path) {
+    const learningsDir = join(this.brainDir, 'database', 'learnings');
+    const indexPath = join(learningsDir, 'INDEX.md');
+
+    if (!existsSync(indexPath)) {
+      return { success: false, error: 'Learnings index not found' };
+    }
+
+    // Parse path like "error-patterns/innovus/lef-loading"
+    const parts = path.split('/').filter(p => p.length > 0);
+
+    if (parts.length === 0) {
+      // Return index
+      try {
+        const content = readFileSync(indexPath, 'utf-8');
+        return { success: true, path, type: 'index', content };
+      } catch (e) {
+        return { success: false, error: e.message };
+      }
+    }
+
+    // Try to find specific learning file
+    const fileName = parts[0] + (parts[0].endsWith('.md') ? '' : '.md');
+    const filePath = join(learningsDir, fileName);
+
+    if (existsSync(filePath)) {
+      try {
+        const content = readFileSync(filePath, 'utf-8');
+        return { success: true, path, type: 'learning', content };
+      } catch (e) {
+        return { success: false, error: e.message };
+      }
+    }
+
+    return { success: false, error: `Learning not found: ${path}` };
+  }
+
+  /**
+   * Update learnings (internal)
+   */
+  _updateLearnings(category, key, data) {
+    const learningsDir = join(this.brainDir, 'database', 'learnings');
+    if (!existsSync(learningsDir)) {
+      mkdirSync(learningsDir, { recursive: true });
+    }
+
+    const filePath = join(learningsDir, `${category}.md`);
+    let content = '';
+
+    if (existsSync(filePath)) {
+      content = readFileSync(filePath, 'utf-8');
+    } else {
+      // Create new learning file
+      content = `---\ntype: learning\ncategory: ${category}\ntags: [auto-generated]\n---\n\n# ${category.charAt(0).toUpperCase() + category.slice(1)}\n\n`;
+    }
+
+    // Append new entry
+    const entry = `\n## ${key} - ${new Date().toISOString().split('T')[0]}\n\n`;
+    const body = Object.entries(data)
+      .map(([k, v]) => `- **${k}**: ${typeof v === 'object' ? JSON.stringify(v) : v}`)
+      .join('\n');
+
+    content += entry + body + '\n';
+
+    try {
+      writeFileSync(filePath, content);
+      return { success: true };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
+  }
+
+  /**
+   * Hybrid query: combines SQL metrics with PageIndex learnings
+   */
+  query(pattern, options = {}) {
+    const results = {
+      metrics: null,
+      learnings: null,
+      errors: null
+    };
+
+    // Query SQLite for metrics
+    if (this.dbInitialized && this.db) {
+      if (pattern.includes('qor') || pattern.includes('timing')) {
+        results.metrics = this.db.getQoRProgression();
+      }
+      if (pattern.includes('error')) {
+        results.errors = this.db.getSimilarErrors(pattern);
+      }
+    }
+
+    // Query PageIndex for learnings
+    if (options.includeLearnings !== false) {
+      results.learnings = this.queryLearnings(pattern);
+    }
+
+    return { success: true, pattern, results };
   }
 
   /**
@@ -644,6 +844,34 @@ export function isProjectBrainAvailable(designDir) {
 }
 
 // ============================================================================
+// Hybrid Architecture Exports (New)
+// ============================================================================
+
+export function logProjectError(stage, errorMessage, errorType, resolution, designDir, designName) {
+  return getProjectBrain(designDir, designName).logError(stage, errorMessage, errorType, resolution);
+}
+
+export function getSimilarProjectErrors(errorMessage, limit, designDir, designName) {
+  return getProjectBrain(designDir, designName).getSimilarErrors(errorMessage, limit);
+}
+
+export function registerProjectCheckpoint(stage, checkpointPath, parentCheckpoint, metadata, designDir, designName) {
+  return getProjectBrain(designDir, designName).registerCheckpoint(stage, checkpointPath, parentCheckpoint, metadata);
+}
+
+export function getProjectCheckpointHistory(stage, designDir, designName) {
+  return getProjectBrain(designDir, designName).getCheckpointHistory(stage);
+}
+
+export function queryProjectLearnings(path, designDir, designName) {
+  return getProjectBrain(designDir, designName).queryLearnings(path);
+}
+
+export function hybridQuery(pattern, options, designDir, designName) {
+  return getProjectBrain(designDir, designName).query(pattern, options);
+}
+
+// ============================================================================
 // Exports
 // ============================================================================
 
@@ -666,6 +894,13 @@ export default {
   getSummary: getProjectSummary,
   exportMemories: exportProjectMemories,
   isAvailable: isProjectBrainAvailable,
+  // Hybrid methods
+  logError: logProjectError,
+  getSimilarErrors: getSimilarProjectErrors,
+  registerCheckpoint: registerProjectCheckpoint,
+  getCheckpointHistory: getProjectCheckpointHistory,
+  queryLearnings: queryProjectLearnings,
+  query: hybridQuery,
   MEMORY_TYPES,
   STAGE_NAMES
 };

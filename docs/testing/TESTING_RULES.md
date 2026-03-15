@@ -1,15 +1,29 @@
-# HiPilot Testing Rules
+# HiPilot Testing Rules - 5-Agent Team Mode
 
-**Version:** 1.2
+**Version:** 1.5
 **Date:** 2026-03-15
 **Status:** Active
 
 **Latest Update:**
+- **Cheat Prevention (NEW Principle 10)**: Multi-layer cheat detection ensures tests measure real behavior, not fake/simulated output. Detects echo commands, fake processes, stale evidence, static video.
+- **5-Agent Team Testing**: Tests MUST verify all 5 agents coordinate through hub-and-spoke pattern.
+- **Mission Pack Driven Testing (v1.4)**: Mission packs are now Markdown (natural language), not YAML. Tests validate natural language parsing and agent coordination.
+- **Platinum Certification (NEW)**: Highest tier requiring full agent coordination + mission pack target achievement.
+- **Phase 4.5 & Phase 8 Testing**: New test phases for mission pack loading and full agent-driven RTL2GDS flow.
+- **EDA Server Testing Mandate (Principle 7)**: ALL tests MUST run on EDA server (192.168.112.163) with real tools (Innovus, DC Shell, PrimeTime). No local testing, no mocks, no simulations.
+- Renumbered principles: Clean Environment is now Principle 8, Heartbeat System is Principle 9
+- Added EDA server environment specification and validation checklist
+- Added deployment workflow: deploy → test on server → pull evidence → analyze
+- Added "No Exceptions Rule" - strict enforcement of EDA server testing
+- Added Heartbeat System testing rules (event-driven monitoring)
+- Added Clean Environment Charter (no contamination from previous runs)
+- Added Phase 0.5 Heartbeat verification requirements
+- Updated pre-test checklist with heartbeat cleanup and EDA server checks
+- Added evidence freshness validation for heartbeat files
 - Added Phase 3.5 Manual Mode Workflow testing
-- Added Mission Pack validation section
+- Added Mission Pack validation section (updated for Markdown format)
 - Added L3b Process Validation (correct tool per stage)
 - Updated for modular stage commands (/synthesis, /floorplan, etc.)
-- Removed deprecated /rtl2gds references
 
 ---
 
@@ -19,11 +33,102 @@ This document defines the testing philosophy, rules, and report format for HiPil
 
 ### The North Star
 
-> **HiPilot can conduct a complete RTL-to-GDS flow driven by Claude Code, MCP tools, and skills — proving that an AI Agent can replace a human for standard flow execution.**
+> **HiPilot 5-Agent Team can conduct a complete RTL-to-GDS flow driven by Claude Code, MCP tools, and skills — proving that an AI Agent Team can replace a human for standard flow execution.**
 
 Every test exists to measure progress toward this goal.
 
 HiTestBot runs **only on the EDA server** ("test like real human"). Each run creates a timestamped evidence dir. Use `bin/hitestbot-eda`, `bin/hitestbot-pull`, `bin/hitestbot-push` for run and sync. See [hitestbot-guide.md](hitestbot-guide.md) for execution model and sync scripts.
+
+---
+
+## 1.5 Test Type Clarification: Unit Tests vs. E2E Tests
+
+**This Document (TESTING_RULES.md) and TEST_PLAN.md cover END-TO-END (E2E) TESTING ONLY.**
+
+HiPilot has two completely different test categories:
+
+| Aspect | Unit Tests (`npm test`) | E2E Tests (This Document) |
+|--------|------------------------|---------------------------|
+| **Location** | Local development machine | EDA server (192.168.112.163) |
+| **Purpose** | Verify JavaScript code correctness | Verify full HiPilot-EDA integration |
+| **Tools** | Jest/Vitest, mocked dependencies | Real Innovus, DC Shell, PrimeTime |
+| **Duration** | ~200 milliseconds | 15 minutes to 2+ hours |
+| **Coverage** | Functions, utilities, logic | Complete RTL-to-GDS flow |
+| **Cost** | Free (developer machine) | Expensive (EDA licenses, server time) |
+| **When to Run** | On every code change, before commit | After deployment, before release |
+
+**Unit Tests (`npm test` on dev machine):**
+- Test individual JavaScript functions in isolation
+- Mock all external dependencies (file system, EDA tools)
+- Run in Node.js without any real EDA software
+- **Purpose:** Catch syntax errors, logic bugs, regressions quickly
+- **Limitation:** Cannot test actual EDA tool integration
+- **Example:** `test/shell-escape.test.js` verifies string escaping logic
+
+**E2E Tests (HiTestBot on EDA server):**
+- Test complete HiPilot workflow with real hardware and licenses
+- Execute actual EDA tool commands (placement, routing, etc.)
+- Generate real deliverables (GDS files, timing reports, checkpoints)
+- **Purpose:** Verify HiPilot works in production environment
+- **Requirement:** EDA server access, real licenses, real design data
+- **Example:** "Run synthesis stage and verify checkpoint created"
+
+**The Relationship:**
+
+```
+Development Workflow:
+┌────────────────────────────────────────────────────────────────────┐
+│                                                                    │
+│   Code Changes                                                     │
+│       │                                                            │
+│       ▼                                                            │
+│   ┌─────────────┐    PASS    ┌──────────────┐    PASS    ┌──────┐ │
+│   │ npm test    │ ─────────▶ │ deploy to    │ ─────────▶ │ E2E  │ │
+│   │ (unit tests)│            │ EDA server   │            │ test │ │
+│   └─────────────┘            └──────────────┘            └──────┘ │
+│        │                           │                        │     │
+│        ▼                           ▼                        ▼     │
+│   Quick feedback              Code transfer            Validation │
+│   (~200ms)                    (30s)                    (hours)    │
+│                                                                    │
+│   Unit tests = "Does the code work?"                               │
+│   E2E tests  = "Does HiPilot control real EDA tools?"              │
+│                                                                    │
+└────────────────────────────────────────────────────────────────────┘
+```
+
+**Important Distinctions:**
+
+1. **Passing unit tests ≠ Working system**
+   - Unit tests verify JavaScript code is syntactically correct
+   - Only E2E tests can reveal EDA tool integration issues
+   - Example: Unit test passes for `shellEscape()`, but E2E test reveals Innovus rejects the escaped command
+
+2. **E2E tests are the ONLY valid certification**
+   - HiPilot's purpose is controlling real EDA tools
+   - Mocked tests prove nothing about production viability
+   - All certification levels (Bronze, Silver, Gold, Platinum) require E2E tests
+
+3. **Unit tests are NOT a substitute**
+   - Running `npm test` locally does NOT validate HiPilot
+   - Never claim "tests pass" based solely on unit tests
+   - Always refer to E2E test results for HiPilot validation
+
+**This Document Covers:**
+- ✅ E2E test methodology
+- ✅ EDA server testing requirements
+- ✅ Real tool validation
+- ✅ HiTestBot operation
+- ✅ Evidence collection
+- ✅ Scoring and certification
+
+**This Document Does NOT Cover:**
+- ❌ Unit test implementation
+- ❌ JavaScript testing frameworks
+- ❌ Mock/stub strategies
+- ❌ Code coverage metrics
+
+For unit tests, see `test/*.test.js` files in the repository.
 
 ---
 
@@ -60,6 +165,216 @@ When something goes wrong, the report MUST answer: **is this a HiPilot bug, an A
 ### Principle 6: Every Test is Replayable
 
 All evidence (pane captures, MCP logs, generated Tcl, screenshots, video) MUST be saved with synchronized timestamps so that any test result can be analyzed after the fact without needing to reproduce the failure.
+
+### Principle 7: EDA Server Testing Mandate — Real Tools, Real Flows
+
+**ALL testing MUST be performed on the EDA server (192.168.112.163) with real EDA tools.**
+
+**Why This Matters:**
+
+HiPilot's purpose is to control real EDA tools (Innovus, DC Shell, PrimeTime) in real chip design workflows. Testing with mocked tools or on development machines proves nothing about whether HiPilot actually works in production.
+
+| What | Requirement | Violation |
+|------|-------------|-----------|
+| **Test Location** | EDA server ONLY (`EDA@192.168.112.163`) | Running tests on dev machine |
+| **EDA Tools** | Real Innovus, DC Shell, PrimeTime | Mocked/simulated tool responses |
+| **License Server** | Real flexlm licenses | Bypassing license checks |
+| **Design** | Real Ibex RISC-V design | Toy/example designs |
+| **Flow** | Real RTL-to-GDS flow | Shortened/simplified flows |
+| **Evidence** | Screenshots/video from EDA server | Locally-generated mock evidence |
+
+**EDA Server Environment:**
+
+| Component | Value |
+|-----------|-------|
+| Host | `ssh EDA@192.168.112.163` (password: `eda2020`) |
+| OS | CentOS 7.9 |
+| EDA Tools | Innovus v20.10, DC Shell L-2016.03-SP2, PrimeTime T-2022.03 |
+| License | flexlm @ localhost:27000 |
+| Design | `/home/EDA/ibex_demo.tar` (Ibex RISC-V, Skywater 130nm) |
+| HiPilot | `/home/EDA/hipilot/current/` |
+| Node.js | v20.18.3 |
+| Display | `:0` (GNOME desktop for video/screenshots) |
+
+**Code Deployment Synchronization - MANDATORY:**
+
+> **The EDA server MUST run the EXACT same code as the development machine. Verification is REQUIRED before EVERY test.**
+
+**Deployment Protocol:**
+
+```bash
+# BEFORE EVERY TEST:
+
+# 1. Check git status - NO uncommitted changes allowed!
+git status
+# Expected: "nothing to commit, working tree clean"
+
+# 2. Get local commit hash
+git rev-parse --short HEAD
+# Example: a1b2c3d
+
+# 3. Deploy to EDA server
+node src/hitestbot/infra/deploy_hipilot.js
+
+# 4. VERIFY deployment - hash MUST match!
+ssh EDA@192.168.112.163 "cd /home/EDA/hipilot/current && git rev-parse --short HEAD"
+# Expected: a1b2c3d (same as local!)
+
+# 5. Only proceed if hashes match
+```
+
+**Code Sync Requirements:**
+
+| Requirement | Why | Enforcement |
+|-------------|-----|-------------|
+| Clean git status | Uncommitted changes won't be deployed | `git status` must show "clean" |
+| Verified deployment | Ensure code actually transferred | Hash comparison local vs EDA |
+| Pre-test verification | Catch stale code before wasting time | Automated in test scripts |
+| Post-change deployment | Any code change requires redeploy | No exceptions, no matter how small |
+
+**Deployment Failures:**
+
+| Failure | Detection | Fix |
+|---------|-----------|-----|
+| Uncommitted changes | `git status` shows modified files | Commit before testing |
+| SSH connection failed | Deploy script timeout | Check network/server status |
+| Hash mismatch | Local ≠ EDA commit hash | Re-run deployment |
+| Partial deployment | Some files old, some new | Full redeploy required |
+
+**Strict Rules:**
+
+- ❌ **NO** testing with uncommitted local changes
+- ❌ **NO** testing without deployment verification
+- ❌ **NO** assuming code is current without checking hash
+- ✅ **ALWAYS** deploy after EVERY change
+- ✅ **ALWAYS** verify commit hash matches
+
+**Test Workflow:**
+
+```bash
+# 1. Verify clean git status
+git status  # Must be clean!
+
+# 2. Deploy and verify code sync
+node src/hitestbot/infra/deploy_hipilot.js
+ssh EDA@192.168.112.163 "cd /home/EDA/hipilot/current && git rev-parse --short HEAD"
+
+# 3. Run test ON EDA SERVER (only if hashes match!)
+bin/hitestbot-eda "run synthesis"
+
+# 4. Pull evidence to dev machine
+bin/hitestbot-pull <test_id>
+
+# 5. Analyze
+open test-evidence/<test_id>/FLOW_REPORT.md
+```
+
+**Validation:**
+
+- All screenshots show EDA server desktop (CentOS 7, GNOME)
+- All logs contain real tool output (not `echo` or mock commands)
+- MCP logs show real tool calls to real EDA software
+- Evidence pulled from `/home/EDA/hipilot_test/evidence/`
+
+### Principle 8: Clean Environment — No Contamination
+
+Each test MUST start from a completely clean state. No evidence, logs, heartbeat files, or design outputs from previous runs may influence the current test.
+
+**Contamination Sources to Eliminate:**
+
+| Source | Risk | Cleanup Action |
+|--------|------|----------------|
+| Stale heartbeat files | HiTestBot reads old state as current | `rm -f /tmp/hipilot-*-heartbeat.json` |
+| Leftover EDA processes | License conflicts, port contention | `pkill -f innovus; pkill -f dc_shell` |
+| Old tmux sessions | Session name conflicts | `tmux -L hipilot kill-server` |
+| Existing checkpoints | Stages appear complete without running | Use timestamped directories only |
+| Previous MCP logs | Old tool calls look like current activity | Fresh `HIPILOT_TEST_LOG` per test |
+
+**Freshness Validation Rule:**
+All output files must have timestamps AFTER the current test start time. Any file created before test start is considered STALE_EVIDENCE and invalidates the test.
+
+### Principle 9: Heartbeat System — Event-Driven Monitoring
+
+HiPilot uses a file-based heartbeat system (`/tmp/hipilot-{session}-heartbeat.json`) for event-driven state monitoring. This reduces CPU usage 50-100x during idle periods and improves reaction time to <50ms.
+
+**Testing Requirements:**
+
+| Aspect | Without Heartbeat | With Heartbeat |
+|--------|------------------|----------------|
+| Polling interval | 1-2 seconds | 5 seconds (adaptive) |
+| CPU usage (idle) | 5-10% | ~0.1% |
+| Reaction time | 1-2 seconds | <50ms on state change |
+| Fallback behavior | N/A | Standard polling if heartbeat stale |
+
+**Verification:**
+- Heartbeat file must be created during test (timestamp > test start)
+- HiTestBot must log "Heartbeat monitoring active" when available
+- Heartbeat stats (wakeups count) must be reported at test completion
+- Environment variable `HIPILOT_HEARTBEAT=false` can disable for comparison testing
+
+---
+
+### Principle 10: Cheat Prevention — Authenticity Verification
+
+HiTestBot implements comprehensive cheat detection to ensure tests measure **real behavior**, not simulated or fabricated outputs. This prevents scenarios where fake status messages (e.g., `echo "Status: Running"`) are presented as evidence without actual execution.
+
+**The "Echo" Cheat Pattern (What We're Defending Against):**
+
+The most common cheating method is using shell `echo` commands to print fake status messages:
+```bash
+# FAKE - Echo commands that simulate status without real execution
+echo -e "\033[32m✓\033[0m Supervisor: Running"
+echo -e "\033[32m✓\033[0m Knowledge: Running"
+echo -e "\033[32m✓\033[0m Planner: Running"
+```
+
+This creates the **illusion** of 5 agents running, but there are no actual Claude Code processes.
+
+**Cheat Detection Mechanisms (8 Layers):**
+
+| Layer | Detection Method | Catches |
+|-------|------------------|---------|
+| **1. Process Verification** | `ps aux \| grep claude` | Fake processes, missing agents |
+| **2. Echo Command Detection** | Regex patterns in pane text | Echo-based status faking |
+| **3. Pane Content Authenticity** | Claude Code interface indicators | Static images, replays |
+| **4. MCP Log Integrity** | JSON validation, timestamp checks | Fabricated MCP logs |
+| **5. Cross-Reference Validation** | Correlate pane+MCP+video | Inconsistent evidence |
+| **6. Interactive Verification** | Send unique test command | Non-interactive/static displays |
+| **7. Video Motion Detection** | ffprobe frame count, file size | Static image as video |
+| **8. Evidence Freshness** | File timestamps vs test start | Reused old evidence |
+
+**Implementation:**
+
+```javascript
+// HiTestBot runs these checks automatically
+const cheatDetector = new CheatDetector({ socket, session });
+
+// Early check (immediately after launch)
+const processCheck = cheatDetector.verifyClaudeProcesses();
+if (!processCheck.valid) {
+  throw new Error(`Cheat detected: ${processCheck.message}`);
+}
+
+// Full verification (after test completion)
+const results = await cheatDetector.runFullVerification({
+  paneText: combinedPaneText,
+  mcpLogPath: 'mcp_calls.jsonl',
+  videoPath: 'video.mp4',
+  evidenceFiles: ['screenshot.png', 'pane0.log'],
+});
+
+if (results.cheatDetected) {
+  scorecard.authenticity = 0; // Automatic fail
+}
+```
+
+**Automatic Fail Conditions:**
+- Any critical cheat detection = automatic score of 0 for Authenticity subject
+- Authenticity has 10x weight in GPA calculation (one cheat = automatic FAIL regardless of other scores)
+- Test report includes `cheat_detection_report.json` with full details
+
+**Golden Rule:**
+> If a human would be fooled, HiTestBot catches it. If HiTestBot is fooled, the cheating was sophisticated enough to fool a human — which is itself a finding worth documenting.
 
 ---
 
@@ -593,36 +908,60 @@ When pane logs show minimal content but flow completion is suspected:
 
 ---
 
-## 6.9 Mission Pack Testing (New in v1.2)
+## 6.9 Mission Pack Testing (New in v1.3)
 
-The Project Mission Pack defines design-specific configuration. Tests MUST validate mission pack loading and gap detection.
+The Project Mission Pack is a **human-written Markdown document** that defines design-specific configuration in natural language. Tests MUST validate mission pack parsing, agent coordination, and gap detection.
+
+### Mission Pack Format Support
+
+| Format | Extension | Status | Use Case |
+|--------|-----------|--------|----------|
+| **Markdown** | `.md` | **Preferred** | Natural language, human-readable |
+| YAML | `.yaml`, `.yml` | Legacy | Structured data, backward compatibility |
+| JSON | `.json` | Legacy | Programmatic generation |
 
 ### Mission Pack Validation Tests
 
 | Test | Command | Expected Result |
 |------|---------|-----------------|
-| Load YAML mission pack | `bin/hitestbot-eda "load mission pack from /path/to/mission.yaml"` | Mission pack parsed, paths resolved |
+| Load Markdown mission pack | `bin/hitestbot-eda "load the mission pack and show flow stages"` | Natural language parsed, RTL files extracted, stages identified |
+| Parse natural language | Verify pane output | Project name, top module, target frequency, technology extracted from text |
 | Auto-detect legacy design | `bin/hitestbot-eda "load design from /path/to/legacy"` | Auto-detection creates mission pack |
-| Validate mission pack | Internal check | Schema validation passes |
-| Gap detection | After stage completion | Actual vs target metrics compared |
+| Agent coordination | Monitor pane 0.0 | All 5 agents activate and report status |
+| Gap detection | After stage completion | Actual vs mission pack target metrics compared |
+
+### Natural Language Parsing Validation
+
+HiTestBot MUST verify the Knowledge Agent correctly parses:
+
+| Element | Example Text | Extracted Value |
+|---------|--------------|-----------------|
+| Project name | "# Mission Pack: Ibex RISC-V Core" | `project.name: "ibex_core"` |
+| Top module | "Top module is `ibex_core`" | `design.rtl.top_module: "ibex_core"` |
+| RTL files | "Files: `rtl/ibex_core.sv`, `rtl/ibex_alu.sv`" | `design.rtl.files: ["rtl/ibex_core.sv", ...]` |
+| Target frequency | "Target 100 MHz" | `flow.targets.timing.freq: 100` |
+| Technology | "Skywater 130nm PDK" | `technology.node: "130nm"`, `technology.foundry: "skywater"` |
+| Flow stages | "Run synthesis, floorplan, placement, CTS, routing, chip finish" | `flow.stages: ["synthesis", "floorplan", ...]` |
 
 ### Gap Detection Scoring
 
-When MissionPackCertifier validates QoR against targets:
+When MissionPackCertifier validates QoR against mission pack targets:
 
 | Severity | Deviation | Example |
 |----------|-----------|---------|
 | 🔴 CRITICAL | >20% from target | WNS target 0ns, actual -0.5ns (50% deviation) |
-| 🟡 WARNING | 10-20% from target | Utilization target 75%, actual 85% (13% over) |
-| 🟢 MINOR | <10% from target | Utilization target 75%, actual 78% (4% over) |
-| ✅ PASSED | Meeting or exceeding target | WNS +0.1ns (better than 0ns target) |
+| 🟡 WARNING | 10-20% from target | Utilization target 68%, actual 85% (25% over) |
+| 🟢 MINOR | <10% from target | Utilization target 68%, actual 71% (4% over) |
+| ✅ PASSED | Meeting or exceeding target | WNS +0.05ns (better than 0ns target) |
 
 ### Mission Pack Evidence
 
 Evidence bundle MUST include:
-- `mission_pack.yaml` (loaded or auto-detected)
+- `hipilot-mission.md` (original human-written Markdown)
+- `mission_pack_parsed.json` (parsed structured data from natural language)
+- `agent_coordination.log` (evidence of 5-agent activation)
 - `mission_pack_validation.json` (validation results)
-- `gap_analysis.json` (per-stage gap detection results)
+- `gap_analysis.json` (per-stage gap detection results vs targets)
 
 ---
 
@@ -674,6 +1013,99 @@ bin/hitestbot-eda "enable manual mode, then generate a timing report Tcl"
 | Tcl pending | `MODE: MANUAL \| PENDING` |
 | Executing | `MODE: MANUAL \| RUNNING` |
 | Complete | `MODE: MANUAL` |
+
+---
+
+## 6.11 Phase 0.5: Heartbeat System & Clean Environment Testing (New in v1.3)
+
+### Heartbeat System Testing
+
+Tests MUST verify the event-driven heartbeat monitoring system is working correctly.
+
+**Heartbeat File Location:** `/tmp/hipilot-{session}-heartbeat.json`
+
+**Test Sequence:**
+
+| Step | Action | Verification | Evidence |
+|------|--------|--------------|----------|
+| 1 | Start test | Verify no stale heartbeat exists | `ls /tmp/hipilot-*-heartbeat.json` fails |
+| 2 | Launch HiPilot | Start EDA operation that uses `await_idle` | run_log.txt shows launch |
+| 3 | Check heartbeat created | Heartbeat file exists with recent timestamp | File mtime > test start time |
+| 4 | Monitor state changes | Heartbeat shows `running` → `waiting` → `idle` | JSON state transitions logged |
+| 5 | Complete test | Heartbeat shows `complete` or `idle` | Final state recorded |
+| 6 | Check stats | HiTestBot reports heartbeat stats | `heartbeat_wakeups: N` in results |
+
+**Pass Criteria:**
+- Heartbeat file created during test (not from previous run)
+- State transitions logged in heartbeat file
+- HiTestBot uses reduced polling (5s vs 1-2s) when heartbeat available
+- Heartbeat wakeups count > 0 for tests with EDA activity
+
+**Failure Modes:**
+
+| Failure | Symptom | Detection |
+|---------|---------|-----------|
+| Stale heartbeat | Heartbeat timestamp < test start time | Freshness validation fails |
+| No heartbeat emission | No heartbeat file created during test | File check fails |
+| Heartbeat not consumed | HiTestBot uses fast polling (1-2s) throughout | run_log.txt shows short intervals |
+| Stuck heartbeat | State frozen at `running` despite EDA complete | State change timeout |
+
+### Clean Environment Verification
+
+Tests MUST verify no contamination from previous test runs.
+
+**Pre-Test Cleanup Checklist:**
+
+```bash
+# 1. Kill stale EDA processes
+pkill -f innovus; pkill -f dc_shell; pkill -f pt_shell
+
+# 2. Remove stale heartbeat files
+rm -f /tmp/hipilot-*-heartbeat.json
+
+# 3. Kill old tmux sessions
+tmux -L hipilot kill-server 2>/dev/null || true
+
+# 4. Clean temp directories
+rm -rf /tmp/hipilot-${USER}/
+
+# 5. Verify clean state
+ls /tmp/hipilot-*-heartbeat.json 2>&1  # Should fail
+ls /tmp/hipilot-${USER}/ 2>&1          # Should fail
+tmux -L hipilot list-sessions 2>&1     # Should fail
+```
+
+**Freshness Validation:**
+
+All output files must pass freshness validation:
+
+```javascript
+function validateFreshness(file, testStartTime) {
+  const stats = fs.statSync(file);
+  const createTime = stats.birthtimeMs;
+
+  // 5-second buffer for filesystem precision
+  if (createTime < testStartTime - 5000) {
+    return {
+      valid: false,
+      error: 'STALE_EVIDENCE',
+      file: file,
+      ageMinutes: Math.round((testStartTime - createTime) / 60000)
+    };
+  }
+  return { valid: true };
+}
+```
+
+**Contamination Detection:**
+
+| Contamination | Detection | Action |
+|---------------|-----------|--------|
+| Stale heartbeat | File exists before test starts | Delete and log warning |
+| Existing GDS | `*.gds` in work directory | Fail test - unclean state |
+| Existing checkpoints | `*.enc` files present | Delete or use new timestamp |
+| Running EDA | `pgrep innovus` returns PID | Kill processes before test |
+| Old tmux | `tmux -L hipilot list-sessions` succeeds | Kill server before test |
 
 ---
 
@@ -998,3 +1430,108 @@ See `src/hitestbot/README.md` for the complete evidence bundle structure.
 ---
 
 *This is a living document. Update as the testing framework evolves.*
+
+---
+
+## Appendix H: 5-Agent Team Mode Testing (NEW)
+
+### H.1 Team Architecture
+
+HiPilot v0.8.0+ uses a 5-Agent Team as the default architecture:
+
+- Supervisor: Flow coordination
+- Knowledge: Owns all 3 brains (hub)
+- Planner: Strategy via Knowledge
+- Executor: Tcl via Knowledge
+- Archivist: Records via Knowledge
+
+Hub-and-Spoke: All agents communicate through Knowledge Agent only.
+
+### H.2 Team-Specific Test Requirements
+
+Agent Pane Creation: 6 panes (5 agents + EDA)
+Knowledge Hub: All queries route through Knowledge
+Agent Communication: Hub-and-spoke pattern
+Brain Ownership: Knowledge owns all 3 brains
+QoR Recording: Archivist - Knowledge - Project-Brain
+
+### H.3 Testing Team Mode
+
+HiTestBot tests Team Mode by launching bin/hipilot (default), verifying 6 panes, typing in Supervisor pane, observing coordination.
+
+#### Agent Activation Verification
+
+HiTestBot MUST verify all 5 agents activate when a mission pack driven command is issued:
+
+| Verification | Method | Expected Evidence |
+|--------------|--------|-------------------|
+| Supervisor active | `tmux capture-pane -t 0.0` | Text contains "Supervisor:" or "Supervisor Agent" |
+| Knowledge active | `tmux capture-pane -t 0.0` | Text contains "Knowledge:" or "Knowledge Agent" |
+| Planner active | `tmux capture-pane -t 0.0` | Text contains "Planner:" or "Planner Agent" |
+| Executor active | `tmux capture-pane -t 0.0` | Text contains "Executor:" or "Executor Agent" |
+| Archivist active | `tmux capture-pane -t 0.0` | Text contains "Archivist:" or "Archivist Agent" |
+
+#### Hub-and-Spoke Communication Verification
+
+| Test | Expected Behavior | Anti-Pattern |
+|------|-------------------|--------------|
+| Planner queries flow | Planner → Knowledge → ASIC-Brain | ❌ Planner calling ASIC-Brain directly |
+| Executor gets Tcl | Executor → Knowledge → ASIC-Brain | ❌ Executor generating Tcl without Knowledge |
+| Archivist records QoR | Archivist → Knowledge → Project-Brain | ❌ Archivist writing to disk directly |
+| Supervisor coordinates | Supervisor → Knowledge (status queries) | ❌ Supervisor controlling agents directly |
+
+#### Agent Coordination Test Commands
+
+```bash
+# Test mission pack loading and agent coordination
+bin/hitestbot-eda "load the mission pack and show me what flow stages are defined"
+
+# Expected agent sequence in pane 0.0:
+# 1. Supervisor: "Validating mission pack..."
+# 2. Knowledge: "Loading mission pack for ibex_core..."
+# 3. Planner: "Created execution plan for 10 stages..."
+# 4. Executor: "Standing by for stage execution..."
+# 5. Archivist: "QoR tracking initialized..."
+
+# Test full agent-driven flow
+bin/hitestbot-eda "execute the complete RTL2GDS flow from the mission pack"
+
+# Expected: All 5 agents coordinate through flow execution
+# - Supervisor validates each stage prerequisite
+# - Knowledge provides tool commands and recipes
+# - Planner adapts strategy based on QoR feedback
+# - Executor runs Tcl and monitors output
+# - Archivist records QoR after each stage
+```
+
+#### Agent Failure Detection
+
+| Failure Mode | Symptom | Detection Method |
+|--------------|---------|------------------|
+| Agent not activating | Missing agent name in pane output | Regex pattern matching on capture-pane |
+| Direct agent-to-agent communication | Message from one agent to another without Knowledge | Check for "Agent X → Agent Y" patterns |
+| Brain access bypass | Tool commands without Knowledge query | Check MCP logs for direct brain access |
+| Agent deadlock | Flow stuck, no progress for >10 min | Timeout detection with state checking |
+
+### H.4 5-Agent Team Scoring
+
+When testing 5-Agent Team mode, HiTestBot scores:
+
+| Layer | Criteria | Score |
+|-------|----------|-------|
+| L1 (Response) | Command typed, Supervisor responds | 1.0 if "Supervisor:" visible |
+| L2 (Understanding) | Mission pack keywords present | 1.0 if all keywords found |
+| L3 (Tool Use) | Knowledge queries via MCP | 1.0 if `knowledge.query` calls detected |
+| L3b (Agent Coord) | ≥4 agents activated | 1.0 if 5 agents, 0.8 if 4, 0.5 if 3, 0 if <3 |
+| L4 (Execution) | Mission pack parsed, stages extracted | 1.0 if all 10 stages identified |
+| L5 (QoR Tracking) | Archivist recorded QoR vs targets | 1.0 if gap analysis generated |
+
+### H.5 Certification Tiers for Agentic Flows
+
+| Tier | Requirements | Evidence |
+|------|--------------|----------|
+| **PLATINUM** | All 10 stages complete, GDS exported, timing closed, QoR targets met, all 5 agents coordinated | 5 agents active in logs, gap analysis shows targets met |
+| **GOLD** | All 10 stages complete, GDS exported, timing closed | 10 .enc files, GDS >10MB, WNS ≥ 0 |
+| **SILVER** | 8-9 stages complete, GDS exported | 8-9 .enc files, GDS exists |
+| **BRONZE** | 5-7 stages complete | 5-7 .enc files |
+| **FAIL** | <5 stages complete or agents don't coordinate | <5 .enc files or <3 agents active |

@@ -583,6 +583,194 @@ export function generateCommandExample(tool, command, context) {
 }
 
 // ============================================================================
+// PageIndex Query Methods
+// ============================================================================
+
+/**
+ * PageIndex Database Path Mapping
+ * Maps query paths to database file locations
+ */
+const PAGEINDEX_PATHS = {
+  'innovus': 'innovus/INDEX.md',
+  'innovus/commands': 'innovus/commands.md',
+  'innovus/errors': 'innovus/errors.md',
+  'innovus/best-practices': 'innovus/best-practices.md',
+  'design-compiler': 'design-compiler/INDEX.md',
+  'design-compiler/commands': 'design-compiler/commands.md',
+  'design-compiler/errors': 'design-compiler/errors.md',
+  'design-compiler/best-practices': 'design-compiler/best-practices.md',
+  'dc_shell': 'design-compiler/INDEX.md',
+  'dc_shell/commands': 'design-compiler/commands.md',
+  'dc_shell/errors': 'design-compiler/errors.md',
+  'dc_shell/best-practices': 'design-compiler/best-practices.md',
+  'icc2': 'icc2/INDEX.md',
+  'icc2/commands': 'icc2/commands.md',
+  'icc2/errors': 'icc2/errors.md',
+  'icc2/best-practices': 'icc2/best-practices.md',
+  'primetime': 'primetime/INDEX.md',
+  'primetime/commands': 'primetime/commands.md',
+  'primetime/errors': 'primetime/errors.md',
+  'primetime/best-practices': 'primetime/best-practices.md',
+  'pt_shell': 'primetime/INDEX.md',
+  'pt_shell/commands': 'primetime/commands.md',
+  'pt_shell/errors': 'primetime/errors.md',
+  'pt_shell/best-practices': 'primetime/best-practices.md',
+  'licensing': 'licensing/INDEX.md',
+  'licensing/common-issues': 'licensing/common-issues.md',
+  'tool-comparison': 'tool-comparison.md',
+};
+
+/**
+ * Query the PageIndex database by path
+ * @param {string} path - Dot or slash notation path (e.g., "innovus/commands/init_design")
+ * @returns {object} Query result with content and metadata
+ */
+export function query(path) {
+  const normalizedPath = path.replace(/\//g, '.').replace(/^\./, '');
+  const segments = normalizedPath.split('.');
+  const tool = segments[0];
+  const section = segments[1] || null;
+  const subsection = segments[2] || null;
+
+  // Map to file path
+  const basePath = section ? `${tool}/${section}` : tool;
+  const filePath = PAGEINDEX_PATHS[basePath];
+
+  if (!filePath) {
+    return {
+      found: false,
+      path: normalizedPath,
+      error: `Path not found: ${path}`,
+    };
+  }
+
+  // Try to read the file
+  const fullPath = join(__dirname, 'database', filePath);
+  if (!existsSync(fullPath)) {
+    return {
+      found: false,
+      path: normalizedPath,
+      file: filePath,
+      error: 'Database file not found',
+    };
+  }
+
+  try {
+    const content = readFileSync(fullPath, 'utf-8');
+
+    // If subsection specified, try to extract it
+    let extractedContent = content;
+    if (subsection) {
+      const sectionMatch = content.match(
+        new RegExp(`### ${subsection}[\\s\\S]*?(?=### |## |$)`, 'i')
+      );
+      if (sectionMatch) {
+        extractedContent = sectionMatch[0].trim();
+      } else {
+        // Try command lookup in the in-memory database
+        const cmdInfo = getCommand(tool === 'dc_shell' ? 'dc_shell' : tool, subsection);
+        if (cmdInfo) {
+          extractedContent = formatCommandInfo(cmdInfo);
+        } else {
+          extractedContent = `Section "${subsection}" not found in ${filePath}\n\nAvailable content:\n${content.substring(0, 500)}...`;
+        }
+      }
+    }
+
+    return {
+      found: true,
+      path: normalizedPath,
+      file: filePath,
+      tool,
+      section,
+      subsection,
+      content: extractedContent,
+    };
+  } catch (error) {
+    return {
+      found: false,
+      path: normalizedPath,
+      error: error.message,
+    };
+  }
+}
+
+/**
+ * Format command info for display
+ */
+function formatCommandInfo(cmdInfo) {
+  let output = `# ${cmdInfo.command}\n\n`;
+  output += `${cmdInfo.description}\n\n`;
+  output += `**Syntax:**\n\`\`\`tcl\n${cmdInfo.syntax}\n\`\`\`\n\n`;
+
+  if (cmdInfo.example) {
+    output += `**Example:**\n\`\`\`tcl\n${cmdInfo.example}\n\`\`\`\n\n`;
+  }
+
+  if (cmdInfo.parameters) {
+    output += '**Parameters:**\n';
+    for (const [key, value] of Object.entries(cmdInfo.parameters)) {
+      output += `- ${key}: ${value}\n`;
+    }
+    output += '\n';
+  }
+
+  return output;
+}
+
+/**
+ * Search error patterns across all tools
+ * @param {string} errorMessage - Error message to search for
+ * @returns {array} Matching error patterns
+ */
+export function searchErrors(errorMessage) {
+  const results = [];
+
+  for (const [tool, patterns] of Object.entries(ERROR_PATTERNS)) {
+    for (const [id, pattern] of Object.entries(patterns)) {
+      if (pattern.pattern.test(errorMessage)) {
+        results.push({
+          tool,
+          id,
+          ...pattern,
+        });
+      }
+    }
+  }
+
+  return results;
+}
+
+/**
+ * Get contextual best practices for a tool and stage
+ * @param {string} tool - Tool name
+ * @param {string} stage - Flow stage (optional)
+ * @returns {object} Best practices with context
+ */
+export function getBestPracticesWithContext(tool, stage = null) {
+  const practices = getBestPractices(tool, stage);
+  const toolInfo = getToolInfo(tool);
+
+  return {
+    tool: toolInfo?.name || tool,
+    stage: stage || 'general',
+    practices,
+    count: practices.length,
+  };
+}
+
+/**
+ * List all available PageIndex paths
+ * @returns {array} Available paths
+ */
+export function listPageIndexPaths() {
+  return Object.keys(PAGEINDEX_PATHS).map(path => ({
+    path: path.replace(/\//g, '.'),
+    file: PAGEINDEX_PATHS[path],
+  }));
+}
+
+// ============================================================================
 // Exports
 // ============================================================================
 
@@ -592,6 +780,7 @@ export {
   COMMAND_DATABASE,
   ERROR_PATTERNS,
   BEST_PRACTICES,
+  PAGEINDEX_PATHS,
 };
 
 export default {
@@ -605,4 +794,8 @@ export default {
   validateCommandSyntax,
   compareToolsForCapability,
   generateCommandExample,
+  query,
+  searchErrors,
+  getBestPracticesWithContext,
+  listPageIndexPaths,
 };

@@ -25,6 +25,7 @@ import {
   getCommandSyntax
 } from '../orchestrator.js';
 import { ASICBrainLogger, getLogger, readLogs, resetLogger } from './logger.js';
+import { PageIndexDB, quickQuery, quickSearch, quickGetStage } from './database/pageindex-db.js';
 
 /**
  * Main ASIC-Brain class - unified interface for general EDA knowledge
@@ -38,6 +39,7 @@ class ASICBrain {
     this.flowContext = new FlowContext(flowId);
     this.sessionId = flowId || `session_${Date.now()}`;
     this.logger = getLogger(this.sessionId);
+    this.pageIndexDB = new PageIndexDB();
     this.logger.logReasoning({
       component: 'ASICBrain',
       step: 'constructor',
@@ -261,6 +263,95 @@ class ASICBrain {
   exportLogs(evidenceDir) {
     return this.logger.exportToEvidence(evidenceDir);
   }
+
+  /**
+   * Query the PageIndex database by path
+   * Navigate tree path like "synthesis/tcl-patterns/compile_ultra"
+   * @param {string} path - Tree path
+   * @returns {object} Query result with content and metadata
+   */
+  query(path) {
+    this.logger.logReasoning({
+      component: 'ASICBrain',
+      step: 'pageIndex_query',
+      input: { path },
+      reasoning: `Querying PageIndex database for path: ${path}`,
+      output: { status: 'querying' },
+      confidence: 0.95
+    });
+
+    const result = this.pageIndexDB.query(path);
+
+    this.logger.logReasoning({
+      component: 'ASICBrain',
+      step: 'pageIndex_query_complete',
+      input: { path },
+      reasoning: `PageIndex query completed for path: ${path}`,
+      output: { type: result.type, hasContent: !!result.content },
+      confidence: 0.95
+    });
+
+    return result;
+  }
+
+  /**
+   * Search the PageIndex database for keywords
+   * @param {string} keyword - Keyword to search for
+   * @param {object} options - Search options (limit, stage)
+   * @returns {array} Array of matching results
+   */
+  search(keyword, options = {}) {
+    this.logger.logReasoning({
+      component: 'ASICBrain',
+      step: 'pageIndex_search',
+      input: { keyword, options },
+      reasoning: `Searching PageIndex database for keyword: ${keyword}`,
+      output: { status: 'searching' },
+      confidence: 0.9
+    });
+
+    const results = this.pageIndexDB.search(keyword, options);
+
+    this.logger.logReasoning({
+      component: 'ASICBrain',
+      step: 'pageIndex_search_complete',
+      input: { keyword, options },
+      reasoning: `PageIndex search completed, found ${results.length} results`,
+      output: { resultCount: results.length },
+      confidence: 0.9
+    });
+
+    return results;
+  }
+
+  /**
+   * Get all information for a stage
+   * @param {string} stageName - Stage name (e.g., "synthesis", "cts")
+   * @returns {object} Complete stage information
+   */
+  getStage(stageName) {
+    this.logger.logReasoning({
+      component: 'ASICBrain',
+      step: 'pageIndex_getStage',
+      input: { stageName },
+      reasoning: `Getting PageIndex data for stage: ${stageName}`,
+      output: { status: 'fetching' },
+      confidence: 0.95
+    });
+
+    const result = this.pageIndexDB.getStage(stageName);
+
+    this.logger.logReasoning({
+      component: 'ASICBrain',
+      step: 'pageIndex_getStage_complete',
+      input: { stageName },
+      reasoning: `Stage data retrieved for: ${stageName}`,
+      output: { hasMetadata: !!result.metadata, subsectionsCount: Object.keys(result.subsections || {}).length },
+      confidence: 0.95
+    });
+
+    return result;
+  }
 }
 
 /**
@@ -374,5 +465,10 @@ export {
   ASICBrainLogger as LittleBrainLogger,
   getLogger,
   resetLogger,
-  readLogs
+  readLogs,
+  // From pageindex-db
+  PageIndexDB,
+  quickQuery,
+  quickSearch,
+  quickGetStage
 };

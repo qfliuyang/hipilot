@@ -65,6 +65,14 @@ import {
   formatActionButtons,
 } from '../../src/lib/report-cache.js';
 
+// Heartbeat system for event-driven monitoring
+import {
+  emitHeartbeat,
+  getLatestHeartbeat,
+  clearHeartbeat,
+  createEmitter,
+} from './heartbeat.js';
+
 // PageIndex-based knowledge integration
 import {
   getExpectedTool,
@@ -88,7 +96,7 @@ const hipilotPaths = getHipilotPaths();
  * This is needed because MCP servers spawned by Claude don't inherit tmux env vars.
  */
 function getDesignDir() {
-  const VERSION = '0.7.0';
+  const VERSION = '0.8.0';
 
   // First check environment variable
   if (process.env.HIPILOT_DESIGN_DIR) {
@@ -3197,7 +3205,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
       }
 
       case 'eda.await_idle': {
-        const { timeout = 300, stability_ms = 1500, pane = 'eda', expected_tool = null } = args;
+        const { timeout = 300, stability_ms = 1500, pane = 'eda', expected_tool = null, stage = null } = args;
         const startTime = Date.now();
         const timeoutMs = timeout * 1000;
         const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
@@ -3225,6 +3233,12 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         let pollCount = 0;
         let lastSnapshot = '';
 
+        // Create heartbeat emitter for this session/stage
+        const hb = createEmitter(TMUX_SESSION, stage, expected_tool);
+
+        // Emit initial heartbeat
+        hb.running(0, { message: 'await_idle started' });
+
         while (Date.now() - startTime < timeoutMs) {
           pollCount++;
           try {
@@ -3242,6 +3256,11 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
               lastSnapshot = currentSnapshot;
               lastChangeTime = Date.now();
               stableSince = null;
+
+              // Emit running heartbeat on activity
+              const elapsed = Date.now() - startTime;
+              const progress = Math.min(95, Math.round((elapsed / timeoutMs) * 100));
+              hb.running(progress, { message: 'output changing', polls: pollCount });
             } else {
               // Output stable - track how long
               if (!stableSince) {
@@ -3253,6 +3272,10 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
             const isBashPrompt = bashPromptPattern.test(lastLine);
             if (isBashPrompt) {
               const elapsed = (Date.now() - startTime) / 1000;
+
+              // Emit error heartbeat
+              hb.error('Tool crashed to bash', { last_line: lastLine.trim() });
+
               return {
                 content: [{
                   type: 'text',
@@ -3311,6 +3334,14 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
               const errorPatterns = [/\*\*ERROR/i, /FATAL/i, /failed/i, /Error:/i, /command not found/i];
               const hasError = errorPatterns.some(p => p.test(output));
 
+              // Emit idle heartbeat
+              hb.idle({
+                detected_tool: detectedTool,
+                has_error: hasError,
+                polls: pollCount,
+                elapsed_ms: Date.now() - startTime,
+              });
+
               return {
                 content: [{
                   type: 'text',
@@ -3336,12 +3367,21 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
                 }
               };
             }
+
+            // Emit waiting heartbeat when stable but not yet idle
+            if (stableSince && (Date.now() - stableSince) > 1000) {
+              const eta = Math.max(0, Math.round((timeoutMs - (Date.now() - startTime)) / 1000));
+              hb.waiting(eta, { stable_ms: Date.now() - stableSince });
+            }
           } catch (e) {
             // Continue polling on error
           }
 
           await new Promise(r => setTimeout(r, 500));
         }
+
+        // Timeout - emit error heartbeat and return
+        hb.error('Timeout waiting for idle', { stable_ms: stableSince ? Date.now() - stableSince : 0 });
 
         // Timeout - return current state
         return {

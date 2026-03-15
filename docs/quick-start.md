@@ -72,9 +72,13 @@ Add to `~/.claude/settings.json`:
 ./bin/hipilot
 ```
 
-This creates:
-- Left pane (50%): Claude Code with HiPilot
-- Right pane (50%): EDA tool terminal
+This creates a 6-pane layout:
+- **Pane 0 (Supervisor)**: Main agent you interact with
+- **Pane 1 (Knowledge)**: Brain hub owning all 3 brains
+- **Pane 2 (Planner)**: Strategy agent
+- **Pane 3 (Executor)**: Tcl execution agent
+- **Pane 4 (Archivist)**: QoR recording agent
+- **Pane 5 (EDA)**: EDA tool terminal
 
 ### Option B: Claude Code Only
 
@@ -183,7 +187,7 @@ Then continue with each stage:
 
 ### EDA Tool Not Responding
 
-1. Check EDA tool is running in right pane
+1. Check EDA tool is running in EDA pane (pane 5)
 2. Verify tool license is available
 3. Check tmux session exists: `tmux list-sessions`
 
@@ -191,7 +195,7 @@ Then continue with each stage:
 
 1. Check execution mode (manual vs auto)
 2. Approve pending commands: `"Approve pending Tcl"`
-3. Check for errors in EDA pane
+3. Check for errors in EDA pane (pane 5)
 
 ---
 

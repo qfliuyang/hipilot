@@ -6,7 +6,7 @@
 
 ## 1. What This Project Is
 
-**HiPilot** is a shell command (`bin/hipilot`) that creates a two-pane tmux workspace. The left pane runs Anthropic's `claude` CLI (called "Claude Code"). The right pane is an empty terminal where EDA tools (Innovus, ICC2, PrimeTime — commercial chip design software) run. Claude Code in the left pane controls the EDA tool in the right pane. The engineer only types in the left pane.
+**HiPilot** is a shell command (`bin/hipilot`) that creates a 5-agent tmux workspace. The left pane runs Anthropic's `claude` CLI (called "Claude Code"). The right pane is an empty terminal where EDA tools (Innovus, ICC2, PrimeTime — commercial chip design software) run. Claude Code in the left pane controls the EDA tool in the right pane. The engineer only types in the left pane.
 
 **How Claude Code controls the right pane:** Claude Code does NOT type shell commands. Instead, it calls MCP tools. MCP (Model Context Protocol) is a mechanism where Claude Code sends JSON-RPC requests over stdio to external programs called "MCP servers". These MCP servers are Node.js processes that Claude Code spawns automatically. The MCP servers execute tmux commands (`send-keys`, `capture-pane`) to interact with the right pane. Claude Code never runs `tmux` directly.
 
@@ -45,6 +45,72 @@
 
 ---
 
+## 1.5. 5-Agent Team Architecture (v0.8.0+)
+
+**HiPilot is now a 5-Agent Team.** The `bin/hipilot` command creates a tmux workspace with 6 panes: 5 agent panes + 1 EDA pane.
+
+### Agent Layout
+
+```
+┌──────────────┬──────────────┬──────────────┬──────────────┐
+│ 🎯 Supervisor│ 📚 Knowledge │ 📋 Planner   │ ⚡ Executor  │
+├──────────────┴──────────────┴──────────────┴──────────────┤
+│ 💾 Archivist Agent (records QoR, learns from history)     │
+├────────────────────────────────────────────────────────────┤
+│ 🔧 EDA Tool (Innovus / ICC2 / PrimeTime)                  │
+└────────────────────────────────────────────────────────────┘
+```
+
+### Agent Responsibilities
+
+| Agent | Role | Key Duties |
+|-------|------|------------|
+| **Supervisor** | Coordinator | Validates prerequisites, coordinates flow phases, communicates with user |
+| **Knowledge** | Brain Hub | **Owns all 3 brains** (ASIC-Brain, EDA-Brain, Project-Brain). Central interface |
+| **Planner** | Strategist | Queries Knowledge for flow definitions, creates execution plans |
+| **Executor** | Operator | Gets Tcl from Knowledge, executes via EDA MCP, monitors output |
+| **Archivist** | Recorder | Records QoR metrics, stores error patterns, analyzes trends |
+
+### Hub-and-Spoke Communication
+
+**All agents communicate through Knowledge Agent:**
+
+```
+Supervisor → Knowledge ← Planner
+      ↓         ↓           ↓
+   (status)  (brains)   (strategy)
+      ↑         ↑           ↑
+Archivist → Knowledge ← Executor
+```
+
+- **NEVER** talk directly to other agents
+- **ALWAYS** query Knowledge Agent for information
+- Knowledge Agent is the **only** interface to the 3-brain system
+
+### 3-Brain System (Owned by Knowledge Agent)
+
+| Brain | Type | Content | Scope |
+|-------|------|---------|-------|
+| **ASIC-Brain** | **Static** | Tcl generation patterns, flow orchestration, output parsing rules | Universal ASIC design knowledge |
+| **EDA-Brain** | **Static** | Tool commands, error patterns, best practices, command syntax | Universal EDA tool knowledge |
+| **Project-Brain** | **Dynamic** | Design-specific data, QoR history, checkpoint locations, learned patterns | Per-project, built from actual design |
+
+**Key Distinction:**
+- **ASIC-Brain and EDA-Brain** are static — they contain universal knowledge shared across all projects (Tcl patterns, tool commands, error patterns)
+- **Project-Brain** is dynamic — it is built from the actual design being worked on (QoR data, error history, design-specific learnings). Different projects have different Project-Brains.
+
+### Comparison: Legacy vs Team Mode
+
+| Aspect | Legacy (v0.7.x) | Team Mode (v0.8.0+) |
+|--------|-----------------|---------------------|
+| Panes | 2 (Chat + EDA) | 6 (5 agents + EDA) |
+| Entry | `bin/hipilot` | `bin/hipilot` (default) |
+| Legacy | N/A | `bin/hipilot --simple` |
+| Architecture | Single Claude | 5 specialized agents |
+| Communication | Direct | Hub-and-spoke via Knowledge |
+
+---
+
 ## 2. Three Identities
 
 This project contains instructions for three different AI contexts. They must never be mixed.
@@ -68,7 +134,7 @@ This project contains instructions for three different AI contexts. They must ne
 
 The engineer runs `bin/hipilot` (a bash script). This script:
 1. Creates a tmux server with a **named socket**: `tmux -L hipilot new-session ...` (the `-L hipilot` is critical — it creates a separate tmux instance that all components must use)
-2. Splits the window into two panes: left (pane 0.0) and right (pane 0.1)
+2. Splits the window into 6 panes (5 agents + 1 EDA): 5 agent panes + 1 EDA pane
 3. Sets up status bar and keyboard shortcuts (prefix+m toggles manual/auto mode, prefix+y approves pending Tcl)
 4. In the left pane, runs: `claude --dangerously-skip-permissions` (this starts Claude Code, Anthropic's AI CLI, with all tool permissions pre-approved)
 5. In the right pane, shows a welcome message
@@ -138,32 +204,33 @@ HiTestBot runs on the EDA server (where HiPilot runs). It is a virtual human.
 
 ```
 hipilot/
-├── bin/hipilot                     # THE product: bash script that creates the tmux workspace
+├── bin/hipilot                     # THE product: 5-agent tmux workspace launcher
+├── bin/hipilot-simple              # Legacy 2-pane mode (for comparison/debug)
+├── src/team/                       # 5-Agent Team module (v0.8.0+)
+│   ├── index.js                    #   Team registry, AGENT_REGISTRY, createTeamMode()
+│   └── agents/                     #   Agent implementations
+│       ├── SupervisorAgent.js      #   Flow coordination, validation
+│       ├── KnowledgeAgent.js       #   Owns all 3 brains (ASIC + EDA + Project)
+│       ├── PlannerAgent.js         #   Strategy formulation
+│       ├── ExecutorAgent.js        #   Tcl execution via EDA MCP
+│       └── ArchivistAgent.js       #   QoR recording, pattern learning
 ├── servers/                        # 3 MCP servers (Node.js processes, JSON-RPC over stdio)
-│   ├── eda/index.js                #   54 tools — the main server (Tcl gen, execute, QoR, mode)
+│   ├── eda/index.js                #   54 tools — Tcl gen, execute, QoR, mode
 │   ├── tmux/index.js               #   8 tools — pane control, status bar
-│   └── knowledge/index.js          #   7 tools — skill lookup, doc search
-├── skills/                         # 36 markdown files — expert workflows that Claude Code reads
-├── templates/                      # 22 Tcl files — Nunjucks templates for vendor-specific Tcl
-│   ├── synopsys/                   #   ICC2/PrimeTime/DesignCompiler templates
-│   └── cadence/                    #   Innovus templates
-├── data/command-reference.json     # EDA command syntax reference
+│   └── knowledge/index.js          #   7 tools — skill lookup, doc search, LittleBrain
+├── skills/                         # 36 markdown files — expert workflows
+├── templates/                      # 22 Tcl files — Nunjucks templates
+│   ├── synopsys/                   #   ICC2/PrimeTime/DesignCompiler
+│   └── cadence/                    #   Innovus
+├── data/command-reference.json     # EDA command syntax
 ├── src/
-│   ├── index.js                    # CLI entry point: no args → launches tmux, subcommands → TUI
-│   ├── cli.js                      # TUI dashboard (React/Ink): status, skills, templates
+│   ├── index.js                    # CLI entry point
+│   ├── cli.js                      # TUI dashboard (React/Ink)
 │   ├── lib/                        # Shared utilities
-│   │   ├── paths.js                #   Resolves temp dirs: /tmp/hipilot-{user}/
-│   │   ├── mode.js                 #   Manual/auto mode state (file-based)
-│   │   ├── shell-escape.js         #   Safe shell quoting
-│   │   └── mcp-logger.js           #   Logs MCP calls to JSONL when HIPILOT_TEST_LOG is set
-│   └── hitestbot/                  # HiTestBot — 7 files total, uses HiPilot like a human
-│       ├── core/FlowCertifier.js   #   The virtual human (launch → type → watch → record → score)
-│       ├── core/ObservationPoint.js#   Captures pane text + screenshot at a moment
-│       ├── core/FlowReporter.js    #   Generates FLOW_REPORT.md from scores
-│       ├── core/ProgressTracker.js #   Tracks improvement across multiple test runs
-│       ├── infra/deploy_hipilot.js #   Deploys HiPilot to EDA server (tarball with node_modules)
-│       ├── tests/FlowCertificationTest.js  # Main test entry point
-│       └── tests/McpInfraTest.js   #   Standalone MCP check (no HiPilot needed)
+│   └── hitestbot/                  # HiTestBot — tests HiPilot like a human
+├── deploy/eda-server/              # Files deployed TO the EDA server
+├── test/                           # Unit tests (vitest)
+└── docs/                           # Reference documentation
 ├── deploy/eda-server/              # Files deployed TO the EDA server (not used on dev machine)
 │   ├── CLAUDE.md                   #   HiPilot's identity — Claude Code reads this on startup
 │   ├── .claude/settings.json       #   Registers 3 MCP servers with absolute EDA server paths

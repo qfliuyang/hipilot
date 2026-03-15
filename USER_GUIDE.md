@@ -1,6 +1,6 @@
 # HiPilot User Guide
 
-**HiPilot** is an AI-powered VLSI Physical Design Copilot that brings the power of Claude Code to Electronic Design Automation (EDA) workflows. It creates a two-pane workspace where you interact with Claude on the left, and Claude controls EDA tools (Innovus, ICC2, PrimeTime) on the right.
+**HiPilot** is an AI-powered VLSI Physical Design Copilot that brings the power of Claude Code to Electronic Design Automation (EDA) workflows. It creates a 5-Agent Team workspace where 5 specialized agents collaborate to control EDA tools (Innovus, ICC2, PrimeTime).
 
 ---
 
@@ -100,9 +100,13 @@ HiPilot bridges the gap between natural language and complex EDA workflows. Inst
 bin/hipilot
 ```
 
-This creates a tmux session with two panes:
-- **Left pane**: Claude Code (where you type)
-- **Right pane**: Empty terminal (where EDA tools run)
+This creates a tmux session with 6 panes (5 agents + EDA):
+- **Supervisor pane (0.0)**: Main agent you interact with
+- **Knowledge pane (0.1)**: Brain hub owning all 3 brains
+- **Planner pane (0.2)**: Strategy agent
+- **Executor pane (0.3)**: Tcl execution agent
+- **Archivist pane (0.4)**: QoR recording agent
+- **EDA pane (0.5)**: EDA tool terminal
 
 ### Your First Command
 
@@ -134,17 +138,15 @@ To switch to **auto mode** (approve all generated Tcl):
 ## The Workspace
 
 ```
-┌─── Left Pane ────────────────┬─── Right Pane ───────────────┐
-│                               │                               │
-│  Claude Code                  │  Terminal                     │
-│  (Interactive AI)             │  (EDA Tool Output)            │
-│                               │                               │
-│  You type commands here       │  HiPilot controls this pane   │
-│  Claude responds here         │  Shows tool output            │
-│                               │                               │
-├───────────────────────────────┴───────────────────────────────┤
-│  [Manual] │ Design: ibex_core │ Tool: innovus │ Status: idle   │
-└───────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────┐
+│  Supervisor │  Knowledge   │   Planner    │   Executor    │  ← Top Row
+│  (Pane 0)   │  (Pane 1)    │  (Pane 2)    │   (Pane 3)    │
+├────────────────────────────────────────────────────────────┤
+│              Archivist Agent (Pane 4)                     │  ← Middle
+├────────────────────────────────────────────────────────────┤
+│              EDA Tool Pane (Pane 5)                       │  ← Bottom
+│              (Innovus / ICC2 / PrimeTime)                 │
+└────────────────────────────────────────────────────────────┘
 ```
 
 ### Status Bar

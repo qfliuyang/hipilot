@@ -8,14 +8,14 @@ HiTestBot is a Node.js program that tests HiPilot the same way a human engineer 
 
 ```
  1. Kill old tmux session           ← clean start, like opening a fresh terminal
- 2. Run bin/hipilot --no-terminal   ← creates the tmux workspace (two panes)
+ 2. Run bin/hipilot --no-terminal   ← creates the tmux workspace (6 panes: 5 agents + EDA)
  3. Open gnome-terminal on display :0 ← workspace appears on the EDA server's desktop
  4. Start ffmpeg recording          ← records the desktop video (what a human would see)
- 5. Wait for Claude Code to be ready ← polls left pane for the input prompt
- 6. Type "/synthesis"               ← sends keystrokes to Claude Code's input
- 7. Watch both panes every 5 seconds:
-    - If Claude is working (left pane changing) → keep watching
-    - If EDA tool is busy (right pane changing, left idle) → keep watching (patient)
+ 5. Wait for Claude Code to be ready ← polls Supervisor pane for input prompt
+ 6. Type "/synthesis"               ← sends keystrokes to Supervisor pane
+ 7. Watch all panes every 5 seconds:
+    - If agents are working (Supervisor pane changing) → keep watching
+    - If EDA tool is busy (EDA pane changing, agents idle) → keep watching (patient)
     - If Claude asks a question → type "yes"
     - If manual mode approval needed → press prefix+y (Ctrl+B then y)
     - If fatal error detected → abort early
@@ -23,7 +23,7 @@ HiTestBot is a Node.js program that tests HiPilot the same way a human engineer 
  8. Take screenshots at key moments
  9. Stop video recording
 10. Collect all logs (post-test, not during):
-    - Full scrollback from both panes (10000 lines each)
+    - Full scrollback from all panes (10000 lines each)
     - MCP call log (written by HiPilot's servers during the test)
     - EDA tool log files (innovus.log, etc.)
     - Tcl execution history
@@ -46,11 +46,11 @@ HiTestBot scores by reading what's visible on screen — the same evidence a hum
 
 | Layer | Question | How HiTestBot checks |
 |---|---|---|
-| L1 | Did Claude respond at all? | Left pane text changed after typing the command |
-| L2 | Did Claude understand the task? | Left pane mentions keywords: rtl2gds, design, innovus, flow |
-| L3 | Did Claude use MCP tools (not bash)? | Left pane shows MCP tool names; right pane has EDA activity |
-| L4 | Did the EDA tool run without errors? | Right pane has output, no `**ERROR`/`FATAL` patterns |
-| L5 | Did Claude report timing results? | Left pane contains WNS and TNS numbers |
+| L1 | Did Claude respond at all? | Supervisor pane text changed after typing the command |
+| L2 | Did Claude understand the task? | Supervisor pane mentions keywords: rtl2gds, design, innovus, flow |
+| L3 | Did Claude use MCP tools (not bash)? | Supervisor pane shows MCP tool names; EDA pane has tool activity |
+| L4 | Did the EDA tool run without errors? | EDA pane has output, no `**ERROR`/`FATAL` patterns |
+| L5 | Did Claude report timing results? | Supervisor pane contains WNS and TNS numbers |
 
 **Total: 0-5 points.** PASS ≥ 4.0 / PARTIAL ≥ 2.0 / FAIL < 2.0
 
@@ -83,15 +83,15 @@ Every test produces a self-contained evidence directory:
 ├── recordings/
 │   └── test_recording.mp4            # Full desktop video from display :0
 ├── logs/
-│   ├── claude_full.log               # Left pane complete scrollback (10000 lines)
-│   ├── eda_full.log                  # Right pane complete scrollback (10000 lines)
+│   ├── supervisor_full.log           # Supervisor pane complete scrollback (10000 lines)
+│   ├── eda_full.log                  # EDA pane complete scrollback (10000 lines)
 │   ├── mcp_calls.jsonl               # Every MCP tool call (post-test collection)
 │   ├── eda_innovus_*.log             # EDA tool's own log files
 │   └── history_*.tcl                 # Every Tcl command HiPilot sent to the EDA tool
-├── obs_before_command_claude.log      # Left pane snapshot before typing
-├── obs_before_command_eda.log         # Right pane snapshot before typing
-├── obs_after_flow_claude.log          # Left pane snapshot after flow completes
-└── obs_after_flow_eda.log             # Right pane snapshot after flow completes
+├── obs_before_command_supervisor.log  # Supervisor pane snapshot before typing
+├── obs_before_command_eda.log         # EDA pane snapshot before typing
+├── obs_after_flow_supervisor.log      # Supervisor pane snapshot after flow completes
+└── obs_after_flow_eda.log             # EDA pane snapshot after flow completes
 ```
 
 ## How to Run

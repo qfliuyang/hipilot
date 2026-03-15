@@ -2,20 +2,31 @@
 
 ## Overview
 
-The **Project Mission Pack** is a configuration file that defines what HiPilot should do for a specific design. It contains all design-specific details, allowing HiPilot to be completely design-agnostic while still handling any project effectively.
+The **Project Mission Pack** is a **human-written Markdown document** that describes in natural language what HiPilot should do for a specific design. Instead of writing rigid YAML, engineers write naturally about their design, and HiPilot parses the document to extract structured information.
 
 The mission pack serves as the **single source of truth** for project configuration, enabling:
+- Natural language interface — write like you're explaining to a colleague
 - Design-agnostic HiPilot core (no hardcoded paths)
 - Portable project definitions (shareable, version-controlled)
 - Reproducible flows (same inputs = same outputs)
 - Multi-project support (switch designs by switching mission packs)
+
+## Format
+
+Mission packs are written in **Markdown** (`.md`) with natural language descriptions. The Knowledge Agent parses the document and extracts:
+- Project identity (name, description, goals)
+- Design structure (RTL files, top module, constraints)
+- Libraries (LEF, Liberty, GDS paths)
+- Flow requirements (stages to run, target QoR)
+- Technology setup (PDK, process node, corners)
+- Special instructions (tool versions, custom Tcl)
 
 ## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Project Mission Pack                          │
-│                     (hipilot-mission.yaml)                       │
+│                     (hipilot-mission.md)                         │
 ├─────────────────────────────────────────────────────────────────┤
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │
 │  │   Project   │  │    Design   │  │    Flow     │             │
@@ -267,20 +278,23 @@ custom:
 
 HiPilot loads the mission pack from (in order of priority):
 1. `HIPILOT_MISSION_PACK` environment variable (path to file)
-2. `${HIPILOT_DESIGN_DIR}/hipilot-mission.yaml`
-3. `${HIPILOT_DESIGN_DIR}/hipilot-mission.json`
+2. `${HIPILOT_DESIGN_DIR}/hipilot-mission.md` (Markdown format - preferred)
+3. `${HIPILOT_DESIGN_DIR}/hipilot-mission.yaml` (YAML format - legacy)
+4. `${HIPILOT_DESIGN_DIR}/hipilot-mission.json` (JSON format - legacy)
 
 ### Mission Pack API
 
 ```javascript
-// Load mission pack
+// Load mission pack (auto-detects format)
 const { loadMissionPack } = require('./src/mission-pack');
 const mission = loadMissionPack('/path/to/design');
 
-// Access configuration
-console.log(mission.project.name);           // "ibex_core"
-console.log(mission.design.rtl.top_module);  // "ibex_core"
-console.log(mission.flow.stages);            // ['synthesis', ...]
+// Access parsed configuration
+console.log(mission.projectName);       // "ibex_core"
+console.log(mission.topModule);         // "ibex_core"
+console.log(mission.stages);            // ['synthesis', ...]
+console.log(mission.getRtlFiles());     // ['/path/rtl/ibex_core.sv', ...]
+console.log(mission.getLefFiles());     // ['/path/lef/sky130.tlef', ...]
 
 // Get tool configuration for current stage
 const toolConfig = mission.getToolConfig('innovus', 'floorplan');
@@ -312,62 +326,62 @@ const validation = mission.validate();
 | **Memory** | Design identity, checkpoint locations |
 | **Learning** | Target QoR metrics for optimization |
 
-## Example: Minimal Mission Pack
+## Example: Minimal Mission Pack (Markdown)
 
-```yaml
-project:
-  name: "simple_design"
-  description: "A simple example design"
+```markdown
+# Mission Pack: Simple Design
 
-design:
-  rtl:
-    top_module: "top"
-    files:
-      - "rtl/top.v"
-  constraints:
-    sdc:
-      - "top.sdc"
-  libraries:
-    target:
-      - "tech.lib"
-    lef:
-      - "tech.tlef"
-      - "cells.lef"
+## Project Overview
 
-flow:
-  stages:
-    - synthesis
-    - design_init
-    - floorplan
-    - placement
-    - cts
-    - routing
-    - chip_finish
+Simple ASIC design using generic 130nm process.
+
+## Design Files
+
+### RTL
+Top module: `top`
+Files: `rtl/top.v`
+
+### Constraints
+`constraints/top.sdc`
+
+### Libraries
+- LEF: `lef/tech.tlef`, `lef/cells.lef`
+- Liberty: `lib/tech.lib`
+
+## Flow Requirements
+
+Run: synthesis, floorplan, placement, CTS, routing, chip finish
 ```
 
 ## Example: Complete Mission Pack (Ibex)
 
-See `examples/mission-packs/ibex-mission.yaml` for a complete example.
+See `examples/mission-packs/ibex-mission.md` for a complete Markdown example.
+
+## Legacy YAML Support
+
+For backward compatibility, YAML mission packs are still supported:
+
+```yaml
+# Legacy YAML format (still works)
+project:
+  name: "simple_design"
+design:
+  rtl:
+    top_module: "top"
+    files: ["rtl/top.v"]
+```
 
 ## Migration from Legacy Setup
 
-Projects that don't have a mission pack can be auto-detected:
-
-```yaml
-# Auto-generated mission pack from legacy setup
-design:
-  rtl:
-    top_module: "auto_detected"  # Detected from directory structure
-    files: []                     # Will scan for *.v, *.sv files
-    auto_detect: true
-
-  libraries:
-    auto_detect: true             # Search for *.lib, *.lef files
-```
+Projects that don't have a mission pack can be auto-detected. HiPilot will scan for:
+- `*.v`, `*.sv` files for RTL
+- `*.sdc` files for constraints
+- `*.lib`, `*.lef` files for libraries
 
 ## Implementation
 
 The mission pack system is implemented in:
 - `src/mission-pack/index.js` - Core mission pack loader
+- `src/mission-pack/parser.js` - Natural language Markdown parser
 - `src/mission-pack/validator.js` - Schema validation
 - `src/mission-pack/auto-detect.js` - Auto-detection for legacy projects
