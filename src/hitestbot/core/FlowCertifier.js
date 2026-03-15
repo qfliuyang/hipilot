@@ -199,11 +199,21 @@ export class FlowCertifier {
     // Design source: tarball to extract for a clean start each test.
     // Existing results from previous runs can mislead scoring.
     this.designTarball = options.designTarball || '/home/EDA/ibex_demo.tar';
-    this.testWorkBase = options.testWorkBase || '/home/EDA/hipilot_test/runs';
+    this.testWorkBase = options.testWorkBase || '/home/EDA/runs';
 
-    this.timestamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
-    this.evidenceDir = join(this.evidenceBaseDir, this.timestamp);
-    this.testWorkDir = join(this.testWorkBase, this.timestamp);
+    // Extract keyword from command for directory name (e.g., "/synthesis" -> "synthesis")
+    const commandKeyword = this._extractCommandKeyword(options.command || 'test');
+
+    // Human-readable timestamp: YYYYMMDD-HHMMSS
+    const now = new Date();
+    const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
+    const timeStr = now.toTimeString().slice(0, 8).replace(/:/g, '');
+    this.timestamp = `${dateStr}-${timeStr}`;
+
+    // Directory format: /home/EDA/runs/test-{keyword}-{timestamp}
+    this.runDirName = `test-${commandKeyword}-${this.timestamp}`;
+    this.evidenceDir = join(this.evidenceBaseDir, this.runDirName);
+    this.testWorkDir = join(this.testWorkBase, this.runDirName);
     this.observations = [];
     this.stageResults = [];
     this.recordingStartTime = null;
@@ -311,6 +321,33 @@ export class FlowCertifier {
   }
 
   /**
+   * Extract a clean keyword from the command for directory naming.
+   * Converts "/synthesis" -> "synthesis", "fix setup timing" -> "fix-setup-timing"
+   */
+  _extractCommandKeyword(command) {
+    if (!command || typeof command !== 'string') return 'test';
+
+    // Remove leading slash, convert to lowercase
+    let keyword = command.toLowerCase().trim();
+    if (keyword.startsWith('/')) {
+      keyword = keyword.slice(1);
+    }
+
+    // Replace spaces and special chars with hyphens
+    keyword = keyword.replace(/[^a-z0-9]+/g, '-');
+
+    // Limit length
+    if (keyword.length > 30) {
+      keyword = keyword.slice(0, 30);
+    }
+
+    // Remove trailing hyphen
+    keyword = keyword.replace(/-+$/, '');
+
+    return keyword || 'test';
+  }
+
+  /**
    * Get the appropriate poll interval based on current state and heartbeat availability.
    * Uses longer intervals when heartbeat is available (event-driven).
    */
@@ -325,45 +362,63 @@ export class FlowCertifier {
 
   /**
    * Prepare a clean design copy for this test run.
-   * Extracts ibex_demo.tar into a timestamped directory so each test
-   * starts from scratch — no leftover results from previous runs.
+   * Copies ibex_demo.tar to the test directory and extracts it there
+   * for complete isolation — prevents evidence contamination between runs.
    *
-   * Also removes ALL pre-existing design outputs to ensure stages don't
-   * skip just because files exist. HiPilot must run the complete flow.
+   * Directory format: /runs/test-{keyword}-{timestamp}/
    *
    * Returns the path to the clean work directory.
    */
   prepareCleanDesign() {
-    this._runLog('Preparing clean design copy...');
+    this._runLog(`Preparing clean design copy in: ${this.testWorkDir}`);
 
     // Create timestamped work directory
     try {
       execSync(`mkdir -p ${this.testWorkDir}`, { encoding: 'utf-8', timeout: 5000 });
+      this._runLog(`Created run directory: ${this.testWorkDir}`);
     } catch (e) {
       this._runLog(`Failed to create work dir: ${e.message}`);
       return null;
     }
 
-    // Extract design tarball
+    // Check source tarball exists
     if (!existsSync(this.designTarball)) {
       this._runLog(`Design tarball not found: ${this.designTarball} — using existing design location`);
       return null;
     }
 
+    // Copy tarball to test directory for isolation
+    const localTarball = join(this.testWorkDir, 'ibex_demo.tar');
     try {
-      execSync(`tar xf ${this.designTarball} -C ${this.testWorkDir}`, {
+      this._runLog(`Copying tarball to test directory...`);
+      execSync(`cp ${this.designTarball} ${localTarball}`, {
+        encoding: 'utf-8', timeout: 30000,
+      });
+      this._runLog(`Tarball copied: ${localTarball}`);
+    } catch (e) {
+      this._runLog(`Failed to copy tarball: ${e.message}`);
+      return null;
+    }
+
+    // Extract design tarball from the local copy
+    try {
+      this._runLog(`Extracting tarball...`);
+      execSync(`tar xf ${localTarball} -C ${this.testWorkDir}`, {
         encoding: 'utf-8', timeout: 60000,
       });
+
       // Find the extracted directory (usually ibex_work_upload or similar)
       const contents = execSync(`ls ${this.testWorkDir}`, { encoding: 'utf-8', timeout: 5000 }).trim().split('\n');
-      const designDir = contents.length === 1
-        ? join(this.testWorkDir, contents[0])
+      const extractedDirs = contents.filter(f => f !== 'ibex_demo.tar');
+      const designDir = extractedDirs.length === 1
+        ? join(this.testWorkDir, extractedDirs[0])
         : this.testWorkDir;
 
-      // Also clean outputs from the extracted copy
+      // Clean outputs from the extracted copy
       this._removeExistingOutputs(designDir);
 
-      this._runLog(`Clean design at: ${designDir}`);
+      this._runLog(`Clean design ready at: ${designDir}`);
+      this._runLog(`Run directory: ${this.testWorkDir}`);
       return designDir;
     } catch (e) {
       this._runLog(`Failed to extract design: ${e.message}`);
@@ -966,7 +1021,14 @@ export class FlowCertifier {
     const projectDir = this._projectRoot();
 
     // Build env vars - include clean design directory if provided
-    const envVars = { ...process.env, HIPILOT_SESSION: this.session, HIPILOT_TEST_LOG: this.mcpLogPath };
+    // Ensure PATH includes common Node.js locations for claude CLI
+    const nodePaths = '/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin:/usr/local/bin:/usr/bin:/bin';
+    const envVars = {
+      ...process.env,
+      HIPILOT_SESSION: this.session,
+      HIPILOT_TEST_LOG: this.mcpLogPath,
+      PATH: process.env.PATH ? `${process.env.PATH}:${nodePaths}` : nodePaths,
+    };
     if (cleanDesignDir) {
       envVars.HIPILOT_DESIGN_DIR = cleanDesignDir;
     }
@@ -979,8 +1041,12 @@ export class FlowCertifier {
       });
       this._runLog(`bin/hipilot --no-terminal output:\n${output}`);
     } catch (e) {
+      const stdout = e.stdout ? e.stdout.toString() : '';
+      const stderr = e.stderr ? e.stderr.toString() : '';
       this._runLog(`bin/hipilot failed: ${e.message}`);
-      throw new Error(`Failed to launch HiPilot: ${e.message}`);
+      this._runLog(`stdout: ${stdout}`);
+      this._runLog(`stderr: ${stderr}`);
+      throw new Error(`Failed to launch HiPilot: ${e.message}\nstdout: ${stdout}\nstderr: ${stderr}`);
     }
 
     // Step 2: Verify session exists
@@ -1009,7 +1075,9 @@ export class FlowCertifier {
       session: this.session,
     });
 
-    const processCheck = earlyCheatCheck.verifyClaudeProcesses();
+    // For dynamic team creation, we only expect 1 process (Supervisor) initially
+    // The other 4 agents will be spawned by Supervisor via TeamCreate API
+    const processCheck = earlyCheatCheck.verifyClaudeProcesses(1);
     if (!processCheck.valid) {
       this._runLog(`⚠️ CHEAT DETECTED EARLY: ${processCheck.message}`);
       throw new Error(`Cheat detected: ${processCheck.message}`);
@@ -1557,9 +1625,26 @@ export class FlowCertifier {
       }
 
       if (state === 'asking_question') {
-        this._runLog(`Claude asked: "${detail}" — responding "yes"`);
+        // Smart response based on question type
+        let response = 'yes';
+        const questionLower = detail.toLowerCase();
+        const claudeContentLower = claude.toLowerCase();
+
+        // Multiple choice questions about synthesis waiting
+        if (/would you like me to.*wait.*synthesis|wait for.*complete|check.*status/i.test(claudeContentLower)) {
+          // For "Would you like me to: 1. Wait... 2. Start... 3. Check..." - choose option 1 (wait)
+          response = '1';
+          this._runLog(`Claude asked multiple choice — responding "${response}" (wait for synthesis)`);
+        } else if (/which.*option|choose.*\d|select.*\d|1\.|2\.|3\./i.test(claudeContentLower)) {
+          // Generic multiple choice - select option 1
+          response = '1';
+          this._runLog(`Claude asked multiple choice — responding "${response}"`);
+        } else {
+          this._runLog(`Claude asked: "${detail}" — responding "${response}"`);
+        }
+
         this._takeScreenshot(`question_${questionCount}`);
-        this.typeInHiPilot('yes');
+        this.typeInHiPilot(response);
         questionCount++;
         lastClaudeChangeTime = Date.now();
         continue;
@@ -1749,6 +1834,8 @@ export class FlowCertifier {
     // regardless of any other scores. If critical cheats detected = AUTO FAIL.
     // ═══════════════════════════════════════════════════════════════════
     const hasVeto = authenticitySubject.raw_score === 0;
+    let finalGrade;
+    let assessment;
     if (hasVeto) {
       // Override all assessments - cheating is an automatic fail
       finalGrade = 'F';
@@ -1973,7 +2060,127 @@ export class FlowCertifier {
     return { score: 0.0, detail: 'No MCP tool usage or EDA activity detected' };
   }
 
+  /**
+   * TEMPORAL VERIFICATION: Check if EDA pane content changed over time.
+   * This prevents cheating by detecting idle panes with stale output.
+   * @returns {Object} { changed: boolean, changeCount: number, detail: string }
+   */
+  _verifyPaneActivityOverTime() {
+    // Need at least 2 observations to detect change
+    if (this.observations.length < 2) {
+      return { changed: false, changeCount: 0, detail: 'Insufficient observations for temporal verification' };
+    }
+
+    // Filter to EDA pane observations with content
+    const edaObservations = this.observations.filter(obs =>
+      obs.content && obs.content.eda_pane && obs.content.eda_pane.length > 0
+    );
+
+    if (edaObservations.length < 2) {
+      return { changed: false, changeCount: 0, detail: 'Less than 2 EDA pane observations' };
+    }
+
+    // Sort by timestamp
+    edaObservations.sort((a, b) => a.timestamp - b.timestamp);
+
+    // Calculate content hashes and detect changes
+    let changeCount = 0;
+    let previousHash = null;
+    const changes = [];
+
+    for (const obs of edaObservations) {
+      // Create simple hash of last 200 chars (captures recent activity)
+      const content = obs.content.eda_pane.slice(-200);
+      const hash = content.split('').reduce((a, b) => ((a << 5) - a) + b.charCodeAt(0), 0).toString(16);
+
+      if (previousHash !== null && hash !== previousHash) {
+        changeCount++;
+        changes.push({
+          timestamp: obs.timestamp,
+          elapsed: previousTimestamp ? ((obs.timestamp - previousTimestamp) / 1000).toFixed(1) + 's' : 'N/A'
+        });
+      }
+
+      previousHash = hash;
+      previousTimestamp = obs.timestamp;
+    }
+
+    // Require at least 3 changes to consider it active (prevents single-change cheating)
+    const changed = changeCount >= 3;
+
+    return {
+      changed,
+      changeCount,
+      totalObservations: edaObservations.length,
+      detail: changed
+        ? `EDA pane actively changing: ${changeCount} content updates across ${edaObservations.length} observations`
+        : `EDA pane mostly idle: only ${changeCount} content changes (need 3+ for active tool)`,
+      changes: changes.slice(-5) // Last 5 changes
+    };
+  }
+
+  /**
+   * Verify EDA tool process is actually running on the system.
+   * This prevents cheating by ensuring the tool process exists.
+   */
+  _verifyActiveEdaProcess() {
+    try {
+      // Check for running EDA processes
+      const psOutput = execSync(
+        "ps aux | grep -E '(innovus|dc_shell|pt_shell|icc2)' | grep -v grep || echo ''",
+        { encoding: 'utf-8', timeout: 5000 }
+      );
+
+      const processes = psOutput.trim().split('\n').filter(line => line.length > 0);
+
+      if (processes.length === 0) {
+        return { running: false, processes: [], detail: 'No EDA tool processes found' };
+      }
+
+      // Parse process info
+      const parsed = processes.map(line => {
+        const parts = line.trim().split(/\s+/);
+        return {
+          user: parts[0],
+          pid: parts[1],
+          cpu: parts[2],
+          mem: parts[3],
+          command: parts.slice(10).join(' ').slice(0, 50)
+        };
+      });
+
+      return {
+        running: true,
+        processCount: parsed.length,
+        processes: parsed,
+        detail: `${parsed.length} EDA process(es) running (CPU: ${parsed.map(p => p.cpu + '%').join(', ')})`
+      };
+    } catch (e) {
+      return { running: false, error: e.message, detail: 'Process check failed' };
+    }
+  }
+
   _scoreEdaExecution(edaOutput, finalObservation = null) {
+    // CRITICAL: Temporal verification first - check if pane changed over time
+    const temporalCheck = this._verifyPaneActivityOverTime();
+    const processCheck = this._verifyActiveEdaProcess();
+
+    // If pane didn't change and no process running, it's definitely idle/cheated
+    if (!temporalCheck.changed && !processCheck.running) {
+      return {
+        score: 0.0,
+        detail: `CHEAT DETECTED: EDA pane idle (${temporalCheck.changeCount} changes) and no tool process running. Reported completion without actual execution.`,
+        temporalCheck,
+        processCheck,
+        antiCheat: true
+      };
+    }
+
+    // If pane didn't change much, warn but don't auto-fail (might be fast stage)
+    if (!temporalCheck.changed) {
+      this._debugLog('Low pane activity detected:', temporalCheck);
+    }
+
     // Read the FULL EDA pane log from evidence directory (has full scrollback, not truncated)
     let fullEdaOutput = edaOutput;
     let fullLogUsed = false;
@@ -2807,6 +3014,28 @@ export class FlowCertifier {
     this._takeScreenshot('claude_ready');
     this._logPanes('claude_ready');
 
+    // Phase 2.5: Create 5-Agent Team
+    // Tell Supervisor to create team, then wait for teammates to appear
+    this._runLog('Creating 5-Agent Team...');
+    this._runLog('Step 1: Instructing Supervisor to create team...');
+
+    // Type the team creation command
+    // Note: EDA pane (pane 1) is already created by bin/hipilot
+    // Team mode will create teammates in new panes/windows managed by Claude Code
+    const teamCreationCmd = "Create team 'hipilot-team' with 4 teammates using teammateMode: tmux. Teammates: Knowledge (brain interface), Planner (strategy), Executor (EDA control ONLY via MCP), Archivist (recording). The EDA pane already exists as pane 1.";
+    this.typeInHiPilot(teamCreationCmd);
+    this._takeScreenshot('team_creation_command');
+
+    // Wait for team creation to complete
+    this._runLog('Step 2: Waiting for team formation...');
+    const teamReady = await this._waitForTeamCreation(120000); // 2 min timeout
+    if (teamReady) {
+      this._runLog('✓ 5-Agent Team ready');
+    } else {
+      this._runLog('⚠ Team not fully formed - proceeding with available agents');
+    }
+    this._takeScreenshot('team_ready');
+
     // Capture before state
     const beforeObs = await ObservationPoint.capture('BEFORE_COMMAND', {
       evidenceDir: this.evidenceDir,
@@ -2866,8 +3095,8 @@ export class FlowCertifier {
     });
 
     // Get pane text for verification
-    const pane0Text = this._readPane(0.0);
-    const pane1Text = this._readPane(0.1);
+    const pane0Text = this._capturePane('0.0');
+    const pane1Text = this._capturePane('0.1');
     const combinedPaneText = `${pane0Text}\n${pane1Text}`;
 
     // Get evidence files
@@ -3033,6 +3262,63 @@ export class FlowCertifier {
   }
 
   _sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  /**
+   * Wait for 5-Agent Team creation
+   * In team mode, Supervisor creates the team on startup.
+   * We wait for all 5 Claude processes to be running.
+   */
+  async _waitForTeamCreation(timeoutMs = 120000) {
+    const startTime = Date.now();
+    const checkInterval = 5000; // Check every 5 seconds
+    let lastClaudeCount = 0;
+
+    this._runLog(`Waiting up to ${timeoutMs / 1000}s for team creation...`);
+
+    while (Date.now() - startTime < timeoutMs) {
+      try {
+        // Count Claude processes
+        const result = spawnSync('pgrep', ['-c', 'claude'], {
+          encoding: 'utf-8',
+          timeout: 5000,
+        });
+        const claudeCount = parseInt(result.stdout.trim(), 10) || 0;
+
+        if (claudeCount !== lastClaudeCount) {
+          this._runLog(`  Claude processes: ${claudeCount}/5`);
+          lastClaudeCount = claudeCount;
+        }
+
+        // Check if we have at least 5 Claude processes (Supervisor + 4 teammates)
+        if (claudeCount >= 5) {
+          this._runLog(`✓ Team formed: ${claudeCount} Claude processes`);
+          return true;
+        }
+
+        // Also check tmux pane count as alternative
+        try {
+          const paneResult = spawnSync('tmux', ['-L', this.socket, 'list-panes'], {
+            encoding: 'utf-8',
+            timeout: 5000,
+          });
+          const paneCount = paneResult.stdout.split('\n').filter(l => l.trim()).length;
+          if (paneCount >= 6) {
+            this._runLog(`✓ Layout ready: ${paneCount} panes`);
+            return true;
+          }
+        } catch {
+          // Pane check failed, continue with process check
+        }
+      } catch (e) {
+        // Process check failed, continue waiting
+      }
+
+      await this._sleep(checkInterval);
+    }
+
+    this._runLog(`⚠ Team creation timeout after ${timeoutMs / 1000}s`);
+    return false;
+  }
 
   // ═══════════════════════════════════════════════════════════════════
   //  HUMAN-LIKE BEHAVIOR METHODS

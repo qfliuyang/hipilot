@@ -2726,7 +2726,24 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
 
         // Detect tool and get template
         const detectedTool = detectTool();
-        const vendor = detectedTool?.vendor || 'cadence';
+
+        // Check if any EDA tool is running
+        if (!detectedTool) {
+          return {
+            content: [{ type: 'text', text: `❌ No EDA tool running
+
+Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pane.
+
+**To fix this:**
+1. Start an EDA tool first (e.g., /synthesis, /design-init, or manually start innovus/dc_shell)
+2. Then run the skill again
+
+**Available tools:** innovus, dc_shell, pt_shell, icc2_shell` }],
+            isError: true,
+          };
+        }
+
+        const vendor = detectedTool.vendor;
 
         // Look for template reference in skill
         const templateMatch = skillContent.match(/template_path:\s*\n\s*synopsys:\s*(\S+)\s*\n\s*cadence:\s*(\S+)/);

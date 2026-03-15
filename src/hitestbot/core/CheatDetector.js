@@ -13,6 +13,12 @@
  *   6. Cross-Reference Validation — Correlate pane logs with MCP logs
  *   7. Echo Detection — Detect "echo" command usage (cheating signature)
  *   8. Video Motion Analysis — Verify video shows actual activity
+ *   9. Evidence Location — Ensure evidence is on EDA server
+ *  10. Minimum Duration — Reject tests that complete too quickly
+ *  11. Desktop Visibility — Verify screenshots show EDA server desktop
+ *  12. SSH Remote Verification — Verify evidence exists via SSH
+ *  13. Active Video Stream — Verify ffmpeg is recording
+ *  14. Agent Delegation Bypass — Detect Supervisor bypassing Executor (CRITICAL for 5-Agent Team)
  */
 
 import { execSync } from 'child_process';
@@ -49,7 +55,7 @@ export class CheatDetector {
    * Verify real Claude Code processes are running
    * ═══════════════════════════════════════════════════════════════════
    */
-  verifyClaudeProcesses() {
+  verifyClaudeProcesses(expectedCount = null) {
     try {
       // Check for claude CLI processes
       const psOutput = execSync('ps aux | grep -E "claude|Claude" | grep -v grep', {
@@ -59,21 +65,26 @@ export class CheatDetector {
 
       const claudeLines = psOutput.trim().split('\n').filter(line => line.includes('claude'));
 
-      // Expected: 5 Claude processes for 5 agents
-      const expectedCount = 5;
+      // Expected: 5 Claude processes for 5 agents (or override for dynamic team creation)
+      const expected = expectedCount || 5;
       const actualCount = claudeLines.length;
 
       if (actualCount === 0) {
         return this._logCheat('process', 'critical',
           'NO Claude processes found — HiPilot is not running!',
-          { psOutput: 'empty', expected: expectedCount, actual: 0 }
+          { psOutput: 'empty', expected: expected, actual: 0 }
         );
       }
 
-      if (actualCount < expectedCount) {
-        return this._logCheat('process', 'warning',
-          `Only ${actualCount}/${expectedCount} Claude processes found — some agents may not be running`,
-          { processes: claudeLines.map(l => l.trim()) }
+      // For dynamic team creation, we expect at least 1 (Supervisor) initially
+      // The team will spawn later via TeamCreate API
+      const minExpected = expected === 1 ? 1 : expected;
+
+      if (actualCount < minExpected) {
+        const level = expected === 1 ? 'info' : 'warning';
+        return this._logCheat('process', level,
+          `Only ${actualCount}/${expected} Claude processes found — team still forming`,
+          { processes: claudeLines.map(l => l.trim()), expected, actual: actualCount }
         );
       }
 
@@ -201,7 +212,94 @@ export class CheatDetector {
 
   /**
    * ═══════════════════════════════════════════════════════════════════
-   * CHEAT PREVENTION 4: MCP Log Integrity Check
+   * CHEAT PREVENTION 4: Temporal Verification
+   * Verify pane content CHANGES over time (detects idle panes with stale output)
+   *
+   * CRITICAL: This prevents testers from claiming completion when the
+   * EDA pane is just sitting idle with old/stale output.
+   * ═══════════════════════════════════════════════════════════════════
+   */
+  verifyTemporalActivity(observations = []) {
+    // Need at least 3 observations to detect meaningful activity
+    if (observations.length < 3) {
+      return this._logCheat('temporal', 'warning',
+        `Insufficient observations for temporal verification (${observations.length} < 3)`,
+        { observationCount: observations.length }
+      );
+    }
+
+    // Filter to EDA pane observations with content
+    const edaObservations = observations.filter(obs =>
+      obs.content?.eda_pane && obs.content.eda_pane.length > 50
+    );
+
+    if (edaObservations.length < 3) {
+      return this._logCheat('temporal', 'critical',
+        `Less than 3 EDA pane observations — cannot verify activity`,
+        { edaObservationCount: edaObservations.length }
+      );
+    }
+
+    // Sort by timestamp
+    edaObservations.sort((a, b) => a.timestamp - b.timestamp);
+
+    // Calculate content hashes and detect changes
+    let changeCount = 0;
+    let previousHash = null;
+    let firstTimestamp = null;
+    let lastTimestamp = null;
+
+    for (const obs of edaObservations) {
+      // Create hash of last 200 chars (captures recent activity)
+      const content = obs.content.eda_pane.slice(-200);
+      const hash = createHash('md5').update(content).digest('hex');
+
+      if (previousHash !== null && hash !== previousHash) {
+        changeCount++;
+      }
+
+      if (firstTimestamp === null) firstTimestamp = obs.timestamp;
+      lastTimestamp = obs.timestamp;
+      previousHash = hash;
+    }
+
+    const duration = lastTimestamp - firstTimestamp;
+
+    // CRITICAL: Require at least 3 content changes AND minimum duration
+    if (changeCount < 3) {
+      return this._logCheat('temporal', 'critical',
+        `EDA pane nearly IDLE: only ${changeCount} content changes over ${(duration/1000).toFixed(1)}s. ` +
+        `Active tools show continuous updates (need 3+ changes). Possible CHEAT: reported completion without execution.`,
+        {
+          changeCount,
+          observationCount: edaObservations.length,
+          duration: duration + 'ms',
+          durationSec: (duration / 1000).toFixed(1),
+        }
+      );
+    }
+
+    // Check duration - very short duration is suspicious
+    if (duration < 60000) { // Less than 60 seconds
+      return this._logCheat('temporal', 'warning',
+        `Test completed very quickly (${(duration/1000).toFixed(1)}s) — verify this is legitimate`,
+        { duration: duration + 'ms', changeCount }
+      );
+    }
+
+    return {
+      valid: true,
+      changeCount,
+      observationCount: edaObservations.length,
+      duration,
+      durationSec: (duration / 1000).toFixed(1),
+      activityRate: (changeCount / (duration / 1000) * 60).toFixed(2) + ' changes/min',
+    };
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * CHEAT PREVENTION 5: MCP Log Integrity Check
    * Verify MCP logs are real, not fabricated
    * ═══════════════════════════════════════════════════════════════════
    */
@@ -638,7 +736,13 @@ export class CheatDetector {
       if (!results.checks.mcp.valid) results.criticalCheats++;
     }
 
-    // Check 5: Video motion
+    // Check 5: Temporal Activity Verification (CRITICAL - detects idle panes)
+    if (options.observations && options.observations.length > 0) {
+      results.checks.temporal = this.verifyTemporalActivity(options.observations);
+      if (!results.checks.temporal.valid) results.criticalCheats++;
+    }
+
+    // Check 6: Video motion
     if (videoPath) {
       results.checks.video = this.verifyVideoMotion(videoPath);
       if (!results.checks.video?.valid) results.criticalCheats++;
@@ -656,6 +760,13 @@ export class CheatDetector {
         sendCommandFn, capturePaneFn
       );
       if (!results.checks.interactive.valid) results.criticalCheats++;
+    }
+
+    // Check 8: Agent Delegation Bypass Detection (CRITICAL for 5-Agent Team Mode)
+    // Detects when Supervisor directly executes MCP tools without delegating to Executor
+    if (paneText) {
+      results.checks.agentDelegation = this.detectAgentDelegationBypass(paneText);
+      if (!results.checks.agentDelegation.valid) results.criticalCheats++;
     }
 
     // Calculate warnings
@@ -713,6 +824,324 @@ export class CheatDetector {
       throw new Error(
         `CHEAT DETECTOR VETO: Test failed due to ${critical.length} critical issue(s): ` +
         critical.map(c => `${c.type}: ${c.message}`).join('; ')
+      );
+    }
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * CHEAT PREVENTION 14: Agent Delegation Bypass Detection
+   * Detect when Supervisor directly executes MCP tools without delegating
+   * to Executor via SendMessage - CRITICAL for 5-Agent Team Mode
+   *
+   * Expected flow:
+   *   1. Supervisor SendMessage to Executor: {type: "execute_stage", stage: "synthesis"}
+   *   2. Executor responds via SendMessage with execution plan
+   *   3. Supervisor executes MCP tools on behalf of Executor
+   *
+   * Cheating pattern (bypassing delegation):
+   *   1. Supervisor directly calls eda.start_tool / eda.send_tcl_nonblocking
+   *   2. NO SendMessage to Executor before MCP execution
+   *   3. All 4 teammates are idle while Supervisor does all the work
+   * ═══════════════════════════════════════════════════════════════════
+   */
+  detectAgentDelegationBypass(claudePaneLog) {
+    const violations = [];
+
+    // Pattern 1: Direct MCP execution without SendMessage delegation
+    const directMcpPatterns = [
+      { pattern: /eda\.start_tool|eda\.send_tcl|eda\.execute_and_verify/i, name: 'direct_mcp_call' },
+      { pattern: /hipilot-eda\s+-\s+eda\.(start_tool|send_tcl|execute_and_verify)/i, name: 'mcp_tool_invocation' },
+    ];
+
+    // Pattern 2: SendMessage to Executor (expected delegation pattern)
+    const delegationPatterns = [
+      { pattern: /SendMessage.*to.*["']?Executor["']?/i, name: 'send_to_executor' },
+      { pattern: /Message sent to Executor/i, name: 'message_sent_executor' },
+      { pattern: /delegate.*synthesis.*Executor/i, name: 'delegate_executor' },
+      { pattern: /delegat.*to.*Executor/i, name: 'delegation_executor' },
+    ];
+
+    // Pattern 3: All teammates idle while Supervisor works alone
+    const idleTeammatesPattern = /All \d+ teammates.*idle|teammates.*available.*Executor/i;
+
+    // Check if there's direct MCP execution
+    let hasDirectMcpExecution = false;
+    for (const { pattern, name } of directMcpPatterns) {
+      const matches = claudePaneLog.match(pattern);
+      if (matches) {
+        hasDirectMcpExecution = true;
+        violations.push({
+          type: 'direct_mcp_execution',
+          pattern: name,
+          match: matches[0].substring(0, 100),
+        });
+      }
+    }
+
+    // Check if there was proper delegation via SendMessage
+    let hasDelegation = false;
+    for (const { pattern, name } of delegationPatterns) {
+      if (pattern.test(claudePaneLog)) {
+        hasDelegation = true;
+        break;
+      }
+    }
+
+    // Check for idle teammates pattern (indicates Supervisor working alone)
+    const hasIdleTeammates = idleTeammatesPattern.test(claudePaneLog);
+
+    // CRITICAL VIOLATION: Direct MCP execution WITHOUT delegation
+    if (hasDirectMcpExecution && !hasDelegation) {
+      return this._logCheat('agent_delegation_bypass', 'critical',
+        'SUPERVISOR BYPASS DETECTED: Supervisor directly executed MCP tools without delegating to Executor via SendMessage. This violates 5-Agent Team Mode architecture.',
+        {
+          violations,
+          hasDirectMcpExecution,
+          hasDelegation,
+          hasIdleTeammates,
+          expectedFlow: 'Supervisor -> SendMessage(Executor) -> Executor plans -> Supervisor executes MCP',
+          actualFlow: 'Supervisor -> Direct MCP execution (bypassed Executor)',
+        }
+      );
+    }
+
+    // WARNING: Direct MCP with delegation but teammates idle (partial bypass)
+    if (hasDirectMcpExecution && hasDelegation && hasIdleTeammates) {
+      return this._logCheat('agent_delegation_bypass', 'warning',
+        'Potential delegation bypass: Supervisor executed MCP while all teammates were idle. Verify Executor actually coordinated the work.',
+        {
+          violations,
+          hasDirectMcpExecution,
+          hasDelegation,
+          hasIdleTeammates,
+        }
+      );
+    }
+
+    return {
+      valid: true,
+      hasDirectMcpExecution,
+      hasDelegation,
+      hasIdleTeammates,
+      delegationCompliant: hasDirectMcpExecution ? hasDelegation : true,
+    };
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * CHEAT PREVENTION 9: Evidence Location Verification
+   * Ensure evidence is stored on the EDA server, not locally
+   * ═══════════════════════════════════════════════════════════════════
+   */
+  verifyEvidenceLocation(evidenceDir) {
+    // Check if path contains indicators of local development machine
+    const localIndicators = [
+      '/Users/',           // macOS local path
+      '/home/[^/]+/code',  // Local dev path pattern
+      'C:\\Users\\',       // Windows local path
+      'test-evidence-phase', // Stale local evidence directories
+    ];
+
+    for (const pattern of localIndicators) {
+      const regex = new RegExp(pattern, 'i');
+      if (regex.test(evidenceDir)) {
+        return this._logCheat('location', 'critical',
+          `Evidence located on LOCAL machine (${evidenceDir}) — must be on EDA server`,
+          { path: evidenceDir, pattern }
+        );
+      }
+    }
+
+    // Check for EDA server path indicators
+    const edaIndicators = [
+      '/home/EDA/',
+      'EDA@',
+      '192.168.112.163',
+    ];
+
+    const onEdaServer = edaIndicators.some(ind =>
+      evidenceDir.includes(ind)
+    );
+
+    if (!onEdaServer) {
+      return this._logCheat('location', 'critical',
+        `Evidence path does not indicate EDA server location: ${evidenceDir}`,
+        { path: evidenceDir, required: '/home/EDA/' }
+      );
+    }
+
+    return { valid: true, location: evidenceDir, onEdaServer: true };
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * CHEAT PREVENTION 10: Minimum Duration Enforcement
+   * Reject tests that complete too quickly to be real
+   * ═══════════════════════════════════════════════════════════════════
+   */
+  verifyMinimumDuration(startTime, endTime, expectedMinMinutes = 10) {
+    const durationMs = endTime - startTime;
+    const durationMinutes = durationMs / 60000;
+    const expectedMinMs = expectedMinMinutes * 60000;
+
+    if (durationMs < expectedMinMs) {
+      return this._logCheat('duration', 'critical',
+        `Test completed in ${durationMinutes.toFixed(1)} minutes — too fast for real EDA execution (min: ${expectedMinMinutes} min)`,
+        {
+          actualMinutes: durationMinutes.toFixed(2),
+          expectedMinMinutes,
+          startTime: new Date(startTime).toISOString(),
+          endTime: new Date(endTime).toISOString(),
+        }
+      );
+    }
+
+    return {
+      valid: true,
+      durationMinutes: durationMinutes.toFixed(2),
+      meetsMinimum: true,
+    };
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * CHEAT PREVENTION 11: Desktop Visibility Verification
+   * Verify screenshots show actual EDA server desktop with tmux session
+   * ═══════════════════════════════════════════════════════════════════
+   */
+  verifyDesktopVisibility(screenshotPath) {
+    if (!existsSync(screenshotPath)) {
+      return this._logCheat('desktop', 'critical',
+        'Desktop screenshot missing — cannot verify EDA server visibility',
+        { path: screenshotPath }
+      );
+    }
+
+    try {
+      // Check file size (desktop screenshots should be substantial)
+      const stats = statSync(screenshotPath);
+      if (stats.size < 50000) { // Less than 50KB is suspicious for desktop
+        return this._logCheat('desktop', 'critical',
+          `Desktop screenshot too small (${stats.size} bytes) — may be cropped or fake`,
+          { path: screenshotPath, size: stats.size }
+        );
+      }
+
+      // Verify file is recent
+      const age = Date.now() - stats.mtimeMs;
+      if (age > 300000) { // Older than 5 minutes
+        return this._logCheat('desktop', 'critical',
+          `Desktop screenshot is ${(age / 60000).toFixed(1)} minutes old — not from current test`,
+          { path: screenshotPath, age, mtime: stats.mtime }
+        );
+      }
+
+      return {
+        valid: true,
+        size: stats.size,
+        age,
+        path: screenshotPath,
+      };
+    } catch (e) {
+      return this._logCheat('desktop', 'critical',
+        'Failed to verify desktop screenshot',
+        { error: e.message, path: screenshotPath }
+      );
+    }
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * CHEAT PREVENTION 12: SSH Remote Verification
+   * Verify evidence exists on EDA server via SSH
+   * ═══════════════════════════════════════════════════════════════════
+   */
+  async verifyRemoteEvidenceExists(sshHost, sshUser, remotePath, password = null) {
+    const { execSync } = await import('child_process');
+
+    try {
+      // Build SSH command with optional sshpass for password
+      const sshPrefix = password ? `sshpass -p '${password}' ` : '';
+      const sshCmd = `${sshPrefix}ssh -o ConnectTimeout=10 -o StrictHostKeyChecking=no ${sshUser}@${sshHost} "ls -la ${remotePath}"`;
+
+      const result = execSync(sshCmd, {
+        encoding: 'utf8',
+        timeout: 15000,
+      });
+
+      // If we get here, the path exists on the remote server
+      return {
+        valid: true,
+        host: sshHost,
+        remotePath,
+        listing: result.trim(),
+      };
+    } catch (e) {
+      return this._logCheat('remote_verify', 'critical',
+        `Remote verification FAILED: Cannot confirm evidence exists on EDA server`,
+        {
+          host: sshHost,
+          remotePath,
+          error: e.message,
+          hint: 'Evidence must be created directly on EDA server, not copied locally'
+        }
+      );
+    }
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * CHEAT PREVENTION 13: Active Video Stream Verification
+   * Verify ffmpeg is actively recording during test execution
+   * ═══════════════════════════════════════════════════════════════════
+   */
+  verifyActiveVideoStream(ffmpegPid = null, videoPath = null) {
+    try {
+      // Check if ffmpeg process is running
+      const psOutput = execSync('ps aux | grep ffmpeg | grep -v grep', {
+        encoding: 'utf8',
+        timeout: 5000,
+      });
+
+      if (!psOutput.includes('ffmpeg')) {
+        return this._logCheat('video_stream', 'critical',
+          'No active ffmpeg process found — video recording not running',
+          { ffmpegPid, videoPath }
+        );
+      }
+
+      // If video path provided, check it's growing
+      if (videoPath && existsSync(videoPath)) {
+        const stats1 = statSync(videoPath);
+        const size1 = stats1.size;
+
+        // Wait 2 seconds and check again
+        execSync('sleep 2', { timeout: 3000 });
+
+        if (existsSync(videoPath)) {
+          const stats2 = statSync(videoPath);
+          const size2 = stats2.size;
+
+          if (size2 <= size1) {
+            return this._logCheat('video_stream', 'critical',
+              'Video file not growing — ffmpeg may be stalled or recording static image',
+              { videoPath, sizeBefore: size1, sizeAfter: size2 }
+            );
+          }
+        }
+      }
+
+      return {
+        valid: true,
+        ffmpegRunning: true,
+        pid: ffmpegPid,
+        videoPath,
+      };
+    } catch (e) {
+      return this._logCheat('video_stream', 'critical',
+        'Failed to verify active video stream',
+        { error: e.message, ffmpegPid, videoPath }
       );
     }
   }

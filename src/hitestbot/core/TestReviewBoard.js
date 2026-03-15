@@ -196,6 +196,19 @@ export class TestReviewBoard {
       issues.push({ type: 'evidence_freshness', severity: 'critical', detail: freshnessCheck });
     }
 
+    // Check 5: Agent Delegation Bypass Detection (CRITICAL for 5-Agent Team Mode)
+    if (combinedPaneText) {
+      const delegationCheck = detector.detectAgentDelegationBypass(combinedPaneText);
+      if (!delegationCheck.valid) {
+        issues.push({
+          type: 'agent_delegation_bypass',
+          severity: 'critical',
+          detail: delegationCheck,
+          message: 'Supervisor bypassed Executor - direct MCP tool execution detected without delegation'
+        });
+      }
+    }
+
     return {
       clean: issues.length === 0,
       issues,

@@ -204,10 +204,16 @@ export function listAgents() {
   }));
 }
 
+// Export new TeamController for hard-coded team flow
+export { TeamController, createTeamController, AGENTS } from './TeamController.js';
+
 export default {
   AGENT_REGISTRY,
   AGENT_NAMES,
   createTeamMode,
   getAgentConfig,
   listAgents,
+  TeamController,
+  createTeamController,
+  AGENTS,
 };
