@@ -30,15 +30,22 @@ import { ObservationPoint } from './ObservationPoint.js';
 import { FlowReporter } from './FlowReporter.js';
 
 // Adaptive polling intervals based on detected state - optimized for faster response
+// Key insight: Poll fast when activity is happening, skip work when idle
 const POLL_INTERVALS = {
-  working: 2000,        // Poll faster when Claude is actively producing output (2s)
-  waiting_for_eda: 8000, // Poll slower during long EDA execution (8s)
-  idle: 3000,           // Moderate when both panes idle
-  needs_approval: 500,  // Very fast response for approvals (0.5s)
-  asking_question: 1000, // Fast response for questions (1s)
-  bypass_permissions: 500, // Fast for permission bypass (0.5s)
+  working: 1000,        // Fast poll when Claude is actively producing output (1s)
+  waiting_for_eda: 2000, // Poll EDA frequently to catch completion quickly (2s)
+  idle: 500,            // Very fast when idle to detect prompt immediately (0.5s)
+  needs_approval: 200,  // Ultra-fast response for approvals (0.2s)
+  asking_question: 500, // Fast response for questions (0.5s)
+  bypass_permissions: 200, // Ultra-fast for permission bypass (0.2s)
 };
-const DEFAULT_POLL_INTERVAL_MS = 3000;
+const DEFAULT_POLL_INTERVAL_MS = 1000;
+
+// Throttling: Skip expensive operations during long-running EDA
+const SCREENSHOT_INTERVAL_POLLS = 30;     // Every ~60s during EDA (was every 12 = 24s)
+const OBSERVATION_INTERVAL_POLLS = 15;    // Every ~30s during EDA (was every 6 = 12s)
+const FAST_SCREENSHOT_INTERVAL = 6;       // Every ~6s when working (fast mode)
+const FAST_OBSERVATION_INTERVAL = 3;      // Every ~3s when working (fast mode)
 const CLAUDE_READY_TIMEOUT_MS = 120000;
 
 // ═══════════════════════════════════════════════════════════════════
@@ -801,7 +808,8 @@ export class FlowCertifier {
 
     // Kill ALL stale processes (EDA tools, tmux, ffmpeg) — critical for clean test
     this._cleanStaleProcesses();
-    await this._sleep(2000);
+    // Short wait for processes to die (pkill -9 is fast, 500ms is enough)
+    await this._sleep(500);
 
     const binPath = this.hipilotBin || join(this._projectRoot(), 'bin', 'hipilot');
     const projectDir = this._projectRoot();
@@ -884,7 +892,7 @@ export class FlowCertifier {
 
     // Center the window. Try xdotool first (more reliable on CentOS 7), wmctrl as fallback.
     try {
-      execSync('sleep 1', { timeout: 5000 });
+      execSync('sleep 0.5', { timeout: 5000 });
       const winW = Math.round(screenW * 0.8);
       const winH = Math.round(screenH * 0.8);
       const posX = Math.round((screenW - winW) / 2);
@@ -1266,11 +1274,23 @@ export class FlowCertifier {
         lastState = state;
       }
 
-      // Screenshot every 60s
-      if (pollCount % 12 === 0) this._takeScreenshot(`progress_${pollCount}`);
+      // Smart throttling: Adjust screenshot/observation frequency based on state
+      // During EDA execution, we don't need frequent screenshots (EDA output changes slowly)
+      // When Claude is working, capture more frequently to catch key moments
+      const isEdaRunning = state === 'waiting_for_eda';
+      const isActive = state === 'working' || claudeChanged || edaChanged;
 
-      // Observation point every 30s
-      if (pollCount % 6 === 0) {
+      // Use state-appropriate intervals
+      const screenshotInterval = isEdaRunning ? SCREENSHOT_INTERVAL_POLLS : FAST_SCREENSHOT_INTERVAL;
+      const observationInterval = isEdaRunning ? OBSERVATION_INTERVAL_POLLS : FAST_OBSERVATION_INTERVAL;
+
+      // Only take screenshot if enough polls have passed AND something changed (or forced interval)
+      if (pollCount % screenshotInterval === 0 && (isActive || isEdaRunning)) {
+        this._takeScreenshot(`progress_${pollCount}`);
+      }
+
+      // Only capture observation point at intervals and when there's activity (or EDA running)
+      if (pollCount % observationInterval === 0 && (isActive || isEdaRunning)) {
         const obs = await ObservationPoint.capture(`PROGRESS_${pollCount}`, {
           evidenceDir: this.evidenceDir,
           session: this.session,
@@ -1333,18 +1353,27 @@ export class FlowCertifier {
       }
 
       if (state === 'waiting_for_eda') {
-        // EDA tool is running. A human waits — no timeout needed.
-        // But log so we know what's happening.
+        // EDA tool is running. A human waits — but check if EDA actually completed
+        // If EDA pane shows prompt and hasn't changed for a while, EDA is done
+        const edaQuietTime = Date.now() - lastEdaChangeTime;
+        if (edaQuietTime > 5000 && edaPromptReady && !claudeChanged) {
+          // EDA has been quiet with prompt visible for 5s — likely done, Claude should respond
+          this._runLog('EDA appears complete (prompt visible, no changes for 5s)');
+        }
       }
 
       if (state === 'idle') {
         // Both panes quiet, no prompt detected. Check how long:
         const quietTime = Math.min(Date.now() - lastClaudeChangeTime, Date.now() - lastEdaChangeTime);
-        // A human would wait ~2 minutes before concluding something is stuck.
-        // But if it's been very quiet, take a screenshot and log the state.
-        if (quietTime > 120000 && pollCount > 10) {
+        // Aggressive stuck detection: 30s is enough to know something is wrong (was 120s)
+        if (quietTime > 30000 && pollCount > 10) {
           this._runLog(`Both panes quiet for ${(quietTime / 1000).toFixed(0)}s with no prompt — may be stuck`);
           this._takeScreenshot(`quiet_${pollCount}`);
+        }
+        // Critical stuck detection: If quiet for 60s, something is definitely wrong
+        if (quietTime > 60000 && pollCount > 20) {
+          this._runLog(`STUCK DETECTED: No activity for 60s — aborting watch`);
+          break;
         }
       }
 

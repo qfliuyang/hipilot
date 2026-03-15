@@ -48,11 +48,20 @@
 - Any test with direct MCP calls is marked `CHEAT_DETECTED` and invalid
 - Evidence must show tmux-based interaction only
 
-### 1.2 The North Star
+**Test Isolation (R8):**
+| **R8: Fresh Working Directory** | Each test uses a timestamped directory | Reusing previous test results as evidence |
+
+- Tests MUST run in timestamped directories (e.g., `ibex_test_20260315_143022/`)
+- Evidence MUST be collected from the current test run only
+- Previous test results CANNOT be referenced as evidence for the current test
+- EDA tool output files must be created DURING the test, not copied from previous runs
+- Freshness validation: All output files must have timestamps after test start time (Section 5.2)
+
+### 1.3 The North Star
 
 > **HiPilot can conduct a complete RTL-to-GDS flow driven by Claude Code, MCP tools, and skills — proving that an AI Agent can replace a human for standard flow execution.**
 
-### 1.3 Why Anti-Cheat Matters
+### 1.4 Why Anti-Cheat Matters
 
 **The Trap of Synthetic Testing:**
 
