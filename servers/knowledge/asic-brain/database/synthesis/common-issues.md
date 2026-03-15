@@ -185,6 +185,65 @@ top -p $(pgrep dc_shell)
 compile_ultra -area_effort medium -timing_effort medium
 ```
 
+## Issue 8: Verilog SystemVerilog Literal '0 Not Supported
+
+### Pattern
+```
+Error: The construct '0 is not supported. (VER-250)
+Error:  near "'0": syntax error, unexpected '\'', expecting ';' (VER-501)
+```
+
+### Root Cause
+SystemVerilog literal `'0` (meaning "all bits zero") is NOT supported by Synopsys Design Compiler. This is valid SystemVerilog syntax but DC only supports standard Verilog literals.
+
+Common in:
+- Ibex RISC-V core (`ibex_cs_registers.v`)
+- OpenTitan designs
+- Modern SystemVerilog designs targeting open-source tools
+
+### Fix
+Replace all `'0` literals with explicit Verilog literals:
+
+```bash
+# Pre-process RTL before synthesis
+sed -i "s/'0/1'b0/g" designs/src/ibex/ibex_cs_registers.v
+```
+
+Or in Tcl:
+```tcl
+# Fix RTL syntax for DC compatibility
+set rtl_file "designs/src/ibex/ibex_cs_registers.v"
+set fixed_file [regsub {.v$} $rtl_file _fixed.v]
+
+# Read and replace
+set fp [open $rtl_file r]
+set content [read $fp]
+close $fp
+
+# Replace '0 with 1'b0
+regsub -all {'0} $content {1'b0} content
+
+# Write fixed file
+set fp [open $fixed_file w]
+puts $fp $content
+close $fp
+
+puts "Fixed RTL written to: $fixed_file"
+
+# Use fixed file for synthesis
+analyze -format verilog $fixed_file
+```
+
+### Prevention
+Always verify RTL syntax compatibility before synthesis:
+```bash
+# Check for SystemVerilog literals
+grep -n "'0" designs/src/*/*.v
+
+# Fix all occurrences before DC
+grep -rl "'0" designs/src/ | xargs sed -i "s/'0/1'b0/g"
+```
+
 ## Error Pattern Summary
 
 | Error Pattern | Keyword | Severity | Auto-fixable |
@@ -196,3 +255,4 @@ compile_ultra -area_effort medium -timing_effort medium
 | PATH error | "exited abnormally" | High | Yes |
 | Library error | "not found" | High | Yes |
 | License error | "checkout failed" | High | No |
+| RTL syntax error | "'0 is not supported" | High | Yes |
