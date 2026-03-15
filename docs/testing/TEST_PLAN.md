@@ -1,12 +1,12 @@
-# HiPilot Unified Test Plan v3.2
+# HiPilot Unified Test Plan v3.3
 
 > **One test plan to rule them all.** Self-improving, evidence-based, progressive certification.
 
-**Version:** 3.2
+**Version:** 3.3
 **Status:** Active
 **Replaces:** TEST_PLAN_v2.md, TEST_PLAN_v3_*.md, RTL2GDS_TEST_PLAN_OPERATIONAL.md
 
-**Latest Update:** 2026-03-15 - Added Phase 3.5 Manual Mode Workflow test
+**Latest Update:** 2026-03-15 - Added Anti-Cheat Charter with explicit No Mock/No Bypass rules
 
 ---
 
@@ -22,9 +22,64 @@
 | **Self-Improving** | Every failure feeds back into the next iteration |
 | **Real Tools Only** | No mocks. Real dc_shell, innovus, pt_shell. |
 
+### 1.2 Anti-Cheat Charter: No Mock, No Bypass, Real Human Testing
+
+> **This test plan enforces STRICT human-like testing. Any method that bypasses HiPilot's normal operation is FORBIDDEN.**
+
+**HiTestBot is a VIRTUAL HUMAN, not an API client.**
+
+| Rule | Description | Violation Example |
+|------|-------------|-------------------|
+| **R1: No Direct MCP Calls** | HiTestBot NEVER calls MCP tools directly. It ONLY types in the left pane like a human. | Calling `eda.detect_tool()` directly via API |
+| **R2: tmux-Only Interaction** | HiTestBot ONLY interacts through tmux commands: `send-keys`, `capture-pane`, `list-panes` | Reading MCP logs during test execution |
+| **R3: No Right Pane Injection** | HiTestBot NEVER sends commands directly to the EDA pane (right pane) | Using `tmux send-keys -t 0.1` to inject Tcl |
+| **R4: Real EDA Tools Only** | Tests MUST use real EDA tools. Simulated/fake output is prohibited. | Using `echo "innovus>"` to fake tool output |
+| **R5: Post-Test Evidence Only** | MCP logs and EDA logs are read AFTER the test completes, never during | Tailing logs during test to check progress |
+| **R6: Keyboard-Only Input** | All input is via keyboard keystrokes, not API calls | Setting MCP parameters programmatically |
+| **R7: Visual Verification** | HiTestBot verifies by reading the screen (pane capture), not internal state | Checking internal variables instead of visible output |
+
+**Why This Matters:**
+- If HiTestBot bypasses HiPilot's UI, it could miss bugs a real human would encounter
+- If HiTestBot reads MCP logs during the test, it gains "superhuman" knowledge
+- If synthetic EDA output is used, the test proves nothing about real-world operation
+
+**Enforcement:**
+- FlowCertifier.js has anti-cheat checks (lines 45-71)
+- Any test with direct MCP calls is marked `CHEAT_DETECTED` and invalid
+- Evidence must show tmux-based interaction only
+
 ### 1.2 The North Star
 
 > **HiPilot can conduct a complete RTL-to-GDS flow driven by Claude Code, MCP tools, and skills — proving that an AI Agent can replace a human for standard flow execution.**
+
+### 1.3 Why Anti-Cheat Matters
+
+**The Trap of Synthetic Testing:**
+
+Many AI test frameworks "cheat" by:
+1. Calling APIs directly instead of using the UI
+2. Reading internal logs to verify behavior
+3. Using simulated/mocked dependencies
+4. Injecting commands into the backend
+
+**Why This Destroys Trust:**
+
+| Cheat Method | Why It Fails in Production |
+|--------------|---------------------------|
+| Direct MCP calls | Real users type in the left pane; API bypass misses UI bugs |
+| Log tailing during test | Real users watch the screen, not JSON logs |
+| Simulated EDA output | Mock results don't prove real tool integration works |
+| Right pane injection | Bypasses HiPilot's approval workflows entirely |
+
+**Our Commitment:**
+
+HiTestBot is a **virtual human**, not a test API. It:
+- Types in the left pane using `tmux send-keys` (like fingers on a keyboard)
+- Reads the screen using `tmux capture-pane` (like eyes watching)
+- Presses keyboard shortcuts (Ctrl+B, y) for approval (like a human reviewing)
+- Collects evidence AFTER the test (like a human reviewing recordings)
+
+**When tests pass under these constraints, you can trust that a real human will have the same experience.**
 
 ---
 
@@ -56,13 +111,21 @@
 
 ### 2.2 Five-Layer Scoring (L1-L5)
 
-| Layer | Score | What | How to Verify |
-|-------|-------|------|---------------|
-| **L1** | 0-1.0 | Claude responds | Left pane changes from initial state |
-| **L2** | 0-1.0 | Understands task | Keywords match intent (timing, route, etc.) |
-| **L3** | 0-1.0 | Uses MCP tools | Tool calls visible in left pane |
-| **L4** | 0-1.0 | EDA tool responds | Right pane shows tool activity |
-| **L5** | 0-1.0 | Reports QoR | WNS/TNS/metrics in Claude's response |
+| Layer | Score | What | How to Verify | Anti-Cheat Note |
+|-------|-------|------|---------------|-----------------|
+| **L1** | 0-1.0 | Claude responds | Left pane changes from initial state | Must be triggered by `tmux send-keys`, not API |
+| **L2** | 0-1.0 | Understands task | Keywords match intent (timing, route, etc.) | Must appear in pane capture, not direct log read |
+| **L3** | 0-1.0 | Uses MCP tools | Tool calls visible in left pane | HiTestBot NEVER calls MCP directly |
+| **L4** | 0-1.0 | EDA tool responds | Right pane shows tool activity | Real tool output, never simulated/fake |
+| **L5** | 0-1.0 | Reports QoR | WNS/TNS/metrics in Claude's response | Metrics from real EDA execution |
+
+**Cheating Detection by Layer:**
+- **L1/L2 Cheat:** Reading Claude's internal state instead of pane capture
+- **L3 Cheat:** HiTestBot calling MCP tools directly (e.g., `eda.detect_tool()`)
+- **L4 Cheat:** Injecting fake tool output with `echo` or simulated responses
+- **L5 Cheat:** Using hardcoded metrics instead of actual EDA tool output
+
+**Golden Rule:** If a real human typing at the keyboard couldn't do it the same way, it's cheating.
 
 **Stage Score** = Average of all 5 layers (0.0 to 1.0)
 
@@ -223,6 +286,21 @@ async approvePendingTcl() {
   this._runLog('Sent prefix+y to approve pending Tcl');
 }
 ```
+
+**Anti-Cheat Verification for Phase 3.5:**
+
+| Check | Expected | Why It Matters |
+|-------|----------|----------------|
+| Input method | `tmux send-keys` only | Human-like typing, not API calls |
+| Approval trigger | Physical key sequence (Ctrl+B, y) | Tests actual keyboard shortcut |
+| No premature execution | MCP log shows `awaiting_approval` BEFORE `send_to_terminal` | Verifies approval gate works |
+| Evidence timing | Screenshots show state transitions | Visual proof, not just logs |
+| Right pane activity | EDA tool runs AFTER approval | Confirms execution only after human approval |
+
+**FAILURE TO CHEAT DETECTION:**
+- If HiTestBot calls `eda.approve_pending()` directly → `CHEAT_DETECTED`
+- If Tcl executes without `prefix+y` being sent → Test fails (L3 = 0)
+- If MCP logs show activity before pane capture shows it → `EVIDENCE_MISMATCH`
 
 ---
 
@@ -689,6 +767,43 @@ cat test-evidence/<test_id>/timeline.jsonl | jq -c 'select(.type=="mcp_call")'
 cat test-evidence/<test_id>/knowledge_base_updates.yaml
 ```
 
+### 7.4 Anti-Cheat Verification Checklist
+
+Before trusting test results, verify:
+
+```bash
+# 1. HiTestBot used tmux-only interaction
+grep -E "tmux (send-keys|capture-pane)" test-evidence/<test_id>/run_log.txt
+# Should see: tmux -L hipilot send-keys -t 0.0 ...
+# Should NOT see: direct MCP tool calls from HiTestBot
+
+# 2. No direct MCP calls from HiTestBot
+grep -i "cheat\|direct.*mcp\|bypass" test-evidence/<test_id>/FLOW_REPORT.md
+# Should NOT see: CHEAT_DETECTED
+
+# 3. Real EDA tool execution
+ssh EDA@192.168.112.163 "head -50 /home/EDA/ibex_work_upload/result/pr/log/innovus.log"
+# Should see: Real Innovus output, not echo/fake output
+
+# 4. Evidence timestamps are fresh
+ls -la test-evidence/<test_id>/logs/
+# All files should have timestamps AFTER test start time
+
+# 5. Screenshots show actual UI state
+file test-evidence/<test_id>/screenshots/*.png
+# Should be valid PNG files with reasonable sizes (>10KB)
+```
+
+**Red Flags (Test Invalidated):**
+
+| Flag | Meaning | Action |
+|------|---------|--------|
+| `CHEAT_DETECTED` in report | HiTestBot called MCP directly | Review FlowCertifier.js anti-cheat checks |
+| Empty screenshots | tmux interaction failed | Check tmux socket and display |
+| EDA log shows only `echo` commands | Fake tool execution | Verify real EDA tools are installed |
+| Evidence older than test start | Stale/staged evidence | Run fresh test with clean state |
+| MCP log shows calls before pane capture | Superhuman knowledge | HiTestBot read logs during test |
+
 ---
 
 ## 8. Maintenance
@@ -704,6 +819,7 @@ cat test-evidence/<test_id>/knowledge_base_updates.yaml
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 3.3 | 2026-03-15 | **Anti-Cheat Charter** (Section 1.2): Explicit No Mock/No Bypass rules. Human-like testing enforcement. Anti-cheat verification for Phase 3.5. Trust through real behavior testing. |
 | 3.2 | 2026-03-15 | Added Phase 3.5 Manual Mode Workflow test, HiTestBot approval sequence, status bar verification criteria |
 | 3.1 | 2026-03-04 | Added evidence timeline verification (Section 5.3), scoring adjustments for long-running flows (Section 5.5), Phase 7 Gold certification achieved |
 | 3.0 | 2026-03-01 | Unified all test plans, added self-improvement system |
