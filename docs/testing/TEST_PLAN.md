@@ -37,25 +37,42 @@
 | **R5: Post-Test Evidence Only** | MCP logs and EDA logs are read AFTER the test completes, never during | Tailing logs during test to check progress |
 | **R6: Keyboard-Only Input** | All input is via keyboard keystrokes, not API calls | Setting MCP parameters programmatically |
 | **R7: Visual Verification** | HiTestBot verifies by reading the screen (pane capture), not internal state | Checking internal variables instead of visible output |
+| **R8: Fresh Working Directory** | Each test uses a timestamped directory on EDA server | Reusing previous test results as evidence |
+| **R9: EDA Server Location** | ALL evidence MUST be created on EDA server (192.168.112.163) | Creating evidence locally, then claiming it as EDA test |
+| **R10: Minimum Duration** | Tests MUST take minimum realistic time (10+ min for phases) | Completing 8-phase test in seconds/minutes |
+| **R11: Live Video Recording** | ffmpeg MUST be actively recording the desktop during test | Static image as video, no recording, stalled ffmpeg |
+| **R12: Remote Verification** | Leader MUST verify evidence exists on EDA server via SSH | Claims of completion without remote verification |
 
 **Why This Matters:**
 - If HiTestBot bypasses HiPilot's UI, it could miss bugs a real human would encounter
 - If HiTestBot reads MCP logs during the test, it gains "superhuman" knowledge
 - If synthetic EDA output is used, the test proves nothing about real-world operation
 
-**Enforcement:**
-- FlowCertifier.js has anti-cheat checks (lines 45-71)
-- Any test with direct MCP calls is marked `CHEAT_DETECTED` and invalid
-- Evidence must show tmux-based interaction only
+**Enforcement (13-Layer Cheat Detection):**
+- CheatDetector.js implements 13 verification layers:
+  1. Process Verification - Check real Claude processes exist (5 agents)
+  2. Echo Command Detection - Detect fake status output patterns
+  3. Pane Content Verification - Verify real Claude interface indicators
+  4. MCP Log Integrity - Validate JSON structure and timestamps
+  5. Cross-Reference Validation - Correlate pane logs with MCP logs
+  6. Interactive Verification - Send test commands, verify real responses
+  7. Video Motion Detection - Verify video shows actual activity
+  8. Evidence Freshness - Ensure files created during this test run
+  9. **Evidence Location** - Verify evidence is on EDA server (not local)
+  10. **Desktop Visibility** - Mandate screenshots showing EDA server desktop
+  11. **Minimum Duration** - Reject tests completing too quickly (< 10 min)
+  12. **Active Video Stream** - Verify ffmpeg is actively recording
+  13. **Remote Verification** - SSH verify evidence exists on EDA server
+- Any test with critical cheat detection = `CHEAT_DETECTED` and automatic FAIL
+- Evidence must show tmux-based interaction from EDA server only
 
-**Test Isolation (R8):**
-| **R8: Fresh Working Directory** | Each test uses a timestamped directory | Reusing previous test results as evidence |
-
-- Tests MUST run in timestamped directories (e.g., `ibex_test_20260315_143022/`)
-- Evidence MUST be collected from the current test run only
+**Test Isolation Requirements:**
+- Tests MUST run in timestamped directories on EDA server (e.g., `/home/EDA/hipilot_test/runs/ibex_20260315_143022/`)
+- Evidence MUST be collected from the current test run only on EDA server
 - Previous test results CANNOT be referenced as evidence for the current test
 - EDA tool output files must be created DURING the test, not copied from previous runs
 - Freshness validation: All output files must have timestamps after test start time (Section 5.2)
+- **Location validation**: Evidence path must contain `/home/EDA/` or be verifiable via SSH to EDA server
 
 ### 1.3 The North Star
 

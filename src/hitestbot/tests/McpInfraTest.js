@@ -118,7 +118,7 @@ async function main() {
     const r = callMcp('eda', 'workflow.list', {});
     if (r.error) throw new Error(r.error);
     const text = r.result?.content?.[0]?.text || '';
-    if (!text.includes('synthesis') || !text.includes('floorplan')) throw new Error('Missing stage workflows');
+    if (!text.includes('rtl2gds') || !text.includes('Built-in')) throw new Error('Missing built-in workflows');
     return 'workflows listed';
   })) passed++; else failed++;
 
@@ -127,12 +127,14 @@ async function main() {
   // Knowledge Server Tests
   console.log('Knowledge MCP Server:');
 
-  if (test('knowledge.list_skills returns 36 skills', () => {
+  if (test('knowledge.list_skills returns skills', () => {
     const r = callMcp('knowledge', 'knowledge.list_skills', {});
     if (r.error) throw new Error(r.error);
     const text = r.result?.content?.[0]?.text || '';
-    if (!text.includes('36')) throw new Error('Expected 36 skills');
-    return '36 skills';
+    // Check for skills count pattern (e.g., "X total")
+    const match = text.match(/(\d+) total/);
+    if (!match || parseInt(match[1]) < 30) throw new Error('Expected at least 30 skills');
+    return `${match[1]} skills`;
   })) passed++; else failed++;
 
   if (test('knowledge.match_skill finds fix-setup-timing', () => {

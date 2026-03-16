@@ -201,6 +201,11 @@ async function deploy() {
   
   const mergedSettings = {
     ...existingSettings,
+    env: {
+      ...existingSettings.env,
+      CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: '1',  // Enable team mode
+    },
+    teammateMode: 'tmux',  // Use tmux split-pane for teammates
     permissions: {
       allow: mergedAllow,
       deny: mergedDeny,

@@ -46,8 +46,9 @@ function resolvePane(pane) {
   if (/^\d+$/.test(pane)) return pane;
 
   // Named pane - try to find by title, fall back to index convention
+  // HiPilot 6-pane layout: 0=Supervisor, 1=Knowledge, 2=Planner, 3=Executor, 4=Archivist, 5=EDA
   if (pane === 'chat') return '0';
-  if (pane === 'eda') return '1';
+  if (pane === 'eda') return '5';  // EDA pane is index 5 in 6-pane team layout
 
   // Try by title
   try {
@@ -87,7 +88,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         inputSchema: {
           type: 'object',
           properties: {
-            pane: { type: 'string', description: 'Pane name: chat, eda, 0, 1' },
+            pane: { type: 'string', description: 'Pane name: chat (0), eda (5), or numeric index 0-5' },
             keys: { type: 'string', description: 'Text to send (sent literally). Trailing "Enter" or "C-m" is auto-detected and converted to a keypress.' },
             submit: { type: 'boolean', description: 'Press Enter (C-m) after the text. Default: auto-detect from trailing Enter/C-m in keys, or false.' },
           },
@@ -100,7 +101,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         inputSchema: {
           type: 'object',
           properties: {
-            pane: { type: 'string', description: 'Pane name: chat, eda, 0, 1' },
+            pane: { type: 'string', description: 'Pane name: chat (0), eda (5), or numeric index 0-5' },
             lines: { type: 'number', description: 'Number of lines to capture (default: all visible)', default: 0 },
           },
           required: ['pane'],
@@ -112,7 +113,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         inputSchema: {
           type: 'object',
           properties: {
-            pane: { type: 'string', description: 'Pane name: chat, eda, 0, 1' },
+            pane: { type: 'string', description: 'Pane name: chat (0), eda (5), or numeric index 0-5' },
             lines: { type: 'number', description: 'Number of lines (default: 100)', default: 100 },
           },
           required: ['pane'],
@@ -170,7 +171,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         inputSchema: {
           type: 'object',
           properties: {
-            pane: { type: 'string', description: 'Pane name: chat, eda, 0, 1' },
+            pane: { type: 'string', description: 'Pane name: chat (0), eda (5), or numeric index 0-5' },
             width: { type: 'number', description: 'Width in percentage' },
             height: { type: 'number', description: 'Height in rows' },
           },
