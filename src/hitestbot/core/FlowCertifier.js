@@ -45,6 +45,7 @@ const POLL_INTERVALS = {
   needs_approval: 200,  // Ultra-fast response for approvals (0.2s)
   asking_question: 500, // Fast response for questions (0.5s)
   bypass_permissions: 200, // Ultra-fast for permission bypass (0.2s)
+  trust_prompt: 200,     // Ultra-fast for trust prompt (0.2s)
 };
 const DEFAULT_POLL_INTERVAL_MS = 1000;
 
@@ -1349,6 +1350,11 @@ export class FlowCertifier {
       return { state: 'bypass_permissions' };
     }
 
+    // Check for trust/workspace prompt (Claude Code new security feature)
+    if (!claudePromptReady && /trust this folder|Yes, I trust this folder|Quick safety check/i.test(claude)) {
+      return { state: 'trust_prompt' };
+    }
+
     // Approval is no longer needed (mode is always auto), but detect if it appears
     if (this._needsApproval(claude)) return { state: 'needs_approval', detail: 'unexpected approval prompt' };
 
@@ -1618,6 +1624,16 @@ export class FlowCertifier {
         await this._sleep(100);
         this._sendKeysToClaude(' ');
         await this._sleep(100);
+        this._sendKeysToClaude('C-m');
+        await this._sleep(200);
+        lastClaudeChangeTime = Date.now();
+        continue;
+      }
+
+      if (state === 'trust_prompt') {
+        this._runLog('Trust prompt detected — confirming trust');
+        this._takeScreenshot('trust_prompt');
+        // Option 1 is already selected (❯), just press Enter to confirm
         this._sendKeysToClaude('C-m');
         await this._sleep(200);
         lastClaudeChangeTime = Date.now();
