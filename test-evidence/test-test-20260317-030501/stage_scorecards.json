@@ -1,0 +1,119 @@
+[
+  {
+    "stage": "full_flow",
+    "transcript": {
+      "subjects": [
+        {
+          "name": "Communication",
+          "score": 100,
+          "grade": "A+",
+          "grade_points": 4,
+          "weight": 1,
+          "status": "PASS"
+        },
+        {
+          "name": "Methodology",
+          "score": 100,
+          "grade": "A+",
+          "grade_points": 4,
+          "weight": 1.5,
+          "status": "PASS"
+        },
+        {
+          "name": "Process",
+          "score": 100,
+          "grade": "A+",
+          "grade_points": 4,
+          "weight": 2,
+          "status": "PASS"
+        },
+        {
+          "name": "Execution",
+          "score": 0,
+          "grade": "F",
+          "grade_points": 0,
+          "weight": 1.5,
+          "status": "FAIL"
+        },
+        {
+          "name": "Results",
+          "score": 100,
+          "grade": "A+",
+          "grade_points": 4,
+          "weight": 1,
+          "status": "PASS"
+        },
+        {
+          "name": "Human-Like",
+          "score": 70,
+          "grade": "C-",
+          "grade_points": 1.7,
+          "weight": 2.5,
+          "status": "PASS"
+        },
+        {
+          "name": "Authenticity",
+          "score": 0,
+          "grade": "F",
+          "grade_points": 0,
+          "weight": 10,
+          "status": "FAIL"
+        }
+      ],
+      "gpa": 1.35,
+      "overall_percentage": 67,
+      "final_grade": "F"
+    },
+    "scores": {
+      "L1_prompt_delivery": {
+        "score": 1,
+        "detail": "Claude responded to the command"
+      },
+      "L2_intent_recognition": {
+        "score": 1,
+        "detail": "Claude understood the task (mentions: design, innovus, flow, stage)"
+      },
+      "L3_mcp_tool_usage": {
+        "score": 1,
+        "detail": "MCP tools used (4407 calls: eda.detect_tool, eda.start_tool, knowledge.get_skill), EDA tool active"
+      },
+      "L3b_process_validation": {
+        "score": 1,
+        "detail": "Correct process: synthesis used dc_shell as expected",
+        "validation": {
+          "stage": "synthesis",
+          "tool": "dc_shell",
+          "correct": true
+        }
+      },
+      "L4_eda_execution": {
+        "score": 0,
+        "detail": "EDA error: unknown command"
+      },
+      "L5_qor_assessment": {
+        "score": 1,
+        "detail": "QoR reported: WNS=0.00, TNS=0.00"
+      }
+    },
+    "total_score": 5,
+    "max_score": 6,
+    "status": "fail",
+    "assessment": "CHEAT DETECTOR VETO: Critical authenticity violations detected. Test automatically FAILED regardless of other scores.",
+    "recommendations": [
+      "Review cheat_detection_report.json for details",
+      "Ensure test was run with authentic HiPilot processes",
+      "Check for echo commands or fabricated output",
+      "Verify video recording shows actual EDA tool execution"
+    ],
+    "failure_classification": {
+      "category": "HIPILOT_BUG",
+      "summary": "EDA error: unknown command",
+      "action": "Fix Tcl template or generation"
+    },
+    "mcp_calls_count": null,
+    "evidence_summary": {
+      "claude_output_lines": 200,
+      "eda_output_lines": 200
+    }
+  }
+]

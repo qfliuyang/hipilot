@@ -1,0 +1,85 @@
+{
+  "timestamp": "2026-03-17T22:07:44.968Z",
+  "checks": {
+    "processes": {
+      "valid": true,
+      "count": 5,
+      "processes": [
+        {
+          "pid": "852",
+          "cmd": "claude"
+        },
+        {
+          "pid": "974",
+          "cmd": "claude"
+        },
+        {
+          "pid": "1067",
+          "cmd": "claude"
+        },
+        {
+          "pid": "1147",
+          "cmd": "claude"
+        },
+        {
+          "pid": "130441",
+          "cmd": "claude"
+        }
+      ]
+    },
+    "echo": {
+      "valid": true,
+      "detections": 0
+    },
+    "pane": {
+      "timestamp": "2026-03-17T22:07:45.018Z",
+      "type": "pane_content",
+      "severity": "critical",
+      "message": "Pane does NOT show real Claude Code interface — possible fake/replay",
+      "evidence": {
+        "checks": {
+          "hasClaudeVersion": false,
+          "hasAnthropic": false,
+          "hasRealPrompt": false,
+          "hasFakePrompt": false,
+          "hasTooManyStatusLines": false,
+          "hasIdenticalRepeats": false,
+          "hasAgentVariety": false
+        },
+        "sample": "\n"
+      }
+    },
+    "video": {
+      "timestamp": "2026-03-17T22:07:45.018Z",
+      "type": "video",
+      "severity": "critical",
+      "message": "Video file does not exist — cannot verify visual activity",
+      "evidence": {
+        "path": "/tmp/hipilot-test-evidence/test-test-20260317-030501/video.mp4"
+      }
+    },
+    "freshness": {
+      "valid": false,
+      "freshCount": 0,
+      "staleCount": 1,
+      "staleFiles": [
+        {
+          "file": "/tmp/hipilot-test-evidence/test-test-20260317-030501/test_metadata.json",
+          "reason": "too_old",
+          "age": "182.7 minutes old",
+          "mtime": "2026-03-17T19:05:01.835Z"
+        }
+      ]
+    },
+    "agentDelegation": {
+      "valid": true,
+      "hasDirectMcpExecution": false,
+      "hasDelegation": false,
+      "hasIdleTeammates": false,
+      "delegationCompliant": true
+    }
+  },
+  "cheatDetected": true,
+  "criticalCheats": 3,
+  "warnings": 0
+}

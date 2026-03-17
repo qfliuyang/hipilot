@@ -12,8 +12,9 @@
   "display": ":0",
   "hostname": "unknown",
   "user": "EDA",
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-03-17T19:05:01.835Z",
-  "completed_at": null,
-  "result": null
+  "completed_at": "2026-03-17T22:07:45.235Z",
+  "result": "FAIL",
+  "total_score": 5
 }

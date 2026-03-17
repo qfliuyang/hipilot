@@ -1,0 +1,31 @@
+# Sent at: 2026-03-17T19:09:22.709Z
+# Pane: eda
+
+
+# Set environment variables
+setenv FLOW_HOME /home/EDA/runs/test-test-20260317-030501/ibex_work_upload
+setenv DESIGN_HOME /home/EDA/runs/test-test-20260317-030501/ibex_work_upload/designs
+setenv SCRIPTS_DIR /home/EDA/runs/test-test-20260317-030501/ibex_work_upload/scripts
+setenv RESULT_DIR /home/EDA/runs/test-test-20260317-030501/ibex_work_upload/result
+setenv DESIGN_NAME ibex_core
+setenv DESIGN_NICKNAME ibex
+setenv PLATFORM sky130hd
+
+# Set DB_FILES
+setenv DB_FILES /home/EDA/runs/test-test-20260317-030501/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.db
+
+# Set SDC_FILE
+setenv SDC_FILE /home/EDA/runs/test-test-20260317-030501/ibex_work_upload/designs/sky130hd/ibex/constraint.sdc
+
+# Set VERILOG_FILES
+setenv VERILOG_FILES "/home/EDA/runs/test-test-20260317-030501/ibex_work_upload/designs/src/ibex/*.v"
+
+# Set DONT_USE_CELLS
+setenv DONT_USE_CELLS "sky130_fd_sc_hd__probec_p_8 sky130_fd_sc_hd__lpflow_bleeder_1 sky130_fd_sc_hd__lpflow_clkbufkapwr_1 sky130_fd_sc_hd__lpflow_clkbufkapwr_16 sky130_fd_sc_hd__lpflow_clkbufkapwr_2 sky130_fd_sc_hd__lpflow_clkbufkapwr_4 sky130_fd_sc_hd__lpflow_clkbufkapwr_8 sky130_fd_sc_hd__lpflow_clkinvkapwr_1 sky130_fd_sc_hd__lpflow_clkinvkapwr_16 sky130_fd_sc_hd__lpflow_clkinvkapwr_2 sky130_fd_sc_hd__lpflow_clkinvkapwr_4 sky130_fd_sc_hd__lpflow_clkinvkapwr_8 sky130_fd_sc_hd__lpflow_decapkapwr_12 sky130_fd_sc_hd__lpflow_decapkapwr_3 sky130_fd_sc_hd__lpflow_decapkapwr_4 sky130_fd_sc_hd__lpflow_decapkapwr_6 sky130_fd_sc_hd__lpflow_decapkapwr_8 sky130_fd_sc_hd__lpflow_inputiso0n_1 sky130_fd_sc_hd__lpflow_inputiso0p_1 sky130_fd_sc_hd__lpflow_inputiso1n_1 sky130_fd_sc_hd__lpflow_inputiso1p_1 sky130_fd_sc_hd__lpflow_inputisolatch_1 sky130_fd_sc_hd__lpflow_isobufsrc_1 sky130_fd_sc_hd__lpflow_isobufsrc_16 sky130_fd_sc_hd__lpflow_isobufsrc_2 sky130_fd_sc_hd__lpflow_isobufsrc_4 sky130_fd_sc_hd__lpflow_isobufsrc_8 sky130_fd_sc_hd__lpflow_isobufsrckapwr_16 sky130_fd_sc_hd__lpflow_lsbuf_lh_hl_isowell_tap_1 sky130_fd_sc_hd__lpflow_lsbuf_lh_hl_isowell_tap_2 sky130_fd_sc_hd__lpflow_lsbuf_lh_hl_isowell_tap_4 sky130_fd_sc_hd__lpflow_lsbuf_lh_isowell_4 sky130_fd_sc_hd__lpflow_lsbuf_lh_isowell_tap_1 sky130_fd_sc_hd__lpflow_lsbuf_lh_isowell_tap_2 sky130_fd_sc_hd__lpflow_lsbuf_lh_isowell_tap_4"
+
+# Create result directories
+exec mkdir -p /home/EDA/runs/test-test-20260317-030501/ibex_work_upload/result/syn/data
+exec mkdir -p /home/EDA/runs/test-test-20260317-030501/ibex_work_upload/result/syn/report
+exec mkdir -p /home/EDA/runs/test-test-20260317-030501/ibex_work_upload/result/syn/work
+exec mkdir -p /home/EDA/runs/test-test-20260317-030501/ibex_work_upload/result/scanchain/data
+exec mkdir -p /home/EDA/runs/test-test-20260317-030501/ibex_work_upload/result/scanchain/report
