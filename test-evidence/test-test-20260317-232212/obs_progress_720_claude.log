@@ -1,0 +1,74 @@
+clear
+export HIPILOT_AGENT_NAME='Supervisor'
+export HIPILOT_AGENT_PANE='0'
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS='1'
+/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin/.claude-sHO1RPMt --dangerously-skip-permissions
+[EDA@EDA2035 current]$ clear
+[EDA@EDA2035 current]$ export HIPILOT_AGENT_NAME='Supervisor'
+[EDA@EDA2035 current]$ export HIPILOT_AGENT_PANE='0'
+[EDA@EDA2035 current]$ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS='1'
+[EDA@EDA2035 current]$ /home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin/.claude-sHO1RPMt --dangerously-ski
+p-permissions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

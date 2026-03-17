@@ -1,0 +1,19 @@
+clear
+echo -e '\033[1;33m🔧 EDA Tool Pane\033[0m'
+echo 'Ready for: innovus | dc_shell | pt_shell'
+echo ''
+echo -e '\033[0;36mNote: This pane is controlled by Executor Agent via MCP\033[0m'
+[EDA@EDA2035 current]$ clear
+[EDA@EDA2035 current]$ echo -e '\033[1;33m🔧 EDA Tool Pane\033[0m'
+🔧 EDA Tool Pane
+[EDA@EDA2035 current]$ echo 'Ready for: innovus | dc_shell | pt_shell'
+Ready for: innovus | dc_shell | pt_shell
+[EDA@EDA2035 current]$ echo ''
+
+[EDA@EDA2035 current]$ echo -e '\033[0;36mNote: This pane is controlled by Executor Agent via MCP\033[0m'
+Note: This pane is controlled by Executor Agent via MCP
+[EDA@EDA2035 current]$
+
+
+
+

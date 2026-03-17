@@ -1,0 +1,1013 @@
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[19]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[18]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[17]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[16]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[15]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[14]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[13]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[12]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[11]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[10]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[9]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[8]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[7]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[6]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'zimm_rs1_type_o[5]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'alu_multicycle_o' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_controller_0_0', output port 'nt_branch_mispredict_o' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_controller_0_0', output port 'wb_exception_o' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_controller_0_0', output port 'csr_save_wb_o' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[62]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[61]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[60]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[59]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[58]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[57]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[56]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[55]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[54]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[53]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[52]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[51]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[50]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[49]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[48]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[47]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[46]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[45]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[44]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[43]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[42]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[41]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[40]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[39]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[38]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[37]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[36]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[35]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[34]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[33]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[32]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[31]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[30]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[29]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[28]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[27]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[26]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[25]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[24]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[23]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[22]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[21]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[20]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[19]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[18]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[17]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[16]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[15]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[14]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[13]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[12]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[11]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[10]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[9]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[8]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[7]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[6]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[5]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[4]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[3]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[2]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[1]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[0]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_we_o[1]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_we_o[0]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_multdiv_fast_RV32M2', output port 'alu_operand_a_o[0]' is connected directly to 'logic 1'. (LINT-52)
+Warning: In design 'ibex_multdiv_fast_RV32M2', output port 'alu_operand_b_o[0]' is connected directly to 'logic 1'. (LINT-52)
+Warning: In design 'ibex_multdiv_fast_RV32M2', output port 'imd_val_d_o[33]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_multdiv_fast_RV32M2', output port 'imd_val_d_o[32]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_csr_6_0_10', output port 'rd_error_o' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_csr_32_0_0', output port 'rd_error_o' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_csr_18_0_0', output port 'rd_error_o' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_csr_6_0_0', output port 'rd_error_o' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_csr_32_0_00000001', output port 'rd_error_o' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_csr_32_0_40000003', output port 'rd_error_o' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_csr_3_0_4', output port 'rd_error_o' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_fetch_fifo_00000002', output port 'out_addr_o[0]' is connected directly to 'logic 0'. (LINT-52)
+Warning: In design 'ibex_fetch_fifo_00000002', output port 'out_addr_next_o[0]' is connected directly to 'logic 0'. (LINT-52)
+
+Current design is 'ibex_core'.
+Error: unknown command 'reset_path_group' (CMD-005)
+DONTUSE
+Warning: The -timing_high_effort_script option is ignored.  (OPT-1342)
+Information: Performing power optimization. (PWR-850)
+Analyzing: "/home/EDA/runs/test-test-20260317-235212/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.db"
+Library analysis succeeded.
+Information: Choosing a test methodology will restrict the optimization of sequential cells. (UIO-12)
+Information: Evaluating DesignWare library utilization. (UISN-27)
+
+============================================================================
+| DesignWare Building Block Library  |         Version         | Available |
+============================================================================
+| Basic DW Building Blocks           | T-2022.03-DWBB_202203.2 |     *     |
+| Licensed DW Building Blocks        | T-2022.03-DWBB_202203.2 |     *     |
+============================================================================
+
+====================================================================================================
+| Flow Information                                                                                 |
+----------------------------------------------------------------------------------------------------
+| Flow         | Design Compiler WLM                                                               |
+| Comand Line  | compile_ultra -timing_high_effort_script -scan                                    |
+====================================================================================================
+| Design Information                                      | Value                                  |
+====================================================================================================
+| Number of Scenarios                                     | 0                                      |
+| Leaf Cell Count                                         | 7141                                   |
+| Number of User Hierarchies                              | 32                                     |
+| Sequential Cell Count                                   | 2003                                   |
+| Macro Count                                             | 0                                      |
+| Number of Power Domains                                 | 0                                      |
+| Number of Path Groups                                   | 5                                      |
+| Number of VT Class                                      | 0                                      |
+| Number of Clocks                                        | 1                                      |
+| Number of Dont Touch Cells                              | 1614                                   |
+| Number of Dont Touch Nets                               | 0                                      |
+| Number of Size Only Cells                               | 0                                      |
+| Design with UPF Data                                    | false                                  |
+----------------------------------------------------------------------------------------------------
+| Variables                                               | Value                                  |
+----------------------------------------------------------------------------------------------------
+| set_fix_multiple_port_nets                              | -all -buffer_constants                 |
+====================================================================================================
+Information: Sequential output inversion is enabled.  SVF file must be used for formal verification. (OPT-1208)
+
+Information: There are 1994 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+Information: Uniquified 7 instances of design 'ibex_csr_32_0_0'. (OPT-1056)
+Information: Uniquified 3 instances of design 'ibex_csr_6_0_0'. (OPT-1056)
+Information: Uniquified 2 instances of design 'ibex_counter_CounterWidth64'. (OPT-1056)
+  Simplifying Design 'ibex_core'
+Information: The register 'id_stage_i/imd_val_q_reg[32]' will be removed. (OPT-1207)
+Information: The register 'id_stage_i/imd_val_q_reg[33]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[7]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[8]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[9]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[10]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[11]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[15]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[16]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[17]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[18]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[19]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[20]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[21]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[22]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[23]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_rdata_alu_id_o_reg[24]' will be removed. (OPT-1207)
+Information: The register 'if_stage_i/instr_new_id_q_reg' will be removed. (OPT-1207)
+
+Loaded alib file './result/syn/work/alib-52/sky130_fd_sc_hd__tt_025C_1v80.db.alib'
+  Building model 'DW01_NAND2'
+Information: Ungrouping hierarchy core_clock_gate_i before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy if_stage_i before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy id_stage_i before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy ex_block_i before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy load_store_unit_i before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy wb_stage_i before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy if_stage_i/gen_prefetch_buffer.prefetch_buffer_i before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy if_stage_i/compressed_decoder_i before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy id_stage_i/decoder_i before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy id_stage_i/controller_i before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy ex_block_i/alu_i before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_mstatus_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_mepc_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_mie_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_mcause_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_mtvec_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_dcsr_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_mstack_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/mcycle_counter_i before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_mstack_epc_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_dscratch1_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_dscratch0_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_depc_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_mtval_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_mscratch_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_cpuctrl_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/u_mstack_cause_csr before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy cs_registers_i/minstret_counter_i before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fifo_i before Pass 1 (OPT-776)
+Information: Ungrouping 29 of 33 hierarchies before Pass 1 (OPT-775)
+Information: State dependent leakage is now switched from on to off.
+
+  Beginning Pass 1 Mapping
+  ------------------------
+  Processing 'ibex_core'
+Information: Added key list 'DesignWare' to design 'ibex_core'. (DDB-72)
+Information: The register 'if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/rdata_pmp_err_q_reg[1]' is a constant and will be removed. (OPT-1206)
+Information: The register 'if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/rdata_pmp_err_q_reg[0]' is a constant and will be removed. (OPT-1206)
+Information: The register 'if_stage_i/pc_id_o_reg[0]' is a constant and will be removed. (OPT-1206)
+Information: The register 'load_store_unit_i/pmp_err_q_reg' is a constant and will be removed. (OPT-1206)
+ Implement Synthetic for 'ibex_core'.
+  Processing 'ibex_register_file_ff_0_00000020_0'
+Warning: The design named ibex_register_file_ff_0_00000020_0 has 992 out of 1214 cells marked size-only, which may limit optimization. (OPT-301)
+  Processing 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2'
+Information: Added key list 'DesignWare' to design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2'. (DDB-72)
+Information: The register 'u_cpuctrl_csr/rdata_q_reg[0]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_cpuctrl_csr/rdata_q_reg[5]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_cpuctrl_csr/rdata_q_reg[4]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_cpuctrl_csr/rdata_q_reg[3]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_cpuctrl_csr/rdata_q_reg[2]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_cpuctrl_csr/rdata_q_reg[1]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_mtvec_csr/rdata_q_reg[0]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_mtvec_csr/rdata_q_reg[7]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_mtvec_csr/rdata_q_reg[6]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_mtvec_csr/rdata_q_reg[5]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_mtvec_csr/rdata_q_reg[4]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_mtvec_csr/rdata_q_reg[3]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_mtvec_csr/rdata_q_reg[2]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_mtvec_csr/rdata_q_reg[1]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[31]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[29]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[28]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[27]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[26]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[25]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[24]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[23]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[22]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[21]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[20]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[19]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[18]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[17]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[16]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[14]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[10]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[9]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[5]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[4]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_dcsr_csr/rdata_q_reg[3]' is a constant and will be removed. (OPT-1206)
+Information: The register 'mcountinhibit_q_reg[1]' is a constant and will be removed. (OPT-1206)
+ Implement Synthetic for 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2'.
+  Processing 'ibex_multdiv_fast_RV32M2'
+ Implement Synthetic for 'ibex_multdiv_fast_RV32M2'.
+Information: Added key list 'DesignWare' to design 'ibex_multdiv_fast_RV32M2'. (DDB-72)
+Memory usage for J1 task 241 Mbytes -- main task 222 Mbytes.
+Memory usage for J2 task 237 Mbytes -- main task 222 Mbytes.
+Memory usage for J3 task 222 Mbytes -- main task 222 Mbytes.
+Memory usage for J4 task 239 Mbytes -- main task 222 Mbytes.
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[2]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[3]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[4]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[5]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/mcountinhibit_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[3]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[4]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[5]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[9]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[10]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[14]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[16]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[17]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[18]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[19]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[20]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[21]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[22]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[23]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[24]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[25]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[26]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[27]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[28]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[29]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[31]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[2]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[3]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[4]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[5]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[6]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[7]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from load_store_unit_i/pmp_err_q_reg' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from if_stage_i/pc_id_o_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/rdata_pmp_err_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/rdata_pmp_err_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[2]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[3]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[4]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[5]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/mcountinhibit_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[3]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[4]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[5]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[9]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[10]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[14]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[16]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[17]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[18]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[19]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[20]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[21]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[22]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[23]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[24]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[25]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[26]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[27]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[28]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[29]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[31]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[2]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[3]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[4]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[5]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[6]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[7]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to load_store_unit_i/pmp_err_q_reg' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to if_stage_i/pc_id_o_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/rdata_pmp_err_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/rdata_pmp_err_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[2]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[3]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[4]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_cpuctrl_csr/rdata_q_reg[5]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/mcountinhibit_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[3]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[4]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[5]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[9]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[10]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[14]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[16]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[17]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[18]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[19]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[20]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[21]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[22]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[23]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[24]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[25]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[26]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[27]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[28]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[29]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_dcsr_csr/rdata_q_reg[31]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[2]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[3]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[4]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[5]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[6]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to cs_registers_i/u_mtvec_csr/rdata_q_reg[7]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to load_store_unit_i/pmp_err_q_reg' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to if_stage_i/pc_id_o_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/rdata_pmp_err_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'to if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/rdata_pmp_err_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[2]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[3]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[4]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_cpuctrl_csr/rdata_q_reg[5]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/mcountinhibit_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[3]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[4]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[5]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[9]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[10]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[14]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[16]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[17]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[18]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[19]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[20]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[21]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[22]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[23]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[24]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[25]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[26]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[27]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[28]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[29]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_dcsr_csr/rdata_q_reg[31]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[1]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[2]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[3]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[4]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[5]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[6]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from cs_registers_i/u_mtvec_csr/rdata_q_reg[7]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from load_store_unit_i/pmp_err_q_reg' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from if_stage_i/pc_id_o_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/rdata_pmp_err_q_reg[0]' which no longer exists.  (TIM-179)
+Warning: 'group_path' constraint made a reference 'from if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/rdata_pmp_err_q_reg[1]' which no longer exists.  (TIM-179)
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+Information: The library cell 'sky130_fd_sc_hd__macro_sparecell' in the library 'sky130_fd_sc_hd__tt_025C_1v80' is not characterized for internal power. (PWR-536)
+Information: The library cell 'sky130_fd_sc_hd__conb_1' in the library 'sky130_fd_sc_hd__tt_025C_1v80' is not characterized for internal power. (PWR-536)
+Information: The target library(s) contains cell(s), other than black boxes, that are not characterized for internal power. (PWR-24)
+Information: Automatic shift-register identification is enabled for scan. Not all registers will be scan-replaced. (OPT-467)
+Warning: No scan equivalent exists for cell core_clock_gate_i/en_latch_reg (sky130_fd_sc_hd__dlxtn_1). (TEST-120)
+Information: Complementing port 'nmi_mode_i' in design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2'.
+	 The new name of the port is 'nmi_mode_i_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[16]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[16]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[17]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[17]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[18]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[18]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[19]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[19]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[20]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[20]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[21]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[21]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[22]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[22]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[23]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[23]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[24]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[24]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[25]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[25]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[26]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[26]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[27]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[27]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[28]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[28]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[29]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[29]_BAR'. (OPT-319)
+Information: Complementing port 'imd_val_d_o[30]' in design 'ibex_multdiv_fast_RV32M2'.
+	 The new name of the port is 'imd_val_d_o[30]_BAR'. (OPT-319)
+Information: The register 'cs_registers_i/u_depc_csr/rdata_q_reg[0]' is a constant and will be removed. (OPT-1206)
+Information: The register 'cs_registers_i/u_mepc_csr/rdata_q_reg[0]' is a constant and will be removed. (OPT-1206)
+Information: The register 'cs_registers_i/u_mstack_epc_csr/rdata_q_reg[0]' is a constant and will be removed. (OPT-1206)
+Information: The register 'cs_registers_i/u_dcsr_csr/rdata_q_reg[30]' is a constant and will be removed. (OPT-1206)
+
+  Beginning Mapping Optimizations  (Ultra High effort)
+  -------------------------------
+Information: Ungrouping hierarchy cs_registers_i 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2' #insts = 2199. (OPT-777)
+Information: Ungrouping hierarchy ex_block_i/gen_multdiv_fast.multdiv_i 'ibex_multdiv_fast_RV32M2' #insts = 1483. (OPT-777)
+  Mapping Optimization (Phase 1)
+
+                                  TOTAL
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:01:02  136943.8      0.18      14.9       0.0                             55.3245
+    0:01:04  136796.2      0.22      19.8       0.0                             55.2721
+
+  Beginning Constant Register Removal
+  -----------------------------------
+    0:01:05  138953.3      0.18      15.1       0.0                             56.2983
+    0:01:07  138887.0      0.18      15.1       0.0                             56.2806
+
+  Beginning Global Optimizations
+  ------------------------------
+  Numerical Synthesis (Phase 1)
+  Numerical Synthesis (Phase 2)
+  Global Optimization (Phase 1)
+  Global Optimization (Phase 2)
+  Global Optimization (Phase 3)
+  Global Optimization (Phase 4)
+  Global Optimization (Phase 5)
+  Global Optimization (Phase 6)
+  Global Optimization (Phase 7)
+  Global Optimization (Phase 8)
+  Global Optimization (Phase 9)
+  Global Optimization (Phase 10)
+  Global Optimization (Phase 11)
+  Global Optimization (Phase 12)
+  Global Optimization (Phase 13)
+  Global Optimization (Phase 14)
+  Global Optimization (Phase 15)
+  Global Optimization (Phase 16)
+  Global Optimization (Phase 17)
+  Global Optimization (Phase 18)
+  Global Optimization (Phase 19)
+  Global Optimization (Phase 20)
+  Global Optimization (Phase 21)
+  Global Optimization (Phase 22)
+  Global Optimization (Phase 23)
+  Global Optimization (Phase 24)
+  Global Optimization (Phase 25)
+  Global Optimization (Phase 26)
+  Global Optimization (Phase 27)
+  Global Optimization (Phase 28)
+  Global Optimization (Phase 29)
+  Global Optimization (Phase 30)
+  Global Optimization (Phase 31)
+
+  Beginning Isolate Ports
+  -----------------------
+
+  Beginning Delay Optimization
+  ----------------------------
+    0:01:15  123033.0      0.77    2972.3       0.5                             50.7876
+    0:01:15  123075.5      0.00       0.0       0.3                             50.7480
+    0:01:15  123075.5      0.00       0.0       0.3                             50.7480
+    0:01:16  123075.5      0.00       0.0       0.3                             50.7480
+    0:01:19  122929.1      0.00       0.0       0.3                             50.7266
+    0:01:21  122917.9      0.00       0.0       0.3                             50.7271
+
+  Beginning WLM Backend Optimization
+  --------------------------------------
+    0:01:29  120130.2      0.00       0.0       0.3                             47.1891
+    0:01:29  120130.2      0.00       0.0       0.3                             47.1891
+    0:01:29  120130.2      0.00       0.0       0.3                             47.1891
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+
+
+  Beginning Design Rule Fixing  (max_transition)
+  ----------------------------
+
+                                  TOTAL
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:01:30  120426.7      0.00       0.0       0.5                             45.7114
+  Global Optimization (Phase 32)
+  Global Optimization (Phase 33)
+  Global Optimization (Phase 34)
+    0:01:31  120426.7      0.00       0.0       0.5                             45.7114
+    0:01:31  120426.7      0.00       0.0       0.5                             45.7114
+
+
+  Beginning Leakage Power Optimization  (max_leakage_power 0)
+  ------------------------------------
+
+                                  TOTAL
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:01:31  120426.7      0.00       0.0       0.5                             45.7114
+  Global Optimization (Phase 35)
+  Global Optimization (Phase 36)
+  Global Optimization (Phase 37)
+  Global Optimization (Phase 38)
+  Global Optimization (Phase 39)
+  Global Optimization (Phase 40)
+  Global Optimization (Phase 41)
+  Global Optimization (Phase 42)
+  Global Optimization (Phase 43)
+  Global Optimization (Phase 44)
+  Global Optimization (Phase 45)
+  Global Optimization (Phase 46)
+  Global Optimization (Phase 47)
+  Global Optimization (Phase 48)
+  Global Optimization (Phase 49)
+    0:01:37  124535.7      0.00       0.0       0.7                             42.6421
+    0:01:37  124535.7      0.00       0.0       0.7                             42.6421
+    0:01:37  124535.7      0.00       0.0       0.7                             42.6421
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+    0:01:38  122461.2      0.00       0.0       0.5                             41.6789
+
+                                  TOTAL
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:01:39  122483.7      0.00       0.0       0.5                             41.6729
+    0:01:40  121079.9      0.00       0.0       0.7                             42.6934
+    0:01:40  121079.9      0.00       0.0       0.7                             42.6934
+    0:01:40  121079.9      0.00       0.0       0.7                             42.6934
+    0:01:42  121595.4      0.00       0.0       0.5                             42.1573
+    0:01:45  121415.2      0.00       0.0       0.4                             41.7545
+    0:01:45  121415.2      0.00       0.0       0.4                             41.7545
+    0:01:45  121415.2      0.00       0.0       0.4                             41.7545
+    0:01:45  121415.2      0.00       0.0       0.4                             41.7545
+    0:01:45  121415.2      0.00       0.0       0.4                             41.7545
+    0:01:45  121415.2      0.00       0.0       0.4                             41.7545
+    0:02:01  121276.3      0.00       0.0       0.7                             41.6956
+Loading db file '/home/EDA/runs/test-test-20260317-235212/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios
+
+
+  Optimization Complete
+  ---------------------
+Warning: Design 'ibex_core' contains 2 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+     Net 'ex_block_i/gen_multdiv_fast.multdiv_i/n151': 1896 load(s), 1 driver(s)
+     Net 'gen_regfile_ff.register_file_i/n2014': 1984 load(s), 1 driver(s)
+Information: State dependent leakage is now switched from off to on.
+Information: Propagating switching activity (low effort zero delay simulation). (PWR-6)
+Accepted insert_dft configuration specification.
+Accepted dft signal specification for modes: all_dft
+Accepted dft signal specification for modes: all_dft
+Accepted dft signal specification for modes: all_dft
+Accepted insert_dft configuration specification.
+Information: Overwriting the default autofix configuration for the type bidirectional. (TESTXG-19)
+Accepted Autofix configuration specifications for design 'ibex_core'.
+In mode: all_dft...
+
+Information: Starting test protocol creation. (TEST-219)
+  ...inferring clock signals...
+Information: Inferred system/test clock port clk_i (45.0,55.0). (TEST-260)
+  ...inferring asynchronous signals...
+Information: Inferred active low asynchronous control port rst_ni. (TEST-261)
+Warning: Design 'ibex_core' contains 2 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+
+Information: Starting test design rule checking. (TEST-222)
+Warning: Violations occurred during test design rule checking. (TEST-124)
+Information: Test design rule checking completed. (TEST-123)
+  Architecting Scan Chains
+  Routing Scan Chains
+  Routing Global Signals
+  Mapping New Logic
+Resetting current test mode
+Warning: Design 'ibex_core' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+
+Writing test protocol file '/home/EDA/runs/test-test-20260317-235212/ibex_work_upload/result/scanchain/data/test_protocol.stil' for mode 'Internal_scan'...
+Information: Performing power optimization. (PWR-850)
+Alib files are up-to-date.
+Information: Choosing a test methodology will restrict the optimization of sequential cells. (UIO-12)
+====================================================================================================
+| Flow Information                                                                                 |
+----------------------------------------------------------------------------------------------------
+| Flow         | Design Compiler                                                                   |
+| Comand Line  | compile_ultra -incremental -scan                                                  |
+====================================================================================================
+| Design Information                                      | Value                                  |
+====================================================================================================
+| Number of Scenarios                                     | 0                                      |
+| Leaf Cell Count                                         | 10997                                  |
+| Number of User Hierarchies                              | 1                                      |
+| Sequential Cell Count                                   | 1941                                   |
+| Macro Count                                             | 0                                      |
+| Number of Power Domains                                 | 0                                      |
+| Number of Path Groups                                   | 5                                      |
+| Number of VT Class                                      | 0                                      |
+| Number of Clocks                                        | 1                                      |
+| Number of Dont Touch Cells                              | 0                                      |
+| Number of Dont Touch Nets                               | 0                                      |
+| Number of Size Only Cells                               | 0                                      |
+| Design with UPF Data                                    | false                                  |
+----------------------------------------------------------------------------------------------------
+| Variables                                               | Value                                  |
+----------------------------------------------------------------------------------------------------
+| set_fix_multiple_port_nets                              | -all -buffer_constants                 |
+====================================================================================================
+
+Information: There are 12 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+
+Information: State dependent leakage is now switched from on to off.
+
+  Beginning Pass 1 Mapping  (Incremental)
+  ------------------------
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+Information: The library cell 'sky130_fd_sc_hd__macro_sparecell' in the library 'sky130_fd_sc_hd__tt_025C_1v80' is not characterized for internal power. (PWR-536)
+Information: The library cell 'sky130_fd_sc_hd__conb_1' in the library 'sky130_fd_sc_hd__tt_025C_1v80' is not characterized for internal power. (PWR-536)
+Information: The target library(s) contains cell(s), other than black boxes, that are not characterized for internal power. (PWR-24)
+
+                                  TOTAL
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:04  121272.6      0.00       0.2       0.7                             41.6924
+    0:00:04  121272.6      0.00       0.2       0.7                             41.6924
+
+  Beginning Mapping Optimizations  (Ultra High effort)  (Incremental)
+  -------------------------------
+
+  Beginning Incremental Implementation Selection
+  ----------------------------------------------
+    0:00:10  121250.0      0.00       0.1       0.7                             41.6911
+
+  Beginning Delay Optimization Phase
+  ----------------------------------
+
+                                  TOTAL
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:10  121250.0      0.00       0.1       0.7                             41.6911
+    0:00:11  129158.9      0.00       0.1       0.7                             46.4578
+    0:00:12  122308.6      0.00       0.0       0.7                             42.2936
+    0:00:12  122308.6      0.00       0.0       0.7                             42.2936
+    0:00:12  122308.6      0.00       0.0       0.7                             42.2936
+    0:00:12  122308.6      0.00       0.0       0.7                             42.2936
+    0:00:12  122308.6      0.00       0.0       0.7                             42.2936
+
+  Beginning Delay Optimization
+  ----------------------------
+    0:00:12  122308.6      0.00       0.0       0.7                             42.2936
+    0:00:12  122308.6      0.00       0.0       0.7                             42.2936
+    0:00:12  122308.6      0.00       0.0       0.7                             42.2936
+    0:00:12  122308.6      0.00       0.0       0.7                             42.2936
+    0:00:12  122308.6      0.00       0.0       0.7                             42.2936
+    0:00:13  122308.6      0.00       0.0       0.7                             42.2936
+
+
+  Beginning Design Rule Fixing  (max_transition)
+  ----------------------------
+
+                                  TOTAL
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:13  122308.6      0.00       0.0       0.7                             42.2936
+    0:00:13  122308.6      0.00       0.0       0.7                             42.2936
+    0:00:14  122338.6      0.00       0.0       0.5                             42.4129
+    0:00:14  122338.6      0.00       0.0       0.5                             42.4129
+    0:00:14  122338.6      0.00       0.0       0.5                             42.4129
+    0:00:14  122338.6      0.00       0.0       0.5                             42.4129
+    0:00:14  122338.6      0.00       0.0       0.5                             42.4129
+    0:00:15  122338.6      0.00       0.0       0.5                             42.4129
+    0:00:15  122338.6      0.00       0.0       0.5                             42.4129
+    0:00:15  122338.6      0.00       0.0       0.5                             42.4129
+    0:00:15  122338.6      0.00       0.0       0.5                             42.4129
+
+
+  Beginning Critical Range Optimization
+  -------------------------------------
+
+                                  TOTAL
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:15  122338.6      0.00       0.0       0.5                             42.4129
+    0:00:15  122338.6      0.00       0.0       0.5                             42.4129
+    0:00:15  122301.0      0.00       0.0       0.7                             42.2893
+    0:00:16  122301.0      0.00       0.0       0.7                             42.2893
+    0:00:16  122301.0      0.00       0.0       0.7                             42.2893
+    0:00:16  122301.0      0.00       0.0       0.7                             42.2893
+    0:00:16  122301.0      0.00       0.0       0.7                             42.2893
+    0:00:16  122301.0      0.00       0.0       0.7                             42.2893
+    0:00:16  122301.0      0.00       0.0       0.7                             42.2893
+    0:00:16  122301.0      0.00       0.0       0.7                             42.2893
+    0:00:16  122301.0      0.00       0.0       0.7                             42.2893
+    0:00:16  122308.6      0.00       0.0       0.7                             42.2703
+
+                                  TOTAL
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:16  122308.6      0.00       0.0       0.7                             42.2703
+    0:00:17  122346.1      0.00       0.0       0.5                             42.3939
+    0:00:23  121749.3      0.00       0.0       0.7                             41.7030
+    0:00:23  121749.3      0.00       0.0       0.7                             41.7030
+    0:00:23  121749.3      0.00       0.0       0.7                             41.7030
+    0:00:23  121749.3      0.00       0.0       0.7                             41.7030
+    0:00:47  121639.2      0.00       0.0       0.7                             41.7076
+Loading db file '/home/EDA/runs/test-test-20260317-235212/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios
+
+
+  Optimization Complete
+  ---------------------
+Information: State dependent leakage is now switched from off to on.
+Information: Propagating switching activity (low effort zero delay simulation). (PWR-6)
+Information: Updating design information... (UID-85)
+
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -nworst 5
+        -input_pins
+        -nets
+        -slack_lesser_than 0.00
+        -max_paths 10000
+        -transition_time
+Design : ibex_core
+Version: T-2022.03-SP2
+Date   : Wed Mar 18 00:05:44 2026
+****************************************
+
+Operating Conditions: tt_025C_1v80   Library: sky130_fd_sc_hd__tt_025C_1v80
+Wire Load Model Mode: top
+
+No paths.
+
+Writing verilog file '/home/EDA/runs/test-test-20260317-235212/ibex_work_upload/result/syn/data/ibex_core.syn.v'.
+Warning: Verilog 'assign' or 'tran' statements are written out. (VO-4)
+Writing ddc file './result/syn/data/ibex_core.rpt.ddc'.
+=== Synthesis Complete ===
+dc_shell>
+dc_shell> source /tmp/hipilot-EDA/exec/hipilot_exec_1773763556623.tcl
+
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -input_pins
+        -nets
+        -max_paths 10
+        -transition_time
+        -capacitance
+Design : ibex_core
+Version: T-2022.03-SP2
+Date   : Wed Mar 18 00:06:19 2026
+****************************************
+
+Operating Conditions: tt_025C_1v80   Library: sky130_fd_sc_hd__tt_025C_1v80
+Wire Load Model Mode: top
+
+
+  Startpoint: if_stage_i/instr_rdata_id_o_reg[22]
+              (rising edge-triggered flip-flop clocked by core_clock)
+  Endpoint: if_stage_i/gen_prefetch_buffer.prefetch_buffer_i/fifo_i/instr_addr_q_reg[31]
+            (rising edge-triggered flip-flop clocked by core_clock)
+  Path Group: reg2reg
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  ibex_core          Small                 sky130_fd_sc_hd__tt_025C_1v80
+
+  Point                                       Fanout       Cap     Trans      Incr       Path
+  ----------------------------------------------------------------------------------------------
+      0.000
+      0.000
+  if_stage_i/instr_rdata_id_o_reg[22]/CLK (sky130_fd_sc_hd__sdfxtp_2)
+                                                                   0.000     0.000      0.000 r
+  if_stage_i/instr_rdata_id_o_reg[22]/Q (sky130_fd_sc_hd__sdfxtp_2)
+                                                                   0.186     0.407      0.407 r
+  id_stage_i/imm_i_type[2] (net)               12        0.036               0.000      0.407 r
+  gen_regfile_ff.register_file_i/raddr_b_i[2] (ibex_register_file_ff_0_00000020_0)
+                                                                             0.000      0.407 r
+  gen_regfile_ff.register_file_i/raddr_b_i[2] (net)      0.036               0.000      0.407 r
+  gen_regfile_ff.register_file_i/U203/A (sky130_fd_sc_hd__nand2_1)
+      0.409 r
+  gen_regfile_ff.register_file_i/U203/Y (sky130_fd_sc_hd__nand2_1)
+                                                                   0.070     0.090      0.499 f
+  gen_regfile_ff.register_file_i/n152 (net)     2        0.005               0.000      0.499 f
+  gen_regfile_ff.register_file_i/U73/B (sky130_fd_sc_hd__nor2_1)
+                                                                   0.070     0.003      0.501 f
+  gen_regfile_ff.register_file_i/U73/Y (sky130_fd_sc_hd__nor2_1)
+                                                                   0.108     0.112      0.613 r
+  gen_regfile_ff.register_file_i/n1726 (net)
+                                                2        0.005               0.000      0.613 r
+  gen_regfile_ff.register_file_i/U228/B_N (sky130_fd_sc_hd__nor2b_1)
+      0.616 r
+  gen_regfile_ff.register_file_i/U228/Y (sky130_fd_sc_hd__nor2b_1)
+                                                                   1.485     1.159      1.775 r
+  gen_regfile_ff.register_file_i/n196 (net)    32        0.083               0.000      1.775 r
+  gen_regfile_ff.register_file_i/U1322/A1 (sky130_fd_sc_hd__a22o_1)
+                                                                   1.485     0.002      1.776 r
+  gen_regfile_ff.register_file_i/U1322/X (sky130_fd_sc_hd__a22o_1)
+                                                                   0.072     0.299      2.076 r
+  gen_regfile_ff.register_file_i/n534 (net)     1        0.003               0.000      2.076 r
+  gen_regfile_ff.register_file_i/U1323/B1 (sky130_fd_sc_hd__a21oi_1)
+                                                                   0.072     0.005      2.081 r
+  gen_regfile_ff.register_file_i/U1323/Y (sky130_fd_sc_hd__a21oi_1)
+      2.123 f
+  gen_regfile_ff.register_file_i/n536 (net)     1        0.003               0.000      2.123 f
+  gen_regfile_ff.register_file_i/U1324/A3 (sky130_fd_sc_hd__a31oi_1)
+                                                                   0.174     0.004      2.127 f
+  gen_regfile_ff.register_file_i/U1324/Y (sky130_fd_sc_hd__a31oi_1)
+                                                                   0.167     0.205      2.333 r
+  gen_regfile_ff.register_file_i/n542 (net)     1        0.003               0.000      2.333 r
+  gen_regfile_ff.register_file_i/U1325/B1 (sky130_fd_sc_hd__a21oi_1)
+                                                                   0.167     0.005      2.338 r
+  gen_regfile_ff.register_file_i/U1325/Y (sky130_fd_sc_hd__a21oi_1)
+      2.395 f
+      2.395 f
+  gen_regfile_ff.register_file_i/U1326/B (sky130_fd_sc_hd__nand2_1)
+                                                                   0.175     0.004      2.400 f
+  gen_regfile_ff.register_file_i/U1326/Y (sky130_fd_sc_hd__nand2_1)
+                                                                   0.139     0.174      2.573 r
+  gen_regfile_ff.register_file_i/rdata_b_o[1] (net)
+                                                4        0.012               0.000      2.573 r
+  gen_regfile_ff.register_file_i/rdata_b_o[1] (ibex_register_file_ff_0_00000020_0)
+                                                                             0.000      2.573 r
+  multdiv_operand_b_ex[1] (net)                          0.012               0.000      2.573 r
+  U4036/A (sky130_fd_sc_hd__clkinv_1)                              0.139     0.004      2.577 r
+      2.720 f
+      2.720 f
+  U4942/B2 (sky130_fd_sc_hd__o22ai_1)                              0.112     0.003      2.723 f
+  U4942/Y (sky130_fd_sc_hd__o22ai_1)                               0.405     0.335      3.058 r
+  n6285 (net)                                   6        0.017               0.000      3.058 r
+  U4420/A (sky130_fd_sc_hd__inv_2)                                 0.405     0.005      3.063 r
+  U4420/Y (sky130_fd_sc_hd__inv_2)                                 0.096     0.104      3.167 f
+  n6245 (net)                                   5        0.013               0.000      3.167 f
+  U7918/A1 (sky130_fd_sc_hd__o22ai_1)                              0.096     0.003      3.170 f
+  U7918/Y (sky130_fd_sc_hd__o22ai_1)                               0.139     0.174      3.344 r
+  n5892 (net)                                   1        0.003               0.000      3.344 r
+      3.349 r
+      3.431 f
+  intadd_0/B[1] (net)                           1        0.008               0.000      3.431 f
+  U3718/A (sky130_fd_sc_hd__fa_2)                                  0.121     0.013      3.445 f
+  U3718/COUT (sky130_fd_sc_hd__fa_2)                               0.074     0.415      3.860 f
+  intadd_0/n30 (net)                            2        0.007               0.000      3.860 f
+  U4706/A (sky130_fd_sc_hd__nand2_1)                               0.074     0.003      3.863 f
+  U4706/Y (sky130_fd_sc_hd__nand2_1)                               0.044     0.065      3.928 r
+  n3220 (net)                                   1        0.003               0.000      3.928 r
+  U4708/A (sky130_fd_sc_hd__nand2_1)                               0.044     0.005      3.932 r
+  U4708/Y (sky130_fd_sc_hd__nand2_1)                               0.032     0.042      3.975 f
+      3.975 f
+      3.979 f
+  U9773/COUT (sky130_fd_sc_hd__fah_1)                              0.059     0.227      4.206 f
+  intadd_0/n28 (net)                            1        0.003               0.000      4.206 f
+  U9775/CI (sky130_fd_sc_hd__fah_1)                                0.059     0.004      4.211 f
+  U9775/COUT (sky130_fd_sc_hd__fah_1)                              0.077     0.269      4.479 f
+  intadd_0/n27 (net)                            2        0.007               0.000      4.479 f
+  U4720/B1 (sky130_fd_sc_hd__o21ai_1)                              0.077     0.003      4.482 f
+  U4720/Y (sky130_fd_sc_hd__o21ai_1)                               0.106     0.082      4.564 r
+  n3231 (net)                                   1        0.003               0.000      4.564 r
+  U4722/A (sky130_fd_sc_hd__nand2_1)                               0.106     0.005      4.568 r
+      4.641 f
+      4.641 f
+  U4528/CIN (sky130_fd_sc_hd__fa_1)                                0.054     0.008      4.650 f
+  U4528/COUT (sky130_fd_sc_hd__fa_1)                               0.069     0.353      5.002 f
+  intadd_0/n25 (net)                            1        0.003               0.000      5.002 f
+  U9778/CI (sky130_fd_sc_hd__fah_1)                                0.069     0.004      5.007 f
+  U9778/COUT (sky130_fd_sc_hd__fah_1)                              0.079     0.277      5.284 f
+  intadd_0/n24 (net)                            3        0.007               0.000      5.284 f
+  U4868/B (sky130_fd_sc_hd__nand2_1)                               0.079     0.003      5.287 f
+  U4868/Y (sky130_fd_sc_hd__nand2_1)                               0.068     0.076      5.363 r
+  n3345 (net)                                   1        0.003               0.000      5.363 r
+      5.368 r
+      5.490 f
+  n4399 (net)                                   3        0.009               0.000      5.490 f
+  U6251/B (sky130_fd_sc_hd__nand2_1)                               0.112     0.003      5.493 f
+  U6251/Y (sky130_fd_sc_hd__nand2_1)                               0.067     0.090      5.584 r
+  n4401 (net)                                   1        0.003               0.000      5.584 r
+  U6252/C (sky130_fd_sc_hd__nand3_1)                               0.067     0.005      5.588 r
+  U6252/Y (sky130_fd_sc_hd__nand3_1)                               0.052     0.074      5.663 f
+  intadd_0/n22 (net)                            1        0.003               0.000      5.663 f
+  U9785/CI (sky130_fd_sc_hd__fah_1)                                0.052     0.004      5.667 f
+  U9785/COUT (sky130_fd_sc_hd__fah_1)                              0.059     0.235      5.903 f
+      5.903 f
+      5.907 f
+  U9784/COUT (sky130_fd_sc_hd__fah_1)                              0.059     0.239      6.146 f
+  intadd_0/n20 (net)                            1        0.003               0.000      6.146 f
+  U9786/CI (sky130_fd_sc_hd__fah_1)                                0.059     0.004      6.150 f
+  U9786/COUT (sky130_fd_sc_hd__fah_1)                              0.077     0.269      6.419 f
+  intadd_0/n19 (net)                            2        0.007               0.000      6.419 f
+  U4749/B1 (sky130_fd_sc_hd__o21ai_1)                              0.077     0.003      6.422 f
+  U4749/Y (sky130_fd_sc_hd__o21ai_1)                               0.106     0.082      6.503 r
+  n3251 (net)                                   1        0.003               0.000      6.503 r
+  U4751/A (sky130_fd_sc_hd__nand2_1)                               0.106     0.005      6.508 r
+      6.566 f
+      6.566 f
+  U9779/CI (sky130_fd_sc_hd__fah_1)                                0.042     0.004      6.571 f
+  U9779/COUT (sky130_fd_sc_hd__fah_1)                              0.077     0.261      6.832 f
+  intadd_0/n17 (net)                            2        0.007               0.000      6.832 f
+  U4735/B1 (sky130_fd_sc_hd__o21ai_1)                              0.077     0.003      6.835 f
+  U4735/Y (sky130_fd_sc_hd__o21ai_1)                               0.106     0.082      6.916 r
+  n3241 (net)                                   1        0.003               0.000      6.916 r
+  U4737/A (sky130_fd_sc_hd__nand2_1)                               0.106     0.005      6.921 r
+  U4737/Y (sky130_fd_sc_hd__nand2_1)                               0.042     0.058      6.979 f
+  intadd_0/n16 (net)                            1        0.003               0.000      6.979 f
+      6.984 f
+  U9780/COUT (sky130_fd_sc_hd__fah_1)                              0.077     0.261--More--

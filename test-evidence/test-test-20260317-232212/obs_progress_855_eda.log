@@ -1,0 +1,385 @@
+clear
+echo -e '\033[1;33m🔧 EDA Tool Pane\033[0m'
+echo 'Ready for: innovus | dc_shell | pt_shell'
+echo ''
+echo -e '\033[0;36mNote: This pane is controlled by Executor Agent via MCP\033[0m'
+[EDA@EDA2035 current]$ clear
+[EDA@EDA2035 current]$ echo -e '\033[1;33m🔧 EDA Tool Pane\033[0m'
+🔧 EDA Tool Pane
+[EDA@EDA2035 current]$ echo 'Ready for: innovus | dc_shell | pt_shell'
+Ready for: innovus | dc_shell | pt_shell
+[EDA@EDA2035 current]$ echo ''
+
+[EDA@EDA2035 current]$ echo -e '\033[0;36mNote: This pane is controlled by Executor Agent via MCP\033[0m'
+Note: This pane is controlled by Executor Agent via MCP
+[EDA@EDA2035 current]$ cd /home/EDA/runs/test-test-20260317-235212/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$ dc_shell -no_gui
+
+                           Design Compiler Graphical
+                                 DC Ultra (TM)
+                                  DFTMAX (TM)
+                              Power Compiler (TM)
+                                 DesignWare (R)
+                                 DC Expert (TM)
+                               Design Vision (TM)
+                               HDL Compiler (TM)
+                               VHDL Compiler (TM)
+                                  DFT Compiler
+                               Design Compiler(R)
+
+               Version T-2022.03-SP2 for linux64 - May 25, 2022
+
+                    Copyright (c) 1988 - 2022 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+Initializing...
+dc_shell> source /tmp/hipilot-EDA/exec/hipilot_exec_1773763020889.tcl
+Result directories created
+dc_shell> source /tmp/hipilot-EDA/exec/hipilot_exec_1773763030644.tcl
+=== HiPilot Stage 0: Synthesis Starting ===
+Design: ibex_core
+Platform: sky130hd
+./designs/src/ibex/ibex_alu.v ./designs/src/ibex/ibex_branch_predict.v ./designs/src/ibex/ibex_compressed_decoder.v ./designs/src/ibex/ibex_controller.v ./designs/src
+/ibex/ibex_core.v ./designs/src/ibex/ibex_counter.v ./designs/src/ibex/ibex_cs_registers.v ./designs/src/ibex/ibex_csr.v ./designs/src/ibex/ibex_decoder.v ./designs/s
+rc/ibex/ibex_dummy_instr.v ./designs/src/ibex/ibex_ex_block.v ./designs/src/ibex/ibex_fetch_fifo.v ./designs/src/ibex/ibex_icache.v ./designs/src/ibex/ibex_id_stage.v
+ ./designs/src/ibex/ibex_if_stage.v ./designs/src/ibex/ibex_load_store_unit.v ./designs/src/ibex/ibex_multdiv_fast.v ./designs/src/ibex/ibex_multdiv_slow.v ./designs/
+src/ibex/ibex_pmp.v ./designs/src/ibex/ibex_prefetch_buffer.v ./designs/src/ibex/ibex_register_file_ff.v ./designs/src/ibex/ibex_register_file_fpga.v ./designs/src/ib
+ex/ibex_register_file_latch.v ./designs/src/ibex/ibex_wb_stage.v ./designs/src/ibex/prim_badbit_ram_1p.v ./designs/src/ibex/prim_clock_gating.v ./designs/src/ibex/pri
+m_generic_clock_gating.v ./designs/src/ibex/prim_generic_ram_1p.v ./designs/src/ibex/prim_lfsr.v ./designs/src/ibex/prim_ram_1p.v ./designs/src/ibex/prim_secded_28_22
+_dec.v ./designs/src/ibex/prim_secded_28_22_enc.v ./designs/src/ibex/prim_secded_39_32_dec.v ./designs/src/ibex/prim_secded_39_32_enc.v ./designs/src/ibex/prim_secded
+_72_64_dec.v ./designs/src/ibex/prim_secded_72_64_enc.v ./designs/src/ibex/prim_xilinx_clock_gating.v
+Running PRESTO HDLC
+Compiling source file ./designs/src/ibex/ibex_alu.v
+Compiling source file ./designs/src/ibex/ibex_branch_predict.v
+Compiling source file ./designs/src/ibex/ibex_compressed_decoder.v
+Compiling source file ./designs/src/ibex/ibex_controller.v
+Compiling source file ./designs/src/ibex/ibex_core.v
+Compiling source file ./designs/src/ibex/ibex_counter.v
+Compiling source file ./designs/src/ibex/ibex_cs_registers.v
+Warning:  ./designs/src/ibex/ibex_cs_registers.v:932: Recommend parentheses when a reduction-or follows bitwise-or. (VER-225)
+Compiling source file ./designs/src/ibex/ibex_csr.v
+Compiling source file ./designs/src/ibex/ibex_decoder.v
+Compiling source file ./designs/src/ibex/ibex_dummy_instr.v
+Compiling source file ./designs/src/ibex/ibex_ex_block.v
+Compiling source file ./designs/src/ibex/ibex_fetch_fifo.v
+Compiling source file ./designs/src/ibex/ibex_icache.v
+Warning:  ./designs/src/ibex/ibex_icache.v:360: Recommend parentheses when a reduction-or follows bitwise-or. (VER-225)
+Warning:  ./designs/src/ibex/ibex_icache.v:401: Recommend parentheses when a reduction-or follows bitwise-or. (VER-225)
+Warning:  ./designs/src/ibex/ibex_icache.v:429: Recommend parentheses when a reduction-and follows bitwise-and. (VER-230)
+Warning:  ./designs/src/ibex/ibex_icache.v:434: Recommend parentheses when a reduction-or follows bitwise-or. (VER-225)
+Warning:  ./designs/src/ibex/ibex_icache.v:460: Recommend parentheses when a reduction-or follows bitwise-or. (VER-225)
+Warning:  ./designs/src/ibex/ibex_icache.v:548: Recommend parentheses when a reduction-or follows bitwise-or. (VER-225)
+Warning:  ./designs/src/ibex/ibex_icache.v:634: Recommend parentheses when a reduction-or follows bitwise-or. (VER-225)
+Compiling source file ./designs/src/ibex/ibex_id_stage.v
+Compiling source file ./designs/src/ibex/ibex_if_stage.v
+Compiling source file ./designs/src/ibex/ibex_load_store_unit.v
+Compiling source file ./designs/src/ibex/ibex_multdiv_fast.v
+Compiling source file ./designs/src/ibex/ibex_multdiv_slow.v
+Compiling source file ./designs/src/ibex/ibex_pmp.v
+Compiling source file ./designs/src/ibex/ibex_prefetch_buffer.v
+Compiling source file ./designs/src/ibex/ibex_register_file_ff.v
+Compiling source file ./designs/src/ibex/ibex_register_file_fpga.v
+Compiling source file ./designs/src/ibex/ibex_register_file_latch.v
+Compiling source file ./designs/src/ibex/ibex_wb_stage.v
+Compiling source file ./designs/src/ibex/prim_badbit_ram_1p.v
+Compiling source file ./designs/src/ibex/prim_clock_gating.v
+Compiling source file ./designs/src/ibex/prim_generic_clock_gating.v
+Compiling source file ./designs/src/ibex/prim_generic_ram_1p.v
+Compiling source file ./designs/src/ibex/prim_lfsr.v
+Warning:  ./designs/src/ibex/prim_generic_ram_1p.v:42: The statements in initial blocks are ignored. (VER-281)
+Compiling source file ./designs/src/ibex/prim_ram_1p.v
+Compiling source file ./designs/src/ibex/prim_secded_28_22_dec.v
+Compiling source file ./designs/src/ibex/prim_secded_28_22_enc.v
+Compiling source file ./designs/src/ibex/prim_secded_39_32_dec.v
+Compiling source file ./designs/src/ibex/prim_secded_39_32_enc.v
+Compiling source file ./designs/src/ibex/prim_secded_72_64_dec.v
+Compiling source file ./designs/src/ibex/prim_secded_72_64_enc.v
+Compiling source file ./designs/src/ibex/prim_xilinx_clock_gating.v
+Presto compilation completed successfully.
+Loading db file '/home/EDA/runs/test-test-20260317-235212/ibex_work_upload/designs/sky130hd/pdk/lib/sky130_fd_sc_hd__tt_025C_1v80.db'
+Loading db file '/opt/synopsys/syn_2022.03/T-2022.03-SP2/libraries/syn/dw_foundation.sldb'
+Loading db file '/opt/synopsys/syn_2022.03/T-2022.03-SP2/libraries/syn/gtech.db'
+Loading db file '/opt/synopsys/syn_2022.03/T-2022.03-SP2/libraries/syn/standard.sldb'
+  Loading link library 'sky130_fd_sc_hd__tt_025C_1v80'
+  Loading link library 'gtech'
+Running PRESTO HDLC
+
+Inferred memory devices in process
+	in routine ibex_core line 245 in file
+		'./designs/src/ibex/ibex_core.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|   core_busy_q_reg   | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine ibex_core line 251 in file
+		'./designs/src/ibex/ibex_core.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+| fetch_enable_q_reg  | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+===============================================================================
+Presto compilation completed successfully. (ibex_core)
+Elaborated 1 design.
+Current design is now 'ibex_core'.
+Information: Building the design 'prim_clock_gating'. (HDL-193)
+
+Inferred memory devices in process
+	in routine prim_clock_gating line 16 in file
+		'./designs/src/ibex/prim_clock_gating.v'.
+===========================================================================
+|    Register Name    | Type  | Width | Bus | MB | AR | AS | SR | SS | ST |
+===========================================================================
+|    en_latch_reg     | Latch |   1   |  N  | N  | N  | N  | -  | -  | -  |
+===========================================================================
+Presto compilation completed successfully. (prim_clock_gating)
+Information: Building the design 'ibex_if_stage' instantiated from design 'ibex_core' with
+	the parameters "DmHaltAddr=32'h1a110800,DmExceptionAddr=32'h1a110808,DummyInstructions=1'h0,ICache=1'h0,ICacheECC=1'h0,PCIncrCheck=1'h0,BranchPredictor=1'h0".
+ (HDL-193)
+Warning:  ./designs/src/ibex/ibex_if_stage.v:143: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 142 in file
+	'./designs/src/ibex/ibex_if_stage.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           143            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 158 in file
+	'./designs/src/ibex/ibex_if_stage.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           159            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine ibex_if_stage_1a110800_1a110808_0_0_0_0_0 line 297 in file
+		'./designs/src/ibex/ibex_if_stage.v'.
+================================================================================
+|    Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+================================================================================
+|  instr_new_id_q_reg  | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+| instr_valid_id_q_reg | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+================================================================================
+
+Inferred memory devices in process
+	in routine ibex_if_stage_1a110800_1a110808_0_0_0_0_0 line 309 in file
+		'./designs/src/ibex/ibex_if_stage.v'.
+========================================================================================
+|        Register Name         |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+========================================================================================
+|         pc_id_o_reg          | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|     instr_rdata_id_o_reg     | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   instr_rdata_alu_id_o_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|    instr_fetch_err_o_reg     | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| instr_fetch_err_plus2_o_reg  | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+|    instr_rdata_c_id_o_reg    | Flip-flop |  16   |  Y  | N  | N  | N  | N  | N  | N  |
+| instr_is_compressed_id_o_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+|   illegal_c_insn_id_o_reg    | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+========================================================================================
+Presto compilation completed successfully. (ibex_if_stage_1a110800_1a110808_0_0_0_0_0)
+Information: Building the design 'ibex_id_stage' instantiated from design 'ibex_core' with
+	the parameters "RV32E=1'h0,RV32M=2,RV32B=0,BranchTargetALU=1'h0,DataIndTiming=1'h0,SpecBranch=1'h0,WritebackStage=1'h0,BranchPredictor=1'h0". (HDL-193)
+Warning:  ./designs/src/ibex/ibex_id_stage.v:323: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+Warning:  ./designs/src/ibex/ibex_id_stage.v:408: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+Warning:  ./designs/src/ibex/ibex_id_stage.v:632: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 322 in file
+	'./designs/src/ibex/ibex_id_stage.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           323            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 377 in file
+	'./designs/src/ibex/ibex_id_stage.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           378            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 407 in file
+	'./designs/src/ibex/ibex_id_stage.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           408            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 619 in file
+	'./designs/src/ibex/ibex_id_stage.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           632            |    auto/auto     |
+|           634            |     auto/no      |
+===============================================
+
+Inferred memory devices in process
+	in routine ibex_id_stage_0_2_0_0_0_0_0_0 line 395 in file
+		'./designs/src/ibex/ibex_id_stage.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|    imd_val_q_reg    | Flip-flop |  68   |  Y  | N  | Y  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine ibex_id_stage_0_2_0_0_0_0_0_0 line 586 in file
+		'./designs/src/ibex/ibex_id_stage.v'.
+==============================================================================================
+|           Register Name            |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+==============================================================================================
+| g_branch_set_flop.branch_set_q_reg | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+==============================================================================================
+
+Inferred memory devices in process
+	in routine ibex_id_stage_0_2_0_0_0_0_0_0 line 612 in file
+		'./designs/src/ibex/ibex_id_stage.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|    id_fsm_q_reg     | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+===============================================================================
+Presto compilation completed successfully. (ibex_id_stage_0_2_0_0_0_0_0_0)
+Information: Building the design 'ibex_ex_block' instantiated from design 'ibex_core' with
+	the parameters "RV32M=2,RV32B=0,BranchTargetALU=1'h0". (HDL-193)
+Presto compilation completed successfully. (ibex_ex_block_2_0_0)
+Information: Building the design 'ibex_load_store_unit'. (HDL-193)
+Warning:  ./designs/src/ibex/ibex_load_store_unit.v:95: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+Warning:  ./designs/src/ibex/ibex_load_store_unit.v:103: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+Warning:  ./designs/src/ibex/ibex_load_store_unit.v:112: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+Warning:  ./designs/src/ibex/ibex_load_store_unit.v:122: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+Warning:  ./designs/src/ibex/ibex_load_store_unit.v:92: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+Warning:  ./designs/src/ibex/ibex_load_store_unit.v:132: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+Warning:  ./designs/src/ibex/ibex_load_store_unit.v:163: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+Warning:  ./designs/src/ibex/ibex_load_store_unit.v:171: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+Warning:  ./designs/src/ibex/ibex_load_store_unit.v:195: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+Warning:  ./designs/src/ibex/ibex_load_store_unit.v:219: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 91 in file
+	'./designs/src/ibex/ibex_load_store_unit.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            92            |    auto/auto     |
+|            95            |    auto/auto     |
+|           103            |    auto/auto     |
+|           112            |    auto/auto     |
+|           122            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 131 in file
+	'./designs/src/ibex/ibex_load_store_unit.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           132            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 162 in file
+	'./designs/src/ibex/ibex_load_store_unit.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           163            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 170 in file
+	'./designs/src/ibex/ibex_load_store_unit.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           171            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 194 in file
+	'./designs/src/ibex/ibex_load_store_unit.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           195            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 218 in file
+	'./designs/src/ibex/ibex_load_store_unit.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           219            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 231 in file
+	'./designs/src/ibex/ibex_load_store_unit.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           243            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine ibex_load_store_unit line 139 in file
+		'./designs/src/ibex/ibex_load_store_unit.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|     rdata_q_reg     | Flip-flop |  24   |  Y  | N  | Y  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine ibex_load_store_unit line 144 in file
+		'./designs/src/ibex/ibex_load_store_unit.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|    data_we_q_reg    | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+| rdata_offset_q_reg  | Flip-flop |   2   |  Y  | N  | Y  | N  | N  | N  | N  |
+|   data_type_q_reg   | Flip-flop |   2   |  Y  | N  | Y  | N  | N  | N  | N  |
+| data_sign_ext_q_reg | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine ibex_load_store_unit line 157 in file
+		'./designs/src/ibex/ibex_load_store_unit.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|   addr_last_q_reg   | Flip-flop |  32   |  Y  | N  | Y  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine ibex_load_store_unit line 311 in file
+		'./designs/src/ibex/ibex_load_store_unit.v'.
+===================================================================================
+|      Register Name      |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===================================================================================
+|      lsu_err_q_reg      | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+|      ls_fsm_cs_reg      | Flip-flop |   3   |  Y  | N  | Y  | N  | N  | N  | N  |
+| handle_misaligned_q_reg | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+|      pmp_err_q_reg      | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+===================================================================================
+Presto compilation completed successfully. (ibex_load_store_unit)
+Information: Building the design 'ibex_wb_stage' instantiated from design 'ibex_core' with
+	the parameters "WritebackStage=1'h0". (HDL-193)
+Presto compilation completed successfully. (ibex_wb_stage_0)
+Information: Building the design 'ibex_register_file_ff' instantiated from design 'ibex_core' with
+	the parameters "RV32E=1'h0,DataWidth=32'h00000020,DummyInstructions=1'h0". (HDL-193)
+

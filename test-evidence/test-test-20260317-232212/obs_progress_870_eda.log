@@ -1,0 +1,1013 @@
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[16]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[17]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[18]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[19]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[20]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[21]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[22]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[23]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[24]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[25]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[26]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[27]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[28]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[29]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[30]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_s_type_o[31]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[11]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[12]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[13]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[14]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[15]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[16]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[17]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[18]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[19]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[20]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[21]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[22]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[23]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[24]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[25]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[26]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[27]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[28]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[29]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[30]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[31]' is connected directly to output port 'imm_i_type_o[31]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[30]' is connected directly to output port 'imm_j_type_o[10]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[30]' is connected directly to output port 'imm_u_type_o[30]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[30]' is connected directly to output port 'imm_b_type_o[10]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[30]' is connected directly to output port 'imm_s_type_o[10]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[30]' is connected directly to output port 'imm_i_type_o[10]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[29]' is connected directly to output port 'imm_j_type_o[9]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[29]' is connected directly to output port 'imm_u_type_o[29]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[29]' is connected directly to output port 'imm_b_type_o[9]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[29]' is connected directly to output port 'imm_s_type_o[9]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[29]' is connected directly to output port 'imm_i_type_o[9]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[28]' is connected directly to output port 'imm_j_type_o[8]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[28]' is connected directly to output port 'imm_u_type_o[28]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[28]' is connected directly to output port 'imm_b_type_o[8]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[28]' is connected directly to output port 'imm_s_type_o[8]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[28]' is connected directly to output port 'imm_i_type_o[8]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[27]' is connected directly to output port 'imm_j_type_o[7]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[27]' is connected directly to output port 'imm_u_type_o[27]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[27]' is connected directly to output port 'imm_b_type_o[7]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[27]' is connected directly to output port 'imm_s_type_o[7]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[27]' is connected directly to output port 'imm_i_type_o[7]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[26]' is connected directly to output port 'imm_j_type_o[6]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[26]' is connected directly to output port 'imm_u_type_o[26]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[26]' is connected directly to output port 'imm_b_type_o[6]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[26]' is connected directly to output port 'imm_s_type_o[6]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[26]' is connected directly to output port 'imm_i_type_o[6]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[25]' is connected directly to output port 'imm_j_type_o[5]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[25]' is connected directly to output port 'imm_u_type_o[25]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[25]' is connected directly to output port 'imm_b_type_o[5]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[25]' is connected directly to output port 'imm_s_type_o[5]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[25]' is connected directly to output port 'imm_i_type_o[5]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[24]' is connected directly to output port 'rf_raddr_b_o[4]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[24]' is connected directly to output port 'imm_j_type_o[4]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[24]' is connected directly to output port 'imm_u_type_o[24]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[24]' is connected directly to output port 'imm_i_type_o[4]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[23]' is connected directly to output port 'rf_raddr_b_o[3]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[23]' is connected directly to output port 'imm_j_type_o[3]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[23]' is connected directly to output port 'imm_u_type_o[23]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[23]' is connected directly to output port 'imm_i_type_o[3]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[22]' is connected directly to output port 'rf_raddr_b_o[2]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[22]' is connected directly to output port 'imm_j_type_o[2]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[22]' is connected directly to output port 'imm_u_type_o[22]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[22]' is connected directly to output port 'imm_i_type_o[2]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[21]' is connected directly to output port 'rf_raddr_b_o[1]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[21]' is connected directly to output port 'imm_j_type_o[1]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[21]' is connected directly to output port 'imm_u_type_o[21]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[21]' is connected directly to output port 'imm_i_type_o[1]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[20]' is connected directly to output port 'rf_raddr_b_o[0]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[20]' is connected directly to output port 'imm_j_type_o[11]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[20]' is connected directly to output port 'imm_u_type_o[20]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[20]' is connected directly to output port 'imm_i_type_o[0]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[19]' is connected directly to output port 'zimm_rs1_type_o[4]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[19]' is connected directly to output port 'imm_j_type_o[19]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[19]' is connected directly to output port 'imm_u_type_o[19]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[18]' is connected directly to output port 'zimm_rs1_type_o[3]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[18]' is connected directly to output port 'imm_j_type_o[18]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[18]' is connected directly to output port 'imm_u_type_o[18]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[17]' is connected directly to output port 'zimm_rs1_type_o[2]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[17]' is connected directly to output port 'imm_j_type_o[17]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[17]' is connected directly to output port 'imm_u_type_o[17]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[16]' is connected directly to output port 'zimm_rs1_type_o[1]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[16]' is connected directly to output port 'imm_j_type_o[16]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[16]' is connected directly to output port 'imm_u_type_o[16]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[15]' is connected directly to output port 'zimm_rs1_type_o[0]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[15]' is connected directly to output port 'imm_j_type_o[15]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[15]' is connected directly to output port 'imm_u_type_o[15]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[14]' is connected directly to output port 'imm_j_type_o[14]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[14]' is connected directly to output port 'imm_u_type_o[14]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[13]' is connected directly to output port 'imm_j_type_o[13]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[13]' is connected directly to output port 'imm_u_type_o[13]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[12]' is connected directly to output port 'imm_j_type_o[12]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[12]' is connected directly to output port 'imm_u_type_o[12]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[11]' is connected directly to output port 'rf_waddr_o[4]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[11]' is connected directly to output port 'imm_b_type_o[4]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[11]' is connected directly to output port 'imm_s_type_o[4]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[10]' is connected directly to output port 'rf_waddr_o[3]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[10]' is connected directly to output port 'imm_b_type_o[3]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[10]' is connected directly to output port 'imm_s_type_o[3]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[9]' is connected directly to output port 'rf_waddr_o[2]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[9]' is connected directly to output port 'imm_b_type_o[2]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[9]' is connected directly to output port 'imm_s_type_o[2]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[8]' is connected directly to output port 'rf_waddr_o[1]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[8]' is connected directly to output port 'imm_b_type_o[1]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[8]' is connected directly to output port 'imm_s_type_o[1]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[7]' is connected directly to output port 'rf_waddr_o[0]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[7]' is connected directly to output port 'imm_b_type_o[11]'. (LINT-29)
+Warning: In design 'ibex_decoder_0_2_0_0', input port 'instr_rdata_i[7]' is connected directly to output port 'imm_s_type_o[0]'. (LINT-29)
+Warning: In design 'ibex_if_stage_1a110800_1a110808_0_0_0_0_0', output port 'instr_bp_taken_o' is connected directly to output port 'pc_mismatch_alert_o'. (LINT-31)
+Warning: In design 'ibex_if_stage_1a110800_1a110808_0_0_0_0_0', output port 'instr_bp_taken_o' is connected directly to output port 'dummy_instr_id_o'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'instr_type_wb_o[0]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'rf_rd_b_wb_match_o'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'rf_rd_a_wb_match_o'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[0]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[1]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[2]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[3]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[4]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[5]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[6]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[7]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[8]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[9]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[10]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[11]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[12]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[13]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[14]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[15]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[16]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[17]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[18]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[19]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[20]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[21]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[22]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[23]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[24]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[25]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[26]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[27]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[28]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[29]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[30]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_b_operand_o[31]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[0]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[1]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[2]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[3]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[4]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[5]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[6]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[7]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[8]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[9]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[10]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[11]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[12]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[13]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[14]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[15]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[16]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[17]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[18]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[19]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[20]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[21]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[22]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[23]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[24]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[25]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[26]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[27]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[28]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[29]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'bt_a_operand_o[31]' is connected directly to output port 'bt_a_operand_o[30]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[31]' is connected directly to output port 'lsu_wdata_o[31]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[30]' is connected directly to output port 'lsu_wdata_o[30]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[29]' is connected directly to output port 'lsu_wdata_o[29]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[28]' is connected directly to output port 'lsu_wdata_o[28]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[27]' is connected directly to output port 'lsu_wdata_o[27]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[26]' is connected directly to output port 'lsu_wdata_o[26]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[25]' is connected directly to output port 'lsu_wdata_o[25]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[24]' is connected directly to output port 'lsu_wdata_o[24]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[23]' is connected directly to output port 'lsu_wdata_o[23]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[22]' is connected directly to output port 'lsu_wdata_o[22]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[21]' is connected directly to output port 'lsu_wdata_o[21]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[20]' is connected directly to output port 'lsu_wdata_o[20]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[19]' is connected directly to output port 'lsu_wdata_o[19]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[18]' is connected directly to output port 'lsu_wdata_o[18]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[17]' is connected directly to output port 'lsu_wdata_o[17]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[16]' is connected directly to output port 'lsu_wdata_o[16]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[15]' is connected directly to output port 'lsu_wdata_o[15]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[14]' is connected directly to output port 'lsu_wdata_o[14]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[13]' is connected directly to output port 'lsu_wdata_o[13]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[12]' is connected directly to output port 'lsu_wdata_o[12]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[11]' is connected directly to output port 'lsu_wdata_o[11]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[10]' is connected directly to output port 'lsu_wdata_o[10]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[9]' is connected directly to output port 'lsu_wdata_o[9]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[8]' is connected directly to output port 'lsu_wdata_o[8]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[7]' is connected directly to output port 'lsu_wdata_o[7]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[6]' is connected directly to output port 'lsu_wdata_o[6]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[5]' is connected directly to output port 'lsu_wdata_o[5]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[4]' is connected directly to output port 'lsu_wdata_o[4]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[3]' is connected directly to output port 'lsu_wdata_o[3]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[2]' is connected directly to output port 'lsu_wdata_o[2]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[1]' is connected directly to output port 'lsu_wdata_o[1]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'multdiv_operand_b_ex_o[0]' is connected directly to output port 'lsu_wdata_o[0]'. (LINT-31)
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', output port 'en_wb_o' is connected directly to output port 'instr_id_done_o'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[31]' is connected directly to output port 'branch_target_o[31]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[30]' is connected directly to output port 'branch_target_o[30]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[29]' is connected directly to output port 'branch_target_o[29]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[28]' is connected directly to output port 'branch_target_o[28]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[27]' is connected directly to output port 'branch_target_o[27]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[26]' is connected directly to output port 'branch_target_o[26]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[25]' is connected directly to output port 'branch_target_o[25]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[24]' is connected directly to output port 'branch_target_o[24]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[23]' is connected directly to output port 'branch_target_o[23]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[22]' is connected directly to output port 'branch_target_o[22]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[21]' is connected directly to output port 'branch_target_o[21]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[20]' is connected directly to output port 'branch_target_o[20]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[19]' is connected directly to output port 'branch_target_o[19]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[18]' is connected directly to output port 'branch_target_o[18]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[17]' is connected directly to output port 'branch_target_o[17]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[16]' is connected directly to output port 'branch_target_o[16]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[15]' is connected directly to output port 'branch_target_o[15]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[14]' is connected directly to output port 'branch_target_o[14]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[13]' is connected directly to output port 'branch_target_o[13]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[12]' is connected directly to output port 'branch_target_o[12]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[11]' is connected directly to output port 'branch_target_o[11]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[10]' is connected directly to output port 'branch_target_o[10]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[9]' is connected directly to output port 'branch_target_o[9]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[8]' is connected directly to output port 'branch_target_o[8]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[7]' is connected directly to output port 'branch_target_o[7]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[6]' is connected directly to output port 'branch_target_o[6]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[5]' is connected directly to output port 'branch_target_o[5]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[4]' is connected directly to output port 'branch_target_o[4]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[3]' is connected directly to output port 'branch_target_o[3]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[2]' is connected directly to output port 'branch_target_o[2]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[1]' is connected directly to output port 'branch_target_o[1]'. (LINT-31)
+Warning: In design 'ibex_ex_block_2_0_0', output port 'alu_adder_result_ex_o[0]' is connected directly to output port 'branch_target_o[0]'. (LINT-31)
+Warning: In design 'ibex_load_store_unit', output port 'data_addr_o[1]' is connected directly to output port 'data_addr_o[0]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'instr_done_wb_o'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[0]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[1]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[2]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[3]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[4]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[5]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[6]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[7]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[8]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[9]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[10]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[11]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[12]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[13]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[14]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[15]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[16]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[17]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[18]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[19]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[20]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[21]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[22]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[23]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[24]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[25]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[26]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[27]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[28]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[29]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[30]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'rf_wdata_fwd_wb_o[31]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[0]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[1]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[2]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[3]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[4]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[5]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[6]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[7]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[8]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[9]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[10]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[11]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[12]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[13]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[14]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[15]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[16]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[17]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[18]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[19]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[20]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[21]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[22]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[23]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[24]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[25]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[26]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[27]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[28]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[29]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[30]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'pc_wb_o[31]'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'outstanding_store_wb_o'. (LINT-31)
+Warning: In design 'ibex_wb_stage_0', output port 'rf_write_wb_o' is connected directly to output port 'outstanding_load_wb_o'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[0]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[1]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[2]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[3]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[4]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[5]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[6]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[7]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[8]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[9]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[10]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[11]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[12]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[13]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[14]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[15]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[16]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[17]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[18]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[19]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[20]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[21]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[22]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[23]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[24]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[25]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[26]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[27]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[28]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[29]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[30]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_o[31]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'dummy_instr_seed_en_o'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'trigger_match_o'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[0]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[1]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[2]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[3]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[4]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[5]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[6]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[7]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[8]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[9]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[10]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[11]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[12]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[13]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[14]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[15]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[16]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[17]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[18]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[19]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[20]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[21]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[22]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[23]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[24]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[25]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[26]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[27]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[28]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[29]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[30]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[31]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[32]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[33]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[0]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[1]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[2]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[3]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[4]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[5]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[34]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[35]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[36]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[37]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[38]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[39]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[40]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[41]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[42]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[43]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[44]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[45]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[46]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[47]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[48]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[49]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[50]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[51]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[52]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[53]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[54]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[55]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[56]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[57]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[58]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[59]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[60]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[61]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[62]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[63]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[64]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[65]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[66]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[67]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[6]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[7]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[8]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[9]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[10]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[11]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[68]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[69]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[70]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[71]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[72]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[73]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[74]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[75]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[76]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[77]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[78]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[79]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[80]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[81]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[82]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[83]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[84]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[85]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[86]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[87]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[88]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[89]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[90]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[91]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[92]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[93]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[94]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[95]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[96]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[97]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[98]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[99]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[100]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[101]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[12]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[13]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[14]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[15]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[16]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[17]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[102]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[103]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[104]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[105]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[106]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[107]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[108]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[109]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[110]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[111]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[112]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[113]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[114]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[115]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[116]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[117]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[118]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[119]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[120]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[121]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[122]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[123]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[124]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[125]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[126]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[127]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[128]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[129]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[130]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[131]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[132]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[133]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[134]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_addr_o[135]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[18]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[19]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[20]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[21]'. (LINT-31)
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', output port 'csr_pmp_cfg_o[23]' is connected directly to output p
+ort 'csr_pmp_cfg_o[22]'. (LINT-31)
+Warning: In design 'ibex_prefetch_buffer_0', output port 'instr_addr_o[1]' is connected directly to output port 'instr_addr_o[0]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'alu_multicycle_o'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'bt_b_mux_sel_o[0]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'bt_b_mux_sel_o[1]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'bt_b_mux_sel_o[2]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[5]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[6]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[7]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[8]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[9]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[10]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[11]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[12]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[13]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[14]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[15]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[16]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[17]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[18]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[19]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[20]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[21]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[22]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[23]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[24]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[25]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[26]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[27]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[28]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[29]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[30]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'zimm_rs1_type_o[31]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'imm_j_type_o[0]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'imm_u_type_o[0]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'imm_u_type_o[1]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'imm_u_type_o[2]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'imm_u_type_o[3]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'imm_u_type_o[4]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'imm_u_type_o[5]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'imm_u_type_o[6]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'imm_u_type_o[7]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'imm_u_type_o[8]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'imm_u_type_o[9]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'imm_u_type_o[10]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'imm_u_type_o[11]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'bt_a_mux_sel_o[0]' is connected directly to output port 'imm_b_type_o[0]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_j_type_o[20]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_j_type_o[21]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_j_type_o[22]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_j_type_o[23]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_j_type_o[24]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_j_type_o[25]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_j_type_o[26]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_j_type_o[27]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_j_type_o[28]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_j_type_o[29]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_j_type_o[30]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_j_type_o[31]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_u_type_o[31]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[12]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[13]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[14]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[15]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[16]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[17]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[18]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[19]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[20]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[21]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[22]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[23]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[24]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[25]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[26]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[27]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[28]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[29]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[30]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_b_type_o[31]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[11]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[12]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[13]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[14]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[15]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[16]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[17]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[18]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[19]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[20]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[21]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[22]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[23]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[24]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[25]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[26]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[27]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[28]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[29]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[30]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_s_type_o[31]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[11]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[12]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[13]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[14]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[15]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[16]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[17]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[18]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[19]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[20]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[21]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[22]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[23]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[24]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[25]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[26]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[27]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[28]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[29]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[31]' is connected directly to output port 'imm_i_type_o[30]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[10]' is connected directly to output port 'imm_j_type_o[10]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[10]' is connected directly to output port 'imm_u_type_o[30]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[10]' is connected directly to output port 'imm_b_type_o[10]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[10]' is connected directly to output port 'imm_s_type_o[10]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[9]' is connected directly to output port 'imm_j_type_o[9]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[9]' is connected directly to output port 'imm_u_type_o[29]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[9]' is connected directly to output port 'imm_b_type_o[9]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[9]' is connected directly to output port 'imm_s_type_o[9]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[8]' is connected directly to output port 'imm_j_type_o[8]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[8]' is connected directly to output port 'imm_u_type_o[28]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[8]' is connected directly to output port 'imm_b_type_o[8]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[8]' is connected directly to output port 'imm_s_type_o[8]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[7]' is connected directly to output port 'imm_j_type_o[7]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[7]' is connected directly to output port 'imm_u_type_o[27]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[7]' is connected directly to output port 'imm_b_type_o[7]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[7]' is connected directly to output port 'imm_s_type_o[7]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[6]' is connected directly to output port 'imm_j_type_o[6]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[6]' is connected directly to output port 'imm_u_type_o[26]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[6]' is connected directly to output port 'imm_b_type_o[6]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[6]' is connected directly to output port 'imm_s_type_o[6]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[5]' is connected directly to output port 'imm_j_type_o[5]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[5]' is connected directly to output port 'imm_u_type_o[25]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[5]' is connected directly to output port 'imm_b_type_o[5]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[5]' is connected directly to output port 'imm_s_type_o[5]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[4]' is connected directly to output port 'rf_raddr_b_o[4]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[4]' is connected directly to output port 'imm_j_type_o[4]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[4]' is connected directly to output port 'imm_u_type_o[24]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[3]' is connected directly to output port 'rf_raddr_b_o[3]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[3]' is connected directly to output port 'imm_j_type_o[3]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[3]' is connected directly to output port 'imm_u_type_o[23]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[2]' is connected directly to output port 'rf_raddr_b_o[2]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[2]' is connected directly to output port 'imm_j_type_o[2]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[2]' is connected directly to output port 'imm_u_type_o[22]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[1]' is connected directly to output port 'rf_raddr_b_o[1]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[1]' is connected directly to output port 'imm_j_type_o[1]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[1]' is connected directly to output port 'imm_u_type_o[21]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[0]' is connected directly to output port 'rf_raddr_b_o[0]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[0]' is connected directly to output port 'imm_j_type_o[11]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_i_type_o[0]' is connected directly to output port 'imm_u_type_o[20]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_s_type_o[4]' is connected directly to output port 'rf_waddr_o[4]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_s_type_o[4]' is connected directly to output port 'imm_b_type_o[4]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_s_type_o[3]' is connected directly to output port 'rf_waddr_o[3]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_s_type_o[3]' is connected directly to output port 'imm_b_type_o[3]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_s_type_o[2]' is connected directly to output port 'rf_waddr_o[2]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_s_type_o[2]' is connected directly to output port 'imm_b_type_o[2]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_s_type_o[1]' is connected directly to output port 'rf_waddr_o[1]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_s_type_o[1]' is connected directly to output port 'imm_b_type_o[1]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_s_type_o[0]' is connected directly to output port 'rf_waddr_o[0]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_s_type_o[0]' is connected directly to output port 'imm_b_type_o[11]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_u_type_o[19]' is connected directly to output port 'zimm_rs1_type_o[4]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_u_type_o[19]' is connected directly to output port 'imm_j_type_o[19]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_u_type_o[18]' is connected directly to output port 'zimm_rs1_type_o[3]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_u_type_o[18]' is connected directly to output port 'imm_j_type_o[18]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_u_type_o[17]' is connected directly to output port 'zimm_rs1_type_o[2]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_u_type_o[17]' is connected directly to output port 'imm_j_type_o[17]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_u_type_o[16]' is connected directly to output port 'zimm_rs1_type_o[1]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_u_type_o[16]' is connected directly to output port 'imm_j_type_o[16]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_u_type_o[15]' is connected directly to output port 'zimm_rs1_type_o[0]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_u_type_o[15]' is connected directly to output port 'imm_j_type_o[15]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_u_type_o[14]' is connected directly to output port 'imm_j_type_o[14]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_u_type_o[13]' is connected directly to output port 'imm_j_type_o[13]'. (LINT-31)
+Warning: In design 'ibex_decoder_0_2_0_0', output port 'imm_u_type_o[12]' is connected directly to output port 'imm_j_type_o[12]'. (LINT-31)
+Warning: In design 'ibex_controller_0_0', output port 'nt_branch_mispredict_o' is connected directly to output port 'csr_save_wb_o'. (LINT-31)
+Warning: In design 'ibex_controller_0_0', output port 'nt_branch_mispredict_o' is connected directly to output port 'wb_exception_o'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_we_o[0]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_we_o[1]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[0]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[1]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[2]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[3]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[4]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[5]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[6]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[7]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[8]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[9]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[10]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[11]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[12]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[13]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[14]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[15]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[16]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[17]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[18]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[19]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[20]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[21]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[22]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[23]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[24]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[25]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[26]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[27]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[28]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[29]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[30]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[31]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[32]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[33]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[34]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[35]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[36]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[37]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[38]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[39]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[40]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[41]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[42]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[43]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[44]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[45]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[46]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[47]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[48]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[49]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[50]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[51]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[52]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[53]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[54]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[55]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[56]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[57]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[58]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[59]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[60]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[61]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'imd_val_d_o[63]' is connected directly to output port 'imd_val_d_o[62]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[31]' is connected directly to output port 'adder_result_ext_o[32]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[30]' is connected directly to output port 'adder_result_ext_o[31]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[29]' is connected directly to output port 'adder_result_ext_o[30]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[28]' is connected directly to output port 'adder_result_ext_o[29]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[27]' is connected directly to output port 'adder_result_ext_o[28]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[26]' is connected directly to output port 'adder_result_ext_o[27]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[25]' is connected directly to output port 'adder_result_ext_o[26]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[24]' is connected directly to output port 'adder_result_ext_o[25]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[23]' is connected directly to output port 'adder_result_ext_o[24]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[22]' is connected directly to output port 'adder_result_ext_o[23]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[21]' is connected directly to output port 'adder_result_ext_o[22]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[20]' is connected directly to output port 'adder_result_ext_o[21]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[19]' is connected directly to output port 'adder_result_ext_o[20]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[18]' is connected directly to output port 'adder_result_ext_o[19]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[17]' is connected directly to output port 'adder_result_ext_o[18]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[16]' is connected directly to output port 'adder_result_ext_o[17]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[15]' is connected directly to output port 'adder_result_ext_o[16]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[14]' is connected directly to output port 'adder_result_ext_o[15]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[13]' is connected directly to output port 'adder_result_ext_o[14]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[12]' is connected directly to output port 'adder_result_ext_o[13]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[11]' is connected directly to output port 'adder_result_ext_o[12]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[10]' is connected directly to output port 'adder_result_ext_o[11]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[9]' is connected directly to output port 'adder_result_ext_o[10]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[8]' is connected directly to output port 'adder_result_ext_o[9]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[7]' is connected directly to output port 'adder_result_ext_o[8]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[6]' is connected directly to output port 'adder_result_ext_o[7]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[5]' is connected directly to output port 'adder_result_ext_o[6]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[4]' is connected directly to output port 'adder_result_ext_o[5]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[3]' is connected directly to output port 'adder_result_ext_o[4]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[2]' is connected directly to output port 'adder_result_ext_o[3]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[1]' is connected directly to output port 'adder_result_ext_o[2]'. (LINT-31)
+Warning: In design 'ibex_alu_RV32B0', output port 'adder_result_o[0]' is connected directly to output port 'adder_result_ext_o[1]'. (LINT-31)
+Warning: In design 'ibex_multdiv_fast_RV32M2', output port 'alu_operand_a_o[0]' is connected directly to output port 'alu_operand_b_o[0]'. (LINT-31)
+Warning: In design 'ibex_multdiv_fast_RV32M2', output port 'imd_val_d_o[33]' is connected directly to output port 'imd_val_d_o[32]'. (LINT-31)
+Warning: In design 'ibex_fetch_fifo_00000002', output port 'out_addr_o[0]' is connected directly to output port 'out_addr_next_o[0]'. (LINT-31)
+Warning: In design 'ibex_core', a pin on submodule 'if_stage_i' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'instr_pmp_err_i' is connected to logic 0.
+Warning: In design 'ibex_core', a pin on submodule 'load_store_unit_i' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'data_pmp_err_i' is connected to logic 0.
+Warning: In design 'ibex_if_stage_1a110800_1a110808_0_0_0_0_0', a pin on submodule 'gen_prefetch_buffer.prefetch_buffer_i' is connected to logic 1 or logic 0. (LINT-3
+2)
+   Pin 'predicted_branch_i' is connected to logic 0.
+Warning: In design 'ibex_if_stage_1a110800_1a110808_0_0_0_0_0', a pin on submodule 'gen_prefetch_buffer.prefetch_buffer_i' is connected to logic 1 or logic 0. (LINT-3
+2)
+   Pin 'addr_i[0]' is connected to logic 0.
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', a pin on submodule 'decoder_i' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'branch_taken_i' is connected to logic 1.
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', a pin on submodule 'controller_i' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'branch_not_set_i' is connected to logic 0.
+Warning: In design 'ibex_id_stage_0_2_0_0_0_0_0_0', a pin on submodule 'controller_i' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'stall_wb_i' is connected to logic 0.
+Warning: In design 'ibex_cs_registers_0_00000001_0_0_0_0_00000000_00000028_0_00000000_00000004_0_2', a pin on submodule 'u_mtvec_csr' is connected to logic 1 or logic
+ 0. (LINT-32)
+--More--
