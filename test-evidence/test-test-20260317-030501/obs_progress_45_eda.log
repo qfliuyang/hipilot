@@ -1,0 +1,135 @@
+clear
+echo -e '\033[1;33m🔧 EDA Tool Pane\033[0m'
+echo 'Ready for: innovus | dc_shell | pt_shell'
+echo ''
+echo -e '\033[0;36mNote: This pane is controlled by Executor Agent via MCP\033[0m'
+[EDA@EDA2035 current]$ clear
+[EDA@EDA2035 current]$ echo -e '\033[1;33m🔧 EDA Tool Pane\033[0m'
+🔧 EDA Tool Pane
+[EDA@EDA2035 current]$ echo 'Ready for: innovus | dc_shell | pt_shell'
+Ready for: innovus | dc_shell | pt_shell
+[EDA@EDA2035 current]$ echo ''
+
+[EDA@EDA2035 current]$ echo -e '\033[0;36mNote: This pane is controlled by Executor Agent via MCP\033[0m'
+Note: This pane is controlled by Executor Agent via MCP
+[EDA@EDA2035 current]$ cd /home/EDA/runs/test-test-20260317-030501/ibex_work_upload
+[EDA@EDA2035 ibex_work_upload]$ dc_shell -no_gui
+
+                           Design Compiler Graphical
+                                 DC Ultra (TM)
+                                  DFTMAX (TM)
+                              Power Compiler (TM)
+                                 DesignWare (R)
+                                 DC Expert (TM)
+                               Design Vision (TM)
+                               HDL Compiler (TM)
+                               VHDL Compiler (TM)
+                                  DFT Compiler
+                               Design Compiler(R)
+
+               Version T-2022.03-SP2 for linux64 - May 25, 2022
+
+                    Copyright (c) 1988 - 2022 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+Initializing...
+dc_shell> source /tmp/hipilot-EDA/exec/hipilot_exec_1773774548441.tcl
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(SCRIPTS_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(DB_FILES)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(VERILOG_FILES)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(VERILOG_FILES)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(DESIGN_NAME)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(DESIGN_NAME)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: Current design is not defined. (UID-4)
+Error: Current design is not defined. (UID-4)
+Error: can't read "::env(SDC_FILE)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: unknown command 'reset_path_group' (CMD-005)
+Error: Current design is not defined. (UID-4)
+Error: Current design is not defined. (UID-4)
+Error: Current design is not defined. (UID-4)
+Error: Value for list '-from' must have 1 elements. (CMD-036)
+Error: Value for list '-to' must have 1 elements. (CMD-036)
+Error: Value for list '-from' must have 1 elements. (CMD-036)
+Error: Value for list '-to' must have 1 elements. (CMD-036)
+Error: Value for list '-from' must have 1 elements. (CMD-036)
+Error: Value for list '-to' must have 1 elements. (CMD-036)
+DONTUSE
+Error: can't read "::env(DONT_USE_CELLS)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: Can't find designs matching '*'. (UID-109)
+Error: Value for list 'design_list' must have 1 elements. (CMD-036)
+Error: Current design is not defined. (UID-4)
+Error: Current design is not defined. (UID-4)
+Discarded insert_dft configuration specification.
+Error: Current design is not defined. (UID-4)
+Error: Can't find port 'clk_i'. (UID-109)
+Error: Value for list '-port' must have 1 elements. (CMD-036)
+Error: Current design is not defined. (UID-4)
+Error: Can't find port 'rst_ni'. (UID-109)
+Error: Value for list '-port' must have 1 elements. (CMD-036)
+Error: Current design is not defined. (UID-4)
+Error: Can't find port 'test_en_i'. (UID-109)
+Error: Value for list '-port' must have 1 elements. (CMD-036)
+Error: Current design is not defined. (UID-4)
+Discarded insert_dft configuration specification.
+Error: Current design is not defined. (UID-4)
+Discarded Autofix configuration specifications.
+Error: Current design is not defined. (UID-4)
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: Current design is not defined. (UID-4)
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: Current design is not defined. (UID-4)
+Error: can't read "::env(SCRIPTS_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: Current design is not defined. (UID-4)
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Error: can't read "::env(RESULT_DIR)": no such variable
+	Use error_info for more info. (CMD-013)
+Loading db file '/opt/synopsys/syn_2022.03/T-2022.03-SP2/libraries/syn/dw_foundation.sldb'
+Error: Current design is not defined. (UID-4)
+0
+dc_shell>
