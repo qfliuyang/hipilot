@@ -1,0 +1,164 @@
+{
+  "test_name": "/floorplan",
+  "timestamp": "20260315080246",
+  "duration_s": 1802,
+  "total_stages": 1,
+  "completed_stages": 0,
+  "progress_pct": 0,
+  "total_score": 2,
+  "max_score": 6,
+  "transcript": {
+    "subjects": [
+      {
+        "name": "Communication",
+        "score": 75,
+        "grade": "C",
+        "grade_points": 2,
+        "weight": 1,
+        "status": "PASS"
+      },
+      {
+        "name": "Methodology",
+        "score": 50,
+        "grade": "F",
+        "grade_points": 0,
+        "weight": 1.5,
+        "status": "FAIL"
+      },
+      {
+        "name": "Process",
+        "score": 0,
+        "grade": "F",
+        "grade_points": 0,
+        "weight": 2,
+        "status": "FAIL"
+      },
+      {
+        "name": "Execution",
+        "score": 0,
+        "grade": "F",
+        "grade_points": 0,
+        "weight": 1.5,
+        "status": "FAIL"
+      },
+      {
+        "name": "Results",
+        "score": 0,
+        "grade": "F",
+        "grade_points": 0,
+        "weight": 1,
+        "status": "FAIL"
+      },
+      {
+        "name": "Human-Like",
+        "score": 50,
+        "grade": "F",
+        "grade_points": 0,
+        "weight": 2.5,
+        "status": "FAIL"
+      },
+      {
+        "name": "Authenticity",
+        "score": 0,
+        "grade": "F",
+        "grade_points": 0,
+        "weight": 10,
+        "status": "FAIL"
+      }
+    ],
+    "gpa": 0.1,
+    "overall_percentage": 25,
+    "final_grade": "F"
+  },
+  "gpa": 0.1,
+  "final_grade": "F",
+  "assessment": "CHEAT DETECTOR VETO: Critical authenticity violations detected. Test automatically FAILED regardless of other scores.",
+  "recommendations": [
+    "Review cheat_detection_report.json for details",
+    "Ensure test was run with authentic HiPilot processes",
+    "Check for echo commands or fabricated output",
+    "Verify video recording shows actual EDA tool execution"
+  ],
+  "blocking_stage": "full_flow",
+  "blocking_category": "HIPILOT_BUG",
+  "stages": [
+    {
+      "name": "full_flow",
+      "score": 2,
+      "max_score": 6,
+      "status": "fail",
+      "transcript": {
+        "subjects": [
+          {
+            "name": "Communication",
+            "score": 75,
+            "grade": "C",
+            "grade_points": 2,
+            "weight": 1,
+            "status": "PASS"
+          },
+          {
+            "name": "Methodology",
+            "score": 50,
+            "grade": "F",
+            "grade_points": 0,
+            "weight": 1.5,
+            "status": "FAIL"
+          },
+          {
+            "name": "Process",
+            "score": 0,
+            "grade": "F",
+            "grade_points": 0,
+            "weight": 2,
+            "status": "FAIL"
+          },
+          {
+            "name": "Execution",
+            "score": 0,
+            "grade": "F",
+            "grade_points": 0,
+            "weight": 1.5,
+            "status": "FAIL"
+          },
+          {
+            "name": "Results",
+            "score": 0,
+            "grade": "F",
+            "grade_points": 0,
+            "weight": 1,
+            "status": "FAIL"
+          },
+          {
+            "name": "Human-Like",
+            "score": 50,
+            "grade": "F",
+            "grade_points": 0,
+            "weight": 2.5,
+            "status": "FAIL"
+          },
+          {
+            "name": "Authenticity",
+            "score": 0,
+            "grade": "F",
+            "grade_points": 0,
+            "weight": 10,
+            "status": "FAIL"
+          }
+        ],
+        "gpa": 0.1,
+        "overall_percentage": 25,
+        "final_grade": "F"
+      },
+      "failure_category": "HIPILOT_BUG",
+      "scores": {
+        "L1_prompt_delivery": 1,
+        "L2_intent_recognition": 0.5,
+        "L3_mcp_tool_usage": 0.5,
+        "L3b_process_validation": 0,
+        "L4_eda_execution": 0,
+        "L5_qor_assessment": 0
+      }
+    }
+  ]
+}

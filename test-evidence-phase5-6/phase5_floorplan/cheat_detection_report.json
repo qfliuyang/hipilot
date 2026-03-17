@@ -1,0 +1,71 @@
+{
+  "timestamp": "2026-03-15T08:35:12.998Z",
+  "checks": {
+    "processes": {
+      "valid": true,
+      "count": 5,
+      "processes": [
+        {
+          "pid": "67375",
+          "cmd": "claude"
+        },
+        {
+          "pid": "67417",
+          "cmd": "claude"
+        },
+        {
+          "pid": "67653",
+          "cmd": "claude"
+        },
+        {
+          "pid": "67805",
+          "cmd": "claude"
+        },
+        {
+          "pid": "67956",
+          "cmd": "claude"
+        }
+      ]
+    },
+    "echo": {
+      "valid": true,
+      "detections": 0
+    },
+    "pane": {
+      "timestamp": "2026-03-15T08:35:13.052Z",
+      "type": "pane_content",
+      "severity": "critical",
+      "message": "Pane does NOT show real Claude Code interface — possible fake/replay",
+      "evidence": {
+        "checks": {
+          "hasClaudeVersion": false,
+          "hasAnthropic": false,
+          "hasRealPrompt": false,
+          "hasFakePrompt": false,
+          "hasTooManyStatusLines": false,
+          "hasIdenticalRepeats": false,
+          "hasAgentVariety": false
+        },
+        "sample": "\n"
+      }
+    },
+    "video": {
+      "timestamp": "2026-03-15T08:35:13.052Z",
+      "type": "video",
+      "severity": "critical",
+      "message": "Video file does not exist — cannot verify visual activity",
+      "evidence": {
+        "path": "/tmp/hipilot-test-evidence/20260315080246/video.mp4"
+      }
+    },
+    "freshness": {
+      "valid": true,
+      "freshCount": 1,
+      "staleCount": 0,
+      "staleFiles": []
+    }
+  },
+  "cheatDetected": true,
+  "criticalCheats": 2,
+  "warnings": 0
+}

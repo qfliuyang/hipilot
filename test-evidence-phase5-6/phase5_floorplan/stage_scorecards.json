@@ -1,0 +1,114 @@
+[
+  {
+    "stage": "full_flow",
+    "transcript": {
+      "subjects": [
+        {
+          "name": "Communication",
+          "score": 75,
+          "grade": "C",
+          "grade_points": 2,
+          "weight": 1,
+          "status": "PASS"
+        },
+        {
+          "name": "Methodology",
+          "score": 50,
+          "grade": "F",
+          "grade_points": 0,
+          "weight": 1.5,
+          "status": "FAIL"
+        },
+        {
+          "name": "Process",
+          "score": 0,
+          "grade": "F",
+          "grade_points": 0,
+          "weight": 2,
+          "status": "FAIL"
+        },
+        {
+          "name": "Execution",
+          "score": 0,
+          "grade": "F",
+          "grade_points": 0,
+          "weight": 1.5,
+          "status": "FAIL"
+        },
+        {
+          "name": "Results",
+          "score": 0,
+          "grade": "F",
+          "grade_points": 0,
+          "weight": 1,
+          "status": "FAIL"
+        },
+        {
+          "name": "Human-Like",
+          "score": 50,
+          "grade": "F",
+          "grade_points": 0,
+          "weight": 2.5,
+          "status": "FAIL"
+        },
+        {
+          "name": "Authenticity",
+          "score": 0,
+          "grade": "F",
+          "grade_points": 0,
+          "weight": 10,
+          "status": "FAIL"
+        }
+      ],
+      "gpa": 0.1,
+      "overall_percentage": 25,
+      "final_grade": "F"
+    },
+    "scores": {
+      "L1_prompt_delivery": {
+        "score": 1,
+        "detail": "Claude responded to the command"
+      },
+      "L2_intent_recognition": {
+        "score": 0.5,
+        "detail": "Partial recognition (mentions: design, stage)"
+      },
+      "L3_mcp_tool_usage": {
+        "score": 0.5,
+        "detail": "Partial: MCP(7485 calls), EDA(idle)"
+      },
+      "L3b_process_validation": {
+        "score": 0,
+        "detail": "No tool execution detected for process validation"
+      },
+      "L4_eda_execution": {
+        "score": 0,
+        "detail": "EDA pane has text but no tool activity detected"
+      },
+      "L5_qor_assessment": {
+        "score": 0,
+        "detail": "No flow activity detected - QoR may be stale"
+      }
+    },
+    "total_score": 2,
+    "max_score": 6,
+    "status": "fail",
+    "assessment": "CHEAT DETECTOR VETO: Critical authenticity violations detected. Test automatically FAILED regardless of other scores.",
+    "recommendations": [
+      "Review cheat_detection_report.json for details",
+      "Ensure test was run with authentic HiPilot processes",
+      "Check for echo commands or fabricated output",
+      "Verify video recording shows actual EDA tool execution"
+    ],
+    "failure_classification": {
+      "category": "HIPILOT_BUG",
+      "summary": "EDA pane has text but no tool activity detected",
+      "action": "Fix Tcl template or generation"
+    },
+    "mcp_calls_count": null,
+    "evidence_summary": {
+      "claude_output_lines": 54,
+      "eda_output_lines": 30
+    }
+  }
+]

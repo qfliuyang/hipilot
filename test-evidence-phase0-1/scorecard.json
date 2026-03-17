@@ -1,0 +1,83 @@
+{
+  "test_id": "phase0-1_20260315_135807",
+  "test_date": "2026-03-15T13:57:58+0800",
+  "test_duration_seconds": 101,
+  "tester": "tester-1",
+  "phase": "0-1",
+  "scores": {
+    "L1": {
+      "description": "Claude responds",
+      "score": 1.0,
+      "max": 1.0,
+      "evidence": "Claude responded to /status command with Settings page",
+      "pass": true
+    },
+    "L2": {
+      "description": "Understands task",
+      "score": 0.5,
+      "max": 1.0,
+      "evidence": "Responded with Settings page instead of HiPilot status - partial understanding",
+      "pass": true
+    },
+    "L3": {
+      "description": "Uses MCP tools",
+      "score": 0.0,
+      "max": 1.0,
+      "evidence": "No MCP calls logged for /status command - Claude used built-in status command",
+      "pass": false
+    },
+    "L4": {
+      "description": "EDA tool responds",
+      "score": null,
+      "max": 1.0,
+      "evidence": "N/A - Phase 1 does not test EDA tools",
+      "pass": null
+    },
+    "L5": {
+      "description": "Reports QoR",
+      "score": null,
+      "max": 1.0,
+      "evidence": "N/A - Phase 1 does not test QoR",
+      "pass": null
+    }
+  },
+  "gpa": 1.5,
+  "max_gpa": 4.0,
+  "tier": "Bronze",
+  "cheat_detected": false,
+  "anti_cheat": {
+    "R1_no_direct_mcp": "PASS - Used tmux send-keys only",
+    "R2_tmux_only": "PASS - All interaction via tmux",
+    "R3_no_right_pane_injection": "PASS - No EDA pane commands",
+    "R4_real_tools": "PASS - Real HiPilot on EDA server",
+    "R5_post_test_evidence": "PASS - Evidence collected after test",
+    "R6_keyboard_only": "PASS - Used send-keys",
+    "R7_visual_verification": "PASS - Used capture-pane",
+    "R8_fresh_directory": "PASS - Timestamped directory created"
+  },
+  "phase0_results": {
+    "tmux_session": "PASS",
+    "pane_count": 6,
+    "five_agent_team": "PASS",
+    "claude_instances": 5,
+    "mcp_servers": "3 registered (hipilot-eda, hipilot-tmux, hipilot-knowledge)",
+    "design_tarball": "PASS - /home/EDA/ibex_demo.tar (129MB)",
+    "display": "PASS - X11 :0 accessible"
+  },
+  "phase1_results": {
+    "command": "/status",
+    "response_type": "Claude Code Settings page",
+    "notes": "Claude interpreted /status as built-in command, not HiPilot status"
+  },
+  "evidence_location": {
+    "local": "/Users/luzi/code/hipilot-v0.6.0/hipilot-cc/hipilot/test-evidence-phase0-1/",
+    "remote": "/home/EDA/hipilot_test/runs/phase0-1_20260315_135807/"
+  },
+  "files": [
+    "logs/phase0.log",
+    "logs/phase1.log",
+    "logs/pane_0.log",
+    "logs/supervisor_after_status.log",
+    "logs/hipilot_launch.log"
+  ]
+}
