@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "hipilot-eda": {
+      "command": "/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin/node",
+      "args": ["/home/EDA/hipilot/current/servers/eda/index.js"],
+      "env": {
+        "HIPILOT_SESSION": "hipilot"
+      }
+    },
+    "hipilot-tmux": {
+      "command": "/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin/node",
+      "args": ["/home/EDA/hipilot/current/servers/tmux/index.js"],
+      "env": {
+        "HIPILOT_SESSION": "hipilot"
+      }
+    },
+    "hipilot-knowledge": {
+      "command": "/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin/node",
+      "args": ["/home/EDA/hipilot/current/servers/knowledge/index.js"],
+      "env": {
+        "HIPILOT_SESSION": "hipilot"
+      }
+    }
+  }
+}

@@ -21,6 +21,13 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 # Add Node.js bin directory to PATH (for EDA server environment)
 export PATH="/home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin:$PATH"
 
+# Find Claude CLI (npm installs it with random suffix like .claude-XXXXXXX)
+CLAUDE_BIN=$(ls /home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/bin/.claude-* 2>/dev/null | head -1)
+if [ -z "$CLAUDE_BIN" ]; then
+    # Fallback: try the cli.js directly
+    CLAUDE_BIN="node /home/EDA/hipilot_test/node-v20.18.3-linux-x64-glibc-217/lib/node_modules/@anthropic-ai/claude-code/cli.js"
+fi
+
 HIPILOT_TMPDIR="/tmp/hipilot-$(whoami)"
 mkdir -p "$HIPILOT_TMPDIR"
 
@@ -44,8 +51,8 @@ if ! command -v tmux &> /dev/null; then
     exit 1
 fi
 
-if ! command -v claude &> /dev/null; then
-    echo -e "${RED}Error: Claude CLI not found.${NC}"
+if [ ! -f "$CLAUDE_BIN" ] && [ ! -f "$(echo $CLAUDE_BIN | cut -d' ' -f2)" ]; then
+    echo -e "${RED}Error: Claude CLI not found at $CLAUDE_BIN${NC}"
     exit 1
 fi
 
@@ -100,7 +107,7 @@ echo -e "${YELLOW}  Single Claude instance - no team coordination${NC}"
 tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "clear" C-m
 tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "export HIPILOT_AGENT_NAME='HiPilot'" C-m
 tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "export HIPILOT_SIMPLE_MODE='1'" C-m
-tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "claude --dangerously-skip-permissions" C-m
+tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.0" "$CLAUDE_BIN --dangerously-skip-permissions" C-m
 
 # Setup EDA pane (pane 1) - just bash
 tmux -L "$HIPILOT_SESSION" send-keys -t "$HIPILOT_SESSION:0.1" "clear" C-m 2>/dev/null || true

@@ -1018,7 +1018,7 @@ export class FlowCertifier {
     // Short wait for processes to die (pkill -9 is fast, 500ms is enough)
     await this._sleep(500);
 
-    const binPath = this.hipilotBin || join(this._projectRoot(), 'bin', 'hipilot-simple');
+    const binPath = this.hipilotBin || join(this._projectRoot(), 'bin', 'hipilot');
     const projectDir = this._projectRoot();
 
     // Build env vars - include clean design directory if provided
@@ -2930,7 +2930,7 @@ export class FlowCertifier {
     }
 
     // bin/hipilot exists and is executable?
-    const binPath = this.hipilotBin || join(this._projectRoot(), 'bin', 'hipilot-simple');
+    const binPath = this.hipilotBin || join(this._projectRoot(), 'bin', 'hipilot');
     checks.push({
       name: 'bin/hipilot',
       ok: existsSync(binPath),
