@@ -160,6 +160,24 @@ console.log("  Check timing.rpt for WNS/TNS");
 console.log("═══════════════════════════════════════════════════════════\n");
 ```
 
+## Tcl Syntax Notes (CRITICAL)
+
+When sending Tcl commands to dc_shell, you MUST use proper Tcl syntax:
+
+### ❌ WRONG - Shell pipes do NOT work in dc_shell
+```tcl
+report_qor | tee qor.rpt
+report_timing | head -30
+```
+
+### ✅ CORRECT - Tcl redirection only
+```tcl
+report_qor > qor.rpt
+report_timing -max_paths 10 > timing.rpt
+```
+
+**NO shell pipes (`|`), NO `tee`, NO `head` inside dc_shell!**
+
 ## Design Setup Script (Optional)
 
 Create `${HIPILOT_DESIGN_DIR}/scripts/dc_setup.tcl`:

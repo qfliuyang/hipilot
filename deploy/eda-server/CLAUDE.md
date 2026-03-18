@@ -143,6 +143,37 @@ The **Right Pane (EDA pane, pane 1)** is controlled by **Executor Agent only**:
 - Executor starts tools: innovus, dc_shell, pt_shell
 - Only Executor sends Tcl commands via MCP
 
+## CRITICAL: Tcl Command Syntax for EDA Tools
+
+When sending Tcl commands to dc_shell, innovus, or pt_shell, you MUST use proper Tcl syntax. Shell pipes and redirects do NOT work inside these tools.
+
+### ❌ WRONG: Shell pipes inside Tcl
+```tcl
+report_qor | tee qor.rpt
+report_timing | head -30
+report_area > area.rpt | tee -a summary.rpt
+```
+
+### ✅ CORRECT: Tcl redirection
+```tcl
+report_qor > qor.rpt
+report_timing -max_paths 10 > timing.rpt
+report_area > area.rpt
+```
+
+### ✅ CORRECT: If you need both file output and display, use Tcl's `exec` with shell
+```tcl
+exec sh -c "report_qor > qor.rpt && cat qor.rpt"
+exec sh -c "report_timing -max_paths 10 > timing.rpt && head -30 timing.rpt"
+```
+
+### Key Rules
+- **NO shell pipes (`|`)** inside dc_shell/innovus/pt_shell Tcl
+- **NO `tee` command** - use `>` for redirection or `exec` for shell
+- **NO `head`, `tail`, `grep`** - these are shell commands, not Tcl
+- Use `>` for output redirection to files
+- Use `exec` to run shell commands if needed
+
 ## RTL-to-GDS Flow Stages
 
 | Stage | Agent Lead | Tool | Description |
