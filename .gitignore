@@ -42,3 +42,4 @@ ibex_work_upload/
 
 # Server runtime state
 servers/eda/.omc/
+*.mp4
