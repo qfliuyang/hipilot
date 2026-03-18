@@ -1,0 +1,19 @@
+{
+  "test_id": "20260318-131336",
+  "timestamp": "2026-03-18T05:13:37.451Z",
+  "phase": null,
+  "purpose": "/design-init",
+  "command": "/design-init",
+  "evidence_dir": "/tmp/hipilot-test-evidence/test-test-20260318-131336",
+  "test_work_dir": "/home/EDA/runs/test-test-20260318-131336",
+  "design_dir": "/home/EDA/runs/test-test-20260318-131336/ibex_work_upload",
+  "design_tarball": "/home/EDA/ibex_demo.tar",
+  "session": "hipilot",
+  "display": ":0",
+  "hostname": "unknown",
+  "user": "EDA",
+  "status": "running",
+  "started_at": "2026-03-18T05:13:37.451Z",
+  "completed_at": null,
+  "result": null
+}
