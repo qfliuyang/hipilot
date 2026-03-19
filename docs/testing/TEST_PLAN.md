@@ -1,12 +1,12 @@
-# HiPilot 5-Agent Team Test Plan v3.5
+# HiPilot 5-Agent Team Test Plan v3.7
 
 > **One test plan to rule them all.** Self-improving, evidence-based, progressive certification.
 
-**Version:** 3.5
+**Version:** 3.7
 **Status:** Active
 **Replaces:** TEST_PLAN_v2.md, TEST_PLAN_v3_*.md, RTL2GDS_TEST_PLAN_OPERATIONAL.md
 
-**Latest Update:** 2026-03-15 - HiPilot v0.8.0+: 5-Agent Team is now the DEFAULT architecture (Supervisor, Knowledge, Planner, Executor, Archivist); EDA Server Testing Mandate (Section 1.5): ALL tests MUST run on EDA server with real tools; Heartbeat System (Phase 0.5) for event-driven monitoring; Clean Environment Charter to prevent evidence contamination
+**Latest Update:** 2026-03-19 - Added 3 new verification categories (Team Protocol, EDA Log, Cross-Reference) to CheatDetector → 17 layers total; unified FlowCertifier with TestReviewBoard 7-phase strict verification
 
 ---
 
@@ -39,30 +39,54 @@
 | **R7: Visual Verification** | HiTestBot verifies by reading the screen (pane capture), not internal state | Checking internal variables instead of visible output |
 | **R8: Fresh Working Directory** | Each test uses a timestamped directory on EDA server | Reusing previous test results as evidence |
 | **R9: EDA Server Location** | ALL evidence MUST be created on EDA server (192.168.112.163) | Creating evidence locally, then claiming it as EDA test |
-| **R10: Minimum Duration** | Tests MUST take minimum realistic time (10+ min for phases) | Completing 8-phase test in seconds/minutes |
+| **R10: Minimum Duration** | Tests MUST take minimum realistic time (5+ min absolute minimum, 10+ min for full phases) | Completing 8-phase test in seconds/minutes |
 | **R11: Live Video Recording** | ffmpeg MUST be actively recording the desktop during test | Static image as video, no recording, stalled ffmpeg |
 | **R12: Remote Verification** | Leader MUST verify evidence exists on EDA server via SSH | Claims of completion without remote verification |
+| **R13: EDA Pane Log Required** | EDA pane log (pane1_continuous.log) MUST exist with real tool output (innovus prompts, saveDesign, etc.) | Missing pane log or echo-only content |
 
 **Why This Matters:**
 - If HiTestBot bypasses HiPilot's UI, it could miss bugs a real human would encounter
 - If HiTestBot reads MCP logs during the test, it gains "superhuman" knowledge
 - If synthetic EDA output is used, the test proves nothing about real-world operation
 
-**Enforcement (13-Layer Cheat Detection):**
-- CheatDetector.js implements 13 verification layers:
-  1. Process Verification - Check real Claude processes exist (5 agents)
-  2. Echo Command Detection - Detect fake status output patterns
-  3. Pane Content Verification - Verify real Claude interface indicators
-  4. MCP Log Integrity - Validate JSON structure and timestamps
-  5. Cross-Reference Validation - Correlate pane logs with MCP logs
-  6. Interactive Verification - Send test commands, verify real responses
-  7. Video Motion Detection - Verify video shows actual activity
-  8. Evidence Freshness - Ensure files created during this test run
+**Enforcement (17-Layer Cheat Detection — Strict Defaults, Fail-Closed):**
+- CheatDetector.js implements 17 mandatory verification layers organized into 3 categories (all required by default):
+
+**Category A: Core Evidence Verification (Layers 1-7)**
+  1. **Process Verification** - CRITICAL if < 5 Claude processes (5-Agent Team must be complete)
+  2. **Echo Command Detection** - Detect fake status output patterns
+  3. **Pane Content Verification** - Verify real Claude interface indicators
+  4. **MCP Log Integrity** - Validate JSON structure, timestamps, and minimum 50 calls
+  5. **Cross-Reference Validation** - Correlate pane logs with MCP logs
+  6. **Interactive Verification** - Send test commands, verify real responses
+  7. **Video Motion Detection** - Verify video shows actual activity
+
+**Category B: Evidence Quality (Layers 8-14)**
+  8. **Evidence Freshness** - Files must be < 15 minutes old (not 1 hour)
   9. **Evidence Location** - Verify evidence is on EDA server (not local)
   10. **Desktop Visibility** - Mandate screenshots showing EDA server desktop
-  11. **Minimum Duration** - Reject tests completing too quickly (< 10 min)
+  11. **Minimum Duration** - CRITICAL if < 5 minutes absolute (fail-fast on speed cheats)
   12. **Active Video Stream** - Verify ffmpeg is actively recording
   13. **Remote Verification** - SSH verify evidence exists on EDA server
+  14. **EDA Pane Log** - CRITICAL: pane1_continuous.log must exist with real tool output (innovus prompt, saveDesign, compile_ultra, etc.); echo-only content = automatic FAIL
+
+**Category C: Team Protocol & EDA Verification (Layers 15-17) [v3.7]**
+  15. **Team Protocol Verification** (HIGH):
+      - `verifyFiveAgentProcesses()` - Verify 5 actual Claude processes via process tree
+      - `validateSendMessageStructure()` - Validate JSON structure of SendMessage calls
+      - `verifyKnowledgeAsHub()` - Ensure hub-and-spoke communication pattern via Knowledge Agent
+      - `verifyMessageSequence()` - Verify correct message ordering in team protocol
+  16. **EDA Log Verification** (HIGH):
+      - `extractQorMetrics()` - Parse WNS, TNS, area, cell count, power from EDA logs
+      - `verifyCheckpointFiles()` - Verify .enc checkpoint files exist after saveDesign
+      - `parseErrors()` - Extract ERROR/WARNING messages from EDA tool output
+      - `verifyToolExecutionDuration()` - Verify >30s actual tool execution time
+      - `verifyEdaPaneLogEnhanced()` - Combined EDA log verification
+  17. **Cross-Reference Verification** (MEDIUM):
+      - `verifyProcessStateDuringMcpCall()` - Confirm EDA process running during MCP tool calls
+      - `verifyStageOrder()` - Verify stage N completed before N+1 begins
+
+- **Fail-closed**: if MCP log, EDA log, or evidence files are absent → CRITICAL FAIL (not a warning)
 - Any test with critical cheat detection = `CHEAT_DETECTED` and automatic FAIL
 - Evidence must show tmux-based interaction from EDA server only
 
