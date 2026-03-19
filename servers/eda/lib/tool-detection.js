@@ -8,8 +8,11 @@
  */
 
 import { execSync } from 'child_process';
+import { existsSync, readdirSync } from 'fs';
+import { globSync } from 'glob';
 import { CONFIG } from '../../../src/lib/config.js';
 import { buildPaneTarget } from '../../../src/lib/pane-utils.js';
+import { shellEscape } from '../../../src/lib/shell-escape.js';
 
 /**
  * Enhanced tool detection with multiple verification methods.
@@ -70,8 +73,10 @@ export function detectTool() {
         'DesignCompiler': `${process.env.HOME || '/home/EDA'}/dc_shell.log*`,
       };
       if (logPatterns[check.tool]) {
-        execSync(`ls ${logPatterns[check.tool]} 2>/dev/null | head -1`, { encoding: 'utf-8' });
-        confidence += 0.2;
+        // Use glob to safely find log files (avoiding shell injection)
+        const logPattern = logPatterns[check.tool];
+        const logFiles = globSync(logPattern);
+        if (logFiles.length > 0) confidence += 0.2;
       }
     } catch (e) {
       if (process.env.HIPILOT_DEBUG) {

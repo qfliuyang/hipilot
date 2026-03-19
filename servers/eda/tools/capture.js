@@ -182,7 +182,11 @@ async function waitForPattern(patternStr, pane, timeout) {
           elapsed: Date.now() - startTime,
         };
       }
-    } catch {}
+    } catch (e) {
+      if (process.env.HIPILOT_DEBUG) {
+        console.error(`[waitForPattern] tmux capture failed: ${e.message}`);
+      }
+    }
     await new Promise(r => setTimeout(r, 500));
   }
 
@@ -224,7 +228,9 @@ async function waitForPrompt(pane, timeout) {
           };
         }
       }
-    } catch {}
+    } catch {
+      // Tmux capture failed - this can happen if pane doesn't exist
+    }
     await new Promise(r => setTimeout(r, 500));
   }
 
@@ -281,7 +287,11 @@ async function awaitIdle(pane, timeout, stabilityMs) {
         stableSince = null;
         lastContent = content;
       }
-    } catch {}
+    } catch (e) {
+      if (process.env.HIPILOT_DEBUG) {
+        console.error(`[waitForIdle] tmux capture failed: ${e.message}`);
+      }
+    }
     await new Promise(r => setTimeout(r, 500));
   }
 
