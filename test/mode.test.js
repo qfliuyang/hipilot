@@ -7,7 +7,6 @@ import { describe, it, expect } from 'vitest';
 import {
   getMode,
   isAutoMode,
-  isManualMode,
   MODES,
 } from '../src/lib/mode.js';
 
@@ -18,10 +17,9 @@ describe('mode.js', () => {
     });
   });
 
-  describe('isAutoMode / isManualMode', () => {
-    it('should always be auto mode', () => {
+  describe('isAutoMode', () => {
+    it('should always be true', () => {
       expect(isAutoMode()).toBe(true);
-      expect(isManualMode()).toBe(false);
     });
   });
 });

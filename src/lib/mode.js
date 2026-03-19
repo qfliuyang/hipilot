@@ -39,38 +39,10 @@ export function getMode() {
 }
 
 /**
- * Set mode
- */
-export function setMode(mode) {
-  if (mode !== MODES.MANUAL && mode !== MODES.AUTO) {
-    throw new Error(`Invalid mode: ${mode}`);
-  }
-  writeFileSync(MODE_FILE, mode);
-  return mode;
-}
-
-/**
- * Toggle between manual and auto mode
- */
-export function toggleMode() {
-  const current = getMode();
-  const newMode = current === MODES.MANUAL ? MODES.AUTO : MODES.MANUAL;
-  setMode(newMode);
-  return newMode;
-}
-
-/**
- * Check if Claude has the conn (auto mode)
+ * Check if Claude has the conn (always true - auto mode only)
  */
 export function isAutoMode() {
-  return getMode() === MODES.AUTO;
-}
-
-/**
- * Check if manual approval is required
- */
-export function isManualMode() {
-  return getMode() === MODES.MANUAL;
+  return true;
 }
 
 /**

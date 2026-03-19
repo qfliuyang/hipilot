@@ -27,12 +27,19 @@ import { VERSION } from '../../src/lib/version.js';
 import { getHipilotPaths } from '../../src/lib/paths.js';
 import { createMcpLogger } from '../../src/lib/mcp-logger.js';
 import { shellEscape } from '../../src/lib/shell-escape.js';
+import { CONFIG } from '../../src/lib/config.js';
+import { buildPaneTarget } from '../../src/lib/pane-utils.js';
+import {
+  validatePane,
+  validateTimeout,
+  validatePath,
+  validateTcl,
+  validateToolName,
+  validateStage,
+} from '../../src/lib/mcp-validation.js';
 import {
   getMode,
-  setMode,
-  toggleMode,
   isAutoMode,
-  isManualMode,
   queuePending,
   getPending,
   approvePending,
@@ -85,10 +92,16 @@ import {
   isValidCheckpoint,
 } from './knowledge.js';
 
-const TMUX_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
+// Use centralized config (placeholder - will be replaced by scoped variables below)
 
 // Get user-specific temp paths
 const hipilotPaths = getHipilotPaths();
+
+// Pane targets using centralized config (fixes team mode pane mapping bug)
+const EDA_PANE_INDEX = CONFIG.PANE_LAYOUT.EDA; // 5 in team mode, was hardcoded to 1
+const CHAT_PANE_INDEX = CONFIG.PANE_NAMES.chat; // 0
+const EDA_PANE_TARGET = `${CONFIG.TMUX_SESSION}:0.${EDA_PANE_INDEX}`;
+const CHAT_PANE_TARGET = `${CONFIG.TMUX_SESSION}:0.${CHAT_PANE_INDEX}`;
 
 /**
  * Get the design directory from environment or fallback file.
@@ -132,7 +145,7 @@ const DESIGN_DIR = getDesignDir();
 
 function updateTmuxModeStatus(mode, pending = false) {
   try {
-    const session = process.env.HIPILOT_SESSION || 'hipilot';
+    const session = CONFIG.TMUX_SESSION;
     let statusLeft;
     if (mode === 'auto') {
       statusLeft = `#[fg=#000000,bg=#00ff88,bold] ⚡ Claude has conn #[default]#[fg=#666666]│`;
@@ -140,7 +153,7 @@ function updateTmuxModeStatus(mode, pending = false) {
       const pendingIndicator = pending ? ' ⏳' : '';
       statusLeft = `#[fg=#00d4ff,bg=#1a1a2e,bold] ⚙ HiPilot #[fg=#666666]│#[fg=#ffd700] 🔒 Manual${pendingIndicator} #[fg=#666666]│`;
     }
-    execSync(`tmux -L ${session} set-option -t ${session} status-left "${statusLeft}"`, { stdio: 'pipe' });
+    execSync(`tmux -L ${CONFIG.TMUX_SOCKET} set-option -t ${session} status-left "${statusLeft}"`, { stdio: 'pipe' });
   } catch {
     // Tmux status update is best-effort
   }
@@ -343,7 +356,7 @@ function extractQoR(reportContent) {
  * Returns tool info with confidence score (0.0-1.0)
  */
 function detectTool() {
-  const TMUX_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
+  // Use centralized config (placeholder - will be replaced by scoped variables below)
   const checks = [
     { cmd: 'pgrep -f "icc2_shell"', tool: 'ICC2', vendor: 'synopsys', version: 'T-2022.03', patterns: [/icc2_shell\s*>/i, /ICC2/i] },
     { cmd: 'pgrep -f "innovus"', tool: 'Innovus', vendor: 'cadence', version: 'v20.10', patterns: [/innovus\s*\d+\s*>/i, /Innovus/i] },
@@ -373,7 +386,7 @@ function detectTool() {
     // Method 2: Pane content check (0.3 confidence)
     try {
       const paneOutput = execSync(
-        `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -50 2>/dev/null || echo ""`,
+        `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${buildPaneTarget(CONFIG.TMUX_SESSION, 'eda')} -p -S -50 2>/dev/null || echo ""`,
         { encoding: 'utf-8', timeout: 2000 }
       );
       for (const pattern of check.patterns) {
@@ -727,7 +740,7 @@ function generateTcl(intent, params) {
  * Execute Tcl in EDA terminal (internal function, called after approval or in auto mode)
  */
 function executeTcl(tcl, pane = 'eda') {
-  const session = process.env.HIPILOT_SESSION || 'hipilot';
+  const session = CONFIG.TMUX_SESSION;
   try {
     const timestamp = Date.now();
     const tmpFile = `${hipilotPaths.execDir}/hipilot_exec_${timestamp}.tcl`;
@@ -741,24 +754,17 @@ function executeTcl(tcl, pane = 'eda') {
       // History archiving is best-effort
     }
 
-    let paneTarget;
-    if (pane === 'eda' || pane === '1') {
-      paneTarget = `${session}:0.1`;
-    } else if (pane === 'chat' || pane === '0') {
-      paneTarget = `${session}:0.0`;
-    } else {
-      paneTarget = pane;
-    }
+    const paneTarget = buildPaneTarget(session, pane);
 
     // Send text literally with -l flag, then press C-m (Enter) as a real keypress.
     // Using C-m instead of "Enter" ensures reliability across all terminal apps
     // (e.g., Claude Code input where "Enter" may insert a newline instead of submitting).
     execSync(
-      `tmux -L ${session} send-keys -t ${paneTarget} -l 'source ${tmpFile}'`,
+      `tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${paneTarget} -l 'source ${tmpFile}'`,
       { encoding: 'utf-8', stdio: 'pipe' }
     );
     execSync(
-      `tmux -L ${session} send-keys -t ${paneTarget} C-m`,
+      `tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${paneTarget} C-m`,
       { encoding: 'utf-8', stdio: 'pipe' }
     );
 
@@ -2115,7 +2121,9 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
 
       case 'eda.send_to_terminal': {
         const { tcl, pane = 'eda' } = args;
-        const result = sendToTerminal(tcl, pane);
+        const validatedPane = validatePane(pane);
+        const validatedTcl = validateTcl(tcl);
+        const result = sendToTerminal(validatedTcl, validatedPane);
 
         if (result.queued) {
           updateTmuxModeStatus('manual', true);
@@ -2217,8 +2225,10 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
 
       case 'eda.start_tool': {
         const { tool = 'innovus', design_dir, pane = 'eda', timeout } = args;
-        const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
-        const target = `${TMUX_SESSION}:0.${paneIdx}`;
+        const validatedPane = validatePane(pane);
+        const validatedTool = validateToolName(tool);
+        const validatedTimeout = timeout !== undefined ? validateTimeout(timeout, 180) : undefined;
+        const target = buildPaneTarget(CONFIG.TMUX_SESSION, validatedPane);
 
         // Check current tool state
         const detected = detectTool();
@@ -2238,33 +2248,33 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         // If WRONG tool is running, exit it first
         if (detected && detected.tool !== requestedToolName) {
           try {
-            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'exit'`, { encoding: 'utf-8' });
-            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} -l 'exit'`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
             await new Promise(r => setTimeout(r, 2000)); // Wait for exit
           } catch (e) {
             // Continue anyway, might already be at bash prompt
           }
         }
 
-        const launchCmd = tool === 'innovus'
+        const launchCmd = validatedTool === 'innovus'
           ? 'innovus -no_gui'
-          : tool === 'icc2_shell'
+          : validatedTool === 'icc2_shell'
             ? 'icc2_shell'
-            : tool === 'dc_shell'
+            : validatedTool === 'dc_shell'
               ? 'dc_shell -no_gui'
               : 'pt_shell';
-        const waitSeconds = timeout ?? (tool === 'innovus' ? 90 : 60);
+        const waitSeconds = validatedTimeout ?? (validatedTool === 'innovus' ? 90 : 60);
 
         // Check if target pane exists, recreate if needed
         try {
-          execSync(`tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -1 2>/dev/null`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -1 2>/dev/null`, { encoding: 'utf-8' });
         } catch {
           // Pane doesn't exist - need to recreate it
           try {
             // Split window to create new pane
-            execSync(`tmux -L ${TMUX_SESSION} split-window -h -t ${TMUX_SESSION}:0.0 -c ${design_dir ? shellEscape(design_dir).slice(1, -1) : process.env.HOME || '/home/EDA'} 2>/dev/null || tmux -L ${TMUX_SESSION} split-window -h -t ${TMUX_SESSION}:0.0`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} split-window -h -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.SUPERVISOR)} -c ${design_dir ? shellEscape(design_dir).slice(1, -1) : process.env.HOME || '/home/EDA'} 2>/dev/null || tmux -L ${CONFIG.TMUX_SOCKET} split-window -h -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.SUPERVISOR)}`, { encoding: 'utf-8' });
             // Enable remain-on-exit for the new pane
-            execSync(`tmux -L ${TMUX_SESSION} set-option -t ${target} remain-on-exit on 2>/dev/null || true`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} set-option -t ${target} remain-on-exit on 2>/dev/null || true`, { encoding: 'utf-8' });
           } catch (recreateError) {
             return {
               content: [{ type: 'text', text: `❌ Failed to recreate EDA pane: ${recreateError.message}` }],
@@ -2275,12 +2285,12 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
 
         try {
           if (design_dir) {
-            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'cd ${shellEscape(design_dir)}'`, { encoding: 'utf-8' });
-            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} -l 'cd ${shellEscape(design_dir)}'`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
             await new Promise(r => setTimeout(r, 800));
           }
-          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l '${launchCmd}'`, { encoding: 'utf-8' });
-          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} -l '${launchCmd}'`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
         } catch (e) {
           return {
             content: [{ type: 'text', text: `❌ Failed to send start command: ${e.message}` }],
@@ -2303,7 +2313,7 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         while (Date.now() - startTime < timeoutMs) {
           try {
             const output = execSync(
-              `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
+              `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
               { encoding: 'utf-8', timeout: 5000 }
             );
             const lastLine = output.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
@@ -2365,30 +2375,21 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
       }
 
       case 'eda.set_mode': {
-        const { mode } = args;
-        setMode(mode);
-        updateTmuxModeStatus(mode, false);
-        
+        // Mode is permanently AUTO - this tool is deprecated
         return {
           content: [{
             type: 'text',
-            text: mode === 'auto'
-              ? `⚡ AUTO MODE enabled - Claude has the conn\n\nAll Tcl commands will execute immediately.`
-              : `🔒 MANUAL MODE enabled\n\nEach Tcl command requires your approval.`,
+            text: `⚡ AUTO MODE is permanent - Claude has the conn\n\nAll Tcl commands execute immediately. Manual mode has been removed.`,
           }],
         };
       }
 
       case 'eda.toggle_mode': {
-        const newMode = toggleMode();
-        updateTmuxModeStatus(newMode, false);
-        
+        // Mode is permanently AUTO - this tool is deprecated
         return {
           content: [{
             type: 'text',
-            text: newMode === 'auto'
-              ? `⚡ Toggled to AUTO MODE - Claude has the conn\n\nAll Tcl commands will execute immediately.`
-              : `🔒 Toggled to MANUAL MODE\n\nEach Tcl command requires your approval.`,
+            text: `⚡ AUTO MODE is permanent - Claude has the conn\n\nAll Tcl commands execute immediately. Manual mode has been removed.`,
           }],
         };
       }
@@ -2535,13 +2536,13 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         let claudePaneText = '';
         try {
           edaPaneText = execSync(
-            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -50 2>/dev/null || echo ""`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)} -p -S -50 2>/dev/null || echo ""`,
             { encoding: 'utf-8', timeout: 5000 }
           ).trim();
         } catch { edaPaneText = '(could not capture)'; }
         try {
           claudePaneText = execSync(
-            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.0 -p -S -20 2>/dev/null || echo ""`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.SUPERVISOR)} -p -S -20 2>/dev/null || echo ""`,
             { encoding: 'utf-8', timeout: 5000 }
           ).trim();
         } catch { claudePaneText = '(could not capture)'; }
@@ -2808,10 +2809,10 @@ Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pan
         // Capture EDA pane output
         let capturedOutput;
         try {
-          const session = process.env.HIPILOT_SESSION || 'hipilot';
-          const paneTarget = pane === 'eda' || pane === '1' ? `${session}:0.1` : `${session}:0.0`;
+          const session = CONFIG.TMUX_SESSION;
+          const paneTarget = buildPaneTarget(session, pane);
           capturedOutput = execSync(
-            `tmux -L ${session} capture-pane -t ${paneTarget} -p -S -${lines}`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${paneTarget} -p -S -${lines}`,
             { encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 }
           );
         } catch (err) {
@@ -3143,16 +3144,16 @@ Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pan
       // === PHASE 1.1: FEEDBACK LOOP TOOL HANDLERS ===
       case 'eda.wait_for_pattern': {
         const { pattern, timeout = 60, pane = 'eda' } = args;
+        const validatedPane = validatePane(pane);
+        const validatedTimeout = validateTimeout(timeout * 1000, 600000);
         const startTime = Date.now();
-        const timeoutMs = timeout * 1000;
-        const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
-        const target = `${TMUX_SESSION}:0.${paneIdx}`;
+        const target = buildPaneTarget(CONFIG.TMUX_SESSION, validatedPane);
         const regex = new RegExp(pattern);
         
         while (Date.now() - startTime < timeoutMs) {
           try {
             const output = execSync(
-              `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -100 2>/dev/null || echo ""`,
+              `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -100 2>/dev/null || echo ""`,
               { encoding: 'utf-8', timeout: 5000 }
             );
             const match = output.match(regex);
@@ -3172,7 +3173,7 @@ Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pan
         return {
           content: [{ type: 'text', text: `⏱ Timeout waiting for pattern: ${pattern}` }],
           isError: true,
-          _metadata: { matched: false, elapsed_ms: timeoutMs }
+          _metadata: { matched: false, elapsed_ms: validatedTimeout }
         };
       }
 
@@ -3180,8 +3181,7 @@ Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pan
         const { timeout = 30, pane = 'eda' } = args;
         const startTime = Date.now();
         const timeoutMs = timeout * 1000;
-        const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
-        const target = `${TMUX_SESSION}:0.${paneIdx}`;
+        const target = buildPaneTarget(CONFIG.TMUX_SESSION, pane);
         
         const promptPatterns = [
           /innovus\s*\d+>/i,
@@ -3195,7 +3195,7 @@ Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pan
         while (Date.now() - startTime < timeoutMs) {
           try {
             const output = execSync(
-              `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
+              `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
               { encoding: 'utf-8', timeout: 5000 }
             );
             const lastLine = output.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
@@ -3225,8 +3225,7 @@ Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pan
         const { timeout = 300, stability_ms = 1500, pane = 'eda', expected_tool = null, stage = null } = args;
         const startTime = Date.now();
         const timeoutMs = timeout * 1000;
-        const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
-        const target = `${TMUX_SESSION}:0.${paneIdx}`;
+        const target = buildPaneTarget(CONFIG.TMUX_SESSION, pane);
 
         // Tool-specific prompt patterns
         const toolPatterns = {
@@ -3251,7 +3250,7 @@ Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pan
         let lastSnapshot = '';
 
         // Create heartbeat emitter for this session/stage
-        const hb = createEmitter(TMUX_SESSION, stage, expected_tool);
+        const hb = createEmitter(CONFIG.TMUX_SESSION, stage, expected_tool);
 
         // Emit initial heartbeat
         hb.running(0, { message: 'await_idle started' });
@@ -3260,7 +3259,7 @@ Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pan
           pollCount++;
           try {
             const output = execSync(
-              `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -100 2>/dev/null || echo ""`,
+              `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -100 2>/dev/null || echo ""`,
               { encoding: 'utf-8', timeout: 5000 }
             );
 
@@ -3416,13 +3415,12 @@ Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pan
 
       case 'eda.get_last_result': {
         const { lines = 50, pane = 'eda' } = args;
-        const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
-        const target = `${TMUX_SESSION}:0.${paneIdx}`;
+        const target = buildPaneTarget(CONFIG.TMUX_SESSION, pane);
         
         let output;
         try {
           output = execSync(
-            `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -${lines} 2>/dev/null || echo ""`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -${lines} 2>/dev/null || echo ""`,
             { encoding: 'utf-8', timeout: 5000 }
           );
         } catch (e) {
@@ -3466,15 +3464,14 @@ Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pan
 
       case 'eda.capture_and_wait': {
         const { tcl, timeout = 60, pane = 'eda' } = args;
-        const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
-        const target = `${TMUX_SESSION}:0.${paneIdx}`;
+        const target = buildPaneTarget(CONFIG.TMUX_SESSION, pane);
         
         
         const tclFile = `${hipilotPaths.tempDir}/capture_wait_${Date.now()}.tcl`;
         writeFileSync(tclFile, tcl);
         try {
-          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'source ${tclFile}'`, { encoding: 'utf-8' });
-          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} -l 'source ${tclFile}'`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
         } catch (e) {
           return { content: [{ type: 'text', text: `❌ Failed to send Tcl: ${e.message}` }], isError: true };
         }
@@ -3488,7 +3485,7 @@ Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pan
         
         while (Date.now() - startTime < timeoutMs) {
           try {
-            const output = execSync(`tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -100`, { encoding: 'utf-8', timeout: 5000 });
+            const output = execSync(`tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -100`, { encoding: 'utf-8', timeout: 5000 });
             const lastLine = output.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
             for (const pattern of promptPatterns) {
               if (pattern.test(lastLine)) {
@@ -3517,14 +3514,17 @@ Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pan
 
       case 'eda.execute_and_verify': {
         const { tcl, timeout = 300, description = '', extract_qor: shouldExtractQor = true, pane = 'eda', expected_tool } = args;
+        const validatedPane = validatePane(pane);
+        const validatedTcl = validateTcl(tcl);
+        const validatedTimeout = validateTimeout(timeout * 1000, 600000);
         const startTime = Date.now();
-        const paneIdx = pane === 'eda' ? '1' : pane === 'chat' ? '0' : pane;
-        const target = `${TMUX_SESSION}:0.${paneIdx}`;
+        const target = buildPaneTarget(CONFIG.TMUX_SESSION, validatedPane);
 
         // Step 0: Tool validation (if expected_tool specified)
         if (expected_tool) {
+          const validatedExpectedTool = validateToolName(expected_tool);
           const detected = detectTool();
-          const validation = validateToolMatch(expected_tool, detected);
+          const validation = validateToolMatch(validatedExpectedTool, detected);
 
           if (!validation.valid) {
             const errorMsg = `❌ PROCESS ERROR: Tool mismatch detected!
@@ -3602,11 +3602,11 @@ This validation prevents fundamental flow errors like running synthesis in innov
 
         try {
           execSync(
-            `tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'source ${tclFile}'`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} -l 'source ${tclFile}'`,
             { encoding: 'utf-8', stdio: 'pipe' }
           );
           execSync(
-            `tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} C-m`,
             { encoding: 'utf-8', stdio: 'pipe' }
           );
         } catch (e) {
@@ -3635,7 +3635,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
         while (Date.now() - startTime < timeoutMs) {
           try {
             capturedOutput = execSync(
-              `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -200 2>/dev/null || echo ""`,
+              `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -200 2>/dev/null || echo ""`,
               { encoding: 'utf-8', timeout: 5000 }
             );
             const lastLine = capturedOutput.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
@@ -3799,7 +3799,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
         let qorMetrics = {};
         try {
           const paneOutput = execSync(
-            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)} -p -S -200 2>/dev/null || echo ""`,
             { encoding: 'utf-8' }
           );
           qorMetrics = extractQoR(paneOutput);
@@ -3929,7 +3929,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
         let qorMetrics = {};
         try {
           const output = execSync(
-            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -100 2>/dev/null || echo ""`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)} -p -S -100 2>/dev/null || echo ""`,
             { encoding: 'utf-8' }
           );
           qorMetrics = extractQoR(output);
@@ -4142,7 +4142,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
         
         try {
           const output = execSync(
-            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -500 2>/dev/null || echo ""`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)} -p -S -500 2>/dev/null || echo ""`,
             { encoding: 'utf-8' }
           );
           
@@ -4176,7 +4176,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
         
         try {
           const output = execSync(
-            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -300 2>/dev/null || echo ""`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)} -p -S -300 2>/dev/null || echo ""`,
             { encoding: 'utf-8' }
           );
           
@@ -4211,7 +4211,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
         const stageResult = await (async () => {
           try {
             const output = execSync(
-              `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -300 2>/dev/null || echo ""`,
+              `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)} -p -S -300 2>/dev/null || echo ""`,
               { encoding: 'utf-8' }
             );
             if (/CTS|clock_tree/i.test(output)) return 'cts';
@@ -4251,7 +4251,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
         let metrics = {};
         try {
           const output = execSync(
-            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)} -p -S -200 2>/dev/null || echo ""`,
             { encoding: 'utf-8' }
           );
           metrics = extractQoR(output);
@@ -4490,10 +4490,10 @@ This validation prevents fundamental flow errors like running synthesis in innov
           writeFileSync(histFile, `# ${description}\n# Sent at: ${new Date().toISOString()}\n\n${tcl}`);
         } catch {}
 
-        const target = `${TMUX_SESSION}:0.1`;
+        const target = `${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)}`;
         try {
-          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'source ${tclFile}'`, { encoding: 'utf-8', stdio: 'pipe' });
-          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8', stdio: 'pipe' });
+          execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} -l 'source ${tclFile}'`, { encoding: 'utf-8', stdio: 'pipe' });
+          execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} C-m`, { encoding: 'utf-8', stdio: 'pipe' });
         } catch (e) {
           return { content: [{ type: 'text', text: `❌ Failed to send: ${e.message}` }], isError: true };
         }
@@ -4508,11 +4508,11 @@ This validation prevents fundamental flow errors like running synthesis in innov
         // Instant snapshot of the right pane. No waiting, no processing.
         // Returns what's on screen NOW + state assessment.
         const lines = args.lines || 30;
-        const target = `${TMUX_SESSION}:0.1`;
+        const target = `${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)}`;
         let output = '';
         try {
           output = execSync(
-            `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -${lines} 2>/dev/null || echo ""`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -${lines} 2>/dev/null || echo ""`,
             { encoding: 'utf-8', timeout: 5000 }
           );
         } catch { output = ''; }
@@ -4809,8 +4809,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
             }
 
             // Execute via tmux (auto mode forced for workflow steps)
-            const paneIdx = '1';
-            const target = `${TMUX_SESSION}:0.${paneIdx}`;
+            const target = buildPaneTarget(CONFIG.TMUX_SESSION, 'eda');
             const tclFile = `${hipilotPaths.execDir}/wf_${runId}_step${stepNum}_${Date.now()}.tcl`;
             writeFileSync(tclFile, tcl);
 
@@ -4822,11 +4821,11 @@ This validation prevents fundamental flow errors like running synthesis in innov
 
             try {
               execSync(
-                `tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'source ${tclFile}'`,
+                `tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} -l 'source ${tclFile}'`,
                 { encoding: 'utf-8', stdio: 'pipe' }
               );
               execSync(
-                `tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`,
+                `tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} C-m`,
                 { encoding: 'utf-8', stdio: 'pipe' }
               );
             } catch (e) {
@@ -4854,7 +4853,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
             while (Date.now() - waitStart < timeoutMs) {
               try {
                 capturedOutput = execSync(
-                  `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -200 2>/dev/null || echo ""`,
+                  `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -200 2>/dev/null || echo ""`,
                   { encoding: 'utf-8', timeout: 5000 }
                 );
                 const lastLine = capturedOutput.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
@@ -5046,7 +5045,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
         
         try {
           const output = execSync(
-            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)} -p -S -200 2>/dev/null || echo ""`,
             { encoding: 'utf-8' }
           );
           qorMetrics = extractQoR(output);
@@ -5130,7 +5129,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
         
         try {
           const output = execSync(
-            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -200 2>/dev/null || echo ""`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)} -p -S -200 2>/dev/null || echo ""`,
             { encoding: 'utf-8' }
           );
           qorMetrics = extractQoR(output);
@@ -5348,7 +5347,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
 
       case 'eda.get_flow_state': {
         const { design_dir } = args;
-        const TMUX_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
+        // Use centralized config (placeholder - will be replaced by scoped variables below)
 
         const detected = detectTool();
 
@@ -5405,7 +5404,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
         let paneState = 'unknown';
         try {
           const paneOutput = execSync(
-            `tmux -L ${TMUX_SESSION} capture-pane -t ${TMUX_SESSION}:0.1 -p -S -10 2>/dev/null || echo ""`,
+            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)} -p -S -10 2>/dev/null || echo ""`,
             { encoding: 'utf-8', timeout: 2000 }
           );
           const lastLine = paneOutput.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
@@ -5475,8 +5474,8 @@ This validation prevents fundamental flow errors like running synthesis in innov
 
       case 'eda.switch_tool': {
         const { from_tool, to_tool, design_dir, save_checkpoint = true } = args;
-        const TMUX_SESSION = process.env.HIPILOT_SESSION || 'hipilot';
-        const target = `${TMUX_SESSION}:0.1`;
+        // Use centralized config (placeholder - will be replaced by scoped variables below)
+        const target = `${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)}`;
 
         const detected = detectTool();
         const actualFromTool = from_tool || (detected ? getToolAlias(detected.tool) : null);
@@ -5502,8 +5501,8 @@ This validation prevents fundamental flow errors like running synthesis in innov
               ? `write_file -format verilog -hierarchy -output pre_switch_${timestamp}.v`
               : `saveDesign pre_switch_${timestamp}.enc`;
 
-            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l '${saveCmd}'`, { encoding: 'utf-8' });
-            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} -l '${saveCmd}'`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
             await new Promise(r => setTimeout(r, 2000));
 
             text += `✅ Checkpoint saved: pre_switch_${timestamp}.${actualFromTool === 'dc_shell' ? 'v' : 'enc'}\n\n`;
@@ -5515,8 +5514,8 @@ This validation prevents fundamental flow errors like running synthesis in innov
         // Step 2: Exit current tool
         text += `### Step 2: Exiting ${actualFromTool}...\n`;
         try {
-          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'exit'`, { encoding: 'utf-8' });
-          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} -l 'exit'`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
           await new Promise(r => setTimeout(r, 2000));
           text += `✅ Exit command sent\n\n`;
         } catch (e) {
@@ -5545,13 +5544,13 @@ This validation prevents fundamental flow errors like running synthesis in innov
 
         try {
           if (design_dir) {
-            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l 'cd ${shellEscape(design_dir)}'`, { encoding: 'utf-8' });
-            execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} -l 'cd ${shellEscape(design_dir)}'`, { encoding: 'utf-8' });
+            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
             await new Promise(r => setTimeout(r, 1000));
           }
 
-          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} -l '${launchCmd}'`, { encoding: 'utf-8' });
-          execSync(`tmux -L ${TMUX_SESSION} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} -l '${launchCmd}'`, { encoding: 'utf-8' });
+          execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
 
           // Wait for prompt
           const startTime = Date.now();
@@ -5568,7 +5567,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
           while (Date.now() - startTime < timeoutMs) {
             try {
               const output = execSync(
-                `tmux -L ${TMUX_SESSION} capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
+                `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
                 { encoding: 'utf-8', timeout: 5000 }
               );
               const lastLine = output.split('\n').filter(l => l.trim()).slice(-1)[0] || '';

@@ -11,7 +11,7 @@
  * CRITICAL: No agent bypasses the protocol. All communication via SendMessage.
  */
 
-import { SendMessage } from '@anthropic-ai/claude-code';
+import { sendToAgent, readMessages } from '../lib/agent-messaging.js';
 
 const AGENTS = {
   SUPERVISOR: 'Supervisor',
@@ -29,7 +29,6 @@ export class TeamController {
     this.session = options.session || 'hipilot';
     this.designDir = options.designDir || process.env.HIPILOT_DESIGN_DIR;
     this.activeAgents = new Map();
-    this.messageQueue = [];
     this.currentStage = null;
   }
 
@@ -195,14 +194,10 @@ export class TeamController {
 
   /**
    * Send message to agent and wait for response
-   * This uses Claude Code's native SendMessage for inter-agent communication
+   * Uses file-based messaging system for inter-agent communication
    */
   async _sendToAgent(agentName, message) {
     console.log(`[SendMessage] To ${agentName}: ${message.type}`);
-
-    // In a real implementation, this would use SendMessage to communicate
-    // with the agent running in its tmux pane
-    // For now, we simulate by calling the agent's handler directly
 
     const agent = this.activeAgents.get(agentName);
     if (!agent) {
@@ -214,6 +209,11 @@ export class TeamController {
     agent.lastActivity = Date.now();
 
     try {
+      // Send message to agent's queue
+      sendToAgent(agentName, message, message.type);
+
+      // For synchronous simulation, still call handler directly
+      // In production, agents would poll their queues independently
       let result;
       switch (agentName) {
         case AGENTS.KNOWLEDGE:
