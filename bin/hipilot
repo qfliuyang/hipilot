@@ -78,6 +78,9 @@ if [ -n "$HIPILOT_DESIGN_DIR" ]; then
     tmux -L "$HIPILOT_SESSION" set-environment HIPILOT_DESIGN_DIR "$HIPILOT_DESIGN_DIR"
     echo "$HIPILOT_DESIGN_DIR" > "$HIPILOT_TMPDIR/design_dir.txt"
 fi
+if [ -n "$HIPILOT_DESIGN_NAME" ]; then
+    tmux -L "$HIPILOT_SESSION" set-environment HIPILOT_DESIGN_NAME "$HIPILOT_DESIGN_NAME"
+fi
 tmux -L "$HIPILOT_SESSION" set-environment HIPILOT_SESSION "$HIPILOT_SESSION"
 tmux -L "$HIPILOT_SESSION" set-environment CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS "1"
 tmux -L "$HIPILOT_SESSION" set-environment HIPILOT_TEAM_MODE "1"

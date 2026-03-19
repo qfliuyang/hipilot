@@ -191,35 +191,6 @@ export class FlowReporter {
       md += '\n';
     }
 
-    // LittleBrain Reasoning Summary (if available)
-    const lbSummary = this._loadLittleBrainSummary(data);
-    if (lbSummary) {
-      md += `---\n\n## LittleBrain Reasoning Log\n\n`;
-      md += `*LittleBrain is the knowledge-based orchestration layer that validates Tcl, parses EDA output, and makes workflow decisions.*\n\n`;
-      md += `| Metric | Value |\n`;
-      md += `|--------|-------|\n`;
-      md += `| Session ID | ${lbSummary.session_id || 'N/A'} |\n`;
-      md += `| Total Decision Points | ${lbSummary.total_entries || 'N/A'} |\n`;
-      md += `| Entry Types | ${Object.entries(lbSummary.entry_types || {}).map(([k,v]) => `${k}: ${v}`).join(', ') || 'N/A'} |\n`;
-      md += `| Duration | ${lbSummary.duration_ms ? (lbSummary.duration_ms / 1000).toFixed(1) + 's' : 'N/A'} |\n\n`;
-
-      if (lbSummary.key_decisions && lbSummary.key_decisions.length > 0) {
-        md += `### Key Decision Points\n\n`;
-        for (const decision of lbSummary.key_decisions.slice(-5)) {
-          md += `**${decision.component} - ${decision.step || decision.type}** (${decision.timestamp})\n`;
-          if (decision.rationale) {
-            md += `- **Rationale:** ${decision.rationale.substring(0, 200)}${decision.rationale.length > 200 ? '...' : ''}\n`;
-          }
-          if (decision.confidence) {
-            md += `- **Confidence:** ${(decision.confidence * 100).toFixed(0)}%\n`;
-          }
-          md += '\n';
-        }
-      }
-
-      md += `*Full logs available in \`littlebrain/\` directory*\n\n`;
-    }
-
     // Diagnostic Summary (verbose for evidence-only debug; EDA server has no source)
     md += `---\n\n## Diagnostic Summary\n\n`;
     md += `*All debug information comes from the evidence package. EDA server has no source code.*\n\n`;
@@ -323,60 +294,4 @@ export class FlowReporter {
     };
   }
 
-  /**
-   * Load LittleBrain summary from evidence if available
-   */
-  _loadLittleBrainSummary(data) {
-    try {
-      const { evidenceDir } = data;
-      if (!evidenceDir) return null;
-
-      const lbDir = join(evidenceDir, 'littlebrain');
-      if (!existsSync(lbDir)) return null;
-
-      // Try to read the summary file first
-      const summaryPath = join(lbDir, 'littlebrain_summary.json');
-      if (existsSync(summaryPath)) {
-        const content = readFileSync(summaryPath, 'utf-8');
-        return JSON.parse(content);
-      }
-
-      // Fallback: find most recent log file
-      const files = readdirSync(lbDir).filter(f => f.endsWith('.jsonl'));
-      if (files.length === 0) return null;
-
-      // Sort by mtime
-      const mostRecent = files
-        .map(f => ({ file: f, stat: statSync(join(lbDir, f)) }))
-        .sort((a, b) => b.stat.mtimeMs - a.stat.mtimeMs)[0];
-
-      const logPath = join(lbDir, mostRecent.file);
-      const content = readFileSync(logPath, 'utf-8');
-      const lines = content.split('\n').filter(l => l.trim());
-
-      // Count entry types and extract key decisions
-      const counts = {};
-      const decisions = [];
-
-      for (const line of lines.slice(-50)) {
-        try {
-          const entry = JSON.parse(line);
-          counts[entry.type] = (counts[entry.type] || 0) + 1;
-          if (entry.type === 'decision' || entry.type === 'reasoning') {
-            decisions.push(entry);
-          }
-        } catch { /* skip invalid lines */ }
-      }
-
-      return {
-        session_id: mostRecent.file.replace('.jsonl', ''),
-        total_entries: lines.length,
-        entry_types: counts,
-        key_decisions: decisions.slice(-5),
-        duration_ms: mostRecent.stat.mtimeMs - mostRecent.stat.birthtimeMs
-      };
-    } catch (e) {
-      return null;
-    }
-  }
 }

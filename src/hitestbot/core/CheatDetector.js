@@ -53,6 +53,8 @@ export class CheatDetector {
    * ═══════════════════════════════════════════════════════════════════
    * CHEAT PREVENTION 1: Process Verification
    * Verify real Claude Code processes are running
+   *
+   * STRICT: Must have exact expected count, not just minimum
    * ═══════════════════════════════════════════════════════════════════
    */
   verifyClaudeProcesses(expectedCount = null) {
@@ -76,20 +78,24 @@ export class CheatDetector {
         );
       }
 
-      // For dynamic team creation, we expect at least 1 (Supervisor) initially
-      // The team will spawn later via TeamCreate API
-      const minExpected = expected === 1 ? 1 : expected;
-
-      if (actualCount < minExpected) {
-        const level = expected === 1 ? 'info' : 'warning';
-        return this._logCheat('process', level,
-          `Only ${actualCount}/${expected} Claude processes found — team still forming`,
+      // STRICT: Must have at least the expected number of processes
+      // No exceptions - team must be fully formed before test starts
+      if (actualCount < expected) {
+        return this._logCheat('process', 'critical',
+          `INSUFFICIENT Claude processes: ${actualCount}/${expected} found — 5-Agent Team not complete`,
           { processes: claudeLines.map(l => l.trim()), expected, actual: actualCount }
         );
       }
 
       // Verify they're real Node.js processes, not shell scripts faking output
       const nodeProcesses = claudeLines.filter(line => line.includes('node') || line.includes('claude'));
+
+      if (nodeProcesses.length < actualCount) {
+        return this._logCheat('process', 'critical',
+          `Some Claude processes are not real Node.js processes — possible fake processes`,
+          { nodeProcesses: nodeProcesses.length, total: actualCount }
+        );
+      }
 
       return {
         valid: true,
@@ -279,11 +285,13 @@ export class CheatDetector {
       );
     }
 
-    // Check duration - very short duration is suspicious
-    if (duration < 60000) { // Less than 60 seconds
-      return this._logCheat('temporal', 'warning',
-        `Test completed very quickly (${(duration/1000).toFixed(1)}s) — verify this is legitimate`,
-        { duration: duration + 'ms', changeCount }
+    // STRICT: Minimum duration check - tests that complete too fast are fake
+    const MIN_DURATION_MS = 300000; // 5 minutes absolute minimum for any real test
+    if (duration < MIN_DURATION_MS) {
+      return this._logCheat('temporal', 'critical',
+        `Test completed TOO FAST: ${(duration/1000).toFixed(1)}s (min: ${MIN_DURATION_MS/1000}s). ` +
+        `Real EDA tool execution takes significant time. Possible CHEAT: faked results.`,
+        { duration: duration + 'ms', minRequired: MIN_DURATION_MS, changeCount }
       );
     }
 
@@ -301,9 +309,14 @@ export class CheatDetector {
    * ═══════════════════════════════════════════════════════════════════
    * CHEAT PREVENTION 5: MCP Log Integrity Check
    * Verify MCP logs are real, not fabricated
+   *
+   * STRICT: Minimum 50 MCP calls required for any real test
    * ═══════════════════════════════════════════════════════════════════
    */
-  verifyMcpLogIntegrity(mcpLogPath) {
+  verifyMcpLogIntegrity(mcpLogPath, options = {}) {
+    // STRICT by default: minimum 50 MCP calls required for any real test
+    const minCalls = options.minCalls !== undefined ? options.minCalls : 50;
+
     if (!existsSync(mcpLogPath)) {
       return this._logCheat('mcp_integrity', 'critical',
         'MCP log file does not exist — cannot verify tool execution',
@@ -320,6 +333,15 @@ export class CheatDetector {
         return this._logCheat('mcp_integrity', 'critical',
           'MCP log is empty — no tool calls recorded',
           { path: mcpLogPath }
+        );
+      }
+
+      // STRICT: Minimum call count check
+      if (lines.length < minCalls) {
+        return this._logCheat('mcp_integrity', 'critical',
+          `INSUFFICIENT MCP calls: ${lines.length} calls (min: ${minCalls}). ` +
+          `Real EDA tests require many tool interactions.`,
+          { path: mcpLogPath, actual: lines.length, required: minCalls }
         );
       }
 
@@ -466,9 +488,185 @@ export class CheatDetector {
       }
     }
 
+    // Enhanced: Use new Cross-Reference verification methods
+    let stageOrderCheck = null;
+    let processStateChecks = null;
+
+    if (mcpLog && mcpLog.length > 0 && paneLog) {
+      // Verify stage order
+      stageOrderCheck = this.verifyStageOrder(mcpLog, paneLog);
+
+      // Verify process state during MCP calls (sample a few entries)
+      if (mcpLog.length > 0) {
+        const sampleSize = Math.min(5, mcpLog.length);
+        const sampleEntries = [];
+        for (let i = 0; i < sampleSize; i++) {
+          sampleEntries.push(mcpLog[Math.floor(i * mcpLog.length / sampleSize)]);
+        }
+        processStateChecks = sampleEntries.map(entry =>
+          this.verifyProcessStateDuringMcpCall(entry, paneLog)
+        );
+      }
+    }
+
     return {
       valid: inconsistencies.length === 0,
       inconsistencies,
+      enhanced: {
+        stageOrderCheck,
+        processStateChecks,
+      },
+    };
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * CROSS-REFERENCE VERIFICATION 1: Verify EDA Process Running During MCP Call
+   */
+  verifyProcessStateDuringMcpCall(mcpEntry, paneLog) {
+    if (!mcpEntry || !paneLog) {
+      return { valid: false, error: 'Missing MCP entry or pane log' };
+    }
+
+    const mcpTimestamp = new Date(mcpEntry.timestamp).getTime();
+    if (isNaN(mcpTimestamp)) {
+      return { valid: false, error: 'Invalid MCP timestamp' };
+    }
+
+    // Find EDA tool prompts in the pane log
+    const toolPrompts = [
+      { pattern: /innovus\s*\d+\s*>/, name: 'innovus' },
+      { pattern: /dc_shell[\w-]*>/, name: 'dc_shell' },
+      { pattern: /pt_shell[\w-]*>/, name: 'pt_shell' },
+    ];
+
+    // Extract timestamps from pane log entries near the MCP call
+    const nearbyLines = [];
+    const lines = paneLog.split('\n');
+
+    // Simple approach: look for timestamps in the log and correlate
+    const logTimestamps = [];
+    for (const line of lines) {
+      const tsMatch = line.match(/\[(\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}:\d{2})/);
+      if (tsMatch) {
+        const ts = new Date(tsMatch[1]).getTime();
+        if (!isNaN(ts)) {
+          logTimestamps.push({ ts, line });
+        }
+      }
+    }
+
+    // Find if any tool was running around the MCP call time
+    const toolRunning = [];
+    for (const { pattern, name } of toolPrompts) {
+      const hasTool = pattern.test(paneLog);
+      if (hasTool) {
+        toolRunning.push(name);
+      }
+    }
+
+    if (toolRunning.length === 0) {
+      return this._logCheat('cross_ref_process', 'warning',
+        'No EDA tool prompt found in pane log during MCP call',
+        { mcpMethod: mcpEntry.method, mcpTool: mcpEntry.tool }
+      );
+    }
+
+    return {
+      valid: true,
+      toolsRunning: toolRunning,
+      mcpTimestamp: new Date(mcpTimestamp).toISOString(),
+    };
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * CROSS-REFERENCE VERIFICATION 2: Verify Stage Order Completed Before Next Started
+   */
+  verifyStageOrder(mcpLog, paneLog) {
+    const violations = [];
+
+    // Stage markers in MCP calls
+    const stagePatterns = [
+      { stage: 0, pattern: /synthesis|dc_shell|compile_ultra/i },
+      { stage: 1, pattern: /init_design|init\s+design/i },
+      { stage: 2, pattern: /floorplan/i },
+      { stage: 3, pattern: /power[_\s]?plan/i },
+      { stage: 4, pattern: /placement|place_opt/i },
+      { stage: 5, pattern: /cts|clock[_\s]?tree|ccopt/i },
+      { stage: 6, pattern: /post[_\s]?cts/i },
+      { stage: 7, pattern: /routing|routeDesign/i },
+      { stage: 8, pattern: /routing[_\s]?opt/i },
+      { stage: 9, pattern: /chip[_\s]?finish|stream[_\s]?out/i },
+    ];
+
+    // Extract stage events from MCP log
+    const stageEvents = [];
+    for (const entry of mcpLog) {
+      for (const { stage, pattern } of stagePatterns) {
+        if (pattern.test(entry.method || '') || pattern.test(entry.tool || '') || pattern.test(JSON.stringify(entry.params || {}))) {
+          stageEvents.push({
+            stage,
+            timestamp: new Date(entry.timestamp).getTime(),
+            method: entry.method,
+          });
+        }
+      }
+    }
+
+    // Sort by timestamp
+    stageEvents.sort((a, b) => a.timestamp - b.timestamp);
+
+    // Verify stages are in order
+    let maxStage = -1;
+    for (const event of stageEvents) {
+      if (event.stage < maxStage) {
+        violations.push({
+          issue: `Stage ${event.stage} started before stage ${maxStage} completed`,
+          stage: event.stage,
+          timestamp: new Date(event.timestamp).toISOString(),
+        });
+      }
+      if (event.stage > maxStage) {
+        maxStage = event.stage;
+      }
+    }
+
+    // Also check pane log for stage markers
+    const paneStageMatches = [];
+    for (const { stage, pattern } of stagePatterns) {
+      if (pattern.test(paneLog)) {
+        paneStageMatches.push(stage);
+      }
+    }
+
+    if (paneStageMatches.length > 0) {
+      paneStageMatches.sort((a, b) => a - b);
+
+      // Check if stages are in order in pane log too
+      let maxPaneStage = -1;
+      for (const stage of paneStageMatches) {
+        if (stage < maxPaneStage) {
+          violations.push({
+            issue: `Pane log shows stage ${stage} before stage ${maxPaneStage} completed`,
+            source: 'pane',
+          });
+        }
+        maxPaneStage = stage;
+      }
+    }
+
+    if (violations.length > 0) {
+      return this._logCheat('cross_ref_stage', 'critical',
+        'Stage order violation detected',
+        { violations }
+      );
+    }
+
+    return {
+      valid: true,
+      stagesDetected: [...new Set(stageEvents.map(e => e.stage))].sort((a, b) => a - b),
+      stageCount: stageEvents.length,
     };
   }
 
@@ -645,8 +843,10 @@ export class CheatDetector {
    * Ensure all evidence files were created during this test run
    * ═══════════════════════════════════════════════════════════════════
    */
-  verifyEvidenceFreshness(evidenceFiles) {
-    const testStartTime = Date.now() - 3600000; // Assume test started within last hour
+  verifyEvidenceFreshness(evidenceFiles, options = {}) {
+    // STRICT by default: 15 minutes max age (not 1 hour)
+    const maxAgeMinutes = options.maxAgeMinutes !== undefined ? options.maxAgeMinutes : 15;
+    const testStartTime = Date.now() - (maxAgeMinutes * 60000);
     const staleFiles = [];
     const freshFiles = [];
 
@@ -695,6 +895,373 @@ export class CheatDetector {
 
   /**
    * ═══════════════════════════════════════════════════════════════════
+   * CHEAT PREVENTION 8.5: EDA Pane Log Verification
+   * Verify EDA pane log exists and contains real tool output
+   *
+   * STRICT: Must have EDA pane log with real tool content
+   * ═══════════════════════════════════════════════════════════════════
+   */
+  verifyEdaPaneLog(edaLogPath) {
+    if (!edaLogPath) {
+      return this._logCheat('eda_log', 'critical',
+        'No EDA pane log path provided — cannot verify tool execution',
+        { path: null }
+      );
+    }
+
+    if (!existsSync(edaLogPath)) {
+      return this._logCheat('eda_log', 'critical',
+        'EDA pane log does not exist — no proof of tool execution',
+        { path: edaLogPath }
+      );
+    }
+
+    try {
+      const content = readFileSync(edaLogPath, 'utf8');
+
+      // Check 1: Log has substantial content (not empty or tiny)
+      if (content.length < 500) {
+        return this._logCheat('eda_log', 'critical',
+          `EDA pane log too small (${content.length} bytes) — no real tool output`,
+          { path: edaLogPath, size: content.length }
+        );
+      }
+
+      // Check 2: Contains real EDA tool indicators (not just echo)
+      const toolIndicators = [
+        /innovus\s*\d+\s*>/i,           // Innovus prompt
+        /dc_shell[\w-]*>/i,              // DC Shell prompt
+        /pt_shell[\w-]*>/i,              // PrimeTime prompt
+        /\*\*\s*(INFO|WARN|ERROR)/i,     // Tool messages
+        /Loading\s+.*\.lef/i,            // LEF loading
+        /Loading\s+.*\.lib/i,            // Liberty loading
+        /source\s+.*\.enc/i,             // Checkpoint loading
+        /saveDesign/i,                   // Checkpoint saving
+        /compile_ultra/i,                // Synthesis
+        /place_opt_design/i,             // Placement
+        /routeDesign/i,                  // Routing
+      ];
+
+      const foundIndicators = toolIndicators.filter(pattern => pattern.test(content));
+
+      if (foundIndicators.length === 0) {
+        return this._logCheat('eda_log', 'critical',
+          'EDA pane log contains NO real tool indicators — possible fake/simulated output',
+          { path: edaLogPath, contentSample: content.substring(0, 200) }
+        );
+      }
+
+      // Check 3: Not just echo commands
+      const echoOnlyPattern = /^(echo|printf|puts)\s+/im;
+      if (echoOnlyPattern.test(content) && foundIndicators.length < 3) {
+        return this._logCheat('eda_log', 'critical',
+          'EDA pane log appears to be mostly echo commands — FAKE TOOL OUTPUT',
+          { path: edaLogPath }
+        );
+      }
+
+      return {
+        valid: true,
+        size: content.length,
+        indicators: foundIndicators.length,
+        path: edaLogPath,
+      };
+    } catch (e) {
+      return this._logCheat('eda_log', 'critical',
+        'Failed to read EDA pane log — possible tampering',
+        { error: e.message, path: edaLogPath }
+      );
+    }
+  }
+
+  /**
+   * Enhanced verifyEdaPaneLog that also calls EDA-specific verification methods
+   */
+  verifyEdaPaneLogEnhanced(edaLogPath, designDir = null) {
+    // First call the basic verification
+    const basicResult = this.verifyEdaPaneLog(edaLogPath);
+
+    if (!basicResult.valid) {
+      return basicResult;
+    }
+
+    // Read the content for further analysis
+    const content = readFileSync(edaLogPath, 'utf8');
+
+    // Run additional EDA verification methods
+    const qorMetrics = this.extractQorMetrics(content);
+    const errorAnalysis = this.parseErrors(content);
+    const durationCheck = this.verifyToolExecutionDuration(content);
+
+    // Run checkpoint verification if design dir provided
+    let checkpointResult = null;
+    if (designDir) {
+      checkpointResult = this.verifyCheckpointFiles(content, designDir);
+    }
+
+    // Aggregate results
+    const issues = [];
+
+    if (!qorMetrics.valid) issues.push('qor_extraction');
+    if (!errorAnalysis.valid) issues.push('error_parsing');
+    if (!durationCheck.valid) issues.push('duration_check');
+    if (checkpointResult && !checkpointResult.valid) issues.push('checkpoint_verification');
+
+    return {
+      valid: issues.length === 0,
+      basicResult,
+      qorMetrics,
+      errorAnalysis,
+      durationCheck,
+      checkpointResult,
+      issues,
+    };
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * EDA LOG VERIFICATION 1: Extract QoR Metrics from EDA Log
+   */
+  extractQorMetrics(edaLog) {
+    if (!edaLog || edaLog.length === 0) {
+      return { valid: false, error: 'No EDA log provided' };
+    }
+
+    const metrics = {
+      wns: null,
+      tns: null,
+      area: null,
+      cellCount: null,
+      power: null,
+    };
+
+    // Extract WNS (Worst Negative Slack)
+    const wnsMatch = edaLog.match(/WNS:?[\s=]*(-?\d+\.?\d*)/i);
+    if (wnsMatch) metrics.wns = parseFloat(wnsMatch[1]);
+
+    // Extract TNS (Total Negative Slack)
+    const tnsMatch = edaLog.match(/TNS:?[\s=]*(-?\d+\.?\d*)/i);
+    if (tnsMatch) metrics.tns = parseFloat(tnsMatch[1]);
+
+    // Extract Total Area
+    const areaMatch = edaLog.match(/Total Area:?[\s=]*(\d+\.?\d*)/i);
+    if (areaMatch) metrics.area = parseFloat(areaMatch[1]);
+
+    // Extract Cell Count
+    const cellMatch = edaLog.match(/Cell Count:?[\s=]*(\d+)/i);
+    if (cellMatch) metrics.cellCount = parseInt(cellMatch[1], 10);
+
+    // Extract Power
+    const powerMatch = edaLog.match(/(?:Total |Switching |Internal |Leakage )?Power:?[\s=]*(\d+\.?\d*)/i);
+    if (powerMatch) metrics.power = parseFloat(powerMatch[1]);
+
+    // Check if we got at least some metrics
+    const hasMetrics = Object.values(metrics).some(v => v !== null);
+
+    if (!hasMetrics) {
+      return this._logCheat('eda_qor', 'warning',
+        'No QoR metrics found in EDA log',
+        { sample: edaLog.substring(0, 200) }
+      );
+    }
+
+    return {
+      valid: true,
+      metrics,
+    };
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * EDA LOG VERIFICATION 2: Verify Checkpoint Files Exist After saveDesign
+   */
+  verifyCheckpointFiles(edaLog, designDir) {
+    if (!edaLog || edaLog.length === 0) {
+      return { valid: false, error: 'No EDA log provided' };
+    }
+
+    if (!designDir || !existsSync(designDir)) {
+      return this._logCheat('eda_checkpoint', 'warning',
+        'Design directory not provided or does not exist',
+        { designDir }
+      );
+    }
+
+    // Extract saveDesign filenames from log
+    const saveDesignMatches = edaLog.match(/saveDesign[^\n]*/gi) || [];
+    const checkpointFiles = [];
+
+    for (const match of saveDesignMatches) {
+      // Extract filename from saveDesign command
+      const filenameMatch = match.match(/saveDesign\s+([^\s;]+)/i);
+      if (filenameMatch) {
+        checkpointFiles.push(filenameMatch[1]);
+      }
+    }
+
+    if (checkpointFiles.length === 0) {
+      return this._logCheat('eda_checkpoint', 'warning',
+        'No saveDesign commands found in EDA log',
+        { designDir }
+      );
+    }
+
+    // Verify each checkpoint file exists and has reasonable size
+    const verifiedCheckpoints = [];
+    const missingCheckpoints = [];
+
+    for (const filename of checkpointFiles) {
+      // Handle relative paths
+      const fullPath = filename.startsWith('/') ? filename : join(designDir, filename);
+      const encPath = fullPath + '.enc';
+
+      if (existsSync(encPath)) {
+        const stats = statSync(encPath);
+        verifiedCheckpoints.push({
+          file: filename,
+          path: encPath,
+          size: stats.size,
+        });
+      } else if (existsSync(fullPath)) {
+        const stats = statSync(fullPath);
+        verifiedCheckpoints.push({
+          file: filename,
+          path: fullPath,
+          size: stats.size,
+        });
+      } else {
+        missingCheckpoints.push(filename);
+      }
+    }
+
+    if (missingCheckpoints.length > 0) {
+      return this._logCheat('eda_checkpoint', 'critical',
+        `Checkpoint files missing: ${missingCheckpoints.join(', ')}`,
+        { missing: missingCheckpoints, verified: verifiedCheckpoints.length }
+      );
+    }
+
+    return {
+      valid: true,
+      checkpointCount: checkpointFiles.length,
+      verifiedCheckpoints,
+    };
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * EDA LOG VERIFICATION 3: Parse Error Messages from EDA Log
+   */
+  parseErrors(edaLog) {
+    if (!edaLog || edaLog.length === 0) {
+      return { valid: false, error: 'No EDA log provided' };
+    }
+
+    const errorMessages = [];
+    const warningMessages = [];
+
+    // Extract ERROR messages
+    const errorPattern = /\*\*\s*ERROR\s*\*\*[:\s]*([^\n]+)/gi;
+    let match;
+    while ((match = errorPattern.exec(edaLog)) !== null) {
+      errorMessages.push(match[1].trim());
+    }
+
+    // Also catch "Error:" patterns
+    const errorPattern2 = /Error:?\s*([^\n]+)/gi;
+    while ((match = errorPattern2.exec(edaLog)) !== null) {
+      const msg = match[1].trim();
+      if (!errorMessages.includes(msg)) {
+        errorMessages.push(msg);
+      }
+    }
+
+    // Extract Warning messages
+    const warningPattern = /\*\*\s*WARNING\s*\*\*[:\s]*([^\n]+)/gi;
+    while ((match = warningPattern.exec(edaLog)) !== null) {
+      warningMessages.push(match[1].trim());
+    }
+
+    // Also catch "Warning:" patterns
+    const warningPattern2 = /Warning:?\s*([^\n]+)/gi;
+    while ((match = warningPattern2.exec(edaLog)) !== null) {
+      const msg = match[1].trim();
+      if (!warningMessages.includes(msg)) {
+        warningMessages.push(msg);
+      }
+    }
+
+    return {
+      valid: true,
+      errorCount: errorMessages.length,
+      warningCount: warningMessages.length,
+      errorMessages: errorMessages.slice(0, 10), // Limit detail
+      warningMessages: warningMessages.slice(0, 10),
+    };
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * EDA LOG VERIFICATION 4: Verify Tool Ran for Reasonable Duration
+   */
+  verifyToolExecutionDuration(edaLog) {
+    if (!edaLog || edaLog.length === 0) {
+      return { valid: false, error: 'No EDA log provided' };
+    }
+
+    // Extract timestamps from log entries
+    // Pattern: [YYYY-MM-DD HH:MM:SS] or similar timestamp formats
+    const timestampPatterns = [
+      /(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})/g,
+      /(\d{2}:\d{2}:\d{2})\s+(?:AM|PM)/gi,
+    ];
+
+    const timestamps = [];
+    for (const pattern of timestampPatterns) {
+      let match;
+      while ((match = pattern.exec(edaLog)) !== null) {
+        try {
+          const ts = new Date(match[1]);
+          if (!isNaN(ts.getTime())) {
+            timestamps.push(ts.getTime());
+          }
+        } catch (e) {
+          // Invalid date, skip
+        }
+      }
+    }
+
+    if (timestamps.length < 2) {
+      return this._logCheat('eda_duration', 'warning',
+        'Cannot extract sufficient timestamps from EDA log',
+        { timestampCount: timestamps.length }
+      );
+    }
+
+    timestamps.sort((a, b) => a - b);
+    const durationMs = timestamps[timestamps.length - 1] - timestamps[0];
+    const durationSec = durationMs / 1000;
+
+    // Typical EDA stages should run at least 30 seconds
+    const MIN_DURATION_SEC = 30;
+
+    if (durationSec < MIN_DURATION_SEC) {
+      return this._logCheat('eda_duration', 'warning',
+        `EDA tool execution too fast: ${durationSec.toFixed(1)}s (expected >${MIN_DURATION_SEC}s)`,
+        { durationSec, minRequired: MIN_DURATION_SEC }
+      );
+    }
+
+    return {
+      valid: true,
+      durationMs,
+      durationSec: durationSec.toFixed(1),
+      timestampCount: timestamps.length,
+    };
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
    * MASTER VERIFICATION: Run all cheat detection checks
    * ═══════════════════════════════════════════════════════════════════
    */
@@ -730,10 +1297,32 @@ export class CheatDetector {
       if (!results.checks.pane.valid) results.criticalCheats++;
     }
 
-    // Check 4: MCP log integrity
+    // Check 4: MCP log integrity (STRICT: min 50 calls for real test)
+    // STRICT MODE: MCP log is REQUIRED unless explicitly disabled
     if (mcpLogPath) {
-      results.checks.mcp = this.verifyMcpLogIntegrity(mcpLogPath);
+      results.checks.mcp = this.verifyMcpLogIntegrity(mcpLogPath, { minCalls: options.minMcpCalls });
       if (!results.checks.mcp.valid) results.criticalCheats++;
+    } else if (options.requireMcpLog !== false) {
+      // STRICT: Missing MCP log is a critical failure by default
+      results.checks.mcp = this._logCheat('mcp_integrity', 'critical',
+        'MCP log path not provided — tool execution cannot be verified',
+        { requireMcpLog: options.requireMcpLog }
+      );
+      results.criticalCheats++;
+    }
+
+    // Check 4b: EDA pane log verification (CRITICAL - must have real EDA output)
+    // STRICT MODE: EDA log is REQUIRED unless explicitly disabled
+    if (options.edaLogPath) {
+      results.checks.edaLog = this.verifyEdaPaneLog(options.edaLogPath);
+      if (!results.checks.edaLog?.valid) results.criticalCheats++;
+    } else if (options.requireEdaLog !== false) {
+      // STRICT: Missing EDA log is a critical failure by default
+      results.checks.edaLog = this._logCheat('eda_log', 'critical',
+        'EDA pane log path not provided — EDA tool execution cannot be verified',
+        { requireEdaLog: options.requireEdaLog }
+      );
+      results.criticalCheats++;
     }
 
     // Check 5: Temporal Activity Verification (CRITICAL - detects idle panes)
@@ -748,13 +1337,23 @@ export class CheatDetector {
       if (!results.checks.video?.valid) results.criticalCheats++;
     }
 
-    // Check 6: Evidence freshness
+    // Check 7: Evidence freshness (STRICT: 15 min max age by default)
+    // STRICT MODE: Evidence files are REQUIRED unless explicitly disabled
     if (evidenceFiles.length > 0) {
-      results.checks.freshness = this.verifyEvidenceFreshness(evidenceFiles);
+      results.checks.freshness = this.verifyEvidenceFreshness(evidenceFiles, {
+        maxAgeMinutes: options.maxEvidenceAgeMinutes
+      });
       if (!results.checks.freshness.valid) results.criticalCheats++;
+    } else if (options.requireEvidenceFiles !== false) {
+      // STRICT: No evidence files is a critical failure by default
+      results.checks.freshness = this._logCheat('freshness', 'critical',
+        'No evidence files provided — test execution cannot be verified',
+        { requireEvidenceFiles: options.requireEvidenceFiles }
+      );
+      results.criticalCheats++;
     }
 
-    // Check 7: Interactive verification (if functions provided)
+    // Check 8: Interactive verification (if functions provided)
     if (sendCommandFn && capturePaneFn) {
       results.checks.interactive = await this.performInteractiveVerification(
         sendCommandFn, capturePaneFn
@@ -762,7 +1361,7 @@ export class CheatDetector {
       if (!results.checks.interactive.valid) results.criticalCheats++;
     }
 
-    // Check 8: Agent Delegation Bypass Detection (CRITICAL for 5-Agent Team Mode)
+    // Check 9: Agent Delegation Bypass Detection (CRITICAL for 5-Agent Team Mode)
     // Detects when Supervisor directly executes MCP tools without delegating to Executor
     if (paneText) {
       results.checks.agentDelegation = this.detectAgentDelegationBypass(paneText);
@@ -919,12 +1518,290 @@ export class CheatDetector {
       );
     }
 
+    // Use new Team Protocol verification methods
+    const processCheck = this.verifyFiveAgentProcesses();
+    const messageStructureCheck = this.validateSendMessageStructure(claudePaneLog);
+    const knowledgeHubCheck = this.verifyKnowledgeAsHub(claudePaneLog);
+    const messageSequenceCheck = this.verifyMessageSequence(claudePaneLog);
+
+    // Aggregate all Team Protocol violations
+    const teamViolations = [];
+
+    if (!processCheck.valid) {
+      teamViolations.push({ type: 'process', ...processCheck });
+    }
+    if (!messageStructureCheck.valid) {
+      teamViolations.push({ type: 'message_structure', ...messageStructureCheck });
+    }
+    if (!knowledgeHubCheck.valid) {
+      teamViolations.push({ type: 'knowledge_hub', ...knowledgeHubCheck });
+    }
+    if (!messageSequenceCheck.valid) {
+      teamViolations.push({ type: 'message_sequence', ...messageSequenceCheck });
+    }
+
+    // Return comprehensive result including all Team Protocol checks
     return {
-      valid: true,
+      valid: teamViolations.length === 0,
       hasDirectMcpExecution,
       hasDelegation,
       hasIdleTeammates,
       delegationCompliant: hasDirectMcpExecution ? hasDelegation : true,
+      teamProtocol: {
+        processCheck,
+        messageStructureCheck,
+        knowledgeHubCheck,
+        messageSequenceCheck,
+      },
+      teamViolations,
+    };
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * TEAM PROTOCOL VERIFICATION 1: Verify 5 Separate Claude Processes
+   * Uses process tree to verify parent-child relationships for 5-Agent Team
+   */
+  verifyFiveAgentProcesses() {
+    try {
+      // Use ps with tree format to verify process relationships
+      const psOutput = execSync('ps aux | grep -E "claude|Claude" | grep -v grep', {
+        encoding: 'utf8',
+        timeout: 5000,
+      });
+
+      const claudeLines = psOutput.trim().split('\n').filter(line => line.trim());
+
+      // Verify at least 5 Claude processes exist
+      if (claudeLines.length < 5) {
+        return this._logCheat('team_process', 'critical',
+          `Insufficient Claude processes for 5-Agent Team: ${claudeLines.length}/5 found`,
+          { found: claudeLines.length, required: 5 }
+        );
+      }
+
+      // Extract process info (PID, PPID, command)
+      const processes = claudeLines.map(line => {
+        const parts = line.trim().split(/\s+/);
+        return {
+          pid: parts[1],
+          ppid: parts[2],
+          cmd: parts.slice(10).join(' '),
+        };
+      });
+
+      // Verify each agent is present (check for agent-specific command patterns)
+      const agentIndicators = ['Supervisor', 'Knowledge', 'Planner', 'Executor', 'Archivist'];
+      const foundAgents = agentIndicators.filter(agent =>
+        processes.some(p => p.cmd.toLowerCase().includes(agent.toLowerCase()))
+      );
+
+      if (foundAgents.length < 5) {
+        this._logCheat('team_process', 'warning',
+          `Not all agents detected in process list: ${foundAgents.length}/5`,
+          { found: foundAgents, required: agentIndicators }
+        );
+      }
+
+      return {
+        valid: true,
+        processCount: claudeLines.length,
+        processes,
+        foundAgents,
+      };
+    } catch (e) {
+      return this._logCheat('team_process', 'critical',
+        'Failed to verify 5-Agent Team processes',
+        { error: e.message }
+      );
+    }
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * TEAM PROTOCOL VERIFICATION 2: Validate SendMessage JSON Structure
+   */
+  validateSendMessageStructure(paneLog) {
+    const violations = [];
+    const validAgents = ['Supervisor', 'Knowledge', 'Planner', 'Executor', 'Archivist'];
+
+    // Find SendMessage JSON patterns in the log
+    const jsonPatterns = [
+      /SendMessage\s*\(\s*\{[^}]+\}/gi,
+      /\{[^}]*"to"\s*:\s*"[^"]+"[^}]*\}/gi,
+    ];
+
+    const foundMessages = [];
+    for (const pattern of jsonPatterns) {
+      const matches = paneLog.match(pattern);
+      if (matches) {
+        for (const match of matches) {
+          foundMessages.push(match);
+        }
+      }
+    }
+
+    // Validate each message structure
+    for (const msg of foundMessages) {
+      try {
+        // Try to extract JSON from the message
+        const jsonMatch = msg.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) continue;
+
+        const json = JSON.parse(jsonMatch[0]);
+
+        // Check required fields
+        if (!json.to) {
+          violations.push({ message: msg.substring(0, 50), issue: 'missing "to" field' });
+        } else if (!validAgents.includes(json.to)) {
+          violations.push({ message: msg.substring(0, 50), issue: `invalid agent: ${json.to}` });
+        }
+
+        if (!json.message) {
+          violations.push({ message: msg.substring(0, 50), issue: 'missing "message" field' });
+        }
+
+        if (!json.summary) {
+          violations.push({ message: msg.substring(0, 50), issue: 'missing "summary" field' });
+        }
+      } catch (e) {
+        // Not valid JSON, might be partial match
+        violations.push({ message: msg.substring(0, 50), issue: 'invalid JSON structure' });
+      }
+    }
+
+    if (violations.length > 0) {
+      return this._logCheat('team_protocol', 'warning',
+        `SendMessage structure issues found: ${violations.length}`,
+        { violations: violations.slice(0, 5) }
+      );
+    }
+
+    return {
+      valid: true,
+      messageCount: foundMessages.length,
+    };
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * TEAM PROTOCOL VERIFICATION 3: Verify Knowledge Agent is Hub
+   * Hub-and-spoke: All inter-agent messages should go through Knowledge
+   */
+  verifyKnowledgeAsHub(paneLog) {
+    const violations = [];
+
+    // Check for direct messages that bypass Knowledge
+    const directMessagePatterns = [
+      { pattern: /SendMessage.*to.*["']?Planner["']?.*from.*["']?Supervisor["']?/i, type: 'Supervisor→Planner' },
+      { pattern: /SendMessage.*to.*["']?Executor["']?.*from.*["']?Supervisor["']?/i, type: 'Supervisor→Executor' },
+      { pattern: /SendMessage.*to.*["']?Archivist["']?.*from.*["']?Supervisor["']?/i, type: 'Supervisor→Archivist' },
+      { pattern: /SendMessage.*to.*["']?Planner["']?.*from.*["']?Executor["']?/i, type: 'Executor→Planner' },
+    ];
+
+    for (const { pattern, type } of directMessagePatterns) {
+      if (pattern.test(paneLog)) {
+        violations.push({
+          type,
+          message: `Direct ${type} message bypasses Knowledge Agent hub`,
+        });
+      }
+    }
+
+    // Verify messages go through Knowledge
+    const knowledgeHubPatterns = [
+      /SendMessage.*to.*["']?Knowledge["']?/i,
+      /Message.*Knowledge.*received/i,
+    ];
+
+    const hasKnowledgeHub = knowledgeHubPatterns.some(p => p.test(paneLog));
+
+    if (!hasKnowledgeHub && paneLog.includes('SendMessage')) {
+      return this._logCheat('team_protocol', 'warning',
+        'No evidence of Knowledge Agent as hub — verify hub-and-spoke communication',
+        { violations }
+      );
+    }
+
+    if (violations.length > 0) {
+      return this._logCheat('team_protocol', 'critical',
+        'Hub-and-spoke violation: Supervisor bypassed Knowledge Agent',
+        { violations }
+      );
+    }
+
+    return {
+      valid: true,
+      knowledgeAsHub: hasKnowledgeHub,
+    };
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * TEAM PROTOCOL VERIFICATION 4: Verify Message Sequence Timestamps
+   * Supervisor→Knowledge should happen before Knowledge→Planner
+   */
+  verifyMessageSequence(paneLog) {
+    const violations = [];
+
+    // Extract timestamp sequences
+    // Pattern: [TIMESTAMP] followed by SendMessage
+    const timestampPattern = /\[(\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}:\d{2})[^\]]*\]/g;
+
+    // Find all SendMessage events with their positions
+    const sendMessageEvents = [];
+    let match;
+    const regex = /(\[.*?\]\s*.*?SendMessage.*?to.*?(?:Supervisor|Knowledge|Planner|Executor|Archivist))/gi;
+    while ((match = regex.exec(paneLog)) !== null) {
+      sendMessageEvents.push({
+        text: match[0],
+        index: match.index,
+      });
+    }
+
+    if (sendMessageEvents.length < 2) {
+      // Not enough messages to verify sequence
+      return { valid: true, messageCount: sendMessageEvents.length };
+    }
+
+    // Check if Supervisor→Knowledge happens before Knowledge→other
+    const supervisorToKnowledge = sendMessageEvents.find(e =>
+      /to.*?Knowledge/i.test(e.text) && /Supervisor/i.test(e.text)
+    );
+    const knowledgeToPlanner = sendMessageEvents.find(e =>
+      /to.*?Planner/i.test(e.text) && /Knowledge/i.test(e.text)
+    );
+    const supervisorToExecutor = sendMessageEvents.find(e =>
+      /to.*?Executor/i.test(e.text) && /Supervisor/i.test(e.text)
+    );
+
+    // Verify temporal ordering
+    if (supervisorToKnowledge && knowledgeToPlanner) {
+      if (supervisorToKnowledge.index > knowledgeToPlanner.index) {
+        violations.push({
+          issue: 'Supervisor→Knowledge after Knowledge→Planner',
+          severity: 'warning',
+        });
+      }
+    }
+
+    if (supervisorToExecutor && !supervisorToKnowledge) {
+      violations.push({
+        issue: 'Supervisor→Executor without prior Supervisor→Knowledge',
+        severity: 'critical',
+      });
+    }
+
+    if (violations.length > 0) {
+      return this._logCheat('team_protocol', violations[0].severity,
+        'Message sequence violation detected',
+        { violations }
+      );
+    }
+
+    return {
+      valid: true,
+      messageCount: sendMessageEvents.length,
     };
   }
 

@@ -167,6 +167,14 @@ async function main() {
     return `${lines.length} entries`;
   })) passed++; else failed++;
 
+  if (test('Log has minimum required entries (infra test threshold: 3)', () => {
+    // Note: infra test itself makes ~3 MCP calls. Full flow tests require 50+.
+    // This verifies logging works; CheatDetector enforces 50-call minimum on real tests.
+    const lines = readFileSync(LOG_PATH, 'utf-8').split('\n').filter(l => l.trim());
+    if (lines.length < 3) throw new Error(`Too few log entries: ${lines.length} (expected ≥3 for infra test)`);
+    return `${lines.length} entries logged`;
+  })) passed++; else failed++;
+
   if (test('Log entries have required fields', () => {
     const lines = readFileSync(LOG_PATH, 'utf-8').split('\n').filter(l => l.trim());
     const entry = JSON.parse(lines[0]);

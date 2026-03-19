@@ -673,98 +673,6 @@ export class FlowCertifier {
 
     // 4. HiPilot internal files (mode, pending, history)
     this._collectHipilotState(logsDir);
-
-    // 5. LittleBrain reasoning logs (NEW - captures AI decision-making)
-    this._collectLittleBrainLogs(logsDir);
-  }
-
-  _collectLittleBrainLogs(logsDir) {
-    // LittleBrain logs are written to ~/.hipilot/littlebrain/logs/
-    const homedir = process.env.HOME || '/home/EDA';
-    const lbLogDir = join(homedir, '.hipilot', 'littlebrain', 'logs');
-
-    if (!existsSync(lbLogDir)) {
-      this._runLog('No LittleBrain logs directory found');
-      return;
-    }
-
-    try {
-      const files = readdirSync(lbLogDir);
-      let collected = 0;
-
-      // Collect the most recent log files (last 5 minutes)
-      const now = Date.now();
-      const fiveMinutesAgo = now - 5 * 60 * 1000;
-
-      for (const f of files) {
-        if (!f.endsWith('.jsonl') && !f.endsWith('.json')) continue;
-
-        const src = join(lbLogDir, f);
-        const stat = statSync(src);
-
-        // Only collect recent files from this test run
-        if (stat.mtimeMs < fiveMinutesAgo) continue;
-
-        const dst = join(this.evidenceDir, 'littlebrain', f);
-        mkdirSync(dirname(dst), { recursive: true });
-        copyFileSync(src, dst);
-        collected++;
-      }
-
-      this._runLog(`LittleBrain logs collected: ${collected} files`);
-
-      // Also create a summary if we found logs
-      if (collected > 0) {
-        this._summarizeLittleBrainLogs(join(this.evidenceDir, 'littlebrain'));
-      }
-    } catch (e) {
-      this._runLog(`LittleBrain log collection failed: ${e.message}`);
-    }
-  }
-
-  _summarizeLittleBrainLogs(lbDir) {
-    try {
-      // Find the most recent session log
-      const files = readdirSync(lbDir).filter(f => f.endsWith('.jsonl') && !f.includes('_summary'));
-      if (files.length === 0) return;
-
-      // Sort by mtime, take most recent
-      const mostRecent = files
-        .map(f => ({ file: f, stat: statSync(join(lbDir, f)) }))
-        .sort((a, b) => b.stat.mtimeMs - a.stat.mtimeMs)[0];
-
-      const logPath = join(lbDir, mostRecent.file);
-      const content = readFileSync(logPath, 'utf-8');
-      const lines = content.split('\n').filter(l => l.trim());
-
-      // Count entry types
-      const counts = {};
-      const decisions = [];
-
-      for (const line of lines.slice(-100)) { // Last 100 entries
-        try {
-          const entry = JSON.parse(line);
-          counts[entry.type] = (counts[entry.type] || 0) + 1;
-          if (entry.type === 'decision' || entry.type === 'reasoning') {
-            decisions.push(entry);
-          }
-        } catch { /* skip invalid lines */ }
-      }
-
-      // Write summary
-      const summary = {
-        session_file: mostRecent.file,
-        total_entries: lines.length,
-        entry_types: counts,
-        key_decisions: decisions.slice(-10),
-        collected_at: new Date().toISOString()
-      };
-
-      writeFileSync(join(lbDir, 'littlebrain_summary.json'), JSON.stringify(summary, null, 2));
-      this._runLog(`LittleBrain summary: ${lines.length} entries, ${Object.keys(counts).length} types`);
-    } catch (e) {
-      this._runLog(`LittleBrain summary failed: ${e.message}`);
-    }
   }
 
   _savePaneDump(logsDir, paneId, filename) {
@@ -1032,6 +940,7 @@ export class FlowCertifier {
     };
     if (cleanDesignDir) {
       envVars.HIPILOT_DESIGN_DIR = cleanDesignDir;
+      envVars.HIPILOT_DESIGN_NAME = 'ibex_core'; // Pre-set to avoid agent discovery delays
     }
 
     // Step 1: Create the tmux session (headless — reliable)
@@ -1884,7 +1793,9 @@ export class FlowCertifier {
     };
 
     // Total legacy score (for reference)
-    const totalScore = Object.values(scores).reduce((sum, s) => sum + s.score, 0);
+    // STRICT: If cheat detector vetoed, force score to 0 - test is INVALID
+    const totalScore = hasVeto ? 0 : Object.values(scores).reduce((sum, s) => sum + s.score, 0);
+    const maxScore = hasVeto ? 6.0 : 6.0; // Keep max same, but score is 0
 
     // Classification if not passing
     const classification = assessment.status !== 'PASS'
@@ -1909,7 +1820,7 @@ export class FlowCertifier {
       },
       // Legacy scores (backward compatibility)
       scores,
-      total_score: totalScore,
+      total_score: totalScore, // FORCED to 0 if cheat detector vetoed
       max_score: 6.0, // Now 6 components with process validation
       // Assessment
       status: assessment.status.toLowerCase(),
@@ -2768,19 +2679,19 @@ export class FlowCertifier {
    * Reads the cheat_detection_report.json generated during test
    */
   _scoreAuthenticity() {
-    // Default: assume authentic if no report
-    let score = 1.0;
-    let details = ['No cheat detection report — assuming authentic'];
-    let criticalIssues = 0;
+    // STRICT: No report = NOT authentic (must prove authenticity)
+    let score = 0.0;
+    let details = ['No cheat detection report — cannot verify authenticity'];
+    let criticalIssues = 1;
     let warnings = 0;
 
     try {
       const reportPath = join(this.evidenceDir, 'cheat_detection_report.json');
       if (!existsSync(reportPath)) {
         return {
-          score: 1.0,
-          detail: 'No cheat detection report available — skipping authenticity check',
-          critical_issues: 0,
+          score: 0.0,
+          detail: 'CRITICAL: No cheat detection report — authenticity cannot be verified',
+          critical_issues: 1,
           warnings: 0,
         };
       }
@@ -3126,12 +3037,18 @@ export class FlowCertifier {
     // Add MCP log if collected
     const mcpLogPath = join(this.evidenceDir, 'mcp_calls.jsonl');
 
-    // Run full verification
+    // Run full verification with STRICT options
     const cheatResults = await cheatDetector.runFullVerification({
       paneText: combinedPaneText,
       mcpLogPath: existsSync(mcpLogPath) ? mcpLogPath : null,
       videoPath: join(this.evidenceDir, 'video.mp4'),
       evidenceFiles,
+      // STRICT: Minimum 50 MCP calls for real test
+      minMcpCalls: 50,
+      // STRICT: 15 minutes max age for evidence
+      maxEvidenceAgeMinutes: 15,
+      // STRICT: EDA pane log must exist and have real content
+      edaLogPath: join(this.evidenceDir, 'pane1_continuous.log'),
     });
 
     // Save cheat detection report
@@ -3155,6 +3072,9 @@ export class FlowCertifier {
     // Phase 6: Evaluate (include cheat detection in scoring)
     const scorecard = this.evaluate(beforeObs, afterObs);
     this.stageResults = [scorecard];
+
+    // Phase 7: Run strict verification (independent audit from TestReviewBoard)
+    const strictVerdict = await this._runStrictVerification();
 
     // Generate reports
     const reporter = new FlowReporter();
@@ -3187,6 +3107,7 @@ export class FlowCertifier {
       progress: reports.json,
       stageResults: this.stageResults,
       reportPath: join(this.evidenceDir, 'FLOW_REPORT.md'),
+      strictVerification: strictVerdict, // Independent audit result
     };
   }
 
@@ -3643,5 +3564,629 @@ export class FlowCertifier {
     }
 
     return { complete: false, timeout: true, duration: Date.now() - startTime };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  STRICT VERIFICATION (TestReviewBoard merged into FlowCertifier)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * MAIN ENTRY: Run strict verification after test completes
+   * ═══════════════════════════════════════════════════════════════════
+   */
+  async _runStrictVerification() {
+    if (!this.evidenceDir || !existsSync(this.evidenceDir)) {
+      this._runLog('Strict verification skipped: no evidence directory');
+      return null;
+    }
+
+    console.log(`\n╔══════════════════════════════════════════════════════════════════╗`);
+    console.log(`║     Strict Verification — Independent Third-Party Audit       ║`);
+    console.log(`╚══════════════════════════════════════════════════════════════════╝\n`);
+
+    console.log(`Verifying: ${this.evidenceDir}`);
+    console.log(`Started: ${new Date().toISOString()}\n`);
+
+    // Phase 1: Evidence Inventory
+    const inventory = this._verifyEvidenceInventory();
+    console.log(`📁 Evidence Files: ${inventory.files.length}`);
+    console.log(`   - ${inventory.hasVideo ? '✓' : '✗'} Video recording`);
+    console.log(`   - ${inventory.hasScreenshots ? '✓' : '✗'} Screenshots`);
+    console.log(`   - ${inventory.hasPaneLogs ? '✓' : '✗'} Pane logs`);
+    console.log(`   - ${inventory.hasMcpLog ? '✓' : '✗'} MCP call log`);
+    console.log(`   - ${inventory.hasFlowReport ? '✓' : '✗'} Flow report`);
+    console.log(`   - ${inventory.hasMetadata ? '✓' : '✗'} Test metadata`);
+    console.log(`   - ${inventory.hasCheatReport ? '✓' : '✗'} Cheat detection report\n`);
+
+    // Phase 2: Independent Cheat Detection (own CheatDetector instance)
+    console.log(`🔍 Phase 2: Independent Cheat Verification...`);
+    const cheatResult = await this._verifyIndependentCheatCheck();
+    console.log(`   Result: ${cheatResult.clean ? '✓ CLEAN' : '⚠️ CHEAT DETECTED'}`);
+    if (!cheatResult.clean) {
+      console.log(`   Issues: ${cheatResult.issues.length} suspicious patterns found`);
+    }
+    console.log();
+
+    // Phase 3: Read HiTestBot Claims
+    console.log(`📋 Phase 3: Reading HiTestBot Claims...`);
+    const claims = this._readHiTestBotClaims();
+    console.log(`   Claimed Score: ${claims.totalScore?.toFixed(2) || 'N/A'}`);
+    console.log(`   Claimed Grade: ${claims.finalGrade || 'N/A'}`);
+    console.log(`   Test Duration: ${claims.duration || 'N/A'}`);
+    console.log(`   Stages Passed: ${claims.stagesPassed || 0}/${claims.stagesTotal || 0}\n`);
+
+    // Phase 4: Independent L1-L5 Verification
+    console.log(`🔎 Phase 4: Independent Evidence Verification...`);
+    const verification = this._verifyLayersL1ToL5(inventory);
+    console.log(`   L1 (Response): ${verification.l1.hasResponse ? '✓' : '✗'}`);
+    console.log(`   L2 (Understanding): ${verification.l2.hasKeywords ? '✓' : '✗'}`);
+    console.log(`   L3 (MCP Usage): ${verification.l3.hasToolCalls ? '✓' : '✗'}`);
+    console.log(`   L4 (EDA Execution): ${verification.l4.hasToolOutput ? '✓' : '✗'}`);
+    console.log(`   L5 (QoR Reported): ${verification.l5.hasQoR ? '✓' : '✗'}\n`);
+
+    // Phase 5: Mismatch Detection
+    console.log(`⚖️  Phase 5: Detecting Mismatches...`);
+    const mismatches = this._detectMismatchWithHiTestBot(claims, verification, cheatResult);
+    console.log(`   Mismatches Found: ${mismatches.length}`);
+    mismatches.forEach(m => console.log(`   ⚠️  ${m.severity}: ${m.message}`));
+    console.log();
+
+    // Phase 6: TEST_PLAN Alignment
+    console.log(`📖 Phase 6: Aligning with TEST_PLAN...`);
+    const alignment = this._alignWithTestPlan(claims, verification);
+    console.log(`   Phases Covered: ${alignment.phasesCovered.join(', ') || 'None detected'}`);
+    console.log(`   Requirements Met: ${alignment.requirementsMet}/${alignment.requirementsTotal}`);
+    console.log(`   Gaps: ${alignment.gaps.length > 0 ? alignment.gaps.join(', ') : 'None'}\n`);
+
+    // Phase 7: Final Verdict
+    const verdict = this._renderFinalVerdict(inventory, cheatResult, claims, verification, mismatches, alignment);
+
+    // Generate and save the strict verification report
+    const reportPath = join(this.evidenceDir, 'STRICT_VERIFICATION_REPORT.md');
+    const report = this._generateStrictVerificationReport(inventory, cheatResult, claims, verification, mismatches, alignment, verdict);
+    writeFileSync(reportPath, report);
+    console.log(`📄 Strict verification report saved: ${reportPath}\n`);
+
+    return verdict;
+  }
+
+  /**
+   * PHASE 1: Inventory all evidence files
+   */
+  _verifyEvidenceInventory() {
+    const files = readdirSync(this.evidenceDir);
+
+    return {
+      files,
+      hasVideo: files.some(f => f.endsWith('.mp4') || f.endsWith('.avi')),
+      hasScreenshots: files.some(f => f.startsWith('screenshot') && f.endsWith('.png')),
+      hasPaneLogs: files.some(f => f.includes('pane') && f.endsWith('.log')),
+      hasMcpLog: files.includes('mcp_calls.jsonl'),
+      hasFlowReport: files.includes('FLOW_REPORT.md'),
+      hasMetadata: files.includes('test_metadata.json'),
+      hasCheatReport: files.includes('cheat_detection_report.json'),
+      hasTimeline: files.includes('timeline.jsonl'),
+      hasScorecards: files.includes('stage_scorecards.json'),
+    };
+  }
+
+  /**
+   * PHASE 2: Independent Cheat Detection
+   * Uses its own CheatDetector instance — does NOT trust HiTestBot's report
+   */
+  async _verifyIndependentCheatCheck() {
+    const detector = new CheatDetector({});
+    const issues = [];
+
+    // Check 1: Read pane logs and check for echo commands
+    const pane0Log = join(this.evidenceDir, 'pane0_continuous.log');
+    const pane1Log = join(this.evidenceDir, 'pane1_continuous.log');
+
+    let combinedPaneText = '';
+    if (existsSync(pane0Log)) {
+      combinedPaneText += readFileSync(pane0Log, 'utf8');
+    }
+    if (existsSync(pane1Log)) {
+      combinedPaneText += '\n' + readFileSync(pane1Log, 'utf8');
+    }
+
+    if (combinedPaneText) {
+      const echoCheck = detector.detectEchoCommands(combinedPaneText);
+      if (!echoCheck.valid) {
+        issues.push({ type: 'echo_commands', severity: 'critical', detail: echoCheck });
+      }
+
+      const paneCheck = detector.verifyPaneContentAuthenticity(combinedPaneText);
+      if (!paneCheck.valid) {
+        issues.push({ type: 'pane_authenticity', severity: 'critical', detail: paneCheck });
+      }
+    }
+
+    // Check 2: MCP log integrity (strict: minimum 50 calls required)
+    const mcpLogPath = join(this.evidenceDir, 'mcp_calls.jsonl');
+    if (existsSync(mcpLogPath)) {
+      const mcpCheck = detector.verifyMcpLogIntegrity(mcpLogPath, { minCalls: 50 });
+      if (!mcpCheck.valid) {
+        issues.push({ type: 'mcp_integrity', severity: 'critical', detail: mcpCheck });
+      }
+    } else {
+      issues.push({
+        type: 'mcp_integrity',
+        severity: 'critical',
+        detail: { valid: false, reason: 'MCP log (mcp_calls.jsonl) not found — tool execution cannot be verified' }
+      });
+    }
+
+    // Check 3: Video motion
+    const videoFiles = readdirSync(this.evidenceDir).filter(f => f.endsWith('.mp4'));
+    for (const videoFile of videoFiles) {
+      const videoCheck = detector.verifyVideoMotion(join(this.evidenceDir, videoFile));
+      if (!videoCheck?.valid) {
+        issues.push({ type: 'video_motion', severity: 'warning', detail: videoCheck });
+      }
+    }
+
+    // Check 4: Evidence freshness (strict: max 15 minutes)
+    const allFiles = readdirSync(this.evidenceDir);
+    const evidenceFiles = allFiles.map(f => join(this.evidenceDir, f));
+    const freshnessCheck = detector.verifyEvidenceFreshness(evidenceFiles, { maxAgeMinutes: 15 });
+    if (!freshnessCheck.valid) {
+      issues.push({ type: 'evidence_freshness', severity: 'critical', detail: freshnessCheck });
+    }
+
+    // Check 5b: EDA pane log has real tool output
+    if (existsSync(pane1Log)) {
+      const edaLogCheck = detector.verifyEdaPaneLog(pane1Log);
+      if (!edaLogCheck.valid) {
+        issues.push({ type: 'eda_pane_log', severity: 'critical', detail: edaLogCheck });
+      }
+    } else {
+      issues.push({
+        type: 'eda_pane_log',
+        severity: 'critical',
+        detail: { valid: false, reason: 'EDA pane log (pane1_continuous.log) not found — no proof of EDA tool execution' }
+      });
+    }
+
+    // Check 5: Agent Delegation Bypass Detection
+    if (combinedPaneText) {
+      const delegationCheck = detector.detectAgentDelegationBypass(combinedPaneText);
+      if (!delegationCheck.valid) {
+        issues.push({
+          type: 'agent_delegation_bypass',
+          severity: 'critical',
+          detail: delegationCheck,
+          message: 'Supervisor bypassed Executor - direct MCP tool execution detected without delegation'
+        });
+      }
+    }
+
+    return {
+      clean: issues.length === 0,
+      issues,
+      detector,
+    };
+  }
+
+  /**
+   * PHASE 3: Read HiTestBot's Claims from its reports
+   */
+  _readHiTestBotClaims() {
+    const claims = {
+      source: 'HiTestBot',
+      totalScore: null,
+      finalGrade: null,
+      gpa: null,
+      duration: null,
+      stagesPassed: 0,
+      stagesTotal: 0,
+      l1Response: null,
+      l2Intent: null,
+      l3ToolUsage: null,
+      l4Execution: null,
+      l5QoR: null,
+      status: null,
+      timestamp: null,
+    };
+
+    // Read FLOW_REPORT.md for scores
+    const flowReportPath = join(this.evidenceDir, 'FLOW_REPORT.md');
+    if (existsSync(flowReportPath)) {
+      const flowReport = readFileSync(flowReportPath, 'utf8');
+
+      // Extract scores using regex
+      const scoreMatch = flowReport.match(/Total Score:\s*([\d.]+)/i);
+      if (scoreMatch) claims.totalScore = parseFloat(scoreMatch[1]);
+
+      const gradeMatch = flowReport.match(/Final Grade:\s*([A-F][+-]?)/i);
+      if (gradeMatch) claims.finalGrade = gradeMatch[1];
+
+      const gpaMatch = flowReport.match(/GPA:\s*([\d.]+)/i);
+      if (gpaMatch) claims.gpa = parseFloat(gpaMatch[1]);
+
+      const statusMatch = flowReport.match(/Status:\s*(\w+)/i);
+      if (statusMatch) claims.status = statusMatch[1];
+    }
+
+    // Read metadata for test info
+    const metadataPath = join(this.evidenceDir, 'test_metadata.json');
+    if (existsSync(metadataPath)) {
+      const metadata = JSON.parse(readFileSync(metadataPath, 'utf8'));
+      claims.timestamp = metadata.timestamp;
+      claims.command = metadata.command;
+      claims.phase = metadata.phase;
+    }
+
+    // Read scorecards for L1-L5 scores
+    const scorecardsPath = join(this.evidenceDir, 'stage_scorecards.json');
+    if (existsSync(scorecardsPath)) {
+      const scorecards = JSON.parse(readFileSync(scorecardsPath, 'utf8'));
+      if (Array.isArray(scorecards) && scorecards.length > 0) {
+        const card = scorecards[0];
+        claims.l1Response = card.scores?.L1_prompt_delivery?.score;
+        claims.l2Intent = card.scores?.L2_intent_recognition?.score;
+        claims.l3ToolUsage = card.scores?.L3_mcp_tool_usage?.score;
+        claims.l4Execution = card.scores?.L4_eda_execution?.score;
+        claims.l5QoR = card.scores?.L5_qor_assessment?.score;
+        claims.stagesPassed = card.subjects?.filter(s => s.status === 'PASS').length || 0;
+        claims.stagesTotal = card.subjects?.length || 0;
+      }
+    }
+
+    return claims;
+  }
+
+  /**
+   * PHASE 4: Independent L1-L5 Verification
+   * Re-implements scoring logic (does NOT use HiTestBot's scores)
+   */
+  _verifyLayersL1ToL5(inventory) {
+    const verification = {
+      l1: { hasResponse: false, evidence: [] },
+      l2: { hasKeywords: false, keywordsFound: [], evidence: [] },
+      l3: { hasToolCalls: false, toolCount: 0, evidence: [] },
+      l4: { hasToolOutput: false, toolUsed: null, evidence: [] },
+      l5: { hasQoR: false, metricsFound: [], evidence: [] },
+    };
+
+    // Read pane logs
+    const pane0Log = join(this.evidenceDir, 'pane0_continuous.log');
+    let paneText = '';
+    if (existsSync(pane0Log)) {
+      paneText = readFileSync(pane0Log, 'utf8');
+    }
+
+    // L1: Did Claude respond? (pane text changed, shows output)
+    verification.l1.hasResponse = paneText.length > 100;
+    verification.l1.evidence.push(`Pane content length: ${paneText.length} chars`);
+
+    // L2: Did Claude understand the task?
+    const understandingKeywords = [
+      'synthesis', 'floorplan', 'placement', 'cts', 'routing',
+      'innovus', 'dc_shell', 'compile', 'timing', 'constraint',
+      'mission pack', 'flow', 'stage'
+    ];
+    verification.l2.keywordsFound = understandingKeywords.filter(kw =>
+      paneText.toLowerCase().includes(kw.toLowerCase())
+    );
+    verification.l2.hasKeywords = verification.l2.keywordsFound.length >= 2;
+    verification.l2.evidence.push(`Keywords found: ${verification.l2.keywordsFound.join(', ')}`);
+
+    // L3: MCP Tool Usage
+    const mcpLogPath = join(this.evidenceDir, 'mcp_calls.jsonl');
+    if (existsSync(mcpLogPath)) {
+      const mcpContent = readFileSync(mcpLogPath, 'utf8');
+      const mcpLines = mcpContent.trim().split('\n').filter(l => l.trim());
+
+      const mcpTools = [
+        'execute_and_verify', 'generate_tcl', 'start_tool', 'detect_tool',
+        'get_skill', 'query', 'send_keys', 'capture_pane'
+      ];
+
+      let toolCallCount = 0;
+      for (const tool of mcpTools) {
+        const matches = mcpContent.match(new RegExp(tool, 'g'));
+        if (matches) toolCallCount += matches.length;
+      }
+
+      verification.l3.hasToolCalls = toolCallCount >= 50;
+      verification.l3.toolCount = toolCallCount;
+      verification.l3.evidence.push(`MCP tool calls detected: ${toolCallCount}`);
+    }
+
+    // L4: EDA Tool Execution
+    const edaIndicators = ['innovus', 'dc_shell>', 'pt_shell>', 'ERROR', 'WARNING'];
+    const edaMatches = edaIndicators.filter(ind => paneText.includes(ind));
+    verification.l4.hasToolOutput = edaMatches.length > 0;
+    verification.l4.evidence.push(`EDA indicators: ${edaMatches.join(', ')}`);
+
+    // L5: QoR Metrics
+    const qorPatterns = [
+      /WNS[\s:=]+-?\d+\.?\d*/i,
+      /TNS[\s:=]+-?\d+\.?\d*/i,
+      /setup\s+(violation|slack)/i,
+      /hold\s+(violation|slack)/i,
+      /area[\s:=]+\d+/i,
+    ];
+
+    for (const pattern of qorPatterns) {
+      const match = paneText.match(pattern);
+      if (match) {
+        verification.l5.metricsFound.push(match[0]);
+      }
+    }
+    verification.l5.hasQoR = verification.l5.metricsFound.length > 0;
+    verification.l5.evidence.push(`QoR patterns found: ${verification.l5.metricsFound.length}`);
+
+    return verification;
+  }
+
+  /**
+   * PHASE 5: Detect Mismatches Between Claims and Reality
+   */
+  _detectMismatchWithHiTestBot(claims, verification, cheatResult) {
+    const mismatches = [];
+
+    // Mismatch 1: Claimed high score but no evidence of tool usage
+    if ((claims.l3ToolUsage || 0) > 0.5 && !verification.l3.hasToolCalls) {
+      mismatches.push({
+        severity: 'CRITICAL',
+        type: 'l3_mismatch',
+        message: `HiTestBot claims L3=${claims.l3ToolUsage} but strict verification found 0 MCP tool calls`,
+        claimed: claims.l3ToolUsage,
+        actual: 0,
+      });
+    }
+
+    // Mismatch 2: Claimed EDA execution but no tool output
+    if ((claims.l4Execution || 0) > 0.3 && !verification.l4.hasToolOutput) {
+      mismatches.push({
+        severity: 'CRITICAL',
+        type: 'l4_mismatch',
+        message: `HiTestBot claims L4=${claims.l4Execution} but strict verification found no EDA tool output`,
+        claimed: claims.l4Execution,
+        actual: 'No EDA output',
+      });
+    }
+
+    // Mismatch 3: Claimed QoR but no metrics found
+    if ((claims.l5QoR || 0) > 0.3 && !verification.l5.hasQoR) {
+      mismatches.push({
+        severity: 'CRITICAL',
+        type: 'l5_mismatch',
+        message: `HiTestBot claims L5=${claims.l5QoR} but strict verification found no QoR metrics`,
+        claimed: claims.l5QoR,
+        actual: 0,
+      });
+    }
+
+    // Mismatch 4: Cheat detected but HiTestBot didn't report it
+    if (!cheatResult.clean) {
+      const hiTestBotCheatReport = join(this.evidenceDir, 'cheat_detection_report.json');
+      let hiTestBotFoundCheats = false;
+
+      if (existsSync(hiTestBotCheatReport)) {
+        const htbReport = JSON.parse(readFileSync(hiTestBotCheatReport, 'utf8'));
+        hiTestBotFoundCheats = htbReport.cheatDetected;
+      }
+
+      if (!hiTestBotFoundCheats) {
+        mismatches.push({
+          severity: 'CRITICAL',
+          type: 'cheat_detection_mismatch',
+          message: 'Strict verification detected cheats that HiTestBot missed',
+          reviewBoardIssues: cheatResult.issues.length,
+          hiTestBotIssues: hiTestBotFoundCheats ? 'some' : 'none',
+        });
+      }
+    }
+
+    // Mismatch 5: Grade claim without supporting evidence
+    if (claims.finalGrade && claims.finalGrade.startsWith('A') && !verification.l5.hasQoR) {
+      mismatches.push({
+        severity: 'WARNING',
+        type: 'grade_overclaim',
+        message: `HiTestBot claims grade ${claims.finalGrade} but no QoR evidence found`,
+        claimed: claims.finalGrade,
+        evidence: 'No QoR metrics',
+      });
+    }
+
+    // Mismatch 6: No response at all but claims some score
+    if (!verification.l1.hasResponse && (claims.totalScore || 0) > 0) {
+      mismatches.push({
+        severity: 'CRITICAL',
+        type: 'no_response_mismatch',
+        message: `HiTestBot claims score ${claims.totalScore} but strict verification found no response`,
+        claimed: claims.totalScore,
+        actual: 0,
+      });
+    }
+
+    return mismatches;
+  }
+
+  /**
+   * PHASE 6: Align with TEST_PLAN requirements
+   */
+  _alignWithTestPlan(claims, verification) {
+    const alignment = {
+      phasesCovered: [],
+      requirementsMet: 0,
+      requirementsTotal: 0,
+      gaps: [],
+    };
+
+    // Map evidence to TEST_PLAN phases
+    const phaseIndicators = {
+      'Phase 0': () => true, // Infrastructure always checked
+      'Phase 0.5': () => existsSync(join(this.evidenceDir, 'heartbeat.json')),
+      'Phase 1': () => verification.l1.hasResponse,
+      'Phase 2': () => verification.l3.hasToolCalls,
+      'Phase 3': () => verification.l4.hasToolOutput,
+      'Phase 4': () => verification.l4.hasToolOutput && verification.l3.toolCount >= 5,
+      'Phase 4.5': () => claims.command?.includes('mission'),
+      'Phase 5': () => verification.l4.hasToolOutput && verification.l5.hasQoR,
+      'Phase 6': () => verification.l5.hasQoR && (claims.stagesPassed || 0) >= 4,
+      'Phase 7': () => claims.stagesPassed >= 8,
+      'Phase 8': () => claims.stagesPassed >= 8 && claims.command?.includes('mission'),
+    };
+
+    for (const [phase, checkFn] of Object.entries(phaseIndicators)) {
+      alignment.requirementsTotal++;
+      if (checkFn()) {
+        alignment.phasesCovered.push(phase);
+        alignment.requirementsMet++;
+      } else {
+        alignment.gaps.push(phase);
+      }
+    }
+
+    return alignment;
+  }
+
+  /**
+   * PHASE 7: Render Final Verdict
+   */
+  _renderFinalVerdict(inventory, cheatResult, claims, verification, mismatches, alignment) {
+    // Calculate independent score
+    let independentScore = 0;
+    if (verification.l1.hasResponse) independentScore += 0.2;
+    if (verification.l2.hasKeywords) independentScore += 0.2;
+    if (verification.l3.hasToolCalls) independentScore += 0.2;
+    if (verification.l4.hasToolOutput) independentScore += 0.2;
+    if (verification.l5.hasQoR) independentScore += 0.2;
+
+    // Cheat penalty
+    const cheatPenalty = cheatResult.clean ? 0 : 1.0;
+    const finalScore = Math.max(0, independentScore - cheatPenalty);
+
+    // VETO POWER: CheatDetector has absolute authority to fail the test
+    const hasVeto = !cheatResult.clean || (cheatResult.detector && cheatResult.detector.hasVeto && cheatResult.detector.hasVeto());
+
+    // Determine verdict
+    let verdict;
+    if (hasVeto) {
+      verdict = 'VETO — CHEATING DETECTED (Absolute Authority)';
+    } else if (mismatches.filter(m => m.severity === 'CRITICAL').length > 0) {
+      verdict = 'DISPUTED — Critical Mismatches Found';
+    } else if (finalScore >= 0.8) {
+      verdict = 'APPROVED — Test Passed';
+    } else if (finalScore >= 0.5) {
+      verdict = 'PARTIAL — Some Requirements Met';
+    } else {
+      verdict = 'FAILED — Insufficient Evidence';
+    }
+
+    console.log(`\n╔══════════════════════════════════════════════════════════════════╗`);
+    console.log(`║                    FINAL STRICT VERIFICATION VERDICT          ║`);
+    console.log(`╠══════════════════════════════════════════════════════════════════╣`);
+    console.log(`║  Verdict:  ${verdict.padEnd(54)} ║`);
+    console.log(`║  Score:    ${(finalScore * 10).toFixed(1)}/10.0 (Independent)${' '.repeat(24)}║`);
+    console.log(`║  HiTestBot Claimed: ${(claims.totalScore || 0).toFixed(1)}/10.0${' '.repeat(33)}║`);
+    console.log(`║  Mismatches: ${mismatches.length} found${' '.repeat(43)}║`);
+    if (hasVeto) {
+      console.log(`║  ⚠️  VETO POWER EXERCISED: CheatDetector override${' '.repeat(29)}║`);
+    }
+    console.log(`╚══════════════════════════════════════════════════════════════════╝\n`);
+
+    return {
+      verdict,
+      finalScore,
+      independentScore,
+      cheatPenalty,
+      hasVeto,
+      vetoMessage: hasVeto ? 'CheatDetector veto: Critical cheats detected. Test automatically FAILED regardless of other scores.' : null,
+      hiTestBotClaimedScore: claims.totalScore,
+      mismatchCount: mismatches.length,
+      criticalMismatches: mismatches.filter(m => m.severity === 'CRITICAL').length,
+      timestamp: new Date().toISOString(),
+      evidenceDir: this.evidenceDir,
+    };
+  }
+
+  /**
+   * Generate markdown report for strict verification
+   */
+  _generateStrictVerificationReport(inventory, cheatResult, claims, verification, mismatches, alignment, verdict) {
+    return `# Strict Verification Report
+
+**Generated:** ${new Date().toISOString()}
+**Evidence Directory:** ${this.evidenceDir}
+
+---
+
+## Executive Summary
+
+| Metric | Value |
+|--------|-------|
+| **Final Verdict** | ${verdict?.verdict || 'Pending'} |
+| **Independent Score** | ${(verdict?.independentScore * 10 || 0).toFixed(1)}/10.0 |
+| **HiTestBot Claimed** | ${(verdict?.hiTestBotClaimedScore || 0).toFixed(1)}/10.0 |
+| **Mismatches Found** | ${verdict?.mismatchCount || 0} (${verdict?.criticalMismatches || 0} critical) |
+| **Cheat Status** | ${verdict?.cheatPenalty > 0 ? '⚠️ CHEATING DETECTED' : '✓ Clean'} |
+| **Veto Power** | ${verdict?.hasVeto ? '⚠️ EXERCISED — CheatDetector has absolute authority' : 'Not exercised'} |
+
+---
+
+## Mismatches Detected
+
+${mismatches.length === 0 ? 'No mismatches found between HiTestBot claims and strict verification.' :
+  mismatches.map(m => `### ${m.severity}: ${m.type}
+
+- **Claimed:** ${m.claimed !== undefined ? m.claimed : 'N/A'}
+- **Actual:** ${m.actual !== undefined ? m.actual : 'N/A'}
+- **Issue:** ${m.message}
+`).join('\n---\n\n')}
+
+---
+
+## Independent Verification Results
+
+### L1: Response Verification
+- Has Response: ${verification.l1.hasResponse ? '✓' : '✗'}
+- Evidence: ${verification.l1.evidence.join(', ')}
+
+### L2: Intent Understanding
+- Has Keywords: ${verification.l2.hasKeywords ? '✓' : '✗'}
+- Keywords Found: ${verification.l2.keywordsFound.join(', ') || 'None'}
+
+### L3: MCP Tool Usage
+- Has Tool Calls: ${verification.l3.hasToolCalls ? '✓' : '✗'}
+- Tool Call Count: ${verification.l3.toolCount}
+
+### L4: EDA Execution
+- Has Tool Output: ${verification.l4.hasToolOutput ? '✓' : '✗'}
+- Evidence: ${verification.l4.evidence.join(', ')}
+
+### L5: QoR Reporting
+- Has QoR: ${verification.l5.hasQoR ? '✓' : '✗'}
+- Metrics Found: ${verification.l5.metricsFound.join(', ') || 'None'}
+
+---
+
+## TEST_PLAN Alignment
+
+- Phases Covered: ${alignment.phasesCovered.join(', ') || 'None'}
+- Requirements Met: ${alignment.requirementsMet}/${alignment.requirementsTotal}
+- Gaps: ${alignment.gaps.join(', ') || 'None'}
+
+---
+
+## Strict Verification Certification
+
+This report was generated by the integrated strict verification system, which:
+1. Reads evidence files directly (no trust in HiTestBot)
+2. Re-implements verification logic independently
+3. Detects mismatches between claims and evidence
+4. Uses CheatDetector for veto authority
+
+**Verification Integrity:** ✓ Independent verification complete
+
+---
+
+*This report is part of the authoritative assessment. HiTestBot reports are advisory only.*
+`;
   }
 }
