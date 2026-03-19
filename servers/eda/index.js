@@ -92,6 +92,30 @@ import {
   isValidCheckpoint,
 } from './knowledge.js';
 
+// Import extracted tool modules
+import {
+  TOOL_DEFINITIONS as MODE_TOOL_DEFINITIONS,
+  TOOL_HANDLERS as MODE_TOOL_HANDLERS,
+  setApprovalHandlers,
+} from './tools/mode.js';
+import {
+  TOOL_DEFINITIONS as CAPTURE_TOOL_DEFINITIONS,
+  TOOL_HANDLERS as CAPTURE_TOOL_HANDLERS,
+} from './tools/capture.js';
+import {
+  TOOL_DEFINITIONS as TCL_GENERATION_TOOL_DEFINITIONS,
+  TOOL_HANDLERS as TCL_GENERATION_TOOL_HANDLERS,
+  initTclGeneration,
+} from './tools/tcl-generation.js';
+import {
+  TOOL_DEFINITIONS as EXECUTION_TOOL_DEFINITIONS,
+  TOOL_HANDLERS as EXECUTION_TOOL_HANDLERS,
+} from './tools/execution.js';
+import {
+  TOOL_DEFINITIONS as SESSION_TOOL_DEFINITIONS,
+  TOOL_HANDLERS as SESSION_TOOL_HANDLERS,
+} from './tools/session.js';
+
 // Use centralized config (placeholder - will be replaced by scoped variables below)
 
 // Get user-specific temp paths
@@ -163,6 +187,10 @@ function updateTmuxModeStatus(mode, pending = false) {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const PROJECT_ROOT = join(__dirname, '..', '..');
+
+// Initialize Tcl generation with project root
+initTclGeneration(PROJECT_ROOT);
+
 const TEMPLATES_DIR = join(PROJECT_ROOT, 'templates');
 const HISTORY_DIR = join(PROJECT_ROOT, '.hipilot', 'history');
 
@@ -893,44 +921,17 @@ const server = new Server(
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
-      {
-        name: 'eda.generate_tcl',
-        description: 'Generate Tcl script from natural language intent. Uses Nunjucks templates when available (trust badge: [✓ Template]), falls back to inline generation ([⚠ Unverified]). Returns Tcl with trust badge and source attribution.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            intent: {
-              type: 'string',
-              description: 'Natural language description of what to do',
-            },
-            tool: {
-              type: 'string',
-              description: 'EDA tool / vendor (icc2/synopsys, innovus/cadence, dc_shell, pt_shell, or auto to detect for P&R tools)',
-              enum: ['icc2', 'innovus', 'synopsys', 'cadence', 'dc_shell', 'pt_shell', 'auto'],
-            },
-            operation: {
-              type: 'string',
-              description: 'Operation type',
-              enum: [
-                'fix_setup_timing', 'fix_hold_timing', 'route_design',
-                'report_timing', 'report_power', 'report_area',
-                'check_drc', 'run_cts', 'optimize_design',
-                'read_design', 'save_design', 'compare_qor',
-                'synthesis', 'signoff_timing',
-              ],
-            },
-            targets: {
-              type: 'string',
-              description: 'Target path groups, instances, or parameters',
-            },
-            variables: {
-              type: 'object',
-              description: 'Template variables to override defaults (e.g., max_paths, corner, report_path)',
-            },
-          },
-          required: ['intent', 'operation'],
-        },
-      },
+      // Tcl generation tools
+      ...TCL_GENERATION_TOOL_DEFINITIONS,
+      // Execution tools
+      ...EXECUTION_TOOL_DEFINITIONS,
+      // Mode tools
+      ...MODE_TOOL_DEFINITIONS,
+      // Capture tools
+      ...CAPTURE_TOOL_DEFINITIONS,
+      // Session tools
+      ...SESSION_TOOL_DEFINITIONS,
+      // Remaining tools (inline - to be extracted)
       {
         name: 'eda.send_to_terminal',
         description: 'Send Tcl script to the EDA terminal pane via tmux. Archives to .hipilot/history/ for session tracking.',
@@ -968,49 +969,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
-        name: 'eda.list_templates',
-        description: 'List available Tcl templates organized by vendor',
-        inputSchema: {
-          type: 'object',
-          properties: {},
-        },
-      },
-      {
         name: 'eda.detect_tool',
         description: 'Detect which EDA tool is currently running (ICC2, Innovus, PrimeTime, Tempus)',
         inputSchema: {
           type: 'object',
           properties: {},
-        },
-      },
-      {
-        name: 'eda.start_tool',
-        description: 'Start an EDA tool in the right pane via tmux. Sends the launch command, waits for the prompt, and returns when ready. Use this before running workflows so the user does not need to start the tool manually. If a tool is already running, returns immediately.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            tool: {
-              type: 'string',
-              description: 'EDA tool to start: innovus (default), icc2_shell, dc_shell, pt_shell',
-              enum: ['innovus', 'icc2_shell', 'dc_shell', 'pt_shell'],
-              default: 'innovus',
-            },
-            design_dir: {
-              type: 'string',
-              description: 'Optional: change to this directory before starting (e.g. /home/EDA/hipilot_test/ibex_work_upload for Ibex)',
-            },
-            pane: {
-              type: 'string',
-              description: 'Target pane (default: eda)',
-              enum: ['eda', 'chat', '0', '1'],
-              default: 'eda',
-            },
-            timeout: {
-              type: 'number',
-              description: 'Timeout in seconds waiting for tool prompt (default: 90 for innovus, 60 for others)',
-              default: 90,
-            },
-          },
         },
       },
       {
@@ -1024,89 +987,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               description: 'Job ID to check (optional, checks all if not provided)',
             },
           },
-        },
-      },
-      {
-        name: 'eda.get_mode',
-        description: 'Get current execution mode: "manual" (requires approval) or "auto" (Claude has conn)',
-        inputSchema: {
-          type: 'object',
-          properties: {},
-        },
-      },
-      {
-        name: 'eda.set_mode',
-        description: 'Set execution mode: "manual" (user approves each command) or "auto" (Claude has conn - auto-execute)',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            mode: {
-              type: 'string',
-              description: 'Execution mode',
-              enum: ['manual', 'auto'],
-            },
-          },
-          required: ['mode'],
-        },
-      },
-      {
-        name: 'eda.toggle_mode',
-        description: 'Toggle between manual and auto mode ("Claude has the conn")',
-        inputSchema: {
-          type: 'object',
-          properties: {},
-        },
-      },
-      {
-        name: 'eda.get_pending',
-        description: 'Get pending Tcl waiting for approval (in manual mode)',
-        inputSchema: {
-          type: 'object',
-          properties: {},
-        },
-      },
-      {
-        name: 'eda.approve_pending',
-        description: 'Approve and execute pending Tcl command',
-        inputSchema: {
-          type: 'object',
-          properties: {},
-        },
-      },
-      {
-        name: 'eda.reject_pending',
-        description: 'Reject and discard pending Tcl command',
-        inputSchema: {
-          type: 'object',
-          properties: {},
-        },
-      },
-      {
-        name: 'eda.confirm_dangerous',
-        description: 'Confirm execution of a dangerous/critical Tcl command by providing the required confirmation text. Use this after user explicitly confirms dangerous operations.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            confirmation_text: {
-              type: 'string',
-              description: 'The confirmation text the user provided (e.g., "CONFIRM" for dangerous, or the full phrase for critical operations)',
-            },
-          },
-          required: ['confirmation_text'],
-        },
-      },
-      {
-        name: 'eda.get_risk_analysis',
-        description: 'Analyze the risk level of a Tcl script without executing it. Returns risk category, dangerous commands, and estimated time.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            tcl: {
-              type: 'string',
-              description: 'Tcl script to analyze',
-            },
-          },
-          required: ['tcl'],
         },
       },
       {
@@ -1134,32 +1014,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
           },
           required: ['operation'],
-        },
-      },
-      {
-        name: 'eda.capture_and_analyze',
-        description: 'Capture EDA pane output and extract QoR metrics. Use this after running a command to analyze timing/DRC/power reports. Returns captured text and structured metrics (WNS, TNS, violations).',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            pane: {
-              type: 'string',
-              description: 'Pane to capture: "eda" (default) or "chat"',
-              enum: ['eda', 'chat', '0', '1'],
-              default: 'eda',
-            },
-            lines: {
-              type: 'number',
-              description: 'Number of lines to capture from end of pane (default: 200)',
-              default: 200,
-            },
-            report_type: {
-              type: 'string',
-              description: 'Type of report for targeted analysis: timing, power, area, drc, or auto (default)',
-              enum: ['auto', 'timing', 'power', 'area', 'drc'],
-              default: 'auto',
-            },
-          },
         },
       },
       {
@@ -1262,96 +1116,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       // === PHASE 1.1: FEEDBACK LOOP TOOLS ===
       {
-        name: 'eda.wait_for_pattern',
-        description: 'Wait for a specific regex pattern to appear in EDA pane output. Essential for detecting when EDA commands complete. Returns matched content and timing.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            pattern: {
-              type: 'string',
-              description: 'Regex pattern to wait for (e.g., "innovus \\d+>", "SUCCESS", "ERROR")',
-            },
-            timeout: {
-              type: 'number',
-              description: 'Timeout in seconds (default: 60)',
-              default: 60,
-            },
-            pane: {
-              type: 'string',
-              description: 'Pane to monitor (default: eda)',
-              enum: ['eda', 'chat', '0', '1'],
-              default: 'eda',
-            },
-          },
-          required: ['pattern'],
-        },
-      },
-      {
-        name: 'eda.wait_for_prompt',
-        description: 'Wait for EDA tool prompt (auto-detected per tool). Detects innovus, icc2_shell, pt_shell, tempus prompts. Use after sending commands to wait for completion.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            timeout: {
-              type: 'number',
-              description: 'Timeout in seconds (default: 30)',
-              default: 30,
-            },
-            pane: {
-              type: 'string',
-              description: 'Pane to monitor (default: eda)',
-              enum: ['eda', 'chat', '0', '1'],
-              default: 'eda',
-            },
-          },
-        },
-      },
-      {
-        name: 'eda.await_idle',
-        description: 'DEFINITIVE: Wait for EDA pane to become idle (like a human watching). Detects when output stops changing AND prompt appears. This is the primary tool for knowing when a command has completed. Polls internally every 500ms and returns immediately when idle is detected.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            timeout: {
-              type: 'number',
-              description: 'Maximum wait time in seconds (default: 300)',
-              default: 300,
-            },
-            stability_ms: {
-              type: 'number',
-              description: 'How long output must be unchanged to consider idle (default: 1500ms)',
-              default: 1500,
-            },
-            pane: {
-              type: 'string',
-              description: 'Pane to monitor (default: eda)',
-              enum: ['eda', 'chat', '0', '1'],
-              default: 'eda',
-            },
-          },
-        },
-      },
-      {
-        name: 'eda.get_last_result',
-        description: 'Parse last EDA command output to determine success/failure. Analyzes output for common error patterns and success indicators.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            lines: {
-              type: 'number',
-              description: 'Number of lines to analyze (default: 50)',
-              default: 50,
-            },
-            pane: {
-              type: 'string',
-              description: 'Pane to analyze (default: eda)',
-              enum: ['eda', 'chat', '0', '1'],
-              default: 'eda',
-            },
-          },
-        },
-      },
-      {
         name: 'eda.capture_and_wait',
         description: 'Combined: send Tcl command, wait for prompt, return output with result analysis. Best for commands that complete quickly.',
         inputSchema: {
@@ -1415,166 +1179,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ['tcl'],
         },
       },
-      // === PHASE 1.2: SESSION STATE TOOLS ===
-      {
-        name: 'session.save_checkpoint',
-        description: 'Save current session state as a named checkpoint. Includes QoR snapshot, command history, and design context.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            name: {
-              type: 'string',
-              description: 'Checkpoint name (e.g., "pre_cts", "after_opt")',
-            },
-            description: {
-              type: 'string',
-              description: 'Description of the checkpoint',
-            },
-          },
-          required: ['name'],
-        },
-      },
-      {
-        name: 'session.list_checkpoints',
-        description: 'List all saved session checkpoints with timestamps and QoR summaries.',
-        inputSchema: {
-          type: 'object',
-          properties: {},
-        },
-      },
-      {
-        name: 'session.restore_checkpoint',
-        description: 'Restore session context from a checkpoint (context only, does not undo EDA changes).',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            checkpoint_id: {
-              type: 'string',
-              description: 'Checkpoint ID or name to restore',
-            },
-          },
-          required: ['checkpoint_id'],
-        },
-      },
-      {
-        name: 'session.get_history',
-        description: 'Get command history with result summaries. Shows what commands were run and their outcomes.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            limit: {
-              type: 'number',
-              description: 'Maximum number of entries (default: 50)',
-              default: 50,
-            },
-          },
-        },
-      },
-      {
-        name: 'session.get_context',
-        description: 'Get current session context summary: design, stage, tool, last commands, pending actions, QoR.',
-        inputSchema: {
-          type: 'object',
-          properties: {},
-        },
-      },
-      // === SESSION NOTE-TAKING TOOLS (Persistence Support) ===
-      {
-        name: 'session.add_note',
-        description: 'Add a note to the session journal. Use to record errors, decisions, observations, and fixes for later reference. Categories: error, decision, observation, qor, fix.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            category: {
-              type: 'string',
-              description: 'Type of note: error, decision, observation, qor, fix, warning',
-              enum: ['error', 'decision', 'observation', 'qor', 'fix', 'warning'],
-            },
-            stage: {
-              type: 'string',
-              description: 'Flow stage this note relates to (e.g., placement, cts)',
-            },
-            content: {
-              type: 'string',
-              description: 'The note content. Be specific about what happened and why.',
-            },
-            tcl_fixed: {
-              type: 'string',
-              description: 'Optional: Tcl command that fixed the issue (for error/fix notes)',
-            },
-          },
-          required: ['category', 'content'],
-        },
-      },
-      {
-        name: 'session.get_notes',
-        description: 'Retrieve session notes. Filter by category or stage to review previous errors, decisions, etc.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            category: {
-              type: 'string',
-              description: 'Filter by category (error, decision, observation, qor, fix, warning)',
-              enum: ['error', 'decision', 'observation', 'qor', 'fix', 'warning'],
-            },
-            stage: {
-              type: 'string',
-              description: 'Filter by flow stage',
-            },
-          },
-        },
-      },
-      {
-        name: 'session.add_todo',
-        description: 'Add a task to remember for later. Use for deferred checks or follow-up actions.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            task: {
-              type: 'string',
-              description: 'Description of what needs to be done',
-            },
-            priority: {
-              type: 'string',
-              description: 'Priority level',
-              enum: ['low', 'medium', 'high', 'critical'],
-              default: 'medium',
-            },
-            stage: {
-              type: 'string',
-              description: 'Stage where this todo should be checked (e.g., post_cts)',
-            },
-          },
-          required: ['task'],
-        },
-      },
-      {
-        name: 'session.get_todos',
-        description: 'Get list of pending todos. Review before proceeding to next stage.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            stage: {
-              type: 'string',
-              description: 'Filter todos for specific stage',
-            },
-          },
-        },
-      },
-      {
-        name: 'session.complete_todo',
-        description: 'Mark a todo as completed.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            todo_id: {
-              type: 'string',
-              description: 'ID of todo to complete',
-            },
-          },
-          required: ['todo_id'],
-        },
-      },
+      // === PHASE 1.2: SESSION STATE TOOLS (extracted to tools/session.js) ===
       // === PHASE 1.3: CONTEXT DETECTION TOOLS ===
       {
         name: 'context.detect',
@@ -1711,16 +1316,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             description: { type: 'string', description: 'What this command does (for logging)' },
           },
           required: ['tcl'],
-        },
-      },
-      {
-        name: 'eda.peek',
-        description: 'Instantly capture what is currently visible in the EDA tool pane (right pane). Returns the last N lines plus a state assessment: is the tool running, is the prompt back, are there errors? Call this repeatedly to watch progress of long-running commands.',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            lines: { type: 'number', description: 'Number of lines to capture (default: 30)', default: 30 },
-          },
         },
       },
       // === PHASE 2.3: WORKFLOW AUTOMATION TOOLS ===
@@ -2056,69 +1651,28 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
  */
 const mcpLog = createMcpLogger('eda');
 
+// Combine all tool handlers from extracted modules
+const ALL_TOOL_HANDLERS = {
+  ...TCL_GENERATION_TOOL_HANDLERS,
+  ...EXECUTION_TOOL_HANDLERS,
+  ...MODE_TOOL_HANDLERS,
+  ...CAPTURE_TOOL_HANDLERS,
+  ...SESSION_TOOL_HANDLERS,
+};
+
+// Initialize approval handlers for mode tools
+setApprovalHandlers(approveAndExecute, rejectPendingTcl);
+
 server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (request) => {
   const { name, arguments: args } = request.params;
 
   try {
+    // Delegate to extracted tool handlers if available
+    if (ALL_TOOL_HANDLERS[name]) {
+      return await ALL_TOOL_HANDLERS[name](args);
+    }
+
     switch (name) {
-      case 'eda.generate_tcl': {
-        const { intent, tool, operation, targets, variables } = args;
-        const result = generateTcl(intent, { tool, operation, targets, variables });
-
-        const sideEffectAnalysis = analyzeSideEffects(result.tcl);
-        const sideEffectWarnings = generateSideEffectWarnings(sideEffectAnalysis);
-
-        const timestamp = Date.now();
-        const tempFile = `${hipilotPaths.generatedDir}/hipilot_generated_${timestamp}.tcl`;
-        writeFileSync(tempFile, result.tcl);
-
-        let text = '';
-
-        text += `## Analysis\n`;
-        text += `**Intent:** ${intent || operation}\n`;
-        text += `**Operation:** ${operation}\n`;
-        if (tool) {
-          text += `**Target Tool:** ${tool}\n`;
-        }
-
-        text += `\n## Source\n`;
-        if (result.template_path) {
-          text += `**Type:** Template-based (trusted)\n`;
-          text += `**Template:** \`${result.template_path}\`\n`;
-        } else {
-          text += `**Type:** Generated (review recommended)\n`;
-          text += `**Reasoning:** Built from operation mapping for ${operation}\n`;
-        }
-
-        if (sideEffectWarnings.length > 0) {
-          text += `\n## Side Effects\n`;
-          text += `⚠️ This operation may cause unintended side effects:\n\n`;
-          for (const w of sideEffectWarnings) {
-            text += `${w.icon} **${w.title}**: ${w.message}\n`;
-            text += `   _${w.recommendation}_\n\n`;
-          }
-        }
-
-        text += `\n## Generated Tcl\n`;
-        text += `\`\`\`tcl\n${result.tcl}\n\`\`\`\n`;
-
-        text += `\n## Actions\n`;
-        text += `**Saved to:** ${tempFile}\n`;
-        text += `**To execute:** Use \`eda.send_to_terminal\` or run \`source ${tempFile}\` in the EDA tool\n`;
-        text += `**Mode:** ${getModeStatus().mode === 'auto' ? 'Auto (immediate)' : 'Manual (approval required)'}`;
-
-        return {
-          content: [{ type: 'text', text }],
-          _metadata: {
-            source: result.source,
-            template_path: result.template_path,
-            badge: result.badge,
-            file: tempFile,
-            side_effects: sideEffectAnalysis,
-          }
-        };
-      }
-
       case 'eda.send_to_terminal': {
         const { tcl, pane = 'eda' } = args;
         const validatedPane = validatePane(pane);
@@ -2193,23 +1747,6 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
         };
       }
 
-      case 'eda.list_templates': {
-        const templates = listTemplates();
-        const synopsys = templates.filter(t => t.startsWith('synopsys/'));
-        const cadence = templates.filter(t => t.startsWith('cadence/'));
-
-        let text = 'Available Tcl Templates:\n\n';
-        text += `Synopsys (ICC2): ${synopsys.length}\n`;
-        synopsys.forEach(t => { text += `  ${t}\n`; });
-        text += `\nCadence (Innovus): ${cadence.length}\n`;
-        cadence.forEach(t => { text += `  ${t}\n`; });
-        text += `\nTotal: ${templates.length} templates`;
-
-        return {
-          content: [{ type: 'text', text }],
-        };
-      }
-
       case 'eda.detect_tool': {
         const detected = detectTool();
 
@@ -2220,120 +1757,6 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
               ? `Detected EDA Tool: ${detected.tool} ${detected.version} (${detected.vendor})`
               : 'No EDA tool detected running. Start icc2_shell, innovus, or pt_shell in the EDA pane.',
           }],
-        };
-      }
-
-      case 'eda.start_tool': {
-        const { tool = 'innovus', design_dir, pane = 'eda', timeout } = args;
-        const validatedPane = validatePane(pane);
-        const validatedTool = validateToolName(tool);
-        const validatedTimeout = timeout !== undefined ? validateTimeout(timeout, 180) : undefined;
-        const target = buildPaneTarget(CONFIG.TMUX_SESSION, validatedPane);
-
-        // Check current tool state
-        const detected = detectTool();
-        const toolMap = { innovus: 'Innovus', icc2_shell: 'ICC2', pt_shell: 'PrimeTime', dc_shell: 'DesignCompiler' };
-        const requestedToolName = toolMap[tool];
-
-        // If requested tool already running, return success
-        if (detected && detected.tool === requestedToolName) {
-          return {
-            content: [{
-              type: 'text',
-              text: `✓ ${detected.tool} is already running. Ready for commands.`,
-            }],
-          };
-        }
-
-        // If WRONG tool is running, exit it first
-        if (detected && detected.tool !== requestedToolName) {
-          try {
-            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} -l 'exit'`, { encoding: 'utf-8' });
-            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
-            await new Promise(r => setTimeout(r, 2000)); // Wait for exit
-          } catch (e) {
-            // Continue anyway, might already be at bash prompt
-          }
-        }
-
-        const launchCmd = validatedTool === 'innovus'
-          ? 'innovus -no_gui'
-          : validatedTool === 'icc2_shell'
-            ? 'icc2_shell'
-            : validatedTool === 'dc_shell'
-              ? 'dc_shell -no_gui'
-              : 'pt_shell';
-        const waitSeconds = validatedTimeout ?? (validatedTool === 'innovus' ? 90 : 60);
-
-        // Check if target pane exists, recreate if needed
-        try {
-          execSync(`tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -1 2>/dev/null`, { encoding: 'utf-8' });
-        } catch {
-          // Pane doesn't exist - need to recreate it
-          try {
-            // Split window to create new pane
-            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} split-window -h -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.SUPERVISOR)} -c ${design_dir ? shellEscape(design_dir).slice(1, -1) : process.env.HOME || '/home/EDA'} 2>/dev/null || tmux -L ${CONFIG.TMUX_SOCKET} split-window -h -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.SUPERVISOR)}`, { encoding: 'utf-8' });
-            // Enable remain-on-exit for the new pane
-            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} set-option -t ${target} remain-on-exit on 2>/dev/null || true`, { encoding: 'utf-8' });
-          } catch (recreateError) {
-            return {
-              content: [{ type: 'text', text: `❌ Failed to recreate EDA pane: ${recreateError.message}` }],
-              isError: true,
-            };
-          }
-        }
-
-        try {
-          if (design_dir) {
-            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} -l 'cd ${shellEscape(design_dir)}'`, { encoding: 'utf-8' });
-            execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
-            await new Promise(r => setTimeout(r, 800));
-          }
-          execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} -l '${launchCmd}'`, { encoding: 'utf-8' });
-          execSync(`tmux -L ${CONFIG.TMUX_SOCKET} send-keys -t ${target} C-m`, { encoding: 'utf-8' });
-        } catch (e) {
-          return {
-            content: [{ type: 'text', text: `❌ Failed to send start command: ${e.message}` }],
-            isError: true,
-          };
-        }
-
-        // Wait for EDA prompt (reuse wait_for_prompt logic)
-        const startTime = Date.now();
-        const timeoutMs = waitSeconds * 1000;
-        const promptPatterns = [
-          /innovus\s*\d+>/i,
-          /icc2_shell>/i,
-          /icc2>/i,
-          /pt_shell>/i,
-          /tempus\s*\d*>/i,
-          /\]\s*$/m,
-        ];
-
-        while (Date.now() - startTime < timeoutMs) {
-          try {
-            const output = execSync(
-              `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
-              { encoding: 'utf-8', timeout: 5000 }
-            );
-            const lastLine = output.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
-            for (const pattern of promptPatterns) {
-              if (pattern.test(lastLine)) {
-                return {
-                  content: [{
-                    type: 'text',
-                    text: `✓ ${toolMap[tool] || tool} started and ready after ${((Date.now() - startTime) / 1000).toFixed(1)}s\n\nPrompt: ${lastLine.trim()}`,
-                  }],
-                };
-              }
-            }
-          } catch {}
-          await new Promise(r => setTimeout(r, 500));
-        }
-
-        return {
-          content: [{ type: 'text', text: `⏱ Timeout waiting for ${tool} prompt after ${waitSeconds}s. The tool may still be starting.` }],
-          isError: true,
         };
       }
 
@@ -2355,172 +1778,6 @@ server.setRequestHandler(CallToolRequestSchema, mcpLog.wrapHandler(async (reques
             };
           }
         }
-      }
-
-      case 'eda.get_mode': {
-        const status = getModeStatus();
-        const icon = status.icon;
-        const modeText = status.mode === 'auto'
-          ? `${icon} AUTO MODE - Claude has the conn\n\nCommands execute immediately without approval.`
-          : `${icon} MANUAL MODE - Approval required\n\nEach command must be approved before execution.`;
-        
-        let text = modeText;
-        if (status.pending) {
-          text += `\n\n⏳ Pending Tcl waiting for approval (${status.pendingInfo.lines} lines)`;
-        }
-        
-        return {
-          content: [{ type: 'text', text }],
-        };
-      }
-
-      case 'eda.set_mode': {
-        // Mode is permanently AUTO - this tool is deprecated
-        return {
-          content: [{
-            type: 'text',
-            text: `⚡ AUTO MODE is permanent - Claude has the conn\n\nAll Tcl commands execute immediately. Manual mode has been removed.`,
-          }],
-        };
-      }
-
-      case 'eda.toggle_mode': {
-        // Mode is permanently AUTO - this tool is deprecated
-        return {
-          content: [{
-            type: 'text',
-            text: `⚡ AUTO MODE is permanent - Claude has the conn\n\nAll Tcl commands execute immediately. Manual mode has been removed.`,
-          }],
-        };
-      }
-
-      case 'eda.get_pending': {
-        const pending = getPending();
-        
-        if (!pending.exists) {
-          return {
-            content: [{ type: 'text', text: 'No pending Tcl commands.' }],
-          };
-        }
-        
-        let text = `⏳ Pending Tcl Command:\n\n`;
-        text += `Queued at: ${pending.meta.queuedAt || 'unknown'}\n`;
-        text += `Lines: ${pending.tcl.split('\n').length}\n\n`;
-        text += `--- Tcl Content ---\n${pending.tcl}\n--- End ---\n\n`;
-        text += `Use eda.approve_pending to execute, or eda.reject_pending to cancel.`;
-        
-        return {
-          content: [{ type: 'text', text }],
-        };
-      }
-
-      case 'eda.approve_pending': {
-        const result = approveAndExecute();
-        updateTmuxModeStatus('manual', false);
-        
-        return {
-          content: [{
-            type: 'text',
-            text: result.success
-              ? `✓ Approved and executed: ${result.message}`
-              : `✗ ${result.message}`,
-          }],
-          isError: !result.success,
-        };
-      }
-
-      case 'eda.reject_pending': {
-        const result = rejectPendingTcl();
-        updateTmuxModeStatus('manual', false);
-
-        return {
-          content: [{
-            type: 'text',
-            text: `✗ Pending Tcl rejected and cleared.`,
-          }],
-        };
-      }
-
-      case 'eda.confirm_dangerous': {
-        const { confirmation_text } = args;
-        const pending = getPending();
-
-        if (!pending.exists) {
-          return {
-            content: [{ type: 'text', text: 'No pending Tcl to confirm.' }],
-            isError: true,
-          };
-        }
-
-        // Get the risk analysis from pending metadata
-        const riskAnalysis = pending.meta.risk_analysis || analyzeRisk(pending.tcl);
-        const validation = validateConfirmation(confirmation_text, riskAnalysis);
-
-        if (validation.valid) {
-          // Confirmation accepted - execute the Tcl
-          const result = approveAndExecute();
-          updateTmuxModeStatus('manual', false);
-
-          return {
-            content: [{
-              type: 'text',
-              text: result.success
-                ? `✓ ${validation.message}\n\nExecuted: ${result.message}`
-                : `✗ Execution failed: ${result.message}`,
-            }],
-            isError: !result.success,
-          };
-        } else if (validation.cancelled) {
-          // User cancelled
-          rejectPending();
-          updateTmuxModeStatus('manual', false);
-          return {
-            content: [{ type: 'text', text: `✗ Cancelled: ${validation.message}` }],
-          };
-        } else {
-          // Invalid confirmation
-          let text = `⚠️ ${validation.message}\n\n`;
-          if (validation.hint) {
-            text += `**Required phrase:**\n\`\`\`\n${validation.hint}\n\`\`\`\n\n`;
-          }
-          text += `Please try again with the correct confirmation text.`;
-
-          return {
-            content: [{ type: 'text', text }],
-            isError: true,
-          };
-        }
-      }
-
-      case 'eda.get_risk_analysis': {
-        const { tcl } = args;
-        const analysis = analyzeRisk(tcl);
-
-        let text = `**Tcl Risk Analysis**\n\n`;
-        text += `**Category:** ${analysis.color} ${analysis.label}\n`;
-        text += `**Description:** ${analysis.description}\n`;
-        text += `**Estimated Time:** ${analysis.estimated_time_display}\n`;
-        text += `**Requires Confirmation:** ${analysis.requires_confirmation ? 'Yes' : 'No'}\n\n`;
-
-        if (analysis.detected_risks.length > 0) {
-          text += `**Detected Operations:**\n`;
-          for (const risk of analysis.detected_risks) {
-            text += `- ${risk.color} ${risk.level}: \`${risk.line}\`\n`;
-          }
-          text += `\n`;
-        }
-
-        if (analysis.dangerous_commands.length > 0) {
-          text += `**Dangerous Commands:** ${analysis.dangerous_commands.length}\n`;
-        }
-        if (analysis.critical_commands.length > 0) {
-          text += `**Critical Commands:** ${analysis.critical_commands.length}\n`;
-        }
-
-        return {
-          content: [{ type: 'text', text }],
-          _metadata: { analysis }
-        };
       }
 
       case 'eda.get_status': {
@@ -2802,98 +2059,6 @@ Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pan
         };
       }
 
-      case 'eda.capture_and_analyze': {
-        // AI Report Comprehension Pipeline - with caching and action buttons
-        const { pane = 'eda', lines = 200, report_type = 'auto', use_cache = true } = args;
-
-        // Capture EDA pane output
-        let capturedOutput;
-        try {
-          const session = CONFIG.TMUX_SESSION;
-          const paneTarget = buildPaneTarget(session, pane);
-          capturedOutput = execSync(
-            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${paneTarget} -p -S -${lines}`,
-            { encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 }
-          );
-        } catch (err) {
-          return {
-            content: [{ type: 'text', text: `❌ Failed to capture pane: ${err.message}` }],
-            isError: true,
-          };
-        }
-
-        if (!capturedOutput || capturedOutput.trim().length === 0) {
-          return {
-            content: [{ type: 'text', text: '⚠️ No output captured from EDA pane. The pane may be empty or the command may not have completed yet.' }],
-          };
-        }
-
-        // Check cache first
-        let analysis;
-        let cached = false;
-        if (use_cache) {
-          const cachedResult = getCachedAnalysis(capturedOutput, report_type);
-          if (cachedResult) {
-            analysis = cachedResult;
-            cached = true;
-          }
-        }
-
-        // If not cached, perform analysis
-        if (!analysis) {
-          // Use the full report analyzer
-          analysis = analyzeReport(capturedOutput, report_type);
-
-          // Store in cache
-          if (use_cache) {
-            setCachedAnalysis(capturedOutput, report_type, analysis);
-          }
-        }
-
-        // Generate action buttons
-        const actionButtons = generateActionButtons(analysis.type, true);
-
-        // Build response
-        let text = `📊 **EDA Output Analysis: ${analysis.type.toUpperCase()}**`;
-        if (cached) {
-          text += ' 🔄 (cached)';
-        }
-        text += `\n\n**Captured:** ${capturedOutput.split('\n').length} lines from ${pane} pane\n\n`;
-
-        // Show extracted metrics
-        if (analysis.metrics) {
-          text += `**Extracted Metrics:**\n`;
-          for (const [key, value] of Object.entries(analysis.metrics)) {
-            if (value !== null && value !== undefined && value !== 0) {
-              text += `  • ${key}: ${value}\n`;
-            }
-          }
-          text += `\n`;
-        }
-
-        // Show summary
-        text += `**Summary:** ${analysis.summary}\n`;
-
-        // Add action buttons
-        text += formatActionButtons(actionButtons);
-
-        text += `\n\n---\n\n`;
-        text += analysis.prompt;
-
-        return {
-          content: [{ type: 'text', text }],
-          _metadata: {
-            captured_lines: capturedOutput.split('\n').length,
-            report_type: analysis.type,
-            metrics: analysis.metrics,
-            summary: analysis.summary,
-            prompt: analysis.prompt,
-            cached,
-            action_buttons: actionButtons,
-          }
-        };
-      }
-
       case 'eda.edit_tcl': {
         const { tcl, use_pending = false } = args;
 
@@ -3141,327 +2306,7 @@ Cannot execute skill "${skill}" - no EDA tool is currently active in the EDA pan
         };
       }
 
-      // === PHASE 1.1: FEEDBACK LOOP TOOL HANDLERS ===
-      case 'eda.wait_for_pattern': {
-        const { pattern, timeout = 60, pane = 'eda' } = args;
-        const validatedPane = validatePane(pane);
-        const validatedTimeout = validateTimeout(timeout * 1000, 600000);
-        const startTime = Date.now();
-        const target = buildPaneTarget(CONFIG.TMUX_SESSION, validatedPane);
-        const regex = new RegExp(pattern);
-        
-        while (Date.now() - startTime < timeoutMs) {
-          try {
-            const output = execSync(
-              `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -100 2>/dev/null || echo ""`,
-              { encoding: 'utf-8', timeout: 5000 }
-            );
-            const match = output.match(regex);
-            if (match) {
-              return {
-                content: [{
-                  type: 'text',
-                  text: `✓ Pattern matched after ${((Date.now() - startTime) / 1000).toFixed(1)}s\n\nMatch: ${match[0]}\n\nContext:\n${output.slice(-500)}`
-                }],
-                _metadata: { matched: true, match: match[0], elapsed_ms: Date.now() - startTime }
-              };
-            }
-          } catch {}
-          await new Promise(r => setTimeout(r, 500));
-        }
-        
-        return {
-          content: [{ type: 'text', text: `⏱ Timeout waiting for pattern: ${pattern}` }],
-          isError: true,
-          _metadata: { matched: false, elapsed_ms: validatedTimeout }
-        };
-      }
-
-      case 'eda.wait_for_prompt': {
-        const { timeout = 30, pane = 'eda' } = args;
-        const startTime = Date.now();
-        const timeoutMs = timeout * 1000;
-        const target = buildPaneTarget(CONFIG.TMUX_SESSION, pane);
-        
-        const promptPatterns = [
-          /innovus\s*\d+>/i,
-          /icc2_shell>/i,
-          /icc2>/i,
-          /pt_shell>/i,
-          /tempus\s*\d*>/i,
-          /\]\s*$/m,
-        ];
-        
-        while (Date.now() - startTime < timeoutMs) {
-          try {
-            const output = execSync(
-              `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -50 2>/dev/null || echo ""`,
-              { encoding: 'utf-8', timeout: 5000 }
-            );
-            const lastLine = output.split('\n').filter(l => l.trim()).slice(-1)[0] || '';
-            for (const pattern of promptPatterns) {
-              if (pattern.test(lastLine)) {
-                return {
-                  content: [{
-                    type: 'text',
-                    text: `✓ EDA prompt detected after ${((Date.now() - startTime) / 1000).toFixed(1)}s\n\nPrompt: ${lastLine.trim()}`
-                  }],
-                  _metadata: { ready: true, prompt: lastLine.trim(), elapsed_ms: Date.now() - startTime }
-                };
-              }
-            }
-          } catch {}
-          await new Promise(r => setTimeout(r, 500));
-        }
-        
-        return {
-          content: [{ type: 'text', text: `⏱ Timeout waiting for EDA prompt` }],
-          isError: true,
-          _metadata: { ready: false, elapsed_ms: timeoutMs }
-        };
-      }
-
-      case 'eda.await_idle': {
-        const { timeout = 300, stability_ms = 1500, pane = 'eda', expected_tool = null, stage = null } = args;
-        const startTime = Date.now();
-        const timeoutMs = timeout * 1000;
-        const target = buildPaneTarget(CONFIG.TMUX_SESSION, pane);
-
-        // Tool-specific prompt patterns
-        const toolPatterns = {
-          'innovus': /innovus\s*\d+>/i,
-          'icc2': /icc2_shell>/i,
-          'pt_shell': /pt_shell>/i,
-          'dc_shell': /dc_shell>/i,
-          'genus': /genus>/i,
-          'tempus': /tempus\s*\d*>/i,
-        };
-
-        // Bash prompt pattern - indicates tool CRASH, not idle
-        const bashPromptPattern = /^\[.*@.*\].*[$#]$/;
-
-        // All EDA tool prompts (for general detection)
-        const allEdaPatterns = Object.values(toolPatterns);
-
-        let lastOutput = '';
-        let lastChangeTime = startTime;
-        let stableSince = null;
-        let pollCount = 0;
-        let lastSnapshot = '';
-
-        // Create heartbeat emitter for this session/stage
-        const hb = createEmitter(CONFIG.TMUX_SESSION, stage, expected_tool);
-
-        // Emit initial heartbeat
-        hb.running(0, { message: 'await_idle started' });
-
-        while (Date.now() - startTime < timeoutMs) {
-          pollCount++;
-          try {
-            const output = execSync(
-              `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -100 2>/dev/null || echo ""`,
-              { encoding: 'utf-8', timeout: 5000 }
-            );
-
-            const outputLines = output.split('\n').filter(l => l.trim());
-            const lastLine = outputLines.slice(-1)[0] || '';
-            const currentSnapshot = outputLines.slice(-20).join('\n');
-
-            // Check if output changed
-            if (currentSnapshot !== lastSnapshot) {
-              lastSnapshot = currentSnapshot;
-              lastChangeTime = Date.now();
-              stableSince = null;
-
-              // Emit running heartbeat on activity
-              const elapsed = Date.now() - startTime;
-              const progress = Math.min(95, Math.round((elapsed / timeoutMs) * 100));
-              hb.running(progress, { message: 'output changing', polls: pollCount });
-            } else {
-              // Output stable - track how long
-              if (!stableSince) {
-                stableSince = Date.now();
-              }
-            }
-
-            // Check for bash prompt (tool crashed)
-            const isBashPrompt = bashPromptPattern.test(lastLine);
-            if (isBashPrompt) {
-              const elapsed = (Date.now() - startTime) / 1000;
-
-              // Emit error heartbeat
-              hb.error('Tool crashed to bash', { last_line: lastLine.trim() });
-
-              return {
-                content: [{
-                  type: 'text',
-                  text: `❌ **EDA TOOL CRASHED** (${elapsed.toFixed(1)}s)\n\n` +
-                        `**State:** ERROR — Tool exited to bash shell\n` +
-                        `**Last line:** ${lastLine.trim()}\n\n` +
-                        `**Last 15 lines:**\n` +
-                        "```\n" +
-                        `${outputLines.slice(-15).join('\n')}\n` +
-                        "```",
-                }],
-                isError: true,
-                _metadata: {
-                  idle: false,
-                  state: 'error',
-                  error_type: 'tool_crashed_to_bash',
-                  elapsed_ms: Date.now() - startTime,
-                  polls: pollCount,
-                  last_line: lastLine.trim()
-                }
-              };
-            }
-
-            // Check for expected tool prompt
-            let hasExpectedPrompt = false;
-            let detectedTool = null;
-            if (expected_tool && toolPatterns[expected_tool]) {
-              hasExpectedPrompt = toolPatterns[expected_tool].test(lastLine);
-              if (hasExpectedPrompt) detectedTool = expected_tool;
-            }
-            // Also check for any EDA tool prompt
-            const hasAnyEdaPrompt = allEdaPatterns.some(p => p.test(lastLine));
-
-            // IDLE DETECTION: Consider idle when:
-            // 1. Output hasn't changed for stability_ms, AND
-            // 2. Expected tool prompt is visible (if specified) OR any EDA prompt
-            const stableDuration = stableSince ? Date.now() - stableSince : 0;
-            const isIdle = stableDuration >= stability_ms &&
-                          (hasExpectedPrompt || (hasAnyEdaPrompt && !expected_tool));
-
-            if (isIdle) {
-              const elapsed = (Date.now() - startTime) / 1000;
-
-              // Analyze final state
-              let state = 'idle';
-              let stateDetail = 'Output stable';
-              if (hasExpectedPrompt) {
-                state = 'ready';
-                stateDetail = `${detectedTool} prompt detected: ${lastLine.trim()}`;
-              } else if (hasAnyEdaPrompt) {
-                state = 'ready';
-                stateDetail = `EDA prompt detected: ${lastLine.trim()}`;
-              }
-
-              // Check for errors in final output
-              const errorPatterns = [/\*\*ERROR/i, /FATAL/i, /failed/i, /Error:/i, /command not found/i];
-              const hasError = errorPatterns.some(p => p.test(output));
-
-              // Emit idle heartbeat
-              hb.idle({
-                detected_tool: detectedTool,
-                has_error: hasError,
-                polls: pollCount,
-                elapsed_ms: Date.now() - startTime,
-              });
-
-              return {
-                content: [{
-                  type: 'text',
-                  text: `✅ **EDA Pane Idle** (${elapsed.toFixed(1)}s)\n\n` +
-                        `**State:** ${state} — ${stateDetail}\n` +
-                        `**Polls:** ${pollCount} | **Stable for:** ${(stableDuration/1000).toFixed(1)}s\n` +
-                        `**Errors:** ${hasError ? '⚠️ detected' : 'none'}\n\n` +
-                        `**Last 15 lines:**\n` +
-                        "```\n" +
-                        `${outputLines.slice(-15).join('\n')}\n` +
-                        "```",
-                }],
-                _metadata: {
-                  idle: true,
-                  state,
-                  has_prompt: hasExpectedPrompt || hasAnyEdaPrompt,
-                  detected_tool: detectedTool,
-                  has_error: hasError,
-                  elapsed_ms: Date.now() - startTime,
-                  polls: pollCount,
-                  stable_duration_ms: stableDuration,
-                  last_line: lastLine.trim()
-                }
-              };
-            }
-
-            // Emit waiting heartbeat when stable but not yet idle
-            if (stableSince && (Date.now() - stableSince) > 1000) {
-              const eta = Math.max(0, Math.round((timeoutMs - (Date.now() - startTime)) / 1000));
-              hb.waiting(eta, { stable_ms: Date.now() - stableSince });
-            }
-          } catch (e) {
-            // Continue polling on error
-          }
-
-          await new Promise(r => setTimeout(r, 500));
-        }
-
-        // Timeout - emit error heartbeat and return
-        hb.error('Timeout waiting for idle', { stable_ms: stableSince ? Date.now() - stableSince : 0 });
-
-        // Timeout - return current state
-        return {
-          content: [{
-            type: 'text',
-            text: `⏱ **Timeout waiting for idle state** (${timeout}s)\n\n` +
-                  `The EDA pane output may still be changing. ` +
-                  `Last stable duration: ${stableSince ? ((Date.now() - stableSince)/1000).toFixed(1) : 0}s\n\n` +
-                  `**Recommendation:** Check \`eda.peek\` or continue waiting.`
-          }],
-          isError: true,
-          _metadata: { idle: false, timeout: true, polls: pollCount, elapsed_ms: timeoutMs }
-        };
-      }
-
-      case 'eda.get_last_result': {
-        const { lines = 50, pane = 'eda' } = args;
-        const target = buildPaneTarget(CONFIG.TMUX_SESSION, pane);
-        
-        let output;
-        try {
-          output = execSync(
-            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -${lines} 2>/dev/null || echo ""`,
-            { encoding: 'utf-8', timeout: 5000 }
-          );
-        } catch (e) {
-          return { content: [{ type: 'text', text: `❌ Failed to capture pane: ${e.message}` }], isError: true };
-        }
-        
-        const successPatterns = [/^#\s*$/m, /successfully/i, /completed/i, /pass/i, /no\s+(error|violation)/i];
-        const errorPatterns = [/^Error:/m, /ERROR:/i, /failed/i, /cannot/i, /unknown\s+command/i, /syntax\s+error/i];
-        
-        let success = false;
-        let errorType = null;
-        let errorLine = null;
-        
-        for (const p of successPatterns) {
-          if (p.test(output)) { success = true; break; }
-        }
-        for (const p of errorPatterns) {
-          const m = output.match(p);
-          if (m) {
-            success = false;
-            errorType = m[0].trim();
-            const lines = output.split('\n');
-            for (const line of lines) {
-              if (p.test(line)) { errorLine = line.trim(); break; }
-            }
-            break;
-          }
-        }
-        
-        const summary = success 
-          ? '✓ Command appears to have completed successfully'
-          : errorType 
-            ? `✗ Error detected: ${errorType}`
-            : '⚠ Unable to determine result (no clear success/error indicators)';
-        
-        return {
-          content: [{ type: 'text', text: `${summary}\n\nLast output:\n${output.slice(-800)}` }],
-          _metadata: { success, error_type: errorType, error_line: errorLine }
-        };
-      }
-
+      // === PHASE 1.1: FEEDBACK LOOP TOOL HANDLERS (extracted to tools/capture.js) ===
       case 'eda.capture_and_wait': {
         const { tcl, timeout = 60, pane = 'eda' } = args;
         const target = buildPaneTarget(CONFIG.TMUX_SESSION, pane);
@@ -3789,343 +2634,7 @@ This validation prevents fundamental flow errors like running synthesis in innov
         };
       }
 
-      // === PHASE 1.2: SESSION STATE TOOL HANDLERS ===
-      case 'session.save_checkpoint': {
-        const { name, description = '' } = args;
-        const checkpointsDir = join(hipilotPaths.hipilotDir, 'session', 'checkpoints');
-        mkdirSync(checkpointsDir, { recursive: true });
-        
-        
-        let qorMetrics = {};
-        try {
-          const paneOutput = execSync(
-            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)} -p -S -200 2>/dev/null || echo ""`,
-            { encoding: 'utf-8' }
-          );
-          qorMetrics = extractQoR(paneOutput);
-        } catch {}
-        
-        const checkpoint = {
-          id: `ckpt_${Date.now()}`,
-          name,
-          description,
-          saved_at: new Date().toISOString(),
-          qor: qorMetrics,
-          context: {
-            tool: detectTool()?.tool || null,
-            stage: 'unknown',
-          }
-        };
-        
-        const checkpointPath = join(checkpointsDir, `${checkpoint.id}.json`);
-        writeFileSync(checkpointPath, JSON.stringify(checkpoint, null, 2));
-        
-        return {
-          content: [{
-            type: 'text',
-            text: `💾 **Checkpoint Saved**\n\n**Name:** ${name}\n**ID:** ${checkpoint.id}\n**Time:** ${checkpoint.saved_at}\n${description ? `**Description:** ${description}\n` : ''}`
-          }],
-          _metadata: checkpoint
-        };
-      }
-
-      case 'session.list_checkpoints': {
-        const checkpointsDir = join(hipilotPaths.hipilotDir, 'session', 'checkpoints');
-        const checkpoints = [];
-        
-        if (existsSync(checkpointsDir)) {
-          for (const file of readdirSync(checkpointsDir).filter(f => f.endsWith('.json'))) {
-            try {
-              const cp = JSON.parse(readFileSync(join(checkpointsDir, file), 'utf-8'));
-              checkpoints.push(cp);
-            } catch {}
-          }
-        }
-        
-        checkpoints.sort((a, b) => new Date(b.saved_at) - new Date(a.saved_at));
-        
-        let text = `📋 **Session Checkpoints** (${checkpoints.length})\n\n`;
-        if (checkpoints.length === 0) {
-          text += 'No checkpoints saved yet.\n\nUse `session.save_checkpoint` to create one.';
-        } else {
-          for (const cp of checkpoints) {
-            text += `**${cp.name}** (${cp.id})\n`;
-            text += `  Saved: ${cp.saved_at}\n`;
-            if (cp.qor?.wns !== undefined) text += `  WNS: ${cp.qor.wns}\n`;
-            text += '\n';
-          }
-        }
-        
-        return { content: [{ type: 'text', text }], _metadata: { checkpoints } };
-      }
-
-      case 'session.restore_checkpoint': {
-        const { checkpoint_id } = args;
-        const checkpointsDir = join(hipilotPaths.hipilotDir, 'session', 'checkpoints');
-
-        // Validate checkpoint_id format to prevent path traversal
-        const VALID_CHECKPOINT_ID = /^[a-zA-Z0-9_-]+$/;
-        if (!VALID_CHECKPOINT_ID.test(checkpoint_id)) {
-          return { content: [{ type: 'text', text: `❌ Invalid checkpoint_id format: ${checkpoint_id}. Only alphanumeric, underscore, and hyphen allowed.` }], isError: true };
-        }
-
-        let checkpointPath = join(checkpointsDir, `${checkpoint_id}.json`);
-
-        // Verify resolved path is within checkpointsDir
-        const resolvedPath = resolve(checkpointPath);
-        const resolvedCheckpointsDir = resolve(checkpointsDir);
-        if (!resolvedPath.startsWith(resolvedCheckpointsDir)) {
-          return { content: [{ type: 'text', text: `❌ Path traversal detected: ${checkpoint_id}` }], isError: true };
-        }
-
-        if (!existsSync(checkpointPath)) {
-          const files = readdirSync(checkpointsDir).filter(f => f.includes(checkpoint_id));
-          if (files.length === 0) {
-            return { content: [{ type: 'text', text: `❌ Checkpoint not found: ${checkpoint_id}` }], isError: true };
-          }
-          checkpointPath = join(checkpointsDir, files[0]);
-          // Re-validate the matched file path
-          const resolvedMatchPath = resolve(checkpointPath);
-          if (!resolvedMatchPath.startsWith(resolvedCheckpointsDir)) {
-            return { content: [{ type: 'text', text: `❌ Path traversal detected in matched file: ${files[0]}` }], isError: true };
-          }
-        }
-
-        const checkpoint = JSON.parse(readFileSync(checkpointPath, 'utf-8'));
-        
-        return {
-          content: [{
-            type: 'text',
-            text: `✓ **Checkpoint Context Restored**\n\n**Name:** ${checkpoint.name}\n**Saved:** ${checkpoint.saved_at}\n\nContext is now loaded. Note: This does NOT undo EDA changes.`
-          }],
-          _metadata: { restored: true, checkpoint }
-        };
-      }
-
-      case 'session.get_history': {
-        const { limit = 50 } = args;
-        const historyPath = join(hipilotPaths.hipilotDir, 'history');
-        const entries = [];
-        
-        if (existsSync(historyPath)) {
-          for (const file of readdirSync(historyPath).filter(f => f.endsWith('.tcl')).slice(-limit)) {
-            try {
-              const stat = { file, time: new Date(parseInt(file.split('_').pop()) || 0) };
-              entries.push(stat);
-            } catch {}
-          }
-        }
-        
-        let text = `📜 **Command History** (${entries.length} recent)\n\n`;
-        for (const e of entries.reverse()) {
-          text += `• ${e.file}\n`;
-        }
-        
-        return { content: [{ type: 'text', text }], _metadata: { entries } };
-      }
-
-      case 'session.get_context': {
-        const tool = detectTool();
-        let qorMetrics = {};
-        try {
-          const output = execSync(
-            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)} -p -S -100 2>/dev/null || echo ""`,
-            { encoding: 'utf-8' }
-          );
-          qorMetrics = extractQoR(output);
-        } catch {}
-        
-        const context = {
-          tool: tool?.tool || 'none',
-          vendor: tool?.vendor || 'unknown',
-          stage: 'unknown',
-          qor: qorMetrics,
-          mode: getModeStatus().mode,
-        };
-        
-        let text = `📍 **Current Session Context**\n\n`;
-        text += `**Tool:** ${context.tool}\n`;
-        text += `**Vendor:** ${context.vendor}\n`;
-        text += `**Stage:** ${context.stage}\n`;
-        text += `**Mode:** ${context.mode}\n`;
-        if (context.qor.wns !== undefined) text += `**WNS:** ${context.qor.wns}\n`;
-        if (context.qor.tns !== undefined) text += `**TNS:** ${context.qor.tns}\n`;
-        
-        return { content: [{ type: 'text', text }], _metadata: context };
-      }
-
-      // === SESSION NOTE-TAKING TOOL HANDLERS ===
-      case 'session.add_note': {
-        const { category, stage, content, tcl_fixed } = args;
-        const note = {
-          id: `note_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          timestamp: new Date().toISOString(),
-          category,
-          stage: stage || 'general',
-          content,
-          tcl_fixed: tcl_fixed || null,
-        };
-
-        // Append to session notes file
-        const notesFile = join(hipilotPaths.baseDir, 'session_notes.jsonl');
-        try {
-          const existing = existsSync(notesFile) ? readFileSync(notesFile, 'utf-8') : '';
-          writeFileSync(notesFile, existing + JSON.stringify(note) + '\n');
-        } catch {
-          // If file write fails, still return success (memory-only note)
-        }
-
-        const icon = {
-          error: '❌',
-          fix: '🔧',
-          decision: '📌',
-          observation: '👁️',
-          qor: '📊',
-          warning: '⚠️',
-        }[category] || '📝';
-
-        return {
-          content: [{ type: 'text', text: `${icon} Note added [${category}]: ${content.substring(0, 100)}${content.length > 100 ? '...' : ''}` }],
-          _metadata: { note_id: note.id },
-        };
-      }
-
-      case 'session.get_notes': {
-        const { category, stage } = args;
-        const notesFile = join(hipilotPaths.baseDir, 'session_notes.jsonl');
-        const notes = [];
-
-        try {
-          if (existsSync(notesFile)) {
-            const lines = readFileSync(notesFile, 'utf-8').trim().split('\n').filter(Boolean);
-            for (const line of lines) {
-              try {
-                const note = JSON.parse(line);
-                if (category && note.category !== category) continue;
-                if (stage && note.stage !== stage) continue;
-                notes.push(note);
-              } catch {}
-            }
-          }
-        } catch {}
-
-        // Sort by timestamp (newest first)
-        notes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-        let text = `📝 **Session Notes** (${notes.length} total)`;
-        if (category) text += ` [filter: ${category}]`;
-        if (stage) text += ` [stage: ${stage}]`;
-        text += '\n\n';
-
-        for (const note of notes.slice(0, 20)) {
-          const icon = { error: '❌', fix: '🔧', decision: '📌', observation: '👁️', qor: '📊', warning: '⚠️' }[note.category] || '📝';
-          text += `${icon} [${note.category}] ${note.stage}\n`;
-          text += `   ${note.content.substring(0, 80)}${note.content.length > 80 ? '...' : ''}\n`;
-          if (note.tcl_fixed) text += `   🔧 Fix: ${note.tcl_fixed.substring(0, 60)}...\n`;
-          text += '\n';
-        }
-
-        if (notes.length === 0) {
-          text += 'No notes found. Use `session.add_note` to record errors, decisions, or observations.';
-        }
-
-        return { content: [{ type: 'text', text }], _metadata: { count: notes.length } };
-      }
-
-      case 'session.add_todo': {
-        const { task, priority, stage } = args;
-        const todo = {
-          id: `todo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          timestamp: new Date().toISOString(),
-          task,
-          priority: priority || 'medium',
-          stage: stage || 'general',
-          completed: false,
-        };
-
-        const todosFile = join(hipilotPaths.baseDir, 'session_todos.jsonl');
-        try {
-          const existing = existsSync(todosFile) ? readFileSync(todosFile, 'utf-8') : '';
-          writeFileSync(todosFile, existing + JSON.stringify(todo) + '\n');
-        } catch {}
-
-        const priorityIcon = { critical: '🔴', high: '🟠', medium: '🟡', low: '🟢' }[todo.priority] || '⚪';
-
-        return {
-          content: [{ type: 'text', text: `${priorityIcon} Todo added [${todo.priority}]: ${task}` }],
-          _metadata: { todo_id: todo.id },
-        };
-      }
-
-      case 'session.get_todos': {
-        const { stage } = args;
-        const todosFile = join(hipilotPaths.baseDir, 'session_todos.jsonl');
-        const todos = [];
-
-        try {
-          if (existsSync(todosFile)) {
-            const lines = readFileSync(todosFile, 'utf-8').trim().split('\n').filter(Boolean);
-            for (const line of lines) {
-              try {
-                const todo = JSON.parse(line);
-                if (todo.completed) continue;
-                if (stage && todo.stage !== stage) continue;
-                todos.push(todo);
-              } catch {}
-            }
-          }
-        } catch {}
-
-        // Sort by priority (critical > high > medium > low)
-        const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
-        todos.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
-
-        let text = `📋 **Pending Todos** (${todos.length})\n\n`;
-
-        for (const todo of todos) {
-          const icon = { critical: '🔴', high: '🟠', medium: '🟡', low: '🟢' }[todo.priority] || '⚪';
-          text += `${icon} [${todo.priority}] ${todo.stage}\n`;
-          text += `   ${todo.task}\n`;
-          text += `   ID: ${todo.id}\n\n`;
-        }
-
-        if (todos.length === 0) {
-          text += 'No pending todos. Use `session.add_todo` to create reminders.';
-        }
-
-        return { content: [{ type: 'text', text }], _metadata: { count: todos.length } };
-      }
-
-      case 'session.complete_todo': {
-        const { todo_id } = args;
-        const todosFile = join(hipilotPaths.baseDir, 'session_todos.jsonl');
-        let completed = false;
-
-        try {
-          if (existsSync(todosFile)) {
-            const lines = readFileSync(todosFile, 'utf-8').trim().split('\n').filter(Boolean);
-            const updated = [];
-            for (const line of lines) {
-              try {
-                const todo = JSON.parse(line);
-                if (todo.id === todo_id && !todo.completed) {
-                  todo.completed = true;
-                  todo.completed_at = new Date().toISOString();
-                  completed = true;
-                }
-                updated.push(JSON.stringify(todo));
-              } catch {}
-            }
-            writeFileSync(todosFile, updated.join('\n') + '\n');
-          }
-        } catch {}
-
-        return {
-          content: [{ type: 'text', text: completed ? `✅ Todo completed: ${todo_id}` : `⚠️ Todo not found or already completed: ${todo_id}` }],
-          _metadata: { completed },
-        };
-      }
-
+      // === PHASE 1.2: SESSION STATE TOOL HANDLERS (extracted to tools/session.js) ===
       // === PHASE 1.3: CONTEXT DETECTION TOOL HANDLERS ===
       case 'context.detect': {
         const tool = detectTool();
@@ -4501,69 +3010,6 @@ This validation prevents fundamental flow errors like running synthesis in innov
         return {
           content: [{ type: 'text', text: `✓ **Sent to EDA pane** (non-blocking)\n\n**File:** ${tclFile}\n**Description:** ${description || 'N/A'}\n\nThe command is now running. Call \`eda.peek\` to check progress.` }],
           _metadata: { file: tclFile, description, sent_at: new Date().toISOString() },
-        };
-      }
-
-      case 'eda.peek': {
-        // Instant snapshot of the right pane. No waiting, no processing.
-        // Returns what's on screen NOW + state assessment.
-        const lines = args.lines || 30;
-        const target = `${buildPaneTarget(CONFIG.TMUX_SESSION, CONFIG.PANE_LAYOUT.EDA)}`;
-        let output = '';
-        try {
-          output = execSync(
-            `tmux -L ${CONFIG.TMUX_SOCKET} capture-pane -t ${target} -p -S -${lines} 2>/dev/null || echo ""`,
-            { encoding: 'utf-8', timeout: 5000 }
-          );
-        } catch { output = ''; }
-
-        const outputLines = output.split('\n');
-        const nonEmpty = outputLines.filter(l => l.trim());
-        const lastLine = nonEmpty[nonEmpty.length - 1] || '';
-
-        // Assess state — what would a human see?
-        let state = 'unknown';
-        let stateDetail = '';
-
-        const promptPatterns = [
-          { pat: /innovus\s*\d+>/, tool: 'Innovus', state: 'ready' },
-          { pat: /icc2_shell>/, tool: 'ICC2', state: 'ready' },
-          { pat: /pt_shell>/, tool: 'PrimeTime', state: 'ready' },
-          { pat: /\$\s*$/, tool: 'shell', state: 'no_tool' },
-        ];
-
-        for (const { pat, tool, state: s } of promptPatterns) {
-          if (pat.test(lastLine)) {
-            state = s;
-            stateDetail = `${tool} prompt detected — ${s === 'ready' ? 'tool is idle, ready for next command' : 'no EDA tool running'}`;
-            break;
-          }
-        }
-
-        if (state === 'unknown') {
-          // Check for errors
-          const errorPatterns = [/\*\*ERROR/i, /FATAL/i, /syntax error/i];
-          for (const pat of errorPatterns) {
-            if (pat.test(output)) {
-              state = 'error';
-              stateDetail = `Error detected: ${output.match(pat)[0]}`;
-              break;
-            }
-          }
-        }
-
-        if (state === 'unknown') {
-          state = 'running';
-          stateDetail = `Output is changing — command may still be running. Last line: "${lastLine.slice(0, 80)}"`;
-        }
-
-        let text = `👁️ **EDA Pane Snapshot** (${nonEmpty.length} lines)\n\n`;
-        text += `**State:** ${state} — ${stateDetail}\n\n`;
-        text += `\`\`\`\n${nonEmpty.slice(-20).join('\n')}\n\`\`\`\n`;
-
-        return {
-          content: [{ type: 'text', text }],
-          _metadata: { state, lines: nonEmpty.length, last_line: lastLine.slice(0, 100) },
         };
       }
 
