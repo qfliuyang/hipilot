@@ -8,8 +8,7 @@
  */
 
 import { execSync } from 'child_process';
-import { existsSync, readdirSync } from 'fs';
-import { globSync } from 'glob';
+import { existsSync, readdirSync, statSync } from 'fs';
 import { CONFIG } from '../../../src/lib/config.js';
 import { buildPaneTarget } from '../../../src/lib/pane-utils.js';
 import { shellEscape } from '../../../src/lib/shell-escape.js';
@@ -73,10 +72,17 @@ export function detectTool() {
         'DesignCompiler': `${process.env.HOME || '/home/EDA'}/dc_shell.log*`,
       };
       if (logPatterns[check.tool]) {
-        // Use glob to safely find log files (avoiding shell injection)
+        // Use fs to safely find log files (avoiding shell injection)
         const logPattern = logPatterns[check.tool];
-        const logFiles = globSync(logPattern);
-        if (logFiles.length > 0) confidence += 0.2;
+        const baseDir = (process.env.HOME || '/home/EDA');
+        const baseName = logPattern.replace(baseDir + '/', '').replace('*', '');
+        try {
+          const files = readdirSync(baseDir);
+          const matchingFiles = files.filter(f => f.startsWith(baseName));
+          if (matchingFiles.length > 0) confidence += 0.2;
+        } catch (e) {
+          // Directory doesn't exist, skip
+        }
       }
     } catch (e) {
       if (process.env.HIPILOT_DEBUG) {
