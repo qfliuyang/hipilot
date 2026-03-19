@@ -6,7 +6,7 @@
 **Status:** Active
 **Replaces:** TEST_PLAN_v2.md, TEST_PLAN_v3_*.md, RTL2GDS_TEST_PLAN_OPERATIONAL.md
 
-**Latest Update:** 2026-03-19 - Added 3 new verification categories (Team Protocol, EDA Log, Cross-Reference) to CheatDetector → 17 layers total; unified FlowCertifier with TestReviewBoard 7-phase strict verification
+**Latest Update:** 2026-03-19 - Added Layer 18: Skill Orchestration Bypass Detection (CRITICAL); 5-Agent Team must use knowledge.get_skill, not source TCL directly
 
 ---
 
@@ -85,6 +85,10 @@
   17. **Cross-Reference Verification** (MEDIUM):
       - `verifyProcessStateDuringMcpCall()` - Confirm EDA process running during MCP tool calls
       - `verifyStageOrder()` - Verify stage N completed before N+1 begins
+  18. **Skill Orchestration Bypass** (CRITICAL) [v3.7]:
+      - `verifySkillOrchestration()` - CRITICAL: Must use knowledge.get_skill to load skills, NOT source TCL scripts directly
+      - Detects: EDA tool runs without skill loaded, MCP Tcl commands not sent, team coordination failure (Knowledge Agent shutdown before execution)
+      - If EDA pane shows tool activity but no MCP send_tcl calls → automatic FAIL
 
 - **Fail-closed**: if MCP log, EDA log, or evidence files are absent → CRITICAL FAIL (not a warning)
 - Any test with critical cheat detection = `CHEAT_DETECTED` and automatic FAIL

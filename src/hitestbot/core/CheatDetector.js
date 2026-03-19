@@ -19,6 +19,10 @@
  *  12. SSH Remote Verification — Verify evidence exists via SSH
  *  13. Active Video Stream — Verify ffmpeg is recording
  *  14. Agent Delegation Bypass — Detect Supervisor bypassing Executor (CRITICAL for 5-Agent Team)
+ *  15. Team Protocol Verification — verifyFiveAgentProcesses, validateSendMessageStructure, verifyKnowledgeAsHub, verifyMessageSequence
+ *  16. EDA Log Verification — extractQorMetrics, verifyCheckpointFiles, parseErrors, verifyToolExecutionDuration, verifyEdaPaneLogEnhanced
+ *  17. Cross-Reference Verification — verifyProcessStateDuringMcpCall, verifyStageOrder
+ *  18. Skill Orchestration Bypass — CRITICAL: Must use knowledge.get_skill, not source TCL directly
  */
 
 import { execSync } from 'child_process';
@@ -2022,4 +2026,145 @@ export class CheatDetector {
       );
     }
   }
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════
+   * CHEAT PREVENTION 18: Skill Orchestration Bypass Detection
+   *
+   * CRITICAL for 5-Agent Team: HiPilot must use skills (via knowledge.get_skill)
+   * to orchestrate EDA flow, NOT just source TCL scripts directly.
+   *
+   * This detects when:
+   * - EDA tool runs but no skill was loaded via knowledge.get_skill
+   * - Executor bypasses skills and just sources flow scripts
+   * - Team coordination fails (Knowledge Agent shuts down before execution)
+   * ═══════════════════════════════════════════════════════════════════
+   */
+  verifySkillOrchestration(mcpLog, paneLog, stageName = 'unknown') {
+    const violations = [];
+    const evidence = {};
+
+    // Check 1: Was knowledge.get_skill or knowledge.match_skill called?
+    const skillLoaded = mcpLog.some(entry => {
+      const method = entry.method || '';
+      const params = JSON.stringify(entry.params || {});
+      return method.includes('get_skill') ||
+             method.includes('match_skill') ||
+             params.includes('get_skill') ||
+             params.includes('match_skill');
+    });
+    evidence.skillLoaded = skillLoaded;
+
+    // Check 2: Was eda.send_tcl_nonblocking called (proper MCP orchestration)?
+    const tclSent = mcpLog.some(entry => {
+      const method = entry.method || '';
+      return method.includes('send_tcl');
+    });
+    evidence.tclSent = tclSent;
+
+    // Check 3: Was eda.start_tool called?
+    const toolStarted = mcpLog.some(entry => {
+      const method = entry.method || '';
+      return method.includes('start_tool');
+    });
+    evidence.toolStarted = toolStarted;
+
+    // Check 4: EDA tool evidence in pane log
+    const toolPrompts = paneLog.match(/innovus\s*\d+>|dc_shell[\w-]*>|pt_shell[\w-]*>/g) || [];
+    evidence.edaToolRunning = toolPrompts.length > 0;
+    evidence.edaToolPrompts = toolPrompts.slice(0, 5);
+
+    // CRITICAL VIOLATION: EDA tool ran but no skill was loaded
+    if (evidence.edaToolRunning && !skillLoaded) {
+      violations.push({
+        issue: `EDA tool ran but no skill was loaded via knowledge.get_skill`,
+        severity: 'critical',
+        category: 'SKILL_BYPASS',
+        detail: 'HiPilot bypassed the skills system and sourced TCL directly',
+        evidence: {
+          toolPrompts: evidence.edaToolPrompts,
+          skillLoaded: false,
+          tclSent: tclSent,
+        }
+      });
+    }
+
+    // CRITICAL VIOLATION: EDA tool ran but no MCP Tcl commands sent
+    if (evidence.edaToolRunning && !tclSent) {
+      violations.push({
+        issue: `EDA tool was running but no Tcl commands sent via MCP`,
+        severity: 'critical',
+        category: 'MCP_BYPASS',
+        detail: 'HiPilot may have sourced a flow script instead of using MCP orchestration',
+        evidence: {
+          toolPrompts: evidence.edaToolPrompts,
+          tclSent: false,
+          skillLoaded: skillLoaded,
+        }
+      });
+    }
+
+    // HIGH VIOLATION: Team coordination failure
+    const knowledgeShutdown = mcpLog.some(entry => {
+      const msg = JSON.stringify(entry.params || {}) + (entry.message || '');
+      return msg.toLowerCase().includes('shutdown') &&
+             (entry.method?.includes('knowledge') || msg.includes('knowledge'));
+    });
+
+    const executorMessages = mcpLog.filter(entry => {
+      const msg = JSON.stringify(entry.params || {}) + (entry.message || '');
+      return msg.toLowerCase().includes('executor') ||
+             entry.method?.includes('executor');
+    });
+    evidence.executorMessages = executorMessages.length;
+    evidence.knowledgeShutdown = knowledgeShutdown;
+
+    if (knowledgeShutdown && executorMessages.length > 0 && !toolStarted) {
+      violations.push({
+        issue: `Knowledge Agent shut down before Executor could execute`,
+        severity: 'critical',
+        category: 'TEAM_COORDINATION_FAILURE',
+        detail: 'Team coordination broke down - Knowledge Agent shutdown before execution',
+        evidence: {
+          executorMessages: executorMessages.length,
+          toolStarted: false,
+          tclSent: false,
+        }
+      });
+    }
+
+    // HIGH VIOLATION: EDA pane shows tool activity but no MCP calls
+    const paneToolActivity = paneLog.match(/(analyze|elaborate|compile_ultra|report_timing|report_area|init_design|floorplan|place_opt)/gi) || [];
+    evidence.paneToolActivity = paneToolActivity;
+
+    if (paneToolActivity.length > 0 && !tclSent) {
+      violations.push({
+        issue: `EDA pane shows tool commands but no MCP send_tcl calls`,
+        severity: 'high',
+        category: 'MCP_ORCHESTRATION_FAILURE',
+        detail: 'TCL commands visible in EDA pane but not sent via MCP - possible direct sourcing',
+        evidence: {
+          paneCommands: paneToolActivity.slice(0, 10),
+          tclSent: false,
+        }
+      });
+    }
+
+    if (violations.length > 0) {
+      return this._logCheat('skill_orchestration_bypass', 'critical',
+        `Skill orchestration bypass detected: ${violations.length} violation(s)`,
+        { violations, stageName, evidence }
+      );
+    }
+
+    return {
+      valid: true,
+      skillLoaded,
+      tclSent,
+      toolStarted,
+      edaToolRunning: evidence.edaToolRunning,
+      stageName,
+    };
+  }
+
 }
