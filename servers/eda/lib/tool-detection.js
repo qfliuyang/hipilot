@@ -166,3 +166,85 @@ export function validateToolMatch(expectedTool, detectedTool) {
     message: `Expected ${expected} but ${detected} is running. These tools serve different purposes.`
   };
 }
+
+/**
+ * Stage definitions for EDA flow validation.
+ * Maps stage names to required tools, categories, and checkpoint dependencies.
+ */
+export const STAGE_DEFINITIONS = {
+  'synthesis': {
+    tool: 'dc_shell',
+    category: 'Synthesis',
+    next: 'init_design',
+    required_checkpoints: [],
+    optional_checkpoints: [],
+    description: 'RTL synthesis using Design Compiler',
+  },
+  'compile': { tool: 'dc_shell', category: 'Synthesis', next: 'init_design' },
+  'elaborate': { tool: 'dc_shell', category: 'Synthesis', next: 'init_design' },
+  'init_design': {
+    tool: 'innovus',
+    category: 'Physical Design',
+    next: 'floorplan',
+    required_checkpoints: ['result/syn/data/*.v'],
+    optional_checkpoints: [],
+    description: 'Design initialization in Innovus',
+  },
+  'init': { tool: 'innovus', category: 'Physical Design', next: 'floorplan' },
+  'floorplan': {
+    tool: 'innovus',
+    category: 'Physical Design',
+    next: 'power_plan',
+    required_checkpoints: ['result/pr/data/init_design.enc'],
+    optional_checkpoints: [],
+    description: 'Floorplanning',
+  },
+  'floorplanning': { tool: 'innovus', category: 'Physical Design', next: 'power_plan' },
+  'power_plan': { tool: 'innovus', category: 'Physical Design', next: 'placement' },
+  'powerplan': { tool: 'innovus', category: 'Physical Design', next: 'placement' },
+  'placement': {
+    tool: 'innovus',
+    category: 'Physical Design',
+    next: 'cts',
+    required_checkpoints: ['result/pr/data/floor_plan.enc'],
+    optional_checkpoints: ['result/pr/data/powerplan.enc'],
+    description: 'Cell placement',
+  },
+  'place': { tool: 'innovus', category: 'Physical Design', next: 'cts' },
+  'cts': {
+    tool: 'innovus',
+    category: 'Physical Design',
+    next: 'routing',
+    required_checkpoints: ['result/pr/data/placement.enc'],
+    optional_checkpoints: [],
+    description: 'Clock tree synthesis',
+  },
+  'clock_tree': { tool: 'innovus', category: 'Physical Design', next: 'routing' },
+  'post_cts_opt': { tool: 'innovus', category: 'Physical Design', next: 'routing' },
+  'routing': {
+    tool: 'innovus',
+    category: 'Physical Design',
+    next: 'chip_finish',
+    required_checkpoints: ['result/pr/data/cts.enc'],
+    optional_checkpoints: [],
+    description: 'Detailed routing',
+  },
+  'route': { tool: 'innovus', category: 'Physical Design', next: 'chip_finish' },
+  'chip_finish': {
+    tool: 'innovus',
+    category: 'Physical Design',
+    next: 'sta',
+    required_checkpoints: ['result/pr/data/routing.enc'],
+    optional_checkpoints: [],
+    description: 'Chip finishing',
+  },
+  'sta': {
+    tool: 'pt_shell',
+    category: 'Signoff',
+    next: null,
+    required_checkpoints: ['result/pr/data/chip_done.enc'],
+    optional_checkpoints: [],
+    description: 'Static timing analysis',
+  },
+  'timing': { tool: 'pt_shell', category: 'Signoff', next: null },
+};

@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"ls -la test-evidence-phase2-3/\",\"description\":\"Check test-evidence directory\"}",
+  "error": "Exit code 1\nls: test-evidence-phase2-3/: No such file or directory",
+  "timestamp": "2026-03-19T09:04:56.022Z",
+  "retry_count": 2
+}
