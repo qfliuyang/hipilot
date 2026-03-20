@@ -3,15 +3,16 @@
  *
  * This module implements the strict hub-and-spoke architecture:
  * - Supervisor (Pane 0): Accepts user input, delegates to other agents
- * - Knowledge (Pane 1): Brain interface for Tcl generation
+ * - Knowledge (Pane 1): Brain interface for Tcl generation, MESSAGE HUB
  * - Planner (Pane 2): Strategy and planning
  * - Executor (Pane 3): ONLY agent that controls EDA pane (Pane 5) via MCP
  * - Archivist (Pane 4): QoR recording and learnings
  *
- * CRITICAL: No agent bypasses the protocol. All communication via SendMessage.
+ * CRITICAL: All communication goes through Knowledge Agent (hub-and-spoke).
+ * Supervisor NEVER talks directly to Executor/Planner/Archivist.
  */
 
-import { sendToAgent, readMessages } from '../lib/agent-messaging.js';
+import { KnowledgeRouter, MESSAGE_TYPES, AGENT_NAMES as ROUTER_AGENTS } from './KnowledgeRouter.js';
 
 const AGENTS = {
   SUPERVISOR: 'Supervisor',
@@ -22,14 +23,19 @@ const AGENTS = {
 };
 
 /**
- * TeamController - Coordinates the 5-agent team
+ * TeamController - Coordinates the 5-agent team using hub-and-spoke
  */
 export class TeamController {
   constructor(options = {}) {
     this.session = options.session || 'hipilot';
     this.designDir = options.designDir || process.env.HIPILOT_DESIGN_DIR;
+    this.designName = options.designName || process.env.HIPILOT_DESIGN_NAME;
     this.activeAgents = new Map();
     this.currentStage = null;
+    this.router = new KnowledgeRouter({
+      designDir: this.designDir,
+      designName: this.designName,
+    });
   }
 
   /**
@@ -47,12 +53,13 @@ export class TeamController {
       });
     }
 
-    console.log('[TeamController] Team ready:');
+    console.log('[TeamController] Team ready (hub-and-spoke architecture):');
     console.log('  - Supervisor: Accepts user input, coordinates');
-    console.log('  - Knowledge: Brain interface');
+    console.log('  - Knowledge: MESSAGE HUB + Brain interface');
     console.log('  - Planner: Strategy');
     console.log('  - Executor: EXCLUSIVE EDA pane control');
     console.log('  - Archivist: QoR recording');
+    console.log('[TeamController] ALL messages route through Knowledge Agent');
 
     return { success: true, agents: Array.from(this.activeAgents.keys()) };
   }
@@ -83,47 +90,48 @@ export class TeamController {
   }
 
   /**
-   * Synthesis flow: Supervisor coordinates Knowledge -> Executor -> Archivist
+   * Synthesis flow: Supervisor -> Knowledge -> Executor -> Knowledge -> Archivist
+   *
+   * Hub-and-spoke: Supervisor ONLY talks to Knowledge
    */
   async _runSynthesisFlow(intent) {
     console.log('[Supervisor] Starting Synthesis flow (Stage 0)');
     this.currentStage = 'synthesis';
 
-    // Step 1: Delegate Tcl generation to Knowledge
-    console.log('[Supervisor] -> Knowledge: Generate synthesis Tcl');
-    const tclRequest = await this._sendToAgent(AGENTS.KNOWLEDGE, {
-      type: 'generate_tcl',
-      stage: 'synthesis',
-      tool: 'dc_shell',
-      designDir: this.designDir,
+    // Step 1: Delegate to Knowledge (hub) to route to Executor
+    console.log('[Supervisor] -> Knowledge: delegate_execution for synthesis');
+
+    const route = this.router.route({
+      type: MESSAGE_TYPES.DELEGATE_EXECUTION,
+      from: ROUTER_AGENTS.SUPERVISOR,
+      payload: {
+        stage: 'synthesis',
+        tool: 'dc_shell',
+        designDir: this.designDir,
+        designName: this.designName,
+      },
     });
 
-    if (tclRequest.error) {
-      return { error: `Knowledge failed: ${tclRequest.error}` };
+    // Step 2: Simulate Executor handling (in real system, SendMessage API would be used)
+    const execResult = await this._simulateExecutorExecution(route.message);
+
+    // Step 3: Route execution result through Knowledge to Archivist + Supervisor
+    const resultRoutes = this.router.route({
+      type: MESSAGE_TYPES.EXECUTION_RESULT,
+      from: ROUTER_AGENTS.EXECUTOR,
+      payload: {
+        stage: 'synthesis',
+        success: execResult.success,
+        metrics: execResult.metrics,
+      },
+    });
+
+    // Step 4: Simulate Archivist recording
+    for (const r of resultRoutes) {
+      if (r.to === ROUTER_AGENTS.ARCHIVIST) {
+        console.log(`[Archivist] Recording QoR via Knowledge routing`);
+      }
     }
-
-    // Step 2: Delegate execution to Executor (ONLY Executor uses MCP)
-    console.log('[Supervisor] -> Executor: Execute synthesis Tcl');
-    const execResult = await this._sendToAgent(AGENTS.EXECUTOR, {
-      type: 'execute_tcl',
-      stage: 'synthesis',
-      tool: 'dc_shell',
-      tcl: tclRequest.tcl,
-      description: 'Stage 0: RTL Synthesis',
-      timeout: 600,
-    });
-
-    if (execResult.error) {
-      return { error: `Execution failed: ${execResult.error}` };
-    }
-
-    // Step 3: Delegate QoR recording to Archivist
-    console.log('[Supervisor] -> Archivist: Record synthesis QoR');
-    await this._sendToAgent(AGENTS.ARCHIVIST, {
-      type: 'record_qor',
-      stage: 'synthesis',
-      metrics: execResult.metrics,
-    });
 
     console.log('[Supervisor] Synthesis flow complete');
     return {
@@ -134,57 +142,53 @@ export class TeamController {
   }
 
   /**
-   * Floorplan flow: Supervisor coordinates Knowledge -> Planner -> Executor -> Archivist
+   * Floorplan flow: Supervisor -> Knowledge -> Planner/Executor -> Knowledge -> Archivist
    */
   async _runFloorplanFlow(intent) {
     console.log('[Supervisor] Starting Floorplan flow (Stage 1)');
     this.currentStage = 'floorplan';
 
-    // Step 1: Get floorplan Tcl from Knowledge
-    console.log('[Supervisor] -> Knowledge: Generate floorplan Tcl');
-    const tclRequest = await this._sendToAgent(AGENTS.KNOWLEDGE, {
-      type: 'generate_tcl',
-      stage: 'floorplan',
-      tool: 'innovus',
-      designDir: this.designDir,
+    // Step 1: Get strategy via Knowledge -> Planner
+    console.log('[Supervisor] -> Knowledge: get_strategy for floorplan');
+
+    const strategyRoute = this.router.route({
+      type: MESSAGE_TYPES.GET_STRATEGY,
+      from: ROUTER_AGENTS.SUPERVISOR,
+      payload: {
+        stage: 'floorplan',
+        context: { designDir: this.designDir },
+      },
     });
 
-    if (tclRequest.error) {
-      return { error: `Knowledge failed: ${tclRequest.error}` };
-    }
+    // Step 2: Delegate execution via Knowledge -> Executor
+    console.log('[Supervisor] -> Knowledge: delegate_execution for floorplan');
 
-    // Step 2: Get strategy from Planner
-    console.log('[Supervisor] -> Planner: Get floorplan strategy');
-    const strategy = await this._sendToAgent(AGENTS.PLANNER, {
-      type: 'get_strategy',
-      stage: 'floorplan',
-      context: tclRequest.context,
+    const route = this.router.route({
+      type: MESSAGE_TYPES.DELEGATE_EXECUTION,
+      from: ROUTER_AGENTS.SUPERVISOR,
+      payload: {
+        stage: 'floorplan',
+        tool: 'innovus',
+        designDir: this.designDir,
+        designName: this.designName,
+      },
     });
 
-    // Step 3: Execute via Executor (ONLY Executor uses MCP)
-    console.log('[Supervisor] -> Executor: Execute floorplan Tcl');
-    const execResult = await this._sendToAgent(AGENTS.EXECUTOR, {
-      type: 'execute_tcl',
-      stage: 'floorplan',
-      tool: 'innovus',
-      tcl: tclRequest.tcl,
-      strategy: strategy.recommendations,
-      description: 'Stage 1: Floorplan',
-      timeout: 300,
+    // Step 3: Simulate Executor handling
+    const execResult = await this._simulateExecutorExecution(route.message);
+
+    // Step 4: Route result through Knowledge
+    const resultRoutes = this.router.route({
+      type: MESSAGE_TYPES.EXECUTION_RESULT,
+      from: ROUTER_AGENTS.EXECUTOR,
+      payload: {
+        stage: 'floorplan',
+        success: execResult.success,
+        metrics: execResult.metrics,
+      },
     });
 
-    if (execResult.error) {
-      return { error: `Execution failed: ${execResult.error}` };
-    }
-
-    // Step 4: Record via Archivist
-    console.log('[Supervisor] -> Archivist: Record floorplan QoR');
-    await this._sendToAgent(AGENTS.ARCHIVIST, {
-      type: 'record_qor',
-      stage: 'floorplan',
-      metrics: execResult.metrics,
-    });
-
+    console.log('[Supervisor] Floorplan flow complete');
     return {
       success: true,
       stage: 'floorplan',
@@ -193,161 +197,114 @@ export class TeamController {
   }
 
   /**
-   * Send message to agent and wait for response
-   * Uses file-based messaging system for inter-agent communication
+   * Placement flow: Supervisor -> Knowledge -> Executor -> Knowledge -> Archivist
    */
-  async _sendToAgent(agentName, message) {
-    console.log(`[SendMessage] To ${agentName}: ${message.type}`);
+  async _runPlacementFlow(intent) {
+    console.log('[Supervisor] Starting Placement flow (Stage 4)');
+    this.currentStage = 'placement';
 
-    const agent = this.activeAgents.get(agentName);
-    if (!agent) {
-      return { error: `Agent ${agentName} not found` };
-    }
+    const route = this.router.route({
+      type: MESSAGE_TYPES.DELEGATE_EXECUTION,
+      from: ROUTER_AGENTS.SUPERVISOR,
+      payload: {
+        stage: 'placement',
+        tool: 'innovus',
+        designDir: this.designDir,
+      },
+    });
 
-    // Update agent status
-    agent.status = 'working';
-    agent.lastActivity = Date.now();
+    const execResult = await this._simulateExecutorExecution(route.message);
 
-    try {
-      // Send message to agent's queue
-      sendToAgent(agentName, message, message.type);
+    this.router.route({
+      type: MESSAGE_TYPES.EXECUTION_RESULT,
+      from: ROUTER_AGENTS.EXECUTOR,
+      payload: { stage: 'placement', success: execResult.success, metrics: execResult.metrics },
+    });
 
-      // For synchronous simulation, still call handler directly
-      // In production, agents would poll their queues independently
-      let result;
-      switch (agentName) {
-        case AGENTS.KNOWLEDGE:
-          result = await this._handleKnowledgeMessage(message);
-          break;
-        case AGENTS.PLANNER:
-          result = await this._handlePlannerMessage(message);
-          break;
-        case AGENTS.EXECUTOR:
-          result = await this._handleExecutorMessage(message);
-          break;
-        case AGENTS.ARCHIVIST:
-          result = await this._handleArchivistMessage(message);
-          break;
-        default:
-          result = { error: `Unknown agent: ${agentName}` };
-      }
-
-      agent.status = 'ready';
-      return result;
-    } catch (e) {
-      agent.status = 'error';
-      return { error: e.message };
-    }
+    return { success: true, stage: 'placement', metrics: execResult.metrics };
   }
 
   /**
-   * Knowledge Agent: Generates Tcl, provides brain queries
-   * NEVER uses MCP tools
+   * CTS flow: Supervisor -> Knowledge -> Executor -> Knowledge -> Archivist
    */
-  async _handleKnowledgeMessage(message) {
-    console.log(`[Knowledge] Handling: ${message.type}`);
+  async _runCTSFlow(intent) {
+    console.log('[Supervisor] Starting CTS flow (Stage 5)');
+    this.currentStage = 'cts';
 
-    switch (message.type) {
-      case 'generate_tcl':
-        // Query the knowledge base for Tcl generation
-        // This would use knowledge.get_skill, knowledge.generate_tcl
-        return {
-          tcl: `# Auto-generated ${message.stage} Tcl for ${message.tool}`,
-          context: { stage: message.stage, tool: message.tool },
-        };
+    const route = this.router.route({
+      type: MESSAGE_TYPES.DELEGATE_EXECUTION,
+      from: ROUTER_AGENTS.SUPERVISOR,
+      payload: {
+        stage: 'cts',
+        tool: 'innovus',
+        designDir: this.designDir,
+      },
+    });
 
-      case 'query_brain':
-        // Query ASIC/EDA/Project brains
-        return { answer: 'Brain query result' };
+    const execResult = await this._simulateExecutorExecution(route.message);
 
-      default:
-        return { error: `Unknown message type: ${message.type}` };
-    }
+    this.router.route({
+      type: MESSAGE_TYPES.EXECUTION_RESULT,
+      from: ROUTER_AGENTS.EXECUTOR,
+      payload: { stage: 'cts', success: execResult.success, metrics: execResult.metrics },
+    });
+
+    return { success: true, stage: 'cts', metrics: execResult.metrics };
   }
 
   /**
-   * Planner Agent: Creates execution strategies
-   * NEVER uses MCP tools
+   * Routing flow: Supervisor -> Knowledge -> Executor -> Knowledge -> Archivist
    */
-  async _handlePlannerMessage(message) {
-    console.log(`[Planner] Handling: ${message.type}`);
+  async _runRoutingFlow(intent) {
+    console.log('[Supervisor] Starting Routing flow (Stage 7)');
+    this.currentStage = 'routing';
 
-    switch (message.type) {
-      case 'get_strategy':
-        return {
-          recommendations: [
-            'Check prerequisites',
-            'Validate constraints',
-            'Execute with timeout',
-          ],
-        };
+    const route = this.router.route({
+      type: MESSAGE_TYPES.DELEGATE_EXECUTION,
+      from: ROUTER_AGENTS.SUPERVISOR,
+      payload: {
+        stage: 'routing',
+        tool: 'innovus',
+        designDir: this.designDir,
+      },
+    });
 
-      default:
-        return { error: `Unknown message type: ${message.type}` };
-    }
+    const execResult = await this._simulateExecutorExecution(route.message);
+
+    this.router.route({
+      type: MESSAGE_TYPES.EXECUTION_RESULT,
+      from: ROUTER_AGENTS.EXECUTOR,
+      payload: { stage: 'routing', success: execResult.success, metrics: execResult.metrics },
+    });
+
+    return { success: true, stage: 'routing', metrics: execResult.metrics };
   }
 
   /**
-   * Executor Agent: EXCLUSIVE control of EDA pane via MCP
-   * This is the ONLY agent that uses eda.* MCP tools
+   * Simulate Executor execution (in real system, Executor handles via MCP)
+   * @param {object} message - The execute_stage message
+   * @returns {object} Execution result with metrics
    */
-  async _handleExecutorMessage(message) {
-    console.log(`[Executor] Handling: ${message.type}`);
-    console.log(`[Executor] CRITICAL: Using MCP tools for EDA control`);
+  async _simulateExecutorExecution(message) {
+    console.log(`[Executor] Received via Knowledge routing: ${message.type}`);
+    console.log(`[Executor] Stage: ${message.stage}, Tool: ${message.tool}`);
 
-    switch (message.type) {
-      case 'execute_tcl':
-        // ONLY Executor uses eda.* MCP tools
-        // This would call:
-        // - eda.start_tool
-        // - eda.send_tcl_nonblocking
-        // - eda.await_idle
-        // - eda.get_last_result
+    // In real implementation, this would use MCP tools:
+    // - eda.start_tool({tool: message.tool, design_dir: message.designDir})
+    // - eda.send_tcl_nonblocking(...)
+    // - eda.await_idle(...)
+    // - eda.get_last_result()
 
-        console.log(`[Executor] Starting ${message.tool}`);
-        console.log(`[Executor] Sending Tcl to EDA pane`);
-        console.log(`[Executor] Waiting for completion`);
-
-        // Simulated execution result
-        return {
-          success: true,
-          metrics: {
-            wns: 0.0,
-            tns: 0.0,
-            area: 100000,
-            cells: 10000,
-          },
-          output: 'EDA execution completed',
-        };
-
-      case 'start_tool':
-        console.log(`[Executor] Starting EDA tool: ${message.tool}`);
-        return { success: true, tool: message.tool };
-
-      default:
-        return { error: `Unknown message type: ${message.type}` };
-    }
-  }
-
-  /**
-   * Archivist Agent: Records QoR and learnings
-   * NEVER uses MCP tools for EDA control
-   */
-  async _handleArchivistMessage(message) {
-    console.log(`[Archivist] Handling: ${message.type}`);
-
-    switch (message.type) {
-      case 'record_qor':
-        // Record to Project-Brain via knowledge.* tools
-        console.log(`[Archivist] Recording QoR for ${message.stage}`);
-        console.log(`  WNS: ${message.metrics.wns}`);
-        console.log(`  TNS: ${message.metrics.tns}`);
-        console.log(`  Area: ${message.metrics.area}`);
-        return { success: true };
-
-      default:
-        return { error: `Unknown message type: ${message.type}` };
-    }
+    return {
+      success: true,
+      metrics: {
+        wns: 0.0,
+        tns: 0.0,
+        area: 100000,
+        cells: 10000,
+      },
+      output: 'EDA execution completed',
+    };
   }
 
   /**
@@ -363,13 +320,13 @@ export class TeamController {
       return { type: 'floorplan', stage: 1 };
     }
     if (cmd.startsWith('/placement')) {
-      return { type: 'placement', stage: 2 };
+      return { type: 'placement', stage: 4 };
     }
     if (cmd.startsWith('/cts')) {
-      return { type: 'cts', stage: 3 };
+      return { type: 'cts', stage: 5 };
     }
     if (cmd.startsWith('/routing')) {
-      return { type: 'routing', stage: 4 };
+      return { type: 'routing', stage: 7 };
     }
 
     return { type: 'unknown', raw: command };
@@ -381,12 +338,29 @@ export class TeamController {
   getStatus() {
     return {
       currentStage: this.currentStage,
+      architecture: 'hub-and-spoke',
+      hub: 'Knowledge Agent',
       agents: Array.from(this.activeAgents.entries()).map(([name, data]) => ({
         name,
         status: data.status,
         lastActivity: data.lastActivity,
       })),
+      routerStats: this.router.getStats(),
     };
+  }
+
+  /**
+   * Verify hub-and-spoke compliance
+   */
+  verifyCompliance() {
+    return this.router.verifyHubAndSpokeCompliance();
+  }
+
+  /**
+   * Get message log for debugging/verification
+   */
+  getMessageLog() {
+    return this.router.getMessageLog();
   }
 }
 
@@ -401,4 +375,5 @@ export default {
   TeamController,
   createTeamController,
   AGENTS,
+  MESSAGE_TYPES,
 };

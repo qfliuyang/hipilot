@@ -4,7 +4,7 @@
  * Handles Nunjucks template rendering and inline Tcl generation.
  */
 
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join } from 'path';
 import nunjucks from 'nunjucks';
 import { getHipilotPaths } from '../../../src/lib/paths.js';
@@ -37,7 +37,6 @@ export function initializeRenderer(projectRoot) {
 export function listTemplates() {
   if (!existsSync(TEMPLATES_DIR)) return [];
 
-  const { readdirSync } = require('fs');
   const templates = [];
   const walk = (dir) => {
     const files = readdirSync(dir, { withFileTypes: true });

@@ -21,7 +21,70 @@ export HIPILOT_DESIGN_DIR="/path/to/design"
 export HIPILOT_DESIGN_NAME="my_design"
 ```
 
-## What You Do
+## Team Mode Detection
+
+Check if you have teammates (team mode) or are running solo:
+
+```javascript
+// If you have teammates spawned via TeamCreate, you are in TEAM MODE
+// In team mode: ALL messages route through Knowledge Agent (hub-and-spoke)
+// In solo mode: Execute directly using MCP tools
+```
+
+---
+
+## TEAM MODE: Route Through Knowledge Agent (Hub-and-Spoke)
+
+If you have teammates, you are the **Supervisor**. Your job is to COORDINATE, not execute.
+
+**CRITICAL: ALL communication goes through Knowledge Agent. Never talk directly to Executor/Archivist.**
+
+### 1. Delegate execution to Knowledge Agent
+
+```javascript
+SendMessage({
+  to: "knowledge",
+  message: {
+    type: "delegate_execution",
+    targetAgent: "executor",
+    payload: {
+      stage: "chip_finish",
+      tool: "innovus",
+      designDir: process.env.HIPILOT_DESIGN_DIR,
+      designName: process.env.HIPILOT_DESIGN_NAME
+    }
+  },
+  summary: "Delegate chip finish to Executor via Knowledge"
+})
+```
+
+### 2. Knowledge Agent handles routing
+
+Knowledge will:
+1. Route to Executor with `execute_stage`
+2. Executor adds filler cells, exports GDS/DEF/Netlist
+3. Route results to Archivist and back to you
+
+### 3. Receive completion from Knowledge
+
+```
+Stage 9 Chip Finish Complete:
+- WNS: X.XXX ns
+- TNS: Y.YYY ns
+- GDS: result/pr/data/${designName}.gds
+- Checkpoint: result/pr/data/chip_done.enc
+```
+
+**CRITICAL in Team Mode:**
+- ❌ DO NOT send messages directly to Executor or Archivist
+- ✅ ALL messages go through Knowledge Agent (to: "knowledge")
+- ✅ Knowledge is the ONLY hub for inter-agent communication
+
+---
+
+## SOLO MODE: Execute Directly
+
+If you have NO teammates, execute chip finish yourself.
 
 ### 1. Start innovus and load checkpoint
 
@@ -85,6 +148,8 @@ eda.send_tcl_nonblocking({tcl: `saveDesign ${designDir}/result/pr/data/chip_done
 eda.await_idle({timeout: 30});
 ```
 
+---
+
 ## Output
 
 | File | Description |
@@ -101,3 +166,26 @@ All 10 stages complete. The design is ready for:
 - LVS (Layout vs Schematic)
 - DRC (Design Rule Check)
 - Tapeout
+
+## Hub-and-Spoke Architecture
+
+```
+User: /chipfinish
+    │
+    ▼
+Supervisor ──SendMessage──> Knowledge
+                                   │
+                                   ▼
+                              Executor (execute_stage)
+                                   │
+                                   ▼
+                              EDA Tool (filler, GDS export)
+                                   │
+                                   ▼
+                              Knowledge (execution_result)
+                                   │
+                                   ├──> Archivist (record_qor)
+                                   │
+                                   ▼
+                              Supervisor (stage_complete)
+```

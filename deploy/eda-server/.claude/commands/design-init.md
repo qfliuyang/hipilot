@@ -25,7 +25,68 @@ Required files:
 - `tech/lef/*.lef` or `tech/lef/*.tlef` - LEF files
 - `constraints/${HIPILOT_DESIGN_NAME}.sdc` - Constraints
 
-## What You Do
+## Team Mode Detection
+
+Check if you have teammates (team mode) or are running solo:
+
+```javascript
+// If you have teammates spawned via TeamCreate, you are in TEAM MODE
+// In team mode: ALL messages route through Knowledge Agent (hub-and-spoke)
+// In solo mode: Execute directly using MCP tools
+```
+
+---
+
+## TEAM MODE: Route Through Knowledge Agent (Hub-and-Spoke)
+
+If you have teammates, you are the **Supervisor**. Your job is to COORDINATE, not execute.
+
+**CRITICAL: ALL communication goes through Knowledge Agent. Never talk directly to Executor/Archivist.**
+
+### 1. Delegate execution to Knowledge Agent
+
+```javascript
+SendMessage({
+  to: "knowledge",
+  message: {
+    type: "delegate_execution",
+    targetAgent: "executor",
+    payload: {
+      stage: "design_init",
+      tool: "innovus",
+      designDir: process.env.HIPILOT_DESIGN_DIR,
+      designName: process.env.HIPILOT_DESIGN_NAME
+    }
+  },
+  summary: "Delegate design init to Executor via Knowledge"
+})
+```
+
+### 2. Knowledge Agent handles routing
+
+Knowledge will:
+1. Route to Executor with `execute_stage`
+2. Executor loads netlist, LEF files, MMMC setup
+3. Route results to Archivist and back to you
+
+### 3. Receive completion from Knowledge
+
+```
+Stage 1 Design Init Complete:
+- Cell Count: XXXXX
+- Checkpoint: result/pr/data/init_design.enc
+```
+
+**CRITICAL in Team Mode:**
+- ❌ DO NOT send messages directly to Executor or Archivist
+- ✅ ALL messages go through Knowledge Agent (to: "knowledge")
+- ✅ Knowledge is the ONLY hub for inter-agent communication
+
+---
+
+## SOLO MODE: Execute Directly
+
+If you have NO teammates, execute design init yourself.
 
 ### 1. Verify synthesis output exists
 
@@ -59,6 +120,8 @@ Key steps:
 console.log(`Stage 1 Design Init: Cell Count: XXXXX`);
 ```
 
+---
+
 ## Output
 
 - Checkpoint: `result/pr/data/init_design.enc`
@@ -66,3 +129,26 @@ console.log(`Stage 1 Design Init: Cell Count: XXXXX`);
 ## Next Step
 
 - Run `/floorplan` to create die area and IO placement
+
+## Hub-and-Spoke Architecture
+
+```
+User: /design-init
+    │
+    ▼
+Supervisor ──SendMessage──> Knowledge
+                                   │
+                                   ▼
+                              Executor (execute_stage)
+                                   │
+                                   ▼
+                              EDA Tool (init_design)
+                                   │
+                                   ▼
+                              Knowledge (execution_result)
+                                   │
+                                   ├──> Archivist (record_qor)
+                                   │
+                                   ▼
+                              Supervisor (stage_complete)
+```

@@ -23,7 +23,72 @@ Required files in design directory:
 - `constraints/${HIPILOT_DESIGN_NAME}.sdc` - Timing constraints
 - `tech/lib/*.db` - Technology libraries
 
-## What You Do
+## Team Mode Detection
+
+Check if you have teammates (team mode) or are running solo:
+
+```javascript
+// If you have teammates spawned via TeamCreate, you are in TEAM MODE
+// In team mode: ALL messages route through Knowledge Agent (hub-and-spoke)
+// In solo mode: Execute directly using MCP tools
+```
+
+---
+
+## TEAM MODE: Route Through Knowledge Agent (Hub-and-Spoke)
+
+If you have teammates, you are the **Supervisor**. Your job is to COORDINATE, not execute.
+
+**CRITICAL: ALL communication goes through Knowledge Agent. Never talk directly to Executor/Archivist.**
+
+### 1. Delegate execution to Knowledge Agent
+
+```javascript
+SendMessage({
+  to: "knowledge",
+  message: {
+    type: "delegate_execution",
+    targetAgent: "executor",
+    payload: {
+      stage: "synthesis",
+      tool: "dc_shell",
+      designDir: process.env.HIPILOT_DESIGN_DIR,
+      designName: process.env.HIPILOT_DESIGN_NAME
+    }
+  },
+  summary: "Delegate synthesis to Executor via Knowledge"
+})
+```
+
+### 2. Knowledge Agent routes to Executor
+
+Knowledge Agent will:
+1. Log the message for audit trail
+2. Route the request to Executor with `execute_stage` message
+3. Executor executes and sends results back to Knowledge
+4. Knowledge routes `record_qor` to Archivist and `stage_complete` to you
+
+### 3. Receive completion from Knowledge
+
+When Knowledge Agent sends you `stage_complete`:
+```
+Stage 0 Synthesis Complete:
+- WNS: X.XXX ns
+- TNS: Y.YYY ns
+- Netlist: result/syn/data/${designName}.syn.v
+```
+
+**CRITICAL in Team Mode:**
+- ❌ DO NOT send messages directly to Executor or Archivist
+- ✅ ALL messages go through Knowledge Agent (to: "knowledge")
+- ✅ Use type: "delegate_execution" with targetAgent field
+- ✅ Knowledge is the ONLY hub for inter-agent communication
+
+---
+
+## SOLO MODE: Execute Directly
+
+If you have NO teammates, execute synthesis yourself.
 
 ### 1. Verify environment
 
@@ -65,6 +130,8 @@ const result = eda.get_last_result({lines: 50});
 console.log(`Stage 0 Synthesis: WNS: X.XXX ns, TNS: Y.YYY ns`);
 ```
 
+---
+
 ## Output
 
 - Netlist: `result/syn/data/${HIPILOT_DESIGN_NAME}.syn.v`
@@ -74,3 +141,28 @@ console.log(`Stage 0 Synthesis: WNS: X.XXX ns, TNS: Y.YYY ns`);
 
 After synthesis completes successfully:
 - Run `/design-init` to load the netlist into Innovus
+
+## Hub-and-Spoke Architecture
+
+```
+User: /synthesis
+    │
+    ▼
+Supervisor ──SendMessage──> Knowledge
+                                   │
+                                   ├── logs message
+                                   │
+                                   ▼
+                              Executor (execute_stage)
+                                   │
+                                   ▼
+                              EDA Tool (via MCP)
+                                   │
+                                   ▼
+                              Knowledge (execution_result)
+                                   │
+                                   ├──> Archivist (record_qor)
+                                   │
+                                   ▼
+                              Supervisor (stage_complete)
+```

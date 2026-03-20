@@ -204,8 +204,16 @@ export function listAgents() {
   }));
 }
 
-// Export new TeamController for hard-coded team flow
+// Export TeamController for hard-coded team flow
 export { TeamController, createTeamController, AGENTS } from './TeamController.js';
+
+// Export KnowledgeRouter for hub-and-spoke message routing
+export {
+  KnowledgeRouter,
+  createKnowledgeRouter,
+  MESSAGE_TYPES,
+  AGENT_NAMES as ROUTER_AGENT_NAMES,
+} from './KnowledgeRouter.js';
 
 export default {
   AGENT_REGISTRY,
@@ -216,4 +224,7 @@ export default {
   TeamController,
   createTeamController,
   AGENTS,
+  KnowledgeRouter,
+  createKnowledgeRouter,
+  MESSAGE_TYPES,
 };

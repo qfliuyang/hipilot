@@ -1691,52 +1691,115 @@ export class CheatDetector {
    * ═══════════════════════════════════════════════════════════════════
    * TEAM PROTOCOL VERIFICATION 3: Verify Knowledge Agent is Hub
    * Hub-and-spoke: All inter-agent messages should go through Knowledge
+   *
+   * Expected message flow:
+   *   1. Supervisor -> Knowledge (delegate_execution)
+   *   2. Knowledge -> Executor (execute_stage)
+   *   3. Executor -> Knowledge (execution_result)
+   *   4. Knowledge -> Archivist (record_qor) + Supervisor (stage_complete)
    */
   verifyKnowledgeAsHub(paneLog) {
     const violations = [];
+    const evidence = {
+      supervisorToKnowledge: false,
+      knowledgeToExecutor: false,
+      executorToKnowledge: false,
+      knowledgeToArchivist: false,
+      knowledgeToSupervisor: false,
+    };
 
-    // Check for direct messages that bypass Knowledge
+    // Check for direct messages that bypass Knowledge (CRITICAL violations)
     const directMessagePatterns = [
-      { pattern: /SendMessage.*to.*["']?Planner["']?.*from.*["']?Supervisor["']?/i, type: 'Supervisor→Planner' },
-      { pattern: /SendMessage.*to.*["']?Executor["']?.*from.*["']?Supervisor["']?/i, type: 'Supervisor→Executor' },
-      { pattern: /SendMessage.*to.*["']?Archivist["']?.*from.*["']?Supervisor["']?/i, type: 'Supervisor→Archivist' },
-      { pattern: /SendMessage.*to.*["']?Planner["']?.*from.*["']?Executor["']?/i, type: 'Executor→Planner' },
+      { pattern: /SendMessage.*to.*["']?executor["']?.*type.*execute_stage/i, type: 'Supervisor→Executor:execute_stage', severity: 'critical' },
+      { pattern: /SendMessage.*to.*["']?executor["']?.*stage.*synthesis/i, type: 'Supervisor→Executor:synthesis', severity: 'critical' },
+      { pattern: /SendMessage.*to.*["']?executor["']?.*stage.*floorplan/i, type: 'Supervisor→Executor:floorplan', severity: 'critical' },
+      { pattern: /SendMessage.*to.*["']?executor["']?.*stage.*placement/i, type: 'Supervisor→Executor:placement', severity: 'critical' },
+      { pattern: /SendMessage.*to.*["']?planner["']?.*from.*["']?supervisor["']?/i, type: 'Supervisor→Planner', severity: 'critical' },
+      { pattern: /SendMessage.*to.*["']?archivist["']?.*record_qor/i, type: 'Supervisor→Archivist:record_qor', severity: 'critical' },
     ];
 
-    for (const { pattern, type } of directMessagePatterns) {
+    for (const { pattern, type, severity } of directMessagePatterns) {
       if (pattern.test(paneLog)) {
         violations.push({
           type,
+          severity,
           message: `Direct ${type} message bypasses Knowledge Agent hub`,
         });
       }
     }
 
+    // Check for correct hub-and-spoke patterns (positive evidence)
+    const hubPatterns = {
+      supervisorToKnowledge: [
+        /SendMessage.*to.*["']?knowledge["']?.*delegate_execution/i,
+        /SendMessage.*to.*["']?knowledge["']?.*get_strategy/i,
+        /SendMessage.*to.*["']?knowledge["']?.*query_brain/i,
+      ],
+      knowledgeToExecutor: [
+        /knowledge.*executor.*execute_stage/i,
+        /route.*executor.*execute_stage/i,
+      ],
+      executorToKnowledge: [
+        /SendMessage.*to.*["']?knowledge["']?.*execution_result/i,
+        /executor.*knowledge.*result/i,
+      ],
+      knowledgeToArchivist: [
+        /knowledge.*archivist.*record_qor/i,
+        /route.*archivist.*record_qor/i,
+      ],
+      knowledgeToSupervisor: [
+        /knowledge.*supervisor.*stage_complete/i,
+        /route.*supervisor.*stage_complete/i,
+      ],
+    };
+
+    for (const [key, patterns] of Object.entries(hubPatterns)) {
+      evidence[key] = patterns.some(p => p.test(paneLog));
+    }
+
     // Verify messages go through Knowledge
-    const knowledgeHubPatterns = [
-      /SendMessage.*to.*["']?Knowledge["']?/i,
-      /Message.*Knowledge.*received/i,
+    const hasKnowledgeHub = /SendMessage.*to.*["']?knowledge["']?/i.test(paneLog) ||
+                           /delegate_execution/i.test(paneLog);
+
+    // Check for expected message sequence
+    const expectedSequence = [
+      { pattern: /delegate_execution/i, name: 'Supervisor→Knowledge:delegate_execution' },
+      { pattern: /execute_stage/i, name: 'Knowledge→Executor:execute_stage' },
+      { pattern: /execution_result/i, name: 'Executor→Knowledge:execution_result' },
+      { pattern: /record_qor/i, name: 'Knowledge→Archivist:record_qor' },
     ];
 
-    const hasKnowledgeHub = knowledgeHubPatterns.some(p => p.test(paneLog));
+    const foundSequence = expectedSequence.map(({ pattern, name }) => ({
+      name,
+      found: pattern.test(paneLog),
+    }));
 
+    const sequenceScore = foundSequence.filter(s => s.found).length;
+
+    // Critical violation: direct bypass
+    if (violations.filter(v => v.severity === 'critical').length > 0) {
+      return this._logCheat('team_protocol', 'critical',
+        'Hub-and-spoke violation: Supervisor bypassed Knowledge Agent',
+        { violations, evidence, foundSequence }
+      );
+    }
+
+    // Warning: no evidence of Knowledge as hub
     if (!hasKnowledgeHub && paneLog.includes('SendMessage')) {
       return this._logCheat('team_protocol', 'warning',
         'No evidence of Knowledge Agent as hub — verify hub-and-spoke communication',
-        { violations }
+        { violations, evidence, foundSequence }
       );
     }
 
-    if (violations.length > 0) {
-      return this._logCheat('team_protocol', 'critical',
-        'Hub-and-spoke violation: Supervisor bypassed Knowledge Agent',
-        { violations }
-      );
-    }
-
+    // Success: hub-and-spoke compliant
     return {
       valid: true,
       knowledgeAsHub: hasKnowledgeHub,
+      evidence,
+      foundSequence,
+      sequenceScore,
+      violations: violations.length,
     };
   }
 

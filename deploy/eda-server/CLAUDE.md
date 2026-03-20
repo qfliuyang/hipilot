@@ -129,22 +129,100 @@ Agent({
 9. You report results to user
 ```
 
-## Communication Protocol
+## Communication Protocol (Hub-and-Spoke)
 
-**ALWAYS communicate via Knowledge Agent:**
+**ALL inter-agent communication goes through Knowledge Agent as the hub.**
+
+### Message Types
+
+| Type | From | To (via Knowledge) | Purpose |
+|------|------|-------------------|---------|
+| `delegate_execution` | Supervisor | Executor | Request stage execution |
+| `get_strategy` | Supervisor | Planner | Request execution strategy |
+| `query_brain` | Any | Knowledge | Query ASIC/EDA/Project brain |
+| `execution_result` | Executor | Archivist + Supervisor | Report results |
+| `stage_complete` | Knowledge | Supervisor | Notify completion |
+| `record_qor` | Knowledge | Archivist | Record QoR metrics |
+
+### CORRECT: Delegate execution via Knowledge
 
 ```javascript
-// CORRECT: Supervisor → Knowledge → Other agents
 SendMessage({
   to: "knowledge",
-  message: "Query Planner for floorplan strategy"
+  message: {
+    type: "delegate_execution",
+    targetAgent: "executor",
+    payload: {
+      stage: "synthesis",
+      tool: "dc_shell",
+      designDir: process.env.HIPILOT_DESIGN_DIR
+    }
+  },
+  summary: "Delegate synthesis to Executor via Knowledge"
+})
+```
+
+### CORRECT: Get strategy via Knowledge
+
+```javascript
+SendMessage({
+  to: "knowledge",
+  message: {
+    type: "get_strategy",
+    payload: {
+      stage: "floorplan",
+      context: { designDir: process.env.HIPILOT_DESIGN_DIR }
+    }
+  },
+  summary: "Get floorplan strategy via Knowledge"
+})
+```
+
+### WRONG: Direct messages bypassing Knowledge
+
+```javascript
+// ❌ NEVER send directly to Executor
+SendMessage({
+  to: "executor",
+  message: { type: "execute_stage", stage: "synthesis" }
 })
 
-// WRONG: Supervisor → Planner directly
+// ❌ NEVER send directly to Archivist
 SendMessage({
-  to: "planner",  // ❌ Never do this
-  message: "..."
+  to: "archivist",
+  message: { type: "record_qor", metrics: {...} }
 })
+
+// ❌ NEVER send directly to Planner
+SendMessage({
+  to: "planner",
+  message: { type: "get_strategy" }
+})
+```
+
+### Hub-and-Spoke Message Flow
+
+```
+User: /synthesis
+    │
+    ▼
+Supervisor ──SendMessage──> Knowledge
+                                   │
+                                   ├── logs message (audit trail)
+                                   │
+                                   ▼
+                              Executor (execute_stage)
+                                   │
+                                   ▼
+                              EDA Tool (via MCP)
+                                   │
+                                   ▼
+                              Knowledge (execution_result)
+                                   │
+                                   ├──> Archivist (record_qor)
+                                   │
+                                   ▼
+                              Supervisor (stage_complete)
 ```
 
 ## Your Tools (Coordination Only)
